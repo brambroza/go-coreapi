@@ -1,21 +1,29 @@
 ﻿using coreapi.Models;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
 using System.Net;
-using System.Net.Http;
+using System;
+using goalongapi.Data;
+using goalongapi.Entities;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using goalongapi.Datatools.Product;
+using Mapster;
+using goalongapi.Interfaces;
+using Microsoft.AspNetCore.Authorization;
+using System.Data;
+using System.IdentityModel.Tokens.Jwt; 
+using Newtonsoft.Json;
 using System.Reflection;
-using System.Web.Http; 
 
 namespace coreapi.Controllers
 {
-    public class MenuController : ApiController
+    [ApiController] 
+    [Authorize]
+    public class MenuController : ControllerBase
     {
         // GET: api/Menu
-        [Route("api/authorization")]
+        [Route("api/Menu")]
         [HttpGet] 
-        public IHttpActionResult Get(string cmpcode , string user)
+        public IActionResult Get(string cmpcode , string user)
         {
             DataTable dt;
             DataTable sdt;
@@ -70,7 +78,7 @@ namespace coreapi.Controllers
 
         [Route("api/authorizationsub")]
         [HttpGet]
-        public IHttpActionResult getsub(string cmpcode, string user , int menuid )
+        public IActionResult getsub(string cmpcode, string user , int menuid )
         {
             DataTable dt;
             DataTable sdt;

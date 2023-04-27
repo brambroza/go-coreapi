@@ -1,4 +1,5 @@
 ﻿using coreapi.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -23,7 +24,10 @@ namespace coreapi.Controllers
             dt = DB.DBConn.GetDataTable(_cmd);
            
 
-            return Ok(dt);
+            string JSONString = string.Empty;
+            JSONString = JsonConvert.SerializeObject(dt);
+         
+            return Ok(JSONString);
         }
 
         [Route("api/TimeCard")]
@@ -35,7 +39,10 @@ namespace coreapi.Controllers
             DataTable dt;
             dt = DB.DBConn.GetDataTable(_cmd);
 
-            return Ok(dt);
+            string JSONString = string.Empty;
+            JSONString = JsonConvert.SerializeObject(dt);
+         
+            return Ok(JSONString);
         }
 
 

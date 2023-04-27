@@ -4,19 +4,15 @@ using System.Data;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Web.Http; 
+using System.Web.Http;
+using Newtonsoft.Json;
 
 namespace coreapi.Controllers
 {
     
     public class DashController : ApiController
     {
-        // GET: api/Dash
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
-
+        
         // GET: api/Dash/5
         public IHttpActionResult Get(int CmpId, string username, int dtype)
         {
@@ -42,24 +38,13 @@ namespace coreapi.Controllers
 
             }
             dt = DB.DBConn.GetDataTable(_cmd);
-            return Ok(dt);
+            string JSONString = string.Empty;
+            JSONString = JsonConvert.SerializeObject(dt);
+         
+            return Ok(JSONString);
         }
 
 
-
-        // POST: api/Dash
-        public void Post([FromBody]string value)
-        {
-        }
-
-        // PUT: api/Dash/5
-        public void Put(int id, [FromBody]string value)
-        {
-        }
-
-        // DELETE: api/Dash/5
-        public void Delete(int id)
-        {
-        }
+ 
     }
 }

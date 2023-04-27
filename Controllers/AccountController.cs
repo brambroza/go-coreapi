@@ -4,6 +4,7 @@ using goalongapi.Entities;
 using goalongapi.Interfaces;
 using Mapster;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 namespace goalongapi.Controllers
@@ -22,7 +23,7 @@ namespace goalongapi.Controllers
             await accountService.Register(account);
             return StatusCode((int)HttpStatusCode.Created);
         }
-
+        [EnableCors("AllowSpecificOrigins")]
         [HttpPost("[action]")]
         public async Task<ActionResult> Login(LoginRequest loginRequest)
         {

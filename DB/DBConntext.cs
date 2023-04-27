@@ -11,7 +11,7 @@ namespace coreapi.DB
     {
         public string getConnectionString()
         {
-            string strcon = "Server=192.168.1.105,1433;user id=sa; password=1234; Database=GoAlongDatabase; TrustServerCertificate=true;";
+            string strcon = "Server=localhost,1433;user id=sa; password=dr0wss@p; Database=goalongdatabase; TrustServerCertificate=true;";
             //create new sqlconnection and connection to database by using connection string from web.config file  
             return strcon;
         }
@@ -21,7 +21,7 @@ namespace coreapi.DB
     {
         public string getConnectionString()
         {
-            string strcon = "Server=192.168.1.105,1433;user id=sa; password=1234; Database=GoAlongDatabase; TrustServerCertificate=true;";
+            string strcon = "Server=localhost,1433;user id=sa; password=dr0wss@p; Database=goalongdatabase; TrustServerCertificate=true;";
             //create new sqlconnection and connection to database by using connection string from web.config file  
             return strcon;
         }

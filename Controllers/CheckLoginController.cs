@@ -1,24 +1,33 @@
 ﻿using coreapi.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Net.Http;
-using System.Web.Http; 
+using System;
+using goalongapi.Data;
+using goalongapi.Entities;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using goalongapi.Datatools.Product;
+using Mapster;
+using goalongapi.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using System.Data;
-
+using System.IdentityModel.Tokens.Jwt; 
+using Newtonsoft.Json;
 
 namespace coreapi.Controllers
 {
  
-    public class CheckLoginController : ApiController
+    [ApiController]
+    [Route("[controller]")]
+    [Authorize]
+    public class CheckLoginController : ControllerBase
     {
         // GET: api/CheckLogin
 
+         
 
         [Route("api/CheckLogin")]
         [HttpGet]
-        public IHttpActionResult Get(string id , string Password , int CmpId)
+        public IActionResult CheckLogin(string id , string Password , int CmpId)
         {
             string _cmd = "";
             _cmd = "exec dbo.CheckLogin  @UserName='" + id + "', @PassWord='" + Password + "',@CmpId=" + CmpId;
@@ -33,71 +42,43 @@ namespace coreapi.Controllers
                     dt = DB.DBConn.GetDataTableSystem(_cmd);
                 }
             }
-             
-            return Ok(dt);
+                string JSONString = string.Empty;
+            JSONString = JsonConvert.SerializeObject(dt);
+         
+            return Ok(JSONString); 
         }
 
         [Route("api/login")]
         [HttpPost]
-        public IHttpActionResult Checklogin(string id, string Password, int CmpId)
+        public IActionResult login(string id, string Password, int CmpId)
         {
             string _cmd = "";
             _cmd = "exec dbo.CheckLogin  @UserName='" + id + "', @PassWord='" + Password + "',@CmpId=" + CmpId;
             DataTable dt;
             dt = DB.DBConn.GetDataTable(_cmd);
 
-            return Ok(dt);
+            string JSONString = string.Empty;
+            JSONString = JsonConvert.SerializeObject(dt);
+         
+            return Ok(JSONString);
         }
 
-        // POST: api/CheckLogin
-        //[Route("api/CheckLogin")]
-        //[HttpPost]
-        //public void Post(string UserName , string Password , int CmpId)
-        //{
-        //    string _cmd = "";
-        //    _cmd = "exec dbo.Changepass  @UserName='" + UserName + "', @PassWord='" + Password + "',@CmpId=" + CmpId;
-
-        //    DB.DBConn.ExecuteOnly(_cmd);
-
-        //}
-
-
-        //[Route("api/checklogin")]
-        //[HttpGet]
-        //public IHttpActionResult getmember(string user, string pass)
-        //{
-        //    string _cmd = "";
-
-        //    DataTable dt;
-        //    dt = new DataTable("DataTable11");
-        //    dt.Columns.Add("UserName" , typeof(String));
-        //    dt.Columns.Add("Detail", typeof(String));
-        //    dt.Columns.Add("Status", typeof(String));
-        //    dt.Columns.Add("UserTypeID", typeof(String));
-        //    dt.Columns.Add("Name", typeof(String));
-        //    DataRow dr = dt.NewRow();
-        //    dr["UserName"] = "999";
-        //    dr["Detail"] = "Admin";
-        //    dr["Status"] = "Y";
-        //    dr["UserTypeID"] = "A";
-        //    dr["Name"] = "Admin";
-        //    dt.Rows.Add(dr);
-
-
-        //    return Ok(dt);
-        //}
+         
 
 
 
         [HttpGet]
         [Route("api/member")]
-        public IHttpActionResult GetMember(string username, string ip)
+        public IActionResult Member(string username, string ip)
         {
             DataTable dt;
             dt = new DataTable();
 
             dt = DB.DBConn.GetDataTable("exec  dbo.get_member @username='" + username + "', @ip='" + ip + "'");
-            return Ok(dt);
+            string JSONString = string.Empty;
+            JSONString = JsonConvert.SerializeObject(dt);
+         
+            return Ok(JSONString);
 
         }
 
@@ -128,63 +109,7 @@ namespace coreapi.Controllers
         //    return Ok(dt);
         //}
 
-
-        [HttpGet]
-        [Route("api/getcartype")]
-        public IHttpActionResult Get()
-        {
-            DataTable dt;
-            string str = "";
-            str = "exec sp_getCartype";
-            dt = new DataTable();
-            dt = DB.DBConn.GetDataTable(str);
-            return Ok(dt);
-        }
-
-
-        
-        public IHttpActionResult getcartype()
-        {
-            string _cmd = "";
-
-            DataTable dt;
-            dt = new DataTable("DataTable11");
-            dt.Columns.Add("CarTypeID", typeof(String));
-            dt.Columns.Add("CarTypeName", typeof(String));
-            //dt.Columns.Add("Status", typeof(String));
-            //dt.Columns.Add("UserTypeID", typeof(String));
-            //dt.Columns.Add("Name", typeof(String));
-            DataRow dr = dt.NewRow();
-            dr["CarTypeID"] = "01";
-             dr["CarTypeName"] = "รถยนต์ ส่วนบุคคล";
-            //dr["Status"] = "Y";
-            //dr["UserTypeID"] = "A";
-            //dr["Name"] = "Admin";
-            dt.Rows.Add(dr);
-              dr = dt.NewRow();
-            dr["CarTypeID"] = "02";
-            dr["CarTypeName"] = "รถยนต์ รับจ้าง";
-            //dr["Status"] = "Y";
-            //dr["UserTypeID"] = "A";
-            //dr["Name"] = "Admin";
-            dt.Rows.Add(dr);
-
-            return Ok(dt);
-        }
-
-
-
-        [HttpGet]
-        [Route("api/getmember")]
-        public IHttpActionResult Getmember(string License, string Province)
-        {
-            DataTable dt;
-            string str = "";
-            str = "exec [sp_checkmember] @License='" + License + "' , @Province='" + Province + "'";
-            dt = new DataTable();
-            dt = DB.DBConn.GetDataTable(str);
-            return Ok(dt);
-        }
+ 
 
 
 

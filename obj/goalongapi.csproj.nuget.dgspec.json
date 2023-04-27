@@ -1,34 +1,25 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Project\\Goalong\\webapi\\coreapi\\goalongapi.csproj": {}
+    "/Users/amnartkongpet/Project/GoAlong/coreapi/goalongapi.csproj": {}
   },
   "projects": {
-    "D:\\Project\\Goalong\\webapi\\coreapi\\goalongapi.csproj": {
+    "/Users/amnartkongpet/Project/GoAlong/coreapi/goalongapi.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Project\\Goalong\\webapi\\coreapi\\goalongapi.csproj",
+        "projectUniqueName": "/Users/amnartkongpet/Project/GoAlong/coreapi/goalongapi.csproj",
         "projectName": "goalongapi",
-        "projectPath": "D:\\Project\\Goalong\\webapi\\coreapi\\goalongapi.csproj",
-        "packagesPath": "C:\\Users\\NOHF\\.nuget\\packages\\",
-        "outputPath": "D:\\Project\\Goalong\\webapi\\coreapi\\obj\\",
+        "projectPath": "/Users/amnartkongpet/Project/GoAlong/coreapi/goalongapi.csproj",
+        "packagesPath": "/Users/amnartkongpet/.nuget/packages/",
+        "outputPath": "/Users/amnartkongpet/Project/GoAlong/coreapi/obj/",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\DevExpress 21.1\\Components\\Offline Packages",
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\NOHF\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\DevExpress 21.1.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "/Users/amnartkongpet/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net7.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\DevExpress 21.1\\Components\\System\\Components\\Packages": {},
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -125,7 +116,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.101\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/opt/homebrew/Cellar/dotnet/7.0.100/libexec/sdk/7.0.100/RuntimeIdentifierGraph.json"
         }
       }
     }

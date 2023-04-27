@@ -58,7 +58,10 @@ namespace coreapi.Controllers
             dt = DB.DBConn.GetDataTable(_cmd);
             //string qdetail = string.Empty;
             //qdetail = JsonConvert.SerializeObject(dt);
-            return Ok(dt);
+            string JSONString = string.Empty;
+            JSONString = JsonConvert.SerializeObject(dt);
+         
+            return Ok(JSONString); 
         }
         // POST: api/QuaH
 

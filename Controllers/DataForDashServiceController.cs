@@ -5,18 +5,14 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using Newtonsoft.Json;
 
 namespace coreapi.Controllers
 {
     public class DataForDashServiceController : ApiController
     {
         // GET: api/DataForDashService
-        [Route("api/DashService")]
-        [HttpGet]
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
+        
 
         // GET: api/DataForDashService/5
         [Route("api/DashService")]
@@ -26,7 +22,10 @@ namespace coreapi.Controllers
             string _cmd;
             _cmd = "exec dbo.getTop5Problem @CmpId=" + Convert.ToInt16(CmpId) + " , @DateOfMonth='" + OfDate +"'";
             DataTable datatable = DB.DBConn.GetDataTable(_cmd);
-            return Ok(datatable);
+            string JSONString = string.Empty;
+            JSONString = JsonConvert.SerializeObject(datatable);
+         
+            return Ok(JSONString);
         }
 
         [Route("api/DashServiceActionPopular")]
@@ -36,7 +35,10 @@ namespace coreapi.Controllers
             string _cmd;
             _cmd = "exec dbo.getTop5ProblemActions @CmpId=" + Convert.ToInt16(CmpId) + " , @DateOfMonth='" + OfDate + "'";
             DataTable datatable = DB.DBConn.GetDataTable(_cmd);
-            return Ok(datatable);
+            string JSONString = string.Empty;
+            JSONString = JsonConvert.SerializeObject(datatable);
+         
+            return Ok(JSONString);
         }
 
 
@@ -47,7 +49,10 @@ namespace coreapi.Controllers
             string _cmd;
             _cmd = "exec dbo.dashboardProblemSeries @CmpId=" + Convert.ToInt16(CmpId) + " , @DateOfMonth='" + OfDate + "'";
             DataTable datatable = DB.DBConn.GetDataTable(_cmd);
-            return Ok(datatable);
+            string JSONString = string.Empty;
+            JSONString = JsonConvert.SerializeObject(datatable);
+         
+            return Ok(JSONString);
         }
 
         [Route("api/DashProblemChartPielabels")]
@@ -57,7 +62,10 @@ namespace coreapi.Controllers
             string _cmd;
             _cmd = "exec dbo.dashboardProblemlabels @CmpId=" + Convert.ToInt16(CmpId) + " , @DateOfMonth='" + OfDate + "'";
             DataTable datatable = DB.DBConn.GetDataTable(_cmd);
-            return Ok(datatable);
+            string JSONString = string.Empty;
+            JSONString = JsonConvert.SerializeObject(datatable);
+         
+            return Ok(JSONString);
         }
 
          

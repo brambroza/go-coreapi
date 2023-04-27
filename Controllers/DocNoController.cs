@@ -296,7 +296,7 @@ namespace coreapi.Controllers
                     
             }
             
-
+             
             return Ok(dt.Rows[0][0]);
         }
         // POST: api/DocNo
