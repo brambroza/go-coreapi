@@ -17,8 +17,7 @@ using Newtonsoft.Json;
 
 namespace coreapi.Controllers
 {
-    [ApiController]
-    [Route("[controller]")]
+    [ApiController] 
     [Authorize]
    
 
@@ -29,8 +28,8 @@ namespace coreapi.Controllers
         // GET: api/QuaH/5
         
         [HttpGet]
-        [Route("api/Customer")]
-        public  IActionResult Get(string id)
+        [Route("Customer")]
+        public  IActionResult Get([FromQuery] string id)
         {
             string _QuatationNo = id;
             DataTable dt = new System.Data.DataTable();
@@ -47,9 +46,9 @@ namespace coreapi.Controllers
 
 
         [HttpGet]
-        [Route("api/CustomerContact")]
+        [Route("CustomerContact")]
 
-        public IActionResult getContact(string CmpId  , string CustCode)
+        public IActionResult getContact([FromQuery] string CmpId  ,[FromQuery] string CustCode)
         {
             string _QuatationNo = CmpId;
             DataTable dt = new System.Data.DataTable();
@@ -66,7 +65,7 @@ namespace coreapi.Controllers
         // POST: api/QuaH
 
         [HttpPost]
-        [Route("api/Customer")]
+        [Route("Customer")]
         public IActionResult Post(Customer customer   )
         {
             //if (Request.Headers.Contains("authToken")){
@@ -145,8 +144,8 @@ namespace coreapi.Controllers
 
         // DELETE: api/QuaH/5
         [HttpDelete]
-        [Route("api/Customer")]
-        public void Delete(string id)
+        [Route("Customer")]
+        public void Delete([FromQuery] string id)
         {
             string _cmd = "";
             _cmd = "delete from msb.mCustomer where  CustomerCode='" + id + "' ";

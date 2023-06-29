@@ -7,48 +7,57 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
-using System.Web.Http; 
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using Newtonsoft.Json;
+
+
 
 namespace coreapi.Controllers
 {
-     
-    public class QuaHController : ApiController
+
+    [ApiController]
+    [Authorize]
+
+
+    public class QuaHController : ControllerBase
     {
-        // GET: api/QuaH
-        [Route("api/QuaH")]
-        [HttpGet]
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
+
 
         // GET: api/QuaH/5 
-        [Route("api/QuaH")]
         [HttpGet]
-        public IHttpActionResult Get(string id , string user)
+        [Route("api/QuaH")]
+
+        public IActionResult Get([FromQuery] string id, [FromQuery] string user)
         {
             string _cmd;
-            _cmd = "exec dbo.getQuatationAll @CmpId=" + Convert.ToInt16(id) + ", @User='" + user + "'" ;
+            DataTable dt = new System.Data.DataTable();
+            _cmd = "exec dbo.getQuatationAll @CmpId=" + Convert.ToInt16(id) + ", @User='" + user + "'";
             DataTable datatable = DB.DBConn.GetDataTable(_cmd);
-            return Ok(datatable);
+            dt = DB.DBConn.GetDataTable(_cmd);
+            string JSONString = string.Empty;
+            JSONString = JsonConvert.SerializeObject(dt);
+            return Ok(JSONString);
         }
 
 
 
-        [Route("api/QuaH")]
         [HttpGet]
-        public IHttpActionResult GetApp(string id , string state)
+        [Route("api/QuaHState")]
+        public IActionResult GetApp([FromQuery] string id, [FromQuery] string state)
         {
             string _cmd;
             _cmd = "exec dbo.getQuatationapprove @CmpId=" + Convert.ToInt16(id);
             DataTable datatable = DB.DBConn.GetDataTable(_cmd);
-            return Ok(datatable);
+            string JSONString = string.Empty;
+            JSONString = JsonConvert.SerializeObject(datatable);
+            return Ok(JSONString);
         }
 
         // POST: api/QuaH
         [Route("api/QuaH")]
         [HttpPost]
-        public IHttpActionResult Post(Quatation quatation)
+        public IActionResult Post([FromQuery] Quatation quatation)
         {
             MsgReturn msgretrun = new MsgReturn();
 
@@ -107,7 +116,7 @@ namespace coreapi.Controllers
 
         [Route("api/QuaHCopy")]
         [HttpPost]
-        public IHttpActionResult QuaHCopy(QuatationCopy quatation)
+        public IActionResult QuaHCopy(QuatationCopy quatation)
         {
             MsgReturn msgretrun = new MsgReturn();
 
@@ -115,9 +124,9 @@ namespace coreapi.Controllers
             {
                 string _cmd = "";
                 _cmd = "exec  dbo.setQuatationCopy @QuatationNo='" + quatation.QuatationNo + "'";
-                _cmd += ", @QuatationNoNew ='" + quatation.QuatationNoNew + "'"; 
+                _cmd += ", @QuatationNoNew ='" + quatation.QuatationNoNew + "'";
                 _cmd += " ,@RevNo=" + quatation.RevNo;
-                
+
 
                 if (DB.DBConn.ExecuteOnly(_cmd))
                 {
@@ -147,15 +156,15 @@ namespace coreapi.Controllers
         // PUT: api/QuaH/5
         [Route("api/QuaHApp")]
         [HttpGet]
-        public IHttpActionResult QuaHApp(string id , string DocNo , int RevNo , string user)
+        public IActionResult QuaHApp(string id, string DocNo, int RevNo, string user)
         {
             MsgReturn msgretrun = new MsgReturn();
 
             try
             {
-                string _cmd="";
+                string _cmd = "";
                 _cmd = "exec dbo.setQuatationApp @CmpId=" + Convert.ToInt16(id) + " , @DocNo='" + DocNo + "' , @RevNo =" + RevNo + ",@User='" + user + "'";
-            
+
                 if (DB.DBConn.ExecuteOnly(_cmd))
                 {
                     linenotiapp(DocNo);
@@ -182,10 +191,10 @@ namespace coreapi.Controllers
 
         }
 
-         
+
         [Route("api/QuaHSendApp")]
         [HttpGet]
-        public IHttpActionResult QuaHSendApp(string id, string DocNo, int RevNo, string user)
+        public IActionResult QuaHSendApp([FromQuery] string id, [FromQuery] string DocNo, [FromQuery] int RevNo, [FromQuery] string user)
         {
             MsgReturn msgretrun = new MsgReturn();
 
@@ -196,7 +205,7 @@ namespace coreapi.Controllers
 
                 if (DB.DBConn.ExecuteOnly(_cmd))
                 {
-                    linenotisendapp(DocNo);
+                    var x = linenotisendapp(DocNo);
 
                     msgretrun.ReturnCode = "200";
                     msgretrun.Msg = "Save Success !!";
@@ -222,43 +231,43 @@ namespace coreapi.Controllers
         }
 
 
-      
+
 
         // DELETE: api/QuaH/5
         [Route("api/QuaH")]
         [HttpDelete]
-        public IHttpActionResult Delete(string id  , int RevNo)
+        public IActionResult Delete(string id, int RevNo)
         {
             MsgReturn msgretrun = new MsgReturn();
             try
             {
 
-                 string _cmd = "";
+                string _cmd = "";
                 _cmd = "delete from mdb.Quatation where  QuatationNo='" + id + "' and RevNo=" + RevNo;
 
                 DB.DBConn.ExecuteOnly(_cmd);
-                _cmd = "delete from mdb.Quatation_Detail where  QuatationNo='" + id + "'  and RevNo=" + RevNo ;
+                _cmd = "delete from mdb.Quatation_Detail where  QuatationNo='" + id + "'  and RevNo=" + RevNo;
 
-                    if (DB.DBConn.ExecuteOnly(_cmd))
-                    {
-                        msgretrun.ReturnCode = "200";
-                        msgretrun.Msg = "Delete Success !!";
-                        return Ok(msgretrun);
-                    }
-                    else
-                    {
-                        msgretrun.ReturnCode = "400";
-                        msgretrun.Msg = "Error !!";
-                        return Ok(msgretrun);
-                    }
-
+                if (DB.DBConn.ExecuteOnly(_cmd))
+                {
+                    msgretrun.ReturnCode = "200";
+                    msgretrun.Msg = "Delete Success !!";
+                    return Ok(msgretrun);
                 }
-                catch
+                else
                 {
                     msgretrun.ReturnCode = "400";
                     msgretrun.Msg = "Error !!";
                     return Ok(msgretrun);
                 }
+
+            }
+            catch
+            {
+                msgretrun.ReturnCode = "400";
+                msgretrun.Msg = "Error !!";
+                return Ok(msgretrun);
+            }
 
 
         }
@@ -266,10 +275,10 @@ namespace coreapi.Controllers
 
         [Route("api/QuaHRev")]
         [HttpGet]
-        public IHttpActionResult Get(string id , string DocNo  ,  int RevNo)
+        public IActionResult Get(string id, string DocNo, int RevNo)
         {
             string _cmd;
-            _cmd = "exec dbo.getQuatation @CmpId=" + Convert.ToInt16(id) +  " , @DocNo='" + DocNo +"' , @RevNo =" + RevNo ;
+            _cmd = "exec dbo.getQuatation @CmpId=" + Convert.ToInt16(id) + " , @DocNo='" + DocNo + "' , @RevNo =" + RevNo;
             DataTable datatable = DB.DBConn.GetDataTable(_cmd);
             return Ok(datatable);
         }
@@ -280,7 +289,7 @@ namespace coreapi.Controllers
 
         [HttpGet]
         [Route("api/salesbom")]
-        public IHttpActionResult salesbomGet(int id)
+        public IActionResult salesbomGet([FromQuery] int id)
         {
 
             DataTable dt = new System.Data.DataTable();
@@ -293,7 +302,7 @@ namespace coreapi.Controllers
 
         [HttpGet]
         [Route("api/salesbomRev")]
-        public IHttpActionResult salesbomGetR(int id , string bomno, int RevNo)
+        public IActionResult salesbomGetR(int id, string bomno, int RevNo)
         {
 
             DataTable dt = new System.Data.DataTable();
@@ -306,12 +315,12 @@ namespace coreapi.Controllers
 
         [HttpGet]
         [Route("api/salesbomD")]
-        public IHttpActionResult salesbomDGet( int  id , string bomno   , int RevNo )
+        public IActionResult salesbomDGet(int id, string bomno, int RevNo)
         {
 
             DataTable dt = new System.Data.DataTable();
             string _cmd;
-            _cmd = "exec dbo.sp_getSaleBom_D @BomNo='" + bomno + "' , @Rev=" + RevNo + " ,@CmpId=" + id + ""; 
+            _cmd = "exec dbo.sp_getSaleBom_D @BomNo='" + bomno + "' , @Rev=" + RevNo + " ,@CmpId=" + id + "";
             dt = DB.DBConn.GetDataTable(_cmd);
             return Ok(dt);
         }
@@ -319,7 +328,7 @@ namespace coreapi.Controllers
 
         [HttpGet]
         [Route("api/salesbomF")]
-        public IHttpActionResult salesbomFGet(int id, string bomno, int RevNo)
+        public IActionResult salesbomFGet([FromQuery] int id, [FromQuery] string bomno, [FromQuery] int RevNo)
         {
 
             DataTable dt = new System.Data.DataTable();
@@ -332,7 +341,7 @@ namespace coreapi.Controllers
 
         [HttpGet]
         [Route("api/salesbomA")]
-        public IHttpActionResult salesbomAGet(int id, string bomno, int RevNo)
+        public IActionResult salesbomAGet([FromQuery] int id, [FromQuery] string bomno, [FromQuery] int RevNo)
         {
 
             DataTable dt = new System.Data.DataTable();
@@ -351,16 +360,16 @@ namespace coreapi.Controllers
 
         [HttpPost]
         [Route("api/salesbom")]
-        public IHttpActionResult Post(SalesBom salebom)
+        public IActionResult Post(SalesBom salebom)
         {
-           
+
 
 
             MsgReturn msgretrun = new MsgReturn();
 
             try
             {
-             
+
                 string _cmd = "";
                 _cmd = "exec  dbo.sp_SetSalesBom";
                 _cmd += "  @UpdUser  ='" + salebom.UpdUser + "'";
@@ -379,7 +388,7 @@ namespace coreapi.Controllers
                 _cmd += " ,@Remark ='" + salebom.Remark + "'";
                 _cmd += " ,@CmpId =" + salebom.CmpId;
 
-               
+
                 if (DB.DBConn.ExecuteOnly(_cmd))
                 {
                     msgretrun.ReturnCode = "200";
@@ -410,7 +419,7 @@ namespace coreapi.Controllers
 
         [HttpPost]
         [Route("api/salesbomapprove")]
-        public IHttpActionResult BomApp(string id, string DocNo, int RevNo, string user)
+        public IActionResult BomApp(string id, string DocNo, int RevNo, string user)
         {
             MsgReturn msgretrun = new MsgReturn();
 
@@ -455,13 +464,13 @@ namespace coreapi.Controllers
             DB.DBConn.SqlConnectionOpen();
             DB.DBConn.Cmd = DB.DBConn.Cnn.CreateCommand();
             DB.DBConn.Tran = DB.DBConn.Cnn.BeginTransaction();
-             
+
 
             try
             {
 
 
-                string _cmd = ""; 
+                string _cmd = "";
                 if (salebomA.Count > 0)
                 {
                     _cmd = "Delete From dbo.SalesBom_Action where 	WHERE BomNo = '" + salebomA[0].BomNo + "' AND Rev = '" + salebomA[0].Rev + "'";
@@ -534,18 +543,18 @@ namespace coreapi.Controllers
 
                 for (int i = 0; i < salebomF.Count; i++)
                 {
-                    
-                _cmd = "exec  dbo.sp_SetSalesBom_File";
-                _cmd += " @UpdUser  ='" + salebomF[i].UpdUser + "'";
-                _cmd += ",@UpdDate ='" + salebomF[i].UpdDate + "'";
-                _cmd += ",@UpdTime ='" + salebomF[i].UpdTime + "'";
-                _cmd += ",@BomNo  ='" + salebomF[i].BomNo + "'";
-                _cmd += ",@Rev =" + salebomF[i].Rev;
-                _cmd += ",@Seq =" + salebomF[i].Seq;
-                _cmd += ",@FileName  ='" + salebomF[i].FileName + "'";
-                _cmd += ",@FileType ='" + salebomF[i].FileType + "'";
-                _cmd += ",@FlieSize ='" + salebomF[i].FlieSize + "'";
-                _cmd += ",@Remark  ='" + salebomF[i].Remark + "'";
+
+                    _cmd = "exec  dbo.sp_SetSalesBom_File";
+                    _cmd += " @UpdUser  ='" + salebomF[i].UpdUser + "'";
+                    _cmd += ",@UpdDate ='" + salebomF[i].UpdDate + "'";
+                    _cmd += ",@UpdTime ='" + salebomF[i].UpdTime + "'";
+                    _cmd += ",@BomNo  ='" + salebomF[i].BomNo + "'";
+                    _cmd += ",@Rev =" + salebomF[i].Rev;
+                    _cmd += ",@Seq =" + salebomF[i].Seq;
+                    _cmd += ",@FileName  ='" + salebomF[i].FileName + "'";
+                    _cmd += ",@FileType ='" + salebomF[i].FileType + "'";
+                    _cmd += ",@FlieSize ='" + salebomF[i].FlieSize + "'";
+                    _cmd += ",@Remark  ='" + salebomF[i].Remark + "'";
 
 
                     if (DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran) <= 0)
@@ -633,7 +642,7 @@ namespace coreapi.Controllers
                 DB.DBConn.Tran.Commit();
                 DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
                 DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
-              
+
             }
             catch (Exception ex)
             {
@@ -650,8 +659,9 @@ namespace coreapi.Controllers
         //[Route("api/SaleBomD")]
 
 
-
-        public string linenotisendapp(string qno )
+        [HttpGet]
+        [Route("api/linenotisendapp")]
+        public string linenotisendapp(string qno)
         {
             string _cmd = "";
             _cmd = "exec  dbo.sp_getNotisendappqt '" + qno + "'";
@@ -662,7 +672,7 @@ namespace coreapi.Controllers
             {
                 _msg = new StringBuilder();
                 _msg.Append(" ส่งอนุมัติ ใบเสนอราคา");
-                _msg.AppendLine(); 
+                _msg.AppendLine();
                 _msg.Append("ชื่อลูกค้า : " + r["CustomerName"].ToString());
                 _msg.AppendLine();
                 _msg.Append("เลขใบเสนอราคา : " + r["QuatationNo"].ToString());
@@ -680,7 +690,7 @@ namespace coreapi.Controllers
                 lineNotify(_msg.ToString());
             }
 
-            
+
 
 
 
@@ -688,7 +698,8 @@ namespace coreapi.Controllers
         }
 
 
-
+        [HttpGet]
+        [Route("api/linenotiapp")]
         public string linenotiapp(string qno)
         {
             string _cmd = "";
@@ -699,10 +710,10 @@ namespace coreapi.Controllers
             foreach (DataRow r in dt.Rows)
             {
                 _msg = new StringBuilder();
-                _msg.Append(" ใบเสนอราคาเลขที่ " + r["QuatationNo"].ToString()  + " อนุมัติแล้ว");
-                _msg.AppendLine(); 
+                _msg.Append(" ใบเสนอราคาเลขที่ " + r["QuatationNo"].ToString() + " อนุมัติแล้ว");
+                _msg.AppendLine();
                 _msg.Append(" อนุมัติโดย : " + r["QuatationBy"].ToString());
-                
+
 
                 lineNotify(_msg.ToString());
             }
@@ -716,7 +727,8 @@ namespace coreapi.Controllers
 
 
 
-
+        [HttpGet]
+        [Route("api/lineNotify")]
         private void lineNotify(string msg)
         {
             string token = "8LtACGcDqZS6ZouELpfLZPc8Trl6LWgbEErI0pgjSeg";

@@ -13,6 +13,10 @@ namespace goalongapi.Datatools.Account
         public string Password {get; set;}
         public int RoleId {get; set;}
 
+        [Required]       
+        public string FullName {get;set;}
+        public string CmpId {get;set;}
+
 
     }
 }

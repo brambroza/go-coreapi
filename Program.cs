@@ -6,8 +6,12 @@ using goalongapi.Installers;
 using goalongapi.Interfaces;
 using goalongapi.Services;
 using Microsoft.EntityFrameworkCore;
-
+ 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddControllers();
+builder.Services.AddCors(p => p.AddPolicy("_MyAllowSpecificOrigins" , builder => {
+    builder.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();
+}));
 
 // Add services to the container.
 builder.Services.InstallServiceInAssembly(builder.Configuration);
@@ -36,9 +40,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI(c=> c.SwaggerEndpoint("/swagger/v1/swagger.json", "goalong api"));
 }
 
+app.UseCors("_MyAllowSpecificOrigins");
 app.UseStaticFiles();
 app.UseHttpsRedirection();
-app.UseCors("AllowSpecificOrigins");
+
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();

@@ -21,9 +21,9 @@ namespace coreapi.Controllers
     public class MenuController : ControllerBase
     {
         // GET: api/Menu
-        [Route("api/Menu")]
+        [Route("Menu")]
         [HttpGet] 
-        public IActionResult Get(string cmpcode , string user)
+        public IActionResult Get([FromQuery] string cmpcode , [FromQuery] string user)
         {
             DataTable dt;
             DataTable sdt;
@@ -76,9 +76,9 @@ namespace coreapi.Controllers
 
 
 
-        [Route("api/authorizationsub")]
+        [Route("menusub")]
         [HttpGet]
-        public IActionResult getsub(string cmpcode, string user , int menuid )
+        public IActionResult getsub([FromQuery]  string cmpcode,[FromQuery]  string user , [FromQuery] int menuid )
         {
             DataTable dt;
             DataTable sdt;
