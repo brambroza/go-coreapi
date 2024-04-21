@@ -5,6 +5,14 @@ using System.Web;
 
 namespace coreapi.Models
 {
+
+      public class fileinfo
+        {
+          public   string filename  {get;set;}
+          public  string pathto {get;set;}
+        }
+
+
     public class ProductList
     {
         public string ProdductCode { get; set; }
@@ -33,7 +41,7 @@ namespace coreapi.Models
 
         public int ProdductStateActive { get; set; }
 
-        public int CmpId { get; set; }
+        public string CmpId { get; set; }
         public string UpdUser { get; set; }
 
         public string BrandName { get; set; }
@@ -42,6 +50,7 @@ namespace coreapi.Models
 
         public string ProductTypeName { get; set; }
         public string ShowReport { get; set; }
+        public string imgpath {get;set;}
 
 
     }

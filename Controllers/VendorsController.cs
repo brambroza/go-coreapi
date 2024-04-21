@@ -5,43 +5,64 @@ using System.Data;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Web.Http; 
+using Microsoft.AspNetCore.Authorization;
+ 
+using System.IdentityModel.Tokens.Jwt;
+using Newtonsoft.Json;
+using Microsoft.AspNetCore.Mvc;
 
 namespace coreapi.Controllers
 {
-    
-    public class VendorsController : ApiController
-    {
-        // GET: api/Vendors
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
+    [ApiController]
+    [Authorize]
 
-        // GET: api/Vendors/5
-        public IHttpActionResult Get(string id)
+    public class VendorsController : ControllerBase
+    {
+
+
+        [HttpGet("[action]")]
+        public IActionResult getVendor([FromQuery]  string cmpid)
         {
-            string _QuatationNo = id;
+
             DataTable dt = new System.Data.DataTable();
             string _cmd;
-            _cmd = "exec dbo.[getVendors] @CmpId=" + _QuatationNo + "";
+            _cmd = "exec dbo.[getVendors] @CmpId='" + cmpid + "'";
             dt = DB.DBConn.GetDataTable(_cmd);
-            //string qdetail = string.Empty;
-            //qdetail = JsonConvert.SerializeObject(dt);
-            return Ok(dt);
+            string JSONString = string.Empty;
+            JSONString = JsonConvert.SerializeObject(dt);
+
+            return Ok(JSONString);
 
         }
+
+
+        [HttpGet("[action]")]
+        public IActionResult getVendorById([FromQuery] string cmpid , [FromQuery] string Id)
+        {
+
+            DataTable dt = new System.Data.DataTable();
+            string _cmd;
+            _cmd = "exec dbo.[getVendorsById] @CmpId='" + cmpid + "' , @Id='" + Id + "'";
+            dt = DB.DBConn.GetDataTable(_cmd);
+            string JSONString = string.Empty;
+            JSONString = JsonConvert.SerializeObject(dt);
+
+            return Ok(JSONString);
+
+        }
+
 
 
         // POST: api/Vendors
-        public void Post(Vendor vendor)
+        [HttpPost("[action]")]
+        public void setVendor(Vendor vendor)
         {
             string _cmd = "";
             _cmd = "exec  dbo.mSupplier_Trans";
             _cmd += "  @UpdUser  ='" + vendor.UpdUser + "'";
             _cmd += ",@SupplierCode  ='" + vendor.SupplierCode + "'";
             _cmd += ",@SupplierName  ='" + vendor.SupplierName + "'";
-            _cmd += ",@SupplierAddress  ='" + Tool.Tool.validateStr(vendor.SupplierAddress )+ "'";
+            _cmd += ",@SupplierAddress  ='" + Tool.Tool.validateStr(vendor.SupplierAddress) + "'";
             _cmd += ",@SupplierTaxNo  ='" + vendor.SupplierTaxNo + "'";
             _cmd += ",@SupplierBranch  ='" + vendor.SupplierBranch + "'";
             _cmd += ",@SupplierBranchCode  ='" + vendor.SupplierBranchCode + "'";
@@ -56,21 +77,24 @@ namespace coreapi.Controllers
             _cmd += ",@PhoneOffice  ='" + vendor.PhoneOffice + "'";
             _cmd += ",@FaxOffice  ='" + vendor.FaxOffice + "'";
             _cmd += ",@Website  ='" + vendor.Website + "'";
-            _cmd += ",@AddressShip  ='" + Tool.Tool.validateStr(vendor.AddressShip )+ "'";
+            _cmd += ",@AddressShip  ='" + Tool.Tool.validateStr(vendor.AddressShip) + "'";
             _cmd += ",@Remark  ='" + vendor.Remark + "'";
             _cmd += ",@BankCode  ='" + vendor.BankCode + "'";
             _cmd += ",@BankAccNo  ='" + vendor.BankAccNo + "'";
             _cmd += ",@BankBranchNo  ='" + vendor.BankBranchNo + "'";
             _cmd += ",@BankType  ='" + vendor.BankType + "'";
+            _cmd += ",@CmpId='" + vendor.CmpId + "'";
+            _cmd += ",@AddrSubDistrict  ='" + vendor.AddrSubDistrict + "'";
+            _cmd += ",@AddrDistrict  ='" + vendor.AddrDistrict + "'";
+            _cmd += ",@AddrProvince  ='" + vendor.AddrProvince + "'";
+            _cmd += ",@AddrPostCode='" + vendor.AddrPostCode + "'";
+             _cmd += ",@ImgPath='" + vendor.ImgPath + "'";
+
             DB.DBConn.ExecuteOnly(_cmd);
         }
 
-        // PUT: api/Vendors/5
-        public void Put(int id, [FromBody]string value)
-        {
-        }
-
         // DELETE: api/Vendors/5
+        [HttpDelete("[action]/{id}")]
         public void Delete(string id)
         {
 

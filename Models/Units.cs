@@ -10,5 +10,7 @@ namespace coreapi.Models
         public string UpdUser { get; set; }
         public string UnitCode { get; set; }
         public string UnitDescription { get; set; }
+
+        public string CmpId {get;set;}
     }
 }

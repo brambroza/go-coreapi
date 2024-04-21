@@ -15,8 +15,9 @@ namespace coreapi.Models
         public string ActionDetails { get; set; }
         public string FinishDate { get; set; }
         public string FinishTime { get; set; }
+        public string CmpId {get;set;}
 
-        public List<String> emp {get;set;}
+      
     }
 
     public class STServiceAction_Emp

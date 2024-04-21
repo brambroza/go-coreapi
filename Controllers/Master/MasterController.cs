@@ -5,49 +5,61 @@ using System.Data;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Web.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using Newtonsoft.Json;
 
 namespace coreapi.Controllers.Master
 {
-    public class MasterController : ApiController
+
+    [ApiController]
+    [Authorize]
+
+    public class MasterController : ControllerBase
     {
 
-        [Route("api/province")]
+        [Route("province")]
         [HttpGet]
-        public IHttpActionResult getProvince()
+        public IActionResult getProvince()
         {
             string _cmd;
             _cmd = "exec dbo.getmProvince ";
             DataTable datatable = DB.DBConn.GetDataTable(_cmd);
-            return Ok(datatable);
+            string JSONString = string.Empty;
+            JSONString = JsonConvert.SerializeObject(datatable);
+            return Ok(JSONString);
         }
 
 
-        [Route("api/districts")]
+        [Route("districts")]
         [HttpGet]
-        public IHttpActionResult getDistricts()
+        public IActionResult getDistricts()
         {
             string _cmd;
             _cmd = "exec dbo.getmDistricts ";
             DataTable datatable = DB.DBConn.GetDataTable(_cmd);
-            return Ok(datatable);
+            string JSONString = string.Empty;
+            JSONString = JsonConvert.SerializeObject(datatable);
+            return Ok(JSONString);
         }
 
 
-        [Route("api/subdistricts")]
+        [Route("subdistricts")]
         [HttpGet]
-        public IHttpActionResult getSubDistricts()
+        public IActionResult getSubDistricts()
         {
             string _cmd;
             _cmd = "exec dbo.getmSubDistricts ";
             DataTable datatable = DB.DBConn.GetDataTable(_cmd);
-            return Ok(datatable);
+            string JSONString = string.Empty;
+            JSONString = JsonConvert.SerializeObject(datatable);
+            return Ok(JSONString);
         }
 
 
-        [Route("api/setCustomerDBD")]
+        [Route("setCustomerDBD")]
         [HttpPost]
-        public IHttpActionResult Post(CustomerDBD cusdb)
+        public IActionResult Post(CustomerDBD cusdb)
         {
             MsgReturn msgretrun = new MsgReturn();
 
@@ -72,7 +84,7 @@ namespace coreapi.Controllers.Master
                 _cmd += " ,@street='" + cusdb.addressDetail.street + "'";
                 _cmd += " ,@subDistrict='" + cusdb.addressDetail.subDistrict + "'";
                 _cmd += " ,@district='" + cusdb.addressDetail.district + "'";
-                _cmd += " ,@province='" + cusdb.addressDetail.province + "'"; 
+                _cmd += " ,@province='" + cusdb.addressDetail.province + "'";
 
                 if (DB.DBConn.ExecuteOnly(_cmd))
                 {
@@ -96,6 +108,199 @@ namespace coreapi.Controllers.Master
             }
 
         }
+
+
+        [HttpGet("[action]")]
+        public IActionResult getBank([FromQuery] string cmpid)
+        {
+            string _cmd;
+            _cmd = "exec dbo.getBank @CmpId='" + cmpid + "'";
+            DataTable dt = DB.DBConn.GetDataTable(_cmd);
+            string JSONString = string.Empty;
+            JSONString = JsonConvert.SerializeObject(dt);
+
+            return Ok(JSONString);
+        }
+
+        [HttpGet("[action]")]
+        public IActionResult getBankBranch([FromQuery] string cmpid)
+        {
+            string _cmd;
+            _cmd = "exec dbo.getBankBranch @CmpId='" + cmpid + "'";
+            DataTable dt = DB.DBConn.GetDataTable(_cmd);
+            string JSONString = string.Empty;
+            JSONString = JsonConvert.SerializeObject(dt);
+
+            return Ok(JSONString);
+        }
+
+
+
+        [HttpPost("[action]")]
+        public IActionResult setBank(Bank bk)
+        {
+
+            MsgReturn msgretrun = new MsgReturn();
+
+            try
+            {
+                string _cmd = "";
+                _cmd = "exec  dbo.setmBank";
+                _cmd += "  @UserName  ='" + bk.UserName + "'";
+                _cmd += " ,@BankCode ='" + bk.BankCode + "'";
+                _cmd += " ,@BankName ='" + bk.BankName + "'";
+                _cmd += " ,@Remark  ='" + bk.Remark + "'";
+                _cmd += " ,@StateActive =" + bk.StateActive;
+                _cmd += " ,@CmpId ='" + bk.CmpId + "'";
+
+                if (DB.DBConn.ExecuteOnly(_cmd))
+                {
+                    msgretrun.ReturnCode = "200";
+                    msgretrun.Msg = "Save Success !!";
+                    return Ok(msgretrun);
+                }
+                else
+                {
+                    msgretrun.ReturnCode = "400";
+                    msgretrun.Msg = "Error !!";
+                    return Ok(msgretrun);
+                }
+
+            }
+            catch
+            {
+                msgretrun.ReturnCode = "400";
+                msgretrun.Msg = "Error !!";
+                return Ok(msgretrun);
+            }
+
+
+        }
+
+
+        [HttpPost("[action]")]
+        public IActionResult setBankBranch(BankBranch bk)
+        {
+
+            MsgReturn msgretrun = new MsgReturn();
+
+            try
+            {
+                string _cmd = "";
+                _cmd = "exec  dbo.setmBankBranch";
+                _cmd += "  @UserName  ='" + bk.UserName + "'";
+                _cmd += " ,@BankCode ='" + bk.BankCode + "'";
+                _cmd += " ,@BankBranchCode ='" + bk.BankBranchCode + "'";
+                _cmd += " ,@BankBranchName ='" + bk.BankBranchName + "'";
+                _cmd += " ,@Address ='" + bk.Address + "'";
+                _cmd += " ,@AddrProvince ='" + bk.AddrProvince + "'";
+                _cmd += " ,@AddrDistrict ='" + bk.AddrDistrict + "'";
+                _cmd += " ,@AddrSubDistrict ='" + bk.AddrSubDistrict + "'";
+                _cmd += " ,@AddrPostCode ='" + bk.AddrPostCode + "'";
+                _cmd += " ,@Fax ='" + bk.Fax + "'";
+                _cmd += " ,@Phone ='" + bk.Phone + "'";
+                _cmd += " ,@Remark  ='" + bk.Remark + "'";
+                _cmd += " ,@StateActive =" + bk.StateActive;
+                _cmd += " ,@CmpId ='" + bk.CmpId + "'";
+
+                if (DB.DBConn.ExecuteOnly(_cmd))
+                {
+                    msgretrun.ReturnCode = "200";
+                    msgretrun.Msg = "Save Success !!";
+                    return Ok(msgretrun);
+                }
+                else
+                {
+                    msgretrun.ReturnCode = "400";
+                    msgretrun.Msg = "Error !!";
+                    return Ok(msgretrun);
+                }
+
+            }
+            catch
+            {
+                msgretrun.ReturnCode = "400";
+                msgretrun.Msg = "Error !!";
+                return Ok(msgretrun);
+            }
+
+
+        }
+
+        [HttpDelete("[action]")]
+        public void DeleteBank([FromQuery] string key, [FromQuery] string cmpid)
+        {
+            string _cmd = "";
+            _cmd = "delete from dbo.mBank where  BankCode='" + key + "' and CmpId ='" + cmpid + "'";
+            DB.DBConn.ExecuteOnly(_cmd);
+        }
+
+        [HttpDelete("[action]")]
+        public void DeleteBankBranch([FromQuery] string key, [FromQuery] string cmpid)
+        {
+            string _cmd = "";
+            _cmd = "delete from dbo.mBankBranch where  BankBranchCode='" + key + "' and CmpId ='" + cmpid + "'";
+            DB.DBConn.ExecuteOnly(_cmd);
+        }
+
+
+
+
+        [Route("bussinetGrp")]
+        [HttpGet]
+        public IActionResult getBussinetGrp([FromQuery] string CmpId)
+        {
+            string _cmd;
+            _cmd = "exec dbo.sp_getmBusinessGrp @CmpId='" + CmpId + "'";
+            DataTable datatable = DB.DBConn.GetDataTable(_cmd);
+            string JSONString = string.Empty;
+            JSONString = JsonConvert.SerializeObject(datatable);
+            return Ok(JSONString);
+        }
+
+
+
+        [HttpPost("[action]")]
+        public IActionResult setBussinetGrp(mBussinetGrp bk)
+        {
+
+            MsgReturn msgretrun = new MsgReturn();
+
+            try
+            {
+                string _cmd = "";
+                _cmd = "exec  dbo.sp_SetBusinessGrp";
+                _cmd += "  @UpdUser  ='" + bk.UpdUser + "'";
+                _cmd += " ,@BusinessGrpCode ='" + bk.BusinessGrpCode + "'";
+                _cmd += " ,@BusinessGrpName ='" + bk.BusinessGrpName + "'";
+                _cmd += " ,@BusinessGrpDescription ='" + bk.BusinessGrpDescripton + "'";
+                _cmd += " ,@StateActive =" + bk.StateActive + "";
+                _cmd += " ,@CmpId ='" + bk.CmpId + "'";
+
+                if (DB.DBConn.ExecuteOnly(_cmd))
+                {
+                    msgretrun.ReturnCode = "200";
+                    msgretrun.Msg = "Save Success !!";
+                    return Ok(msgretrun);
+                }
+                else
+                {
+                    msgretrun.ReturnCode = "400";
+                    msgretrun.Msg = "Error !!";
+                    return Ok(msgretrun);
+                }
+
+            }
+            catch
+            {
+                msgretrun.ReturnCode = "400";
+                msgretrun.Msg = "Error !!";
+                return Ok(msgretrun);
+            }
+
+
+        }
+
 
 
 

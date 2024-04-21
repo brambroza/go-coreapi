@@ -45,10 +45,56 @@ namespace coreapi.Models
     {
         public string QuatationNo { get; set; }
         public string QuatationNoNew { get; set; }
-        public int RevNo { get; set; } 
+        public int RevNo { get; set; }
+        public string CmpId {get;set;}
+
+        
 
 
     }
+
+
+        public class SaleOrderCopy
+    {
+        public string SaleOrderNo { get; set; }
+        public string SaleOrderNoNew { get; set; }
+        public int RevNo { get; set; }
+
+        public string CmpId {get;set;}
+        public string userlogin {get;set;}
+
+        
+
+
+    }
+
+
+
+
+    public class QuoHApprove
+    {
+        public string cmpid { get; set; }
+        public string docno { get; set; }
+        public int revno { get; set; }
+        public string user { get; set; }
+
+    }
+
+    public class QuoHApprovetoPo
+    {
+        public string cmpid { get; set; }
+        public string docno { get; set; }
+        public int revno { get; set; }
+        public string state { get; set; }
+        public string user { get; set; }
+
+    }
+
+
+
+
+
+
 
 
     public class SalesBomApprove
@@ -126,5 +172,47 @@ namespace coreapi.Models
         public string FlieSize { get; set; }
         public string Remark { get; set; }
     }
+
+
+      public class saleorder
+    {
+        public string SaleOrderNo { get; set; }
+        public string SaleOrderDate { get; set; }
+        public string SaleOrderBy { get; set; }
+        public int SaleOrderState { get; set; }
+        public string CustomerCode { get; set; }
+        public int CreditType { get; set; }
+        public int CreditDate { get; set; }
+        public string ProjectName { get; set; }
+        public string ReferCode { get; set; }
+        public int VatType { get; set; }
+        public string Remark { get; set; }
+        public string Note { get; set; }
+        public decimal SaleOrderAmt { get; set; }
+        public decimal SaleOrderDisPer { get; set; }
+        public decimal SaleOrderDisAmt { get; set; }
+        public decimal SaleOrderNetAmt { get; set; }
+        public decimal SaleOrderVatAmt { get; set; }
+        public decimal SaleOrderGrandAmt { get; set; }
+        public string SaleOrderGrandAmtTHB { get; set; }
+        public string SaleOrderGrandAmtENB { get; set; }
+        public int WithholdingTaxState { get; set; }
+        public int ShowSignatureState { get; set; }
+        public string CmpId { get; set; }
+        public string PriceStand { get; set; }
+        public string PaymentDue { get; set; }
+        public string Shipping { get; set; }
+        public int RevNo { get; set; }
+        public string CustomerContactName { get; set; }
+
+        public int Jobtype { get; set; }
+
+        public string QuatationNo {get;set;}
+        public string CustomerPONo {get;set;}
+
+
+    }
+
+
 
 }

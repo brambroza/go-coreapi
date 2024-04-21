@@ -5,43 +5,49 @@ using System.Data;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Web.Http; 
+using Microsoft.AspNetCore.Authorization;
+ 
+using System.IdentityModel.Tokens.Jwt;
+using Newtonsoft.Json;
+using Microsoft.AspNetCore.Mvc;
 
 namespace coreapi.Controllers
 {
-   
-    public class InvenTransController : ApiController
-    {
-        // GET: api/InvenTrans
-         
+      [ApiController]
+    [Authorize]
 
-        // GET: api/InvenTrans/5
-        [Route("api/InvenTrans")]
-        [HttpGet]
-        public IHttpActionResult Get(int CmpId, string user , string TransNo)
+    public class InvenTransController : ControllerBase
+    {
+     
+        [HttpGet("[action]")]
+        public IActionResult getInvenTrans([FromQuery] string  CmpId, [FromQuery] string user , [FromQuery] string TransNo)
         {
             string _cmd;
-            _cmd = "exec dbo.Inven_getTransAll_ByDoc @CmpId=" + Convert.ToInt16(CmpId) + " , @User='" + user + "',@DocNo='" + TransNo +"'";
-            DataTable datatable = DB.DBConn.GetDataTable(_cmd);
-            return Ok(datatable);
+            _cmd = "exec dbo.Inven_getTransAll_ByDoc @CmpId='" + (CmpId) + "' , @User='" + user + "',@DocNo='" + TransNo +"'";
+            DataTable dt = DB.DBConn.GetDataTable(_cmd);
+             string  JSONString = JsonConvert.SerializeObject(dt);
+
+            return Ok(JSONString);
         }
 
 
-        [Route("api/InvenOnhand")]
-        [HttpGet]
-        public IHttpActionResult GetOnhand(int CmpId, string user, string TransNo)
+         
+        [HttpGet("[action]")]
+        public IActionResult getInvenOnhand([FromQuery] string CmpId, [FromQuery] string user, [FromQuery] string TransNo)
         {
             string _cmd;
             _cmd = "exec dbo.Inven_getOnhand @CmpId=" + Convert.ToInt16(CmpId) + " , @User='" + user + "'  ";
-            DataTable datatable = DB.DBConn.GetDataTable(_cmd);
-            return Ok(datatable);
+            DataTable dt = DB.DBConn.GetDataTable(_cmd);
+              string  JSONString = JsonConvert.SerializeObject(dt);
+
+            return Ok(JSONString);
         }
 
 
         // POST: api/InvenTrans
-        [Route("api/InvenTrans")]
-        [HttpPost]
-        public void Post(List<InvenTransModel> Inven)
+      
+        [HttpPost("[action]")]
+        public void setInvenTrans( List<InvenTransModel> Inven)
         {
 
 
@@ -56,6 +62,7 @@ namespace coreapi.Controllers
                 if (Inven.Count > 0)
                 {
                     _cmd = "Delete From Inven.InvenTrans   where DocNo='" + Inven[0].DocNo + "'";
+                    _cmd += "   and CmpId='" + Inven[0].CmpId + "'";
                      
                     DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran);
                 }
@@ -81,6 +88,7 @@ namespace coreapi.Controllers
                     _cmd += ",@Grade ='" + Inven[i].Grade + "'"; ;
                     _cmd += ",@DateExpire ='" + Inven[i].DateExpire + "'"; ;
                     _cmd += ",@Type ='" + Inven[i].TransType + "'";
+                    _cmd += ", @CmpId='" + Inven[i].CmpId + "'"; 
                     if (DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran) <= 0)
                     {
                         DB.DBConn.Tran.Rollback();
@@ -110,9 +118,9 @@ namespace coreapi.Controllers
         }
 
 
-        [Route("api/InvenApp")]
-        [HttpPost]
-        public IHttpActionResult App(AdjustModel adjust)
+         
+        [HttpPost("[action]")]
+        public IActionResult setInvenAdjApp(AdjustModel adjust)
         {
             MsgReturn msgretrun = new MsgReturn();
 
@@ -148,9 +156,9 @@ namespace coreapi.Controllers
         }
 
 
-        [Route("api/InvenReserve")]
-        [HttpPost]
-        public IHttpActionResult Post(ReserveModel adjust)
+        
+        [HttpPost("[action]")]
+        public IActionResult setInvenReserve(ReserveModel adjust)
         {
             MsgReturn msgretrun = new MsgReturn();
 
@@ -196,33 +204,12 @@ namespace coreapi.Controllers
         }
 
 
-        // PUT: api/InvenTrans/5
-        [Route("api/InvenTrans")]
-        [HttpPut]
-        public void Put(int id, [FromBody]string value)
-        {
-        }
-
-        // DELETE: api/InvenTrans/5
-        [Route("api/InvenTrans")]
-        [HttpDelete]
-        public void Delete(int id)
-        {
-            try
-            {
-
-            }
-            catch
-            {
-
-            }
-
-        }
+         
 
 
-        [Route("api/InvenAppTrans")]
-        [HttpPost]
-        public IHttpActionResult AppTrans(invenAppModel invenApp)
+         
+        [HttpPost("[action]")]
+        public IActionResult setInvenAppTrnas(invenAppModel invenApp)
         {
             MsgReturn msgretrun = new MsgReturn();
 

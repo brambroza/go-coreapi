@@ -5,41 +5,48 @@ using System.Data;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Web.Http;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using Newtonsoft.Json;
 
 namespace coreapi.Controllers
 {
-    public class LeadsController : ApiController
+
+    [ApiController]
+    [Authorize]
+    public class LeadsController : ControllerBase
     {
-        // GET: api/Leads
-        [HttpGet]
-        [Route("api/Leads")]
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
+
 
         // GET: api/Leads/5
         [HttpGet]
         [Route("api/Leads")]
-        public IHttpActionResult Get(int cmpid , string user)
+        public IActionResult Get([FromQuery] int cmpid, [FromQuery] string user)
         {
             DataTable dt = new System.Data.DataTable();
             string _cmd;
             _cmd = "exec dbo.[getLeadsTrans]   @CmpId =" + cmpid + ",@user ='" + user + "' ";
             dt = DB.DBConn.GetDataTable(_cmd);
-            return Ok(dt);
+            string JSONString = string.Empty;
+            JSONString = JsonConvert.SerializeObject(dt);
+
+            return Ok(JSONString);
         }
 
         [HttpGet]
         [Route("api/customerleads")]
-        public IHttpActionResult GetCust(int cmpid, string user)
+        public IActionResult GetCust([FromQuery] int cmpid, [FromQuery] string user)
         {
             DataTable dt = new System.Data.DataTable();
             string _cmd;
             _cmd = "exec dbo.[getCustomerLeads]   @CmpId =" + cmpid + ",@UserLogin ='" + user + "' ";
             dt = DB.DBConn.GetDataTable(_cmd);
-            return Ok(dt);
+            string JSONString = string.Empty;
+            JSONString = JsonConvert.SerializeObject(dt);
+
+            return Ok(JSONString);
         }
 
 
@@ -49,7 +56,7 @@ namespace coreapi.Controllers
 
         [Route("api/UserSaleAsgin")]
         [HttpGet]
-        public IHttpActionResult getUserSaleAsgin(string id)
+        public IActionResult getUserSaleAsgin([FromQuery] string id)
         {
             string _QuatationNo = id;
             DataTable dt = new System.Data.DataTable();
@@ -58,7 +65,10 @@ namespace coreapi.Controllers
             dt = DB.DBConn.GetDataTable(_cmd);
             //string qdetail = string.Empty;
             //qdetail = JsonConvert.SerializeObject(dt);
-            return Ok(dt);
+            string JSONString = string.Empty;
+            JSONString = JsonConvert.SerializeObject(dt);
+
+            return Ok(JSONString);
         }
 
 
@@ -66,21 +76,24 @@ namespace coreapi.Controllers
         // get: api/ LeadsTask
         [HttpGet]
         [Route("api/LeadsTask")]
-        public IHttpActionResult getLeadsTask(int cmpid, string user)
+        public IActionResult getLeadsTask([FromQuery] int cmpid, [FromQuery] string user)
         {
             DataTable dt = new System.Data.DataTable();
             string _cmd;
             _cmd = "exec dbo.[getLeadsTaskTrans]   @CmpId =" + cmpid + ",@user ='" + user + "' ";
             dt = DB.DBConn.GetDataTable(_cmd);
-            return Ok(dt);
+            string JSONString = string.Empty;
+            JSONString = JsonConvert.SerializeObject(dt);
+
+            return Ok(JSONString);
         }
 
 
 
         // POST: api/ Leads 
-        [HttpPost]
-        [Route("api/Leadsnew")]
-        public IHttpActionResult Post(Leadsnew leads)
+        [HttpPost("[action]")]
+        
+        public IActionResult Leadsnew(Leadsnew leads)
         {
             MsgReturn msgretrun = new MsgReturn();
             try
@@ -90,7 +103,7 @@ namespace coreapi.Controllers
                 _cmd = "exec  dbo.LeadsTrans_new";
                 _cmd += " @UpdUser  ='" + leads.UpdUser + "'";
                 _cmd += ",@CustCodeNo  ='" + leads.CustCodeNo + "'";
-                _cmd += ",@TransDate ='" +  leads.TransDate  + "'"; 
+                _cmd += ",@TransDate ='" + leads.TransDate + "'";
                 _cmd += ",@CustRefTypeId =" + leads.CustRefTypeId;
                 _cmd += ",@Topic ='" + leads.Topic + "'";
                 _cmd += ",@ContactName  ='" + leads.ContactName + "'";
@@ -103,29 +116,29 @@ namespace coreapi.Controllers
 
 
 
-                if ( DB.DBConn.ExecuteOnly(_cmd) == false  )
+                if (DB.DBConn.ExecuteOnly(_cmd) == false)
                 {
 
-                   
-
-                                msgretrun.ReturnCode = "404";
-                                msgretrun.Msg = "บันทึกผิดพลาด";
-                                return Ok(msgretrun);
-
-                            
-
-                    }
 
 
-
-
-
-
-
-                    msgretrun.ReturnCode = "200";
-                    msgretrun.Msg = "Save Success !!";
+                    msgretrun.ReturnCode = "404";
+                    msgretrun.Msg = "บันทึกผิดพลาด";
                     return Ok(msgretrun);
-               
+
+
+
+                }
+
+
+
+
+
+
+
+                msgretrun.ReturnCode = "200";
+                msgretrun.Msg = "Save Success !!";
+                return Ok(msgretrun);
+
 
             }
             catch
@@ -142,19 +155,19 @@ namespace coreapi.Controllers
         // POST: api/ Leads 
         [HttpPost]
         [Route("api/Leads")]
-        public IHttpActionResult Post(Leads leads)
+        public IActionResult Post(Leads leads)
         {
             MsgReturn msgretrun = new MsgReturn();
             try
             {
                 string _cmd = "";
 
-                _cmd = "exec  dbo.LeadsTrans"; 
-                _cmd += " @UpdUser  ='" + leads.UpdUser + "'"; 
+                _cmd = "exec  dbo.LeadsTrans";
+                _cmd += " @UpdUser  ='" + leads.UpdUser + "'";
                 _cmd += ",@CustCodeNo  ='" + leads.CustCodeNo + "'";
-                _cmd += ",@TransDate ='" + Tool.Tool.validatestring(leads.TransDate) + "'"; 
+                _cmd += ",@TransDate ='" + Tool.Tool.validatestring(leads.TransDate) + "'";
                 _cmd += ",@CustName  ='" + leads.CustName + "'";
-                _cmd += ",@CustRefTypeId =" + leads.CustRefTypeId; 
+                _cmd += ",@CustRefTypeId =" + leads.CustRefTypeId;
                 _cmd += ",@Topic ='" + leads.Topic + "'";
                 _cmd += ",@Phone  ='" + leads.Phone + "'";
                 _cmd += ",@Mobile  ='" + leads.Mobile + "'";
@@ -180,11 +193,11 @@ namespace coreapi.Controllers
                             _cmd += " @UpdUser  ='" + leads.LeadsTasks[i].UpdUser + "'";
                             _cmd += ",@CustCodeNo  ='" + leads.LeadsTasks[i].CustCodeNo + "'";
                             _cmd += ",@Seq =" + int.Parse(i.ToString());
-                            _cmd += ",@Description  ='" + Tool.Tool.validateStr(leads.LeadsTasks[i].Description )+ "'";
+                            _cmd += ",@Description  ='" + Tool.Tool.validateStr(leads.LeadsTasks[i].Description) + "'";
                             _cmd += ",@TransDate ='" + Tool.Tool.validatestring(leads.LeadsTasks[i].TransDate) + "'";
-                            if (!DB.DBConn.ExecuteOnly(_cmd )   )
+                            if (!DB.DBConn.ExecuteOnly(_cmd))
                             {
-                                
+
                                 msgretrun.ReturnCode = "404";
                                 msgretrun.Msg = "บันทึกผิดพลาด";
                                 return Ok(msgretrun);
@@ -253,7 +266,7 @@ namespace coreapi.Controllers
 
         [HttpPost]
         [Route("api/LeadsTask")]
-        public IHttpActionResult setLeadsTask (List<Leads_Task> ls)
+        public IActionResult setLeadsTask(List<Leads_Task> ls)
         {
             MsgReturn msgretrun = new MsgReturn();
 
@@ -325,7 +338,7 @@ namespace coreapi.Controllers
 
         [HttpPost]
         [Route("api/LeadsQualify")]
-        public IHttpActionResult setLeadsQualify(LeadsQualify leads)
+        public IActionResult setLeadsQualify(LeadsQualify leads)
         {
             MsgReturn msgretrun = new MsgReturn();
             try
@@ -334,12 +347,12 @@ namespace coreapi.Controllers
 
                 _cmd = "exec  dbo.LeadsQualify";
                 _cmd += " @UpdUser  ='" + leads.UpdUser + "'";
-                _cmd += ",@CustCodeNo  ='" + leads.CustCodeNo + "'"; 
-                _cmd += ",@QualifyState =" + leads.QualifyState;            
+                _cmd += ",@CustCodeNo  ='" + leads.CustCodeNo + "'";
+                _cmd += ",@QualifyState =" + leads.QualifyState;
 
                 if (DB.DBConn.ExecuteOnly(_cmd))
                 {
-                     
+
                     msgretrun.ReturnCode = "200";
                     msgretrun.Msg = "Qualify Success !!";
                     return Ok(msgretrun);
@@ -367,14 +380,14 @@ namespace coreapi.Controllers
         // PUT: api/Leads/5
         [HttpPut]
         [Route("api/Leads")]
-        public void Put(int id, [FromBody]string value)
+        public void Put(int id, [FromBody] string value)
         {
         }
 
         // DELETE: api/Leads/5
         [HttpDelete]
         [Route("api/Leads")]
-        public IHttpActionResult Delete(int id)
+        public IActionResult Delete(int id)
         {
 
             MsgReturn msgretrun = new MsgReturn();
@@ -382,7 +395,7 @@ namespace coreapi.Controllers
             {
                 string _cmd = "";
 
-                _cmd = "delete from mdb.Leads  where CustCodeNo ='" + id + "'";           
+                _cmd = "delete from mdb.Leads  where CustCodeNo ='" + id + "'";
                 if (DB.DBConn.ExecuteOnly(_cmd))
                 {
                     msgretrun.ReturnCode = "200";

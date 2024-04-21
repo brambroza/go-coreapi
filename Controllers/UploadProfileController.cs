@@ -3,47 +3,119 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Web.Http; 
+using Microsoft.AspNetCore.Authorization;
+using System.Data;
+using Microsoft.AspNetCore.Mvc;
+using goalongapi.Datatools.Product;
+using goalongapi.Interfaces;
+using coreapi.Models;
 
 namespace NohWebApi.Controllers
 {
-    
-    public class UploadProfileController : ApiController
+
+    [ApiController]
+    [Authorize]
+
+
+
+
+
+
+    public class UploadProfileController : ControllerBase
     {
-        // GET: api/UploadProfile
-        public IEnumerable<string> Get()
+
+        private readonly IWebHostEnvironment webHostEnvironment;
+
+        private readonly IProductService productService;
+        private readonly ILogger<UploadProfileController> _logger;
+
+
+        public UploadProfileController(IWebHostEnvironment webHostEnvironment,ILogger<UploadProfileController> logger, IProductService productService)
         {
-            return new string[] { "value1", "value2" };
+                _logger = logger;
+                this.productService = productService;
+                this.webHostEnvironment = webHostEnvironment; 
         }
 
-        // GET: api/UploadProfile/5
-        public string Get(int id)
+
+        [HttpPost("[action]")]
+        public async Task<ActionResult<string>> UploadImageCmpProfile(List<IFormFile> formFiles)
         {
-            return "value";
+
+            (string errorMessage, string imageName) = await productService.UploadImage(formFiles);
+            if (!String.IsNullOrEmpty(errorMessage))
+            {
+                return BadRequest();
+            }
+
+            return Ok(imageName);
+
+
         }
 
-        // POST: api/UploadProfile
-        public void Post([FromBody]string value)
+        [HttpPost("[action]")]
+        public async Task<ActionResult<string>> uploadallfile(List<IFormFile> formFiles)
+        {
+
+            (string errorMessage, string imageName) = await productService.uploadallfile(formFiles);
+            if (!String.IsNullOrEmpty(errorMessage))
+            {
+                return BadRequest();
+            }
+
+            return Ok(imageName);
+
+
+        }
+
+      
+        [HttpPost("[action]")]
+        public IActionResult movefile(fileinfo fileinfos)
         {
             try
             {
+                string formfilepath = $"{webHostEnvironment.WebRootPath}/allfileupload/" + fileinfos.filename;
+                string tofilepath = $"{webHostEnvironment.WebRootPath}/" + fileinfos.pathto + "/" + fileinfos.filename;
+                string uploadPath = $"{webHostEnvironment.WebRootPath}/" + fileinfos.pathto + "/";
 
+                if (IsValidPaths(uploadPath))
+                {
+                    if (!Directory.Exists(uploadPath))
+                    {
+                        Directory.CreateDirectory(uploadPath);
+                    }
+
+                }
+
+                System.IO.File.Move(formfilepath, tofilepath);
+
+                return Ok(  fileinfos.pathto  + fileinfos.filename);
 
             }
-            catch
+            catch (Exception e)
             {
+                return NotFound();
+            }
 
+        }
+
+
+        private bool IsValidPaths(string path)
+        {
+            try
+            {
+                // This will check for any invalid characters in the path
+                Path.GetFullPath(path);
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
             }
         }
 
-        // PUT: api/UploadProfile/5
-        public void Put(int id, [FromBody]string value)
-        {
-        }
 
-        // DELETE: api/UploadProfile/5
-        public void Delete(int id)
-        {
-        }
+
+
     }
 }

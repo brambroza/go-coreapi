@@ -7,7 +7,7 @@ namespace coreapi.Models
 {
     public class Vendor
     {
-        public string UpdUser { get; set; } 
+        public string UpdUser { get; set; }
         public string SupplierCode { get; set; }
         public string SupplierName { get; set; }
         public string SupplierAddress { get; set; }
@@ -31,6 +31,15 @@ namespace coreapi.Models
         public string BankAccNo { get; set; }
         public string BankBranchNo { get; set; }
         public string BankType { get; set; }
+        public string CmpId { get; set; }
+        public string AddrSubDistrict { get; set; }
+        public string AddrDistrict { get; set; }
+        public string AddrProvince { get; set; }
+        public string AddrPostCode { get; set; }
+        public string ImgPath {get;set;}
+
+
+
 
     }
 }

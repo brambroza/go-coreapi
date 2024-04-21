@@ -5,30 +5,35 @@ using System.Data;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Web.Http; 
+using Microsoft.AspNetCore.Authorization;
+using System.IdentityModel.Tokens.Jwt;
+using Newtonsoft.Json;
+using Microsoft.AspNetCore.Mvc;
 
 namespace coreapi.Controllers
 {
+
+     [Route("api/[controller]")]
+    [ApiController]
+    [Authorize]
     
-    public class InvenAdjustController : ApiController
+    public class InvenAdjustController : ControllerBase
     { 
 
-        // GET: api/InvenAdjust/5
-        [Route("api/InvenAdjust")]
-        [HttpGet]
-        public IHttpActionResult Get(string CmpId, string user)
+        [HttpGet("[action]")]
+        public IActionResult getInvenAdjustList( [FromQuery] string CmpId,  [FromQuery]  string userlogin)
         {
             string _cmd;
-            _cmd = "exec dbo.Inven_GetAdjustAll @CmpId=" + Convert.ToInt16(CmpId) + " , @User='" + user + "'";
+            _cmd = "exec dbo.Inven_GetAdjustAll @CmpId='" + (CmpId) + "' , @User='" + userlogin + "'";
             DataTable datatable = DB.DBConn.GetDataTable(_cmd);
-            return Ok(datatable);
+             string qdetail = string.Empty;
+            qdetail = JsonConvert.SerializeObject(datatable);
+            return Ok(qdetail);
         }
 
 
-        // POST: api/InvenAdjust
-        [Route("api/InvenAdjust")]
-        [HttpPost]
-        public IHttpActionResult Post(AdjustModel adjust )
+         [HttpPost("[action]")]
+        public IActionResult setInvenAdjust(AdjustModel adjust )
         {
             MsgReturn msgretrun = new MsgReturn();
 
@@ -41,7 +46,7 @@ namespace coreapi.Controllers
                 _cmd += ",@AdjustDate  ='" + adjust.AdjustDate + "'"; 
                 _cmd += ",@AdjustBy  ='" + adjust.AdjustBy + "'";
                 _cmd += ",@PurChaseNo  ='" + adjust.PurChaseNo + "'";
-                _cmd += ",@CmpId =" + adjust.CmpId; 
+                _cmd += ",@CmpId ='" + adjust.CmpId+ "'"; 
                 _cmd += ",@Remark  ='" + adjust.Remark + "'";
                 _cmd += ",@WHId =" + adjust.WHId;
                 _cmd += ",@WHLocId =" + adjust.WHLocId;
@@ -71,24 +76,14 @@ namespace coreapi.Controllers
 
         }
 
-
-
-        // PUT: api/InvenAdjust/5
-        [Route("api/InvenAdjust")]
-        [HttpPut]
-        public void Put(int id, [FromBody]string value)
-        {
-        }
-
-        // DELETE: api/InvenAdjust/5
-        [Route("api/InvenAdjust")]
-        [HttpDelete]
-        public void Delete(string id)
+ 
+        [HttpDelete("[action]")]
+        public void DeleteAdjust( [FromQuery] string id  , [FromQuery] string cmpid)
         {
             try
             {
                 string _cmd = "";
-                _cmd = "Delete from Inven.Adjust where AdjustNo='" + id + "'";
+                _cmd = "Delete from Inven.Adjust where AdjustNo='" + id + "' and CmpId='" + cmpid  + "'";
                 DB.DBConn.ExecuteOnly(_cmd);
             }
             catch

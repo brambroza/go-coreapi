@@ -5,28 +5,36 @@ using System.Data;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Web.Http;
-
+using Microsoft.AspNetCore.Authorization;
+using System.IdentityModel.Tokens.Jwt;
+using Newtonsoft.Json;
+using Microsoft.AspNetCore.Mvc;
 namespace coreapi.Controllers
-{
-    public class invenRtsController : ApiController
+{ 
+    
+    [Route("api/[controller]")]
+    [ApiController]
+    [Authorize]
+    public class invenRtsController : ControllerBase
     {
         // GET: api/invenRts
         // GET: api/InvenRcv/5
-        [Route("api/InvenRts")]
-        [HttpGet]
-        public IHttpActionResult Get(string CmpId, string user)
+        [HttpGet("[action]")]
+        public IActionResult getInventReturnSupl( [FromQuery] string CmpId, [FromQuery] string userlogin)
         {
             string _cmd;
-            _cmd = "exec dbo.Inven_getRtsAll @CmpId=" + Convert.ToInt16(CmpId) + " , @User='" + user + "'";
+            _cmd = "exec dbo.Inven_getRtsAll @CmpId='" +  (CmpId) + "' , @User='" + userlogin + "'";
             DataTable datatable = DB.DBConn.GetDataTable(_cmd);
-            return Ok(datatable);
+              string qdetail = string.Empty;
+            qdetail = JsonConvert.SerializeObject(datatable);
+            return Ok(qdetail);
+
+           
         }
 
-        // POST: api/InvenRcv
-        [Route("api/InvenRts")]
-        [HttpPost]
-        public IHttpActionResult Post(ReturnToSuplModel rts)
+        
+        [HttpPost("[action]")]
+        public IActionResult setReturnSupl(ReturnToSuplModel rts)
         {
             MsgReturn msgretrun = new MsgReturn();
 
@@ -39,7 +47,7 @@ namespace coreapi.Controllers
                 _cmd += ",@ReturnToSuplDate  ='" + rts.ReturnToSuplDate + "'"; 
                 _cmd += ",@ReturnToSuplBy ='" + rts.ReturnToSuplBy + "'";
                 _cmd += ",@PurChaseNo  ='" + rts.PurChaseNo + "'"; 
-                _cmd += ",@CmpId =" + rts.CmpId; 
+                _cmd += ",@CmpId ='" + rts.CmpId+ "'";
                 _cmd += ",@Remark  ='" + rts.Remark + "'";
                 _cmd += ",@ReturnType =" + rts.ReturnType; 
                 _cmd += ",@SupplierCode ='" + rts.SupplierCode + "'";
@@ -71,24 +79,16 @@ namespace coreapi.Controllers
 
 
         }
+ 
 
-        // PUT: api/InvenRcv/5
-        [Route("api/InvenRts")]
-        [HttpPut]
-        public void Put(int id, [FromBody] string value)
-        {
-
-        }
-
-        // DELETE: api/InvenRcv/5
-        [Route("api/InvenRts")]
-        [HttpDelete]
-        public void Delete(string id)
+    
+        [HttpDelete("[action]")]
+        public void DeleteInvenRts( [FromQuery]  string id , [FromQuery] string cmpid)
         {
             try
             {
                 string _cmd = "";
-                _cmd = "Delete from Inven.ReturnToSupl where ReturnToSuplNo='" + id + "'";
+                _cmd = "Delete from Inven.ReturnToSupl where ReturnToSuplNo='" + id + "' and cmpid='" + cmpid + "'";
                 DB.DBConn.ExecuteOnly(_cmd);
             }
             catch

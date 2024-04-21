@@ -5,56 +5,63 @@ using System.Data;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Web.Http; 
+using Microsoft.AspNetCore.Authorization;
+using System.IdentityModel.Tokens.Jwt;
+using Newtonsoft.Json;
+using Microsoft.AspNetCore.Mvc;
 
 namespace coreapi.Controllers
 {
    
-    public class InvenTransferWHController : ApiController
+       [Route("api/[controller]")]
+    [ApiController]
+    [Authorize]
+
+
+    public class InvenTransferWHController : ControllerBase
     {
-        // GET: api/InvenTransferWH
-        [Route("api/InvenTransferWH")]
-        [HttpGet]
-        public IHttpActionResult Get(int CmpId, string user )
+        [HttpGet("[action]")]
+        public IActionResult getInvenTransferWH([FromQuery] int CmpId, [FromQuery] string userlogin )
         {
             string _cmd;
-            _cmd = "exec dbo.[Inven_getTransferWHAll] @CmpId=" + Convert.ToInt16(CmpId) + " , @User='" + user + "' ";
+            _cmd = "exec dbo.[Inven_getTransferWHAll] @CmpId='" + (CmpId) + "' , @User='" + userlogin + "' ";
             DataTable datatable = DB.DBConn.GetDataTable(_cmd);
-            return Ok(datatable);
+               string res = string.Empty;
+            res = JsonConvert.SerializeObject(datatable);
+            return Ok(res);
         }
 
 
-        [Route("api/InvenTransferWHRcvlist")]
-        [HttpGet]
-        public IHttpActionResult GetTransferWHRcvlist(int CmpId, string user)
+        
+        [HttpGet("[action]")]
+        public IActionResult getInvenTransferWHRcvlist( [FromQuery] string CmpId, [FromQuery] string userlogin)
         {
             string _cmd;
-            _cmd = "exec dbo.[Inven_getTransferWHRcvAll] @CmpId=" + Convert.ToInt16(CmpId) + " , @User='" + user + "' ";
+            _cmd = "exec dbo.[Inven_getTransferWHRcvAll] @CmpId='" + (CmpId) + "' , @User='" + userlogin + "' ";
             DataTable datatable = DB.DBConn.GetDataTable(_cmd);
-            return Ok(datatable);
+               string res = string.Empty;
+            res = JsonConvert.SerializeObject(datatable);
+            return Ok(res);
         }
 
 
 
-        [Route("api/InvenTransferWHProdWaidRcv")]
-        [HttpGet]
-        public IHttpActionResult Get(int CmpId)
+        [HttpGet("[action]")]
+        public IActionResult getInvenTransferWHProdWaidRcv([FromQuery] string  CmpId)
         {
             DataTable dt = new System.Data.DataTable();
             string _cmd;
             _cmd = "exec dbo.getProdMasterforRcvTransferWH  @CmpId=" + Convert.ToInt16(CmpId) + " ";
             dt = DB.DBConn.GetDataTable(_cmd);
-            //string qdetail = string.Empty;
-            //qdetail = JsonConvert.SerializeObject(dt);
-            return Ok(dt);
+             string res = string.Empty;
+            res = JsonConvert.SerializeObject(dt);
+            return Ok(res);
         }
 
 
 
-        // POST: api/InvenTransferWH
-        [Route("api/InvenTransferWH")]
-        [HttpPost]
-        public IHttpActionResult Post(TransferWHModel TransWH)
+         [HttpPost("[action]")]
+        public IActionResult setInvenTransferWH(TransferWHModel TransWH)
         {
             MsgReturn msgretrun = new MsgReturn();
 
@@ -100,10 +107,10 @@ namespace coreapi.Controllers
 
         }
 
-        // POST: api/InvenTransferWH
+       
         [Route("api/InvenTransferWHRcv")]
         [HttpPost]
-        public IHttpActionResult InvenTransferWHRcv(TransferWHRcvModel TransWH)
+        public IActionResult InvenTransferWHRcv(TransferWHRcvModel TransWH)
         {
             MsgReturn msgretrun = new MsgReturn();
 
@@ -149,20 +156,15 @@ namespace coreapi.Controllers
 
 
 
-        // PUT: api/InvenTransferWH/5
-        public void Put(int id, [FromBody]string value)
-        {
-        }
-
-        // DELETE: api/InvenTransferWH/5
-        [Route("api/InvenTransferWH")]
-        [HttpDelete]
-        public void Delete(string id)
+    
+      
+        [HttpDelete("[action]")]
+        public void DeleteInvenTransferWH( [FromQuery] string id , [FromQuery] string cmpid)
         {
             try
             {
                 string _cmd = "";
-                _cmd = "Delete from Inven.TrasferWH where TransferWHNo='" + id + "'";
+                _cmd = "Delete from Inven.TrasferWH where TransferWHNo='" + id + "' and CmpId='" + cmpid + "'";
                 DB.DBConn.ExecuteOnly(_cmd);
             }
             catch

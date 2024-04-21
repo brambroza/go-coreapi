@@ -25,14 +25,27 @@ namespace coreapi.Controllers
 
 
         // GET: api/QuaH/5 
-        [HttpGet]
-        [Route("api/QuaH")]
+        [HttpGet("[action]")] 
 
-        public IActionResult Get([FromQuery] string id, [FromQuery] string user)
+        public IActionResult getQuaH([FromQuery] string id, [FromQuery] string user)
         {
             string _cmd;
             DataTable dt = new System.Data.DataTable();
-            _cmd = "exec dbo.getQuatationAll @CmpId=" + Convert.ToInt16(id) + ", @User='" + user + "'";
+            _cmd = "exec dbo.getQuatationAll @CmpId='" + id + "', @User='" + user + "'";
+            DataTable datatable = DB.DBConn.GetDataTable(_cmd);
+            dt = DB.DBConn.GetDataTable(_cmd);
+            string JSONString = string.Empty;
+            JSONString = JsonConvert.SerializeObject(dt);
+            return Ok(JSONString);
+        }
+
+         [HttpGet("[action]")] 
+
+        public IActionResult getQuaHAccept([FromQuery] string id, [FromQuery] string user)
+        {
+            string _cmd;
+            DataTable dt = new System.Data.DataTable();
+            _cmd = "exec dbo.getQuatationAccept @CmpId='" + id + "', @User='" + user + "'";
             DataTable datatable = DB.DBConn.GetDataTable(_cmd);
             dt = DB.DBConn.GetDataTable(_cmd);
             string JSONString = string.Empty;
@@ -41,13 +54,20 @@ namespace coreapi.Controllers
         }
 
 
+ 
 
-        [HttpGet]
-        [Route("api/QuaHState")]
-        public IActionResult GetApp([FromQuery] string id, [FromQuery] string state)
+
+
+ 
+
+
+
+
+        [HttpGet("[action]")] 
+        public IActionResult getQuaHState([FromQuery] string cmpid, [FromQuery] string state)
         {
             string _cmd;
-            _cmd = "exec dbo.getQuatationapprove @CmpId=" + Convert.ToInt16(id);
+            _cmd = "exec dbo.getQuatationapprove @CmpId='" +  (cmpid) + "' ";
             DataTable datatable = DB.DBConn.GetDataTable(_cmd);
             string JSONString = string.Empty;
             JSONString = JsonConvert.SerializeObject(datatable);
@@ -55,9 +75,9 @@ namespace coreapi.Controllers
         }
 
         // POST: api/QuaH
-        [Route("api/QuaH")]
-        [HttpPost]
-        public IActionResult Post([FromQuery] Quatation quatation)
+        
+        [HttpPost("[action]")]
+        public IActionResult setQuoH([FromBody]  Quatation quatation)
         {
             MsgReturn msgretrun = new MsgReturn();
 
@@ -114,8 +134,8 @@ namespace coreapi.Controllers
         }
 
 
-        [Route("api/QuaHCopy")]
-        [HttpPost]
+        
+        [HttpPost("[action]")]
         public IActionResult QuaHCopy(QuatationCopy quatation)
         {
             MsgReturn msgretrun = new MsgReturn();
@@ -126,6 +146,7 @@ namespace coreapi.Controllers
                 _cmd = "exec  dbo.setQuatationCopy @QuatationNo='" + quatation.QuatationNo + "'";
                 _cmd += ", @QuatationNoNew ='" + quatation.QuatationNoNew + "'";
                 _cmd += " ,@RevNo=" + quatation.RevNo;
+                _cmd += " , @CmpId='" + quatation.CmpId + "'";
 
 
                 if (DB.DBConn.ExecuteOnly(_cmd))
@@ -153,21 +174,20 @@ namespace coreapi.Controllers
 
 
 
-        // PUT: api/QuaH/5
-        [Route("api/QuaHApp")]
-        [HttpGet]
-        public IActionResult QuaHApp(string id, string DocNo, int RevNo, string user)
+       
+        [HttpPost("[action]")]
+        public IActionResult QuaHApp(  QuoHApprove quoHApprove)
         {
             MsgReturn msgretrun = new MsgReturn();
 
             try
             {
                 string _cmd = "";
-                _cmd = "exec dbo.setQuatationApp @CmpId=" + Convert.ToInt16(id) + " , @DocNo='" + DocNo + "' , @RevNo =" + RevNo + ",@User='" + user + "'";
+                _cmd = "exec dbo.setQuatationApp @CmpId=" + quoHApprove.cmpid + " , @DocNo='" + quoHApprove.docno + "' , @RevNo =" + quoHApprove.revno + ",@User='" + quoHApprove.user + "'";
 
                 if (DB.DBConn.ExecuteOnly(_cmd))
                 {
-                    linenotiapp(DocNo);
+                    linenotiapp(quoHApprove.docno);
                     msgretrun.ReturnCode = "200";
                     msgretrun.Msg = "Save Success !!";
                     return Ok(msgretrun);
@@ -192,20 +212,19 @@ namespace coreapi.Controllers
         }
 
 
-        [Route("api/QuaHSendApp")]
-        [HttpGet]
-        public IActionResult QuaHSendApp([FromQuery] string id, [FromQuery] string DocNo, [FromQuery] int RevNo, [FromQuery] string user)
+         [HttpPost("[action]")]
+        public IActionResult QuaHSendApp( QuoHApprove quoH)
         {
             MsgReturn msgretrun = new MsgReturn();
 
             try
             {
                 string _cmd = "";
-                _cmd = "exec dbo.setQuatationSendApp @CmpId=" + Convert.ToInt16(id) + " , @DocNo='" + DocNo + "' , @RevNo =" + RevNo + ",@User='" + user + "'";
+                _cmd = "exec dbo.setQuatationSendApp @CmpId='" +  quoH.cmpid + "' , @DocNo='" + quoH.docno + "' , @RevNo =" + quoH.revno + ",@User='" + quoH.user + "'";
 
                 if (DB.DBConn.ExecuteOnly(_cmd))
                 {
-                    var x = linenotisendapp(DocNo);
+                    var x = linenotisendapp(quoH.docno);
 
                     msgretrun.ReturnCode = "200";
                     msgretrun.Msg = "Save Success !!";
@@ -234,9 +253,9 @@ namespace coreapi.Controllers
 
 
         // DELETE: api/QuaH/5
-        [Route("api/QuaH")]
-        [HttpDelete]
-        public IActionResult Delete(string id, int RevNo)
+         
+        [HttpDelete("[action]")]
+        public IActionResult DeleteQuoH(string id, int RevNo)
         {
             MsgReturn msgretrun = new MsgReturn();
             try
@@ -273,12 +292,12 @@ namespace coreapi.Controllers
         }
 
 
-        [Route("api/QuaHRev")]
-        [HttpGet]
-        public IActionResult Get(string id, string DocNo, int RevNo)
+   
+        [HttpGet("[action]")]
+        public IActionResult GetQuaHRev(string cmpid, string DocNo, int RevNo)
         {
             string _cmd;
-            _cmd = "exec dbo.getQuatation @CmpId=" + Convert.ToInt16(id) + " , @DocNo='" + DocNo + "' , @RevNo =" + RevNo;
+            _cmd = "exec dbo.getQuatation @CmpId='" + cmpid+ "', @DocNo='" + DocNo + "' , @RevNo =" + RevNo;
             DataTable datatable = DB.DBConn.GetDataTable(_cmd);
             return Ok(datatable);
         }
@@ -287,9 +306,8 @@ namespace coreapi.Controllers
 
 
 
-        [HttpGet]
-        [Route("api/salesbom")]
-        public IActionResult salesbomGet([FromQuery] int id)
+        [HttpGet("[action]")] 
+        public IActionResult getSalesbom([FromQuery] int id)
         {
 
             DataTable dt = new System.Data.DataTable();
@@ -350,12 +368,7 @@ namespace coreapi.Controllers
             dt = DB.DBConn.GetDataTable(_cmd);
             return Ok(dt);
         }
-
-
-
-
-
-
+  
 
 
         [HttpPost]

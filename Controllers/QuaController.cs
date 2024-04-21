@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using System.ComponentModel;
+using Newtonsoft.Json;
 using coreapi.Models;
 using System;
 using System.Collections.Generic;
@@ -6,40 +7,45 @@ using System.Data;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Web.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
  
 
 
 
+
 namespace coreapi.Controllers
-{ 
-     
-    public class QuaController : ApiController
+{
+    [ApiController]
+    [Authorize]
+    public class QuaController : ControllerBase
     {
-        // GET: api/Qua
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
+
 
         // GET: api/Qua/5
-        public IHttpActionResult Get(string id , int RevNo)
-        { 
+        [HttpGet("[action]")]
+        
+        public IActionResult GetQuoDetail([FromQuery] string id, [FromQuery] int RevNo , [FromQuery] string CmpId )
+        {
             string _QuatationNo = id;
             DataTable dt = new System.Data.DataTable();
             string _cmd;
-            _cmd = "exec dbo.getQuatationDetail @QuatationNo='" + _QuatationNo + "' , @RevNo=" + RevNo;
+            _cmd = "exec dbo.getQuatationDetail @QuatationNo='" + _QuatationNo + "' , @RevNo=" + RevNo + ", @CmpId='" + CmpId + "'";
             dt = DB.DBConn.GetDataTable(_cmd);
             //string qdetail = string.Empty;
             //qdetail = JsonConvert.SerializeObject(dt);
-            return Ok(dt);
+            string JSONString = string.Empty;
+            JSONString = JsonConvert.SerializeObject(dt);
+            return Ok(JSONString);
         }
 
         // POST: api/Qua
-        public void Post(List<QuatationDetail> quatation)
+        [HttpPost("[action]")]
+         
+        public void setQuoDetail( [FromBody] List<QuatationDetail> quatation)
         {
 
-           
+
             DB.DBConn.SqlConnectionOpen();
             DB.DBConn.Cmd = DB.DBConn.Cnn.CreateCommand();
             DB.DBConn.Tran = DB.DBConn.Cnn.BeginTransaction();
@@ -72,8 +78,8 @@ namespace coreapi.Controllers
                     _cmd += ",@RevNo=" + quatation[i].RevNo;
                     _cmd += " ,@GroupCaption1='" + Tool.Tool.validateStr(quatation[i].GroupCaption1) + "'";
                     _cmd += " ,@GroupCaption2='" + Tool.Tool.validateStr(quatation[i].GroupCaption2) + "'";
-                    _cmd += " ,@GroupCaption3='" + Tool.Tool.validateStr(quatation[i].GroupCaption3 )+ "'";
-
+                    _cmd += " ,@GroupCaption3='" + Tool.Tool.validateStr(quatation[i].GroupCaption3) + "'";
+                    _cmd += " , @CmpId='" + quatation[i].CmpId +"'" ; 
                     if (DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran) <= 0)
                     {
                         DB.DBConn.Tran.Rollback();
@@ -102,14 +108,6 @@ namespace coreapi.Controllers
 
         }
 
-        // PUT: api/Qua/5
-        public void Put(int id, [FromBody]string value)
-        {
-        }
-
-        // DELETE: api/Qua/5
-        public void Delete(int id)
-        {
-        }
+       
     }
 }

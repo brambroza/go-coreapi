@@ -23,8 +23,16 @@ namespace coreapi.Models
     
     public class UserMap
     {
-        public string UserName { get; set; }
+        public int AccountID { get; set; }
         public int RoleId { get; set; }
+        public string CmpId {get; set;}
+    }
+
+    public class SaleTeamMap 
+    {
+        public int AccountID {get;set;}
+        public int SaleTeamId {get;set;}
+        public string CmpId {get;set;}
     }
 
 

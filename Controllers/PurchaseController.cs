@@ -5,82 +5,134 @@ using System.Data;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Web.Http;
+using Microsoft.AspNetCore.Authorization; 
+using System.IdentityModel.Tokens.Jwt;
+using Newtonsoft.Json;
+using Microsoft.AspNetCore.Mvc;
 
 namespace coreapi.Controllers
 {
-    public class PurchaseController : ApiController
+    [ApiController] 
+    [Authorize]
+
+
+    public class PurchaseController : ControllerBase
     {
 
 
-        // GET: api/Purchase/5
-        [Route("api/purchase")]
-        [HttpGet]
-        public IHttpActionResult Get(string id)
+        
+        [HttpGet("[action]")]
+        public IActionResult getPurchaselist([FromQuery] string cmpid)
         {
             string _cmd;
-            _cmd = "exec dbo.getPurchaseAll @CmpId=" + Convert.ToInt16(id);
-            DataTable datatable = DB.DBConn.GetDataTable(_cmd);
-            return Ok(datatable);
+            _cmd = "exec dbo.getPurchaseAll @CmpId='" + cmpid + "'";
+            DataTable dt = DB.DBConn.GetDataTable(_cmd);
+              string JSONString = string.Empty;
+            JSONString = JsonConvert.SerializeObject(dt);
+
+            return Ok(JSONString);
         }
 
-        [Route("api/purchaseSelect")]
-        [HttpGet]
-        public IHttpActionResult GetSelect(string id)
+           
+        [HttpGet("[action]")]
+        public IActionResult getPurchasercvlist([FromQuery] string cmpid)
         {
             string _cmd;
-            _cmd = "exec dbo.getPurchaseSelect @CmpId=" + Convert.ToInt16(id);
-            DataTable datatable = DB.DBConn.GetDataTable(_cmd);
-            return Ok(datatable);
+            _cmd = "exec dbo.getPurchasercv @CmpId='" + cmpid + "'";
+            DataTable dt = DB.DBConn.GetDataTable(_cmd);
+              string JSONString = string.Empty;
+            JSONString = JsonConvert.SerializeObject(dt);
+
+            return Ok(JSONString);
         }
 
 
-        [Route("api/purchasedetail")]
-        [HttpGet]
-        public IHttpActionResult Getdetail(string id , int RevNo )
+          
+        [HttpGet("[action]")]
+        public IActionResult getPurchaseRcvDetail([FromQuery] string id , [FromQuery] int RevNo  , [FromQuery] string cmpid )
+        {
+            string _cmd;
+            _cmd = "exec dbo.getPurchaseRcvDetail @PurchaseNo='" +  (id) + "', @RevNo=" + RevNo +", @CmpId='" + cmpid + "'";
+             DataTable dt = DB.DBConn.GetDataTable(_cmd);
+              string JSONString = string.Empty;
+            JSONString = JsonConvert.SerializeObject(dt);
+
+            return Ok(JSONString);
+        }
+
+
+
+
+
+       
+        [HttpGet("[action]")]
+        public IActionResult getPurchaseSelect([FromQuery] string cmpid)
+        {
+            string _cmd;
+            _cmd = "exec dbo.getPurchaseSelect  @CmpId='" + cmpid + "'";
+            DataTable dt = DB.DBConn.GetDataTable(_cmd);
+              string JSONString = string.Empty;
+            JSONString = JsonConvert.SerializeObject(dt);
+
+            return Ok(JSONString);
+        }
+
+
+        
+        [HttpGet("[action]")]
+        public IActionResult getPurchaseDetail([FromQuery] string id , [FromQuery] int RevNo )
         {
             string _cmd;
             _cmd = "exec dbo.getPurchaseDetail @PurchaseNo='" +  (id) + "', @RevNo=" + RevNo;
-            DataTable datatable = DB.DBConn.GetDataTable(_cmd);
-            return Ok(datatable);
+             DataTable dt = DB.DBConn.GetDataTable(_cmd);
+              string JSONString = string.Empty;
+            JSONString = JsonConvert.SerializeObject(dt);
+
+            return Ok(JSONString);
         }
 
 
-        [Route("api/purchasetrak")]
-        [HttpGet]
-        public IHttpActionResult Gettrack(string id )
+        
+        [HttpGet("[action]")]
+        public IActionResult getPurchaseTracking([FromQuery] string cmpid )
         {
             string _cmd;
-           _cmd = "exec dbo.getPurchaseTracking @CmpId=" + Convert.ToInt16(id);
-            DataTable datatable = DB.DBConn.GetDataTable(_cmd);
-            return Ok(datatable);
+           _cmd = "exec dbo.getPurchaseTracking @CmpId='" + cmpid + "'";
+             DataTable dt = DB.DBConn.GetDataTable(_cmd);
+              string JSONString = string.Empty;
+            JSONString = JsonConvert.SerializeObject(dt);
+
+            return Ok(JSONString);
         }
 
 
 
 
-        [Route("api/purchasedetailforrcv")]
-        [HttpGet]
-        public IHttpActionResult GetdetailforRcv(string id, int RevNo)
+        
+        [HttpGet("[action]")]
+        public IActionResult getPurchaseforRcv([FromQuery] string id, [FromQuery] int RevNo)
         {
             string _cmd;
             _cmd = "exec dbo.[getPurchaseDetailforRcv] @PurchaseNo='" + (id) + "', @RevNo=" + RevNo;
-            DataTable datatable = DB.DBConn.GetDataTable(_cmd);
-            return Ok(datatable);
+             DataTable dt = DB.DBConn.GetDataTable(_cmd);
+              string JSONString = string.Empty;
+            JSONString = JsonConvert.SerializeObject(dt);
+
+            return Ok(JSONString);
         }
 
 
 
-        [Route("api/purchaseapp")]
-        [HttpGet]
-        public IHttpActionResult QuaHApp(string id, string DocNo, int RevNo, string user)
+        
+        [HttpPost("[action]")]
+        public IActionResult setPurchaseApp(QuoHApprove purApp)
         {
             MsgReturn msgretrun = new MsgReturn();
 
             try
             {
                 string _cmd = "";
-                _cmd = "exec dbo.setPurchaseApp @CmpId=" + Convert.ToInt16(id) + " , @DocNo='" + DocNo + "' , @RevNo =" + RevNo + ",@User='" + user + "'";
+                _cmd = "exec dbo.setPurchaseApp @CmpId='" +  purApp.cmpid + "' , @DocNo='" + purApp.docno + "' , @RevNo =" + purApp.revno + ",@User='" + purApp.user + "'";
 
                 if (DB.DBConn.ExecuteOnly(_cmd))
                 {
@@ -109,10 +161,9 @@ namespace coreapi.Controllers
 
 
 
-        // POST: api/Purchase
-        [Route("api/purchase")]
-        [HttpPost]
-        public IHttpActionResult Post(Purchase po)
+       
+        [HttpPost("[action]")]
+        public IActionResult setPurchase(Purchase po)
         {
             MsgReturn msgretrun = new MsgReturn();
             try
@@ -142,7 +193,7 @@ namespace coreapi.Controllers
                 _cmd += " ,@PurchaseGrandAmtENB  ='" + po.PurchaseGrandAmtENB + "'"; 
                 _cmd += " ,@WithholdingTaxState =" + po.WithholdingTaxState; 
                 _cmd += " ,@ShowSignatureState =" + po.ShowSignatureState; 
-                _cmd += "  ,@CmpId =" + po.CmpId; 
+                _cmd += "  ,@CmpId ='" + po.CmpId + "'";
                 _cmd += " ,@DocState =" + po.DocState; 
                 _cmd += " ,@PriceStand  ='" + po.PriceStand + "'"; 
                 _cmd += " ,@PaymentDue  ='" + po.PaymentDue + "'"; 
@@ -175,17 +226,11 @@ namespace coreapi.Controllers
 
         }
 
-        // PUT: api/Purchase/5
-        [Route("api/purchase")]
-        [HttpPut]
-        public void Put(int id, [FromBody]string value)
-        {
-        }
+      
 
-        // DELETE: api/Purchase/5
-        [Route("api/purchase")]
-        [HttpDelete]
-        public IHttpActionResult Delete(int id , string DocNo , int RevNo)
+       
+        [HttpDelete("[action]")]
+        public IActionResult DeletePurchase(int id , string DocNo , int RevNo)
         {
             MsgReturn msgretrun = new MsgReturn();
             try
@@ -206,9 +251,9 @@ namespace coreapi.Controllers
         }
 
 
-        [Route("api/purchasedetail")]
-        [HttpPost]
-        public IHttpActionResult Postdetail(List<Purchase_Detail> po)
+         
+        [HttpPost("[action]")]
+        public IActionResult setPurchaseDetail(List<Purchase_Detail> po)
         {
             MsgReturn msgretrun = new MsgReturn();
             DB.DBConn.SqlConnectionOpen();
@@ -245,6 +290,7 @@ namespace coreapi.Controllers
                     _cmd += ",@GroupCaption1  ='" + po[i].GroupCaption1 + "'";
                     _cmd += ",@GroupCaption2  ='" + po[i].GroupCaption2 + "'";
                     _cmd += ",@GroupCaption3  ='" + po[i].GroupCaption3 + "'";
+                     _cmd += ",@CmpId  ='" + po[i].CmpId + "'";
 
 
 

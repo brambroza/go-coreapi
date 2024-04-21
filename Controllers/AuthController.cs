@@ -4,17 +4,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Web.Http; 
+using Newtonsoft.Json;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace coreapi.Controllers
 {
-   
-    public class AuthController : ApiController
+    [ApiController]
+    [Authorize]
+    public class AuthController : ControllerBase
     {
         // GET: api/Auth
-        [HttpPost]
-        [Route("api/systemlog")]
-        public IHttpActionResult Post(UserActionLog actionLog)
+        [HttpPost("[action]")]
+        
+        public IActionResult systemlog(UserActionLog actionLog)
         {
             //if (Request.Headers.Contains("authToken")){
             //    if (Request.Headers.GetValues("authToken").First() != "XXX")
@@ -31,9 +34,9 @@ namespace coreapi.Controllers
                 _cmd += " @UserLogin  ='" + actionLog.UserLogin + "'";
                 _cmd += ",@MenuName  ='" + actionLog.MenuName + "'";
                 _cmd += ",@ActionsDescriptions  ='" + actionLog.ActionsDescriptions + "'";
-                _cmd += ",@btnname  ='" + actionLog.btnname + "'";                
+                _cmd += ",@btnname  ='" + actionLog.btnname + "'";
                 _cmd += ",@CmpId =" + actionLog.CmpId;
-               
+
 
                 if (DB.DBConn.ExecuteOnly(_cmd))
                 {

@@ -20,6 +20,10 @@ namespace coreapi.Models
         public string link { get; set; }
         public int StateActive { get; set; }
 
+        public int SubOverViewSales {get;set;}
+        public int SubOverViewCust { get;set;}
+        public int SubOverViewVendor {get;set;}
+
 
     }
 }

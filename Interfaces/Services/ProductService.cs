@@ -58,13 +58,30 @@ namespace goalongapi.Services
             string imageName = String.Empty;
             if (uploadFileService.IsUpload(formFiles))
             {
-                errorMesage = uploadFileService.Validation(formFiles);
+                   errorMesage = uploadFileService.Validation(formFiles);
                 if (String.IsNullOrEmpty(errorMesage))
                 {
                     imageName = (await uploadFileService.UploadImages(formFiles))[0];
-                }
+                }  
             }
             return (errorMesage, imageName);
         }
+
+        public async Task<(string errorMessage, string filenames)> uploadallfile(List<IFormFile> formFiles)
+        {
+            string errorMesage = String.Empty;
+            string filenames = String.Empty;
+            if (uploadFileService.IsUpload(formFiles))
+            {
+                   errorMesage = uploadFileService.Validation(formFiles);
+                if (String.IsNullOrEmpty(errorMesage))
+                {
+                    filenames = (await uploadFileService.Uploadfilemulti(formFiles))[0];
+                }  
+            }
+            return (errorMesage, filenames);
+        }
+
+
     }
 }

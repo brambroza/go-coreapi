@@ -1,4 +1,5 @@
-﻿using Microsoft.Data.SqlClient;
+﻿using goalongapi.Installers;
+using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
 using System.Data; 
@@ -14,9 +15,7 @@ namespace coreapi.DB
         public static SqlConnection Cnn2;
         public static SqlTransaction Tran2;
 
-
-        public static DBConntext _dBConntext = new DBConntext();
-        public static DBConntextSystem _dBConntextSystem = new DBConntextSystem();
+ 
 
 
         #region " CONNECTTION "
@@ -28,7 +27,7 @@ namespace coreapi.DB
             {
                 DBConn.Cnn.Close();
             };
-            DBConn.Cnn.ConnectionString = _dBConntext.getConnectionString();
+            DBConn.Cnn.ConnectionString =  SystemConfig._ConnectionString;
             DBConn.Cnn.Open();
         }
 
@@ -40,7 +39,7 @@ namespace coreapi.DB
             {
                 DBConn.Cnn.Close();
             };
-            DBConn.Cnn.ConnectionString = _dBConntext.getConnectionString();
+            DBConn.Cnn.ConnectionString =  SystemConfig._ConnectionString;
             DBConn.Cnn.Open();
             DBConn.Tran = DBConn.Cnn.BeginTransaction();
         }
@@ -289,7 +288,7 @@ namespace coreapi.DB
 
 
                 if (_Cnn.State == ConnectionState.Open) { _Cnn.Close(); };
-                _Cnn.ConnectionString = _dBConntext.getConnectionString() ;
+                _Cnn.ConnectionString =  SystemConfig._ConnectionString;
                 _Cnn.Open();
                 _Cmd = _Cnn.CreateCommand();
                 _Cmd.CommandTimeout = 0;
@@ -324,7 +323,7 @@ namespace coreapi.DB
 
 
                 if (_Cnn.State == ConnectionState.Open) { _Cnn.Close(); };
-                _Cnn.ConnectionString = _dBConntextSystem.getConnectionString();
+                _Cnn.ConnectionString =  SystemConfig._ConnectionString;
                 _Cnn.Open();
                 _Cmd = _Cnn.CreateCommand();
                 _Cmd.CommandTimeout = 0;
@@ -362,7 +361,7 @@ namespace coreapi.DB
 
 
                     if (_Cnn.State == ConnectionState.Open) { _Cnn.Close(); };
-                    _Cnn.ConnectionString = _dBConntextSystem.getConnectionString();
+                    _Cnn.ConnectionString =  SystemConfig._ConnectionString;
                     _Cnn.Open();
                     _Cmd = _Cnn.CreateCommand();
 
@@ -539,7 +538,7 @@ namespace coreapi.DB
 
 
                     if (_Cnn.State == ConnectionState.Open) { _Cnn.Close(); };
-                    _Cnn.ConnectionString = _dBConntext.getConnectionString();
+                    _Cnn.ConnectionString =  SystemConfig._ConnectionString;
                     _Cnn.Open();
                     _Cmd = _Cnn.CreateCommand();
 
@@ -579,7 +578,7 @@ namespace coreapi.DB
 
 
                 if (_Cnn.State == ConnectionState.Open) { _Cnn.Close(); };
-                _Cnn.ConnectionString = _dBConntext.getConnectionString();
+                _Cnn.ConnectionString =  SystemConfig._ConnectionString;
                 _Cnn.Open();
                 _Cmd = _Cnn.CreateCommand();
 
@@ -613,7 +612,7 @@ namespace coreapi.DB
 
 
                 if (_Cnn.State == ConnectionState.Open) { _Cnn.Close(); };
-                _Cnn.ConnectionString = _dBConntext.getConnectionString();
+                _Cnn.ConnectionString =  SystemConfig._ConnectionString;
                 _Cnn.Open();
                 _Cmd = _Cnn.CreateCommand();
 

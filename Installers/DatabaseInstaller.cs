@@ -1,3 +1,4 @@
+ 
 using goalongapi.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,6 +11,8 @@ namespace goalongapi.Installers
             services.AddDbContext<DatabaseContext>(options =>
                   options.UseSqlServer(configuration.GetConnectionString("ConnectionSQLServer"))
             );
+
+          SystemConfig._ConnectionString  = configuration.GetConnectionString("ConnectionSQLServer");
         }
     }
 }

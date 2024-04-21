@@ -10,6 +10,7 @@ namespace goalongapi.Interfaces
           Task Update(Product product);
           Task Delete(Product product);
           Task<IEnumerable<Product>> Search(string name);
-          Task<(string errorMessage, string imageName)> UploadImage(List<IFormFile> formFiles);
+          Task<(string errorMessage, string imageName)>  UploadImage(List<IFormFile> formFiles);
+          Task<(string errorMessage , string filenames)> uploadallfile(List<IFormFile> fromFiles); 
     }
 }

@@ -91,3 +91,10 @@
 /Users/amnartkongpet/Project/GoAlong/coreapi/obj/Release/net7.0/goalongapi.genruntimeconfig.cache
 /Users/amnartkongpet/Project/GoAlong/coreapi/obj/Release/net7.0/ref/goalongapi.dll
 /Users/amnartkongpet/Project/GoAlong/coreapi/bin/Release/net7.0/goalongapi
+/Users/amnartkongpet/Project/GoAlong/coreapi/bin/Release/net7.0/publish/web.config
+/Users/amnartkongpet/Project/GoAlong/coreapi/bin/Release/net7.0/publish/appsettings.Development.json
+/Users/amnartkongpet/Project/GoAlong/coreapi/bin/Release/net7.0/publish/appsettings.json
+/Users/amnartkongpet/Project/GoAlong/coreapi/bin/Release/net7.0/publish/goalongapi.deps.json
+/Users/amnartkongpet/Project/GoAlong/coreapi/bin/Release/net7.0/publish/goalongapi.runtimeconfig.json
+/Users/amnartkongpet/Project/GoAlong/coreapi/bin/Release/net7.0/goalongapi.staticwebassets.runtime.json
+/Users/amnartkongpet/Project/GoAlong/coreapi/bin/Release/net7.0/Microsoft.AspNetCore.Authentication.Google.dll

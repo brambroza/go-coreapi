@@ -17,5 +17,15 @@ namespace goalongapi.Datatools.Product
 
         public List<IFormFile>? FormFiles {get; set;}
 
+
+
+
+    }
+
+
+    public class UploadImageCmpProfile
+    {
+        public string cmpid {get;set;}
+        public IFormFile? FormFiles {get;set;}
     }
 }

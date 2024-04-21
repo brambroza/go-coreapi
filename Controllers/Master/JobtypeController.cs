@@ -5,43 +5,46 @@ using System.Data;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Web.Http; 
+using Newtonsoft.Json;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace coreapi.Controllers.Master
 {
- 
-    public class JobtypeController : ApiController
+
+    [ApiController]
+    [Authorize]
+    public class JobtypeController : ControllerBase
     {
         // GET: api/Jobtype
-        [HttpGet]
-        [Route("api/Jobtype")]
-        public IHttpActionResult Get(string id)
+        [HttpGet("[action]")]
+        public IActionResult GetJobtype([FromQuery] string cmpid)
         {
-            string _QuatationNo = id;
+
             DataTable dt = new System.Data.DataTable();
             string _cmd;
-            _cmd = "exec dbo.getJobtypelist @CmpId=" + _QuatationNo + "";
+            _cmd = "exec dbo.getJobtypelist @CmpId=" + cmpid + "";
             dt = DB.DBConn.GetDataTable(_cmd);
-            //string qdetail = string.Empty;
-            //qdetail = JsonConvert.SerializeObject(dt);
-            return Ok(dt);
+            string JSONString = string.Empty;
+            JSONString = JsonConvert.SerializeObject(dt);
+
+            return Ok(JSONString);
         }
 
 
         // POST: api/Jobtype
-        [HttpPost]
-        [Route("api/Jobtype")] 
-        public IHttpActionResult Post(Jobtype jt)
-        { 
+        [HttpPost("[action]")]
+        public IActionResult setJobtype(Jobtype jt)
+        {
 
             MsgReturn msgretrun = new MsgReturn();
             try
             {
-                string _cmd = ""; 
-                _cmd = "exec  dbo.setJobtype"; 
+                string _cmd = "";
+                _cmd = "exec  dbo.setJobtype";
                 _cmd += " @UpdUser  ='" + jt.UpdUser + "'";
-                _cmd += ",@JobTypeCode  ='" + jt.JobTypeCode + "'"; 
-                _cmd += ",@JobTypeName  ='" + jt.JobTypeName + "'"; 
+                _cmd += ",@JobTypeCode  ='" + jt.JobTypeCode + "'";
+                _cmd += ",@JobTypeName  ='" + jt.JobTypeName + "'";
                 _cmd += ",@JobTypeDescripton  ='" + jt.JobTypeDescripton + "'";
                 _cmd += ",@JobTypeStateActive =" + jt.JobTypeStateActive;
 
@@ -70,16 +73,13 @@ namespace coreapi.Controllers.Master
 
 
         }
-        // PUT: api/Jobtype/5
-       
 
-        // DELETE: api/Jobtype/5
-        [HttpDelete]
-        [Route("api/Jobtype")]
-        public void Delete(string id)
+        [HttpDelete("[action]")]
+
+        public void DeleteJobtype([FromQuery] string jobid)
         {
             string _cmd = "";
-            _cmd = "delete from msb.mJobtype where  JobTypeCode='" + id + "' ";
+            _cmd = "delete from msb.mJobtype where  JobTypeCode='" + jobid + "' ";
             DB.DBConn.ExecuteOnly(_cmd);
         }
     }

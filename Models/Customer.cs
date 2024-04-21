@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web; 
+using System.Web;
 
 namespace coreapi.Models
 {
 
-   
+
     public class Customer
-    { 
+    {
         public string UpdUser { get; set; }
         public string CustomerCode { get; set; }
         public string CustomerName { get; set; }
@@ -29,7 +29,7 @@ namespace coreapi.Models
         public string Website { get; set; }
         public string AddressShip { get; set; }
         public string Remark { get; set; }
-        public int CmpId { get; set; }
+        public string CmpId { get; set; }
         public string ContactName2 { get; set; }
         public string ContactEmail2 { get; set; }
         public string ContactPhone2 { get; set; }
@@ -40,6 +40,10 @@ namespace coreapi.Models
         public string AddrDistrict { get; set; }
         public string AddrProvince { get; set; }
         public string AddrPostCode { get; set; }
+        public string ImgPath { get; set; }
+        public int CreditAccId { get; set; }
+        public int DebitAccId { get; set; }
+        public string BusinessGrpCode { get;set;}
 
 
 
@@ -59,7 +63,7 @@ namespace coreapi.Models
 
     public class CustomerDBD
     {
-        public string UserLogin { get; set; }    
+        public string UserLogin { get; set; }
         public string CmpId { get; set; }
         public string juristicID { get; set; }
         public string juristicNameTH { get; set; }

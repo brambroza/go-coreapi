@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+
+
+
 using goalongapi.Entities;
 
 namespace goalongapi.Data
@@ -18,6 +21,7 @@ namespace goalongapi.Data
         }
 
         public virtual DbSet<Account> Accounts { get; set; } = null!;
+        public virtual DbSet<AccountGoogle> AccountsGoogle { get; set; } = null!;
         public virtual DbSet<Category> Categories { get; set; } = null!;
         public virtual DbSet<Product> Products { get; set; } = null!;
         public virtual DbSet<Role> Roles { get; set; } = null!;
@@ -26,7 +30,7 @@ namespace goalongapi.Data
         {
             if (!optionsBuilder.IsConfigured)
             {
-          optionsBuilder.UseSqlServer("Server=192.168.1.105,1433;user id=sa; password=1234; Database=GoAlongDatabase; TrustServerCertificate=true;");
+          optionsBuilder.UseSqlServer("Server=localhost,1433;user id=sa; password=dr0wss@p; Database=GoAlongDatabase; TrustServerCertificate=true;");
             }
         }
 
@@ -44,9 +48,12 @@ namespace goalongapi.Data
                     .WithMany(p => p.Accounts)
                     .HasForeignKey(d => d.RoleId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Accounts_Roles");
+                    .HasConstraintName("FK_Accounts_Roles"); 
             });
 
+
+
+ 
             modelBuilder.Entity<Category>(entity =>
             {
                 entity.Property(e => e.CategoryId).HasColumnName("CategoryID");
@@ -71,7 +78,7 @@ namespace goalongapi.Data
                     .HasForeignKey(d => d.CategoryId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Products_Categories");
-            });
+            });  
 
             modelBuilder.Entity<Role>(entity =>
             {

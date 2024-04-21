@@ -1,0 +1,132 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+
+namespace coreapi.Models
+{
+
+    public class Company
+    {
+        public string CmpId { get; set; }
+        public string CmpName { get; set; }
+        public string CmpAddress { get; set; }
+        public string Email { get; set; }
+        public string Fax { get; set; }
+        public string Phone { get; set; }
+        public string teloffice { get; set; }
+    }
+
+    public class UserAccouter
+    {
+        public Int64 AccountID { get; set; }
+        public string Username { get; set; }
+        public string FullName { get; set; }
+        public string CmpId { get; set; }
+        public string imgPath { get; set; }
+        public string SignaturePath { get; set; }
+        public string LineQRCodePath { get; set; }
+        public string MobileNo { get; set; }
+        public string LineId { get; set; }
+        public string Address { get; set; }
+        public string AddrProvince { get; set; }
+        public string AddrDistrict { get; set; }
+        public string AddrSubDistrict { get; set; }
+        public string AddrPostCode { get; set; }
+
+    }
+
+    public class mapuser
+    {
+        public string email { get; set; }
+        public string cmpid { get; set; }
+    }
+
+    public class datacmpimg
+    {
+        public string imgpath { get; set; }
+        public string cmpid { get; set; }
+    }
+
+    public class cmpinfo
+    {
+        public string CmpId { get; set; }
+        public string CmpName { get; set; }
+        public string CmpAddress { get; set; }
+        public string CmpTaxid { get; set; }
+        public string CmpType { get; set; }
+        public string StateActive { get; set; }
+        public string Email { get; set; }
+        public string Fax { get; set; }
+        public string Phone { get; set; }
+        public string DateCreate { get; set; }
+        public string DateExprie { get; set; }
+        public string TelOffice { get; set; }
+        public string CmpImg { get; set; }
+        public string AddressShip { get; set; }
+        public string AddrProvince { get; set; }
+        public string AddrDistrict { get; set; }
+        public string AddrSubDistrict { get; set; }
+        public string AddrPostCode { get; set; }
+        public string CmpBranchCode { get; set; }
+        public string CmpBranchName { get; set; }
+        public string WebSite { get; set; }
+        public string Remark { get; set; }
+        public string UpdUser { get; set; }
+        public string DocPrefix { get; set; }
+        public string BankAccCode { get; set; }
+        public string BankAccName { get; set; }
+        public string BankAccType { get; set; }
+        public string BankCode { get; set; }
+        public string BankBranchCode { get; set; }
+        public string LineId { get; set; }
+
+
+
+    }
+
+
+
+    public class Bank
+    {
+        public string UserName { get; set; }
+        public string BankCode { get; set; }
+        public string BankName { get; set; }
+        public string Remark { get; set; }
+        public int StateActive { get; set; }
+        public string CmpId { get; set; }
+    }
+
+    public class BankBranch
+    {
+        public string UserName { get; set; }
+        public string BankCode { get; set; }
+        public string BankBranchCode { get; set; }
+        public string BankBranchName { get; set; }
+        public string Address { get; set; }
+        public string AddrProvince { get; set; }
+        public string AddrDistrict { get; set; }
+        public string AddrSubDistrict { get; set; }
+        public string AddrPostCode { get; set; }
+        public string Fax { get; set; }
+        public string Phone { get; set; }
+        public string Remark { get; set; }
+        public int StateActive { get; set; }
+
+        public string CmpId { get; set; }
+    }
+
+
+    public class mBussinetGrp
+    {
+        public string UpdUser { get; set; }
+        public string BusinessGrpCode { get; set; }
+        public string BusinessGrpName { get; set; }
+        public string BusinessGrpDescripton { get; set; }
+        public int StateActive { get; set; }
+        public string CmpId { get; set; }
+
+    }
+
+
+}

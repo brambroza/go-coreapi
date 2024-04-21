@@ -7,16 +7,18 @@ namespace coreapi.Models
 {
     public class Project
     {
-            public string UpdUser { get; set; } 
-            public string ProjectNo { get; set; } 
-            public string CustCode { get; set; } 
-            public string Description { get; set; } 
-            public int CmpId { get; set; } 
-            public string PurchaseNo { get; set; } 
-            public string QuatationNo { get; set; } 
-            public string ReferCode { get; set; }
-            public string StateActive { get; set; } 
-            public string ProjectDueDate { get; set; }
+        public string UpdUser { get; set; }
+        public string ProjectNo { get; set; }
+        public string CustCode { get; set; }
+        public string Description { get; set; }
+        public string CmpId { get; set; }
+        public string PurchaseNo { get; set; }
+        public string QuatationNo { get; set; }
+        public string ReferCode { get; set; }
+        public string StateActive { get; set; }
+        public string ProjectDueDate { get; set; }
+        public string ProjectDate { get; set; }
+        public string SaleOrderNo { get; set; }
 
     }
 
@@ -26,76 +28,121 @@ namespace coreapi.Models
         public string ProjectNo { get; set; }
         public string CustCode { get; set; }
         public string Description { get; set; }
-        public int CmpId { get; set; }
+        public string CmpId { get; set; }
         public string PurchaseNo { get; set; }
         public string QuatationNo { get; set; }
         public string ReferCode { get; set; }
         public string StateActive { get; set; }
-        
+        public string SaleOrderNo { get; set; }
+
+
+    }
+
+    public class AppInvoice
+    {
+        public string UpdUser { get; set; }
+        public string SaleOrderNo { get; set; }
+        public string CmpId { get; set; }
+        public string State { get; set; }
+
+
 
     }
 
 
 
 
-    public class Project_Detail 
-    { 
-        public string UpdUser { get; set; }  
-        public string ProjectNo { get; set; } 
-        public int Seq { get; set; } 
-        public string ProdCode { get; set; } 
-        public string ProdDescription { get; set; } 
-        public decimal Qty { get; set; } 
-        public string UnitCode { get; set; } 
-        public decimal UnitPrice { get; set; } 
-        public decimal Amt { get; set; } 
-        public decimal DisPer { get; set; } 
-        public decimal DisAmt { get; set; } 
-        public decimal NetAmt { get; set; } 
-        public decimal PricePur { get; set; } 
-        public decimal CostAmt { get; set; } 
-        public decimal ProfitAmt { get; set; } 
-        public string GroupCaption1 { get; set; } 
-        public string GroupCaption2 { get; set; } 
-        public string GroupCaption3 { get; set; } 
+    public class Project_Detail
+    {
+        public string UpdUser { get; set; }
+        public string ProjectNo { get; set; }
+        public int Seq { get; set; }
+        public string ProdCode { get; set; }
+        public string ProdDescription { get; set; }
+        public decimal Qty { get; set; }
+        public string UnitCode { get; set; }
+        public decimal UnitPrice { get; set; }
+        public decimal Amt { get; set; }
+        public decimal DisPer { get; set; }
+        public decimal DisAmt { get; set; }
+        public decimal NetAmt { get; set; }
+        public decimal PricePur { get; set; }
+        public decimal CostAmt { get; set; }
+        public decimal ProfitAmt { get; set; }
+        public string GroupCaption1 { get; set; }
+        public string GroupCaption2 { get; set; }
+        public string GroupCaption3 { get; set; }
 
         public string PurchaseNo { get; set; }
         public string DeliveryDate { get; set; }
         public int RevNo { get; set; }
     }
 
-    public class Project_Task 
-    { 
-        public string UpdUser { get; set; }  
-        public string ProjectNo { get; set; } 
-        public int Seq { get; set; } 
-        public string Description { get; set; } 
-        public decimal Qty { get; set; } 
-        public string UnitCode { get; set; } 
-        public decimal UnitPrice { get; set; } 
-        public decimal Amt { get; set; }  
+    public class Project_Task
+    {
+        public string UpdUser { get; set; }
+        public string ProjectNo { get; set; }
+        public int Seq { get; set; }
+        public string Description { get; set; }
+        public decimal Qty { get; set; }
+        public string UnitCode { get; set; }
+        public decimal UnitPrice { get; set; }
+        public decimal Amt { get; set; }
         public List<String> Resource { get; set; }
-        public decimal DayQty { get; set; } 
-        public decimal Time { get; set; } 
-        public string StartDate { get; set; }
-        public string StartTime { get; set; }
-        public string EndDate { get; set; }
-        public string EndTime { get; set; }
+        public decimal DayQty { get; set; }
+        public decimal Time { get; set; }
+        public string StartDate { get; set; } = null;
+        public string StartTime { get; set; } = null;
+        public string EndDate { get; set; } = null;
+        public string EndTime { get; set; } = null;
         public string InstallDescription { get; set; }
+        public string CmpId { get; set; }
 
     }
 
 
-   
+    public class Project_TaskInstall
+    {
+        public string UpdUser { get; set; }
+        public string ProjectNo { get; set; }
+        public int Seq { get; set; }
 
-    public class Project_File 
-    { 
-        public string UpdUser { get; set; }  
-        public string ProjectNo { get; set; } 
-        public int Seq { get; set; } 
-        public string FileName { get; set; } 
+        public List<String> InstallResource { get; set; }
+        public decimal InstallQty { get; set; }
+        public string InstallStartDate { get; set; }
+        public string InstallStartTime { get; set; }
+        public string InstallEndDate { get; set; }
+        public string InstallEndTime { get; set; }
+        public string InstallDescription { get; set; }
+
+        public string CmpId { get; set; }
+
+    }
+
+
+
+
+
+    public class Project_File
+    {
+        public string UpdUser { get; set; }
+        public string ProjectNo { get; set; }
+        public int Seq { get; set; }
+        public string FileName { get; set; }
         public string FilePath { get; set; }
-        public byte[] Files { get; set; } 
+        public byte[] Files { get; set; }
+    }
+
+
+    public class ProjectCost
+    {
+        public string UpdUser { get; set; }
+        public string ProjectNo { get; set; }
+        public int Seq { get; set; }
+        public string CostDescription { get; set; }
+        public decimal CostAmt { get; set; }
+        public string AttachFile { get; set; }
+        public string CmpId { get; set; }
     }
 
 }

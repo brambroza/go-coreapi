@@ -5,18 +5,20 @@ using System.Data;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Web.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
  
 
 namespace coreapi.Controllers
 {
-    
-    public class ProfilesController : ApiController
+    [ApiController] 
+    [Authorize]
+    public class ProfilesController : ControllerBase
     {
 
         [HttpGet]
         [Route("api/TaskDaily")]
-        public IHttpActionResult GetTask(int cmpid, string username)
+        public IActionResult GetTask(int cmpid, string username)
         {
 
             DataTable dt = new System.Data.DataTable();
@@ -50,7 +52,7 @@ namespace coreapi.Controllers
 
         [HttpGet]
         [Route("api/TaskWeek")]
-        public IHttpActionResult GetTaskWeek(int cmpid, string username)
+        public IActionResult GetTaskWeek(int cmpid, string username)
         {
 
             DataTable dt = new System.Data.DataTable();
@@ -85,7 +87,7 @@ namespace coreapi.Controllers
 
         [HttpGet]
         [Route("api/TaskMonth")]
-        public IHttpActionResult GetTaskMonth(int cmpid, string username)
+        public IActionResult GetTaskMonth(int cmpid, string username)
         {
 
             DataTable dt = new System.Data.DataTable();

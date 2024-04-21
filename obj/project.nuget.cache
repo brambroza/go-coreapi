@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "AD4jW2bv8yMi3rWRh6IfR7AiE1LKDjzjDJ1rD1MC7+wyRXQ4cTo4TimDdsA6x4BYJNP+VYARaXYO0gJd1WJ9Yw==",
+  "dgSpecHash": "fmiGYodwDqNAtyGCevP1DQBJwZbBW7lggEYEeYEBbt5USGjAjYB/yqiVMjE0ZWdxG26DRgy6KXeTSV+Zo9XjWw==",
   "success": true,
   "projectFilePath": "/Users/amnartkongpet/Project/GoAlong/coreapi/goalongapi.csproj",
   "expectedPackageFiles": [
@@ -15,6 +15,7 @@
     "/Users/amnartkongpet/.nuget/packages/mapster.core/1.2.0/mapster.core.1.2.0.nupkg.sha512",
     "/Users/amnartkongpet/.nuget/packages/microsoft.aspnet.webapi.client/5.2.9/microsoft.aspnet.webapi.client.5.2.9.nupkg.sha512",
     "/Users/amnartkongpet/.nuget/packages/microsoft.aspnet.webapi.core/5.2.9/microsoft.aspnet.webapi.core.5.2.9.nupkg.sha512",
+    "/Users/amnartkongpet/.nuget/packages/microsoft.aspnetcore.authentication.google/7.0.13/microsoft.aspnetcore.authentication.google.7.0.13.nupkg.sha512",
     "/Users/amnartkongpet/.nuget/packages/microsoft.aspnetcore.authentication.jwtbearer/7.0.5/microsoft.aspnetcore.authentication.jwtbearer.7.0.5.nupkg.sha512",
     "/Users/amnartkongpet/.nuget/packages/microsoft.aspnetcore.jsonpatch/7.0.5/microsoft.aspnetcore.jsonpatch.7.0.5.nupkg.sha512",
     "/Users/amnartkongpet/.nuget/packages/microsoft.aspnetcore.mvc.newtonsoftjson/7.0.5/microsoft.aspnetcore.mvc.newtonsoftjson.7.0.5.nupkg.sha512",

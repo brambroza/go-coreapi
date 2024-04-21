@@ -11,36 +11,53 @@ using Mapster;
 using goalongapi.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using System.Data;
-using System.IdentityModel.Tokens.Jwt; 
+using System.IdentityModel.Tokens.Jwt;
 using Newtonsoft.Json;
 
 
 namespace coreapi.Controllers
 {
-    [ApiController] 
+    [ApiController]
     [Authorize]
-   
+
 
     public class CustomerController : ControllerBase
     {
-       
+
 
         // GET: api/QuaH/5
-        
+
         [HttpGet]
         [Route("Customer")]
-        public  IActionResult Get([FromQuery] string id)
+        public IActionResult Get([FromQuery] string cmpid)
         {
-            string _QuatationNo = id;
+
             DataTable dt = new System.Data.DataTable();
             string _cmd;
-            _cmd = "exec dbo.getCustomer @CmpId=" + _QuatationNo + "";
+            _cmd = "exec dbo.getCustomer @CmpId='" + cmpid + "'";
             dt = DB.DBConn.GetDataTable(_cmd);
             //string qdetail = string.Empty;
             //qdetail = JsonConvert.SerializeObject(dt);
             string JSONString = string.Empty;
             JSONString = JsonConvert.SerializeObject(dt);
-         
+
+            return Ok(JSONString);
+        }
+
+        [HttpGet]
+        [Route("CustomerById")]
+        public IActionResult Get([FromQuery] string cmpid, [FromQuery] string customerCode)
+        {
+
+            DataTable dt = new System.Data.DataTable();
+            string _cmd;
+            _cmd = "exec dbo.getCustomer_ById @CmpId='" + cmpid + "' , @CustomerCode='" + customerCode + "'";
+            dt = DB.DBConn.GetDataTable(_cmd);
+            //string qdetail = string.Empty;
+            //qdetail = JsonConvert.SerializeObject(dt);
+            string JSONString = string.Empty;
+            JSONString = JsonConvert.SerializeObject(dt);
+
             return Ok(JSONString);
         }
 
@@ -48,32 +65,32 @@ namespace coreapi.Controllers
         [HttpGet]
         [Route("CustomerContact")]
 
-        public IActionResult getContact([FromQuery] string CmpId  ,[FromQuery] string CustCode)
+        public IActionResult getContact([FromQuery] string CmpId, [FromQuery] string CustCode)
         {
-            string _QuatationNo = CmpId;
+
             DataTable dt = new System.Data.DataTable();
             string _cmd;
-            _cmd = "exec dbo.getCustContact @CmpId=" + _QuatationNo + " , @CustCode='" + CustCode + "'";
+            _cmd = "exec dbo.getCustContact @CmpId='" + CmpId + "' , @CustCode='" + CustCode + "'";
             dt = DB.DBConn.GetDataTable(_cmd);
             //string qdetail = string.Empty;
             //qdetail = JsonConvert.SerializeObject(dt);
             string JSONString = string.Empty;
             JSONString = JsonConvert.SerializeObject(dt);
-         
-            return Ok(JSONString); 
+
+            return Ok(JSONString);
         }
         // POST: api/QuaH
 
         [HttpPost]
         [Route("Customer")]
-        public IActionResult Post(Customer customer   )
+        public IActionResult Post([FromBody] Customer customer)
         {
             //if (Request.Headers.Contains("authToken")){
             //    if (Request.Headers.GetValues("authToken").First() != "XXX")
             //        return   Ok(HttpStatusCode.Unauthorized); 
             //}
-               
-             
+
+
 
             MsgReturn msgretrun = new MsgReturn();
             try
@@ -107,12 +124,16 @@ namespace coreapi.Controllers
                 _cmd += ",@Website  ='" + customer.Website + "'";
                 _cmd += ",@AddressShip  ='" + customer.AddressShip + "'";
                 _cmd += ",@Remark  ='" + customer.Remark + "'";
-                _cmd += ",@CmpId =" + customer.CmpId;
+                _cmd += ",@CmpId ='" + customer.CmpId + "'";
 
                 _cmd += ",@AddrSubDistrict  ='" + customer.AddrSubDistrict + "'";
                 _cmd += ",@AddrDistrict  ='" + customer.AddrDistrict + "'";
                 _cmd += ",@AddrProvince  ='" + customer.AddrProvince + "'";
                 _cmd += ",@AddrPostCode  ='" + customer.AddrPostCode + "'";
+                _cmd += ",@ImgPath  ='" + customer.ImgPath + "'";
+                _cmd += ",@CreditAccId =" + customer.CreditAccId;
+                _cmd += ",@DebitAccId =" + customer.DebitAccId;
+                _cmd += " , @BusinessGrpCode='" + customer.BusinessGrpCode + "'";
 
 
                 if (DB.DBConn.ExecuteOnly(_cmd))
@@ -135,20 +156,20 @@ namespace coreapi.Controllers
                 msgretrun.Msg = "Error !!";
                 return Ok(msgretrun);
             }
-           
 
-            
+
+
         }
 
-        
+
 
         // DELETE: api/QuaH/5
         [HttpDelete]
         [Route("Customer")]
-        public void Delete([FromQuery] string id)
+        public void Delete([FromQuery] string customercode, [FromQuery] string cmpid)
         {
             string _cmd = "";
-            _cmd = "delete from msb.mCustomer where  CustomerCode='" + id + "' ";
+            _cmd = "delete from msb.mCustomer where  CustomerCode='" + customercode + "' and cmpid='" + cmpid + "'";
             DB.DBConn.ExecuteOnly(_cmd);
         }
 

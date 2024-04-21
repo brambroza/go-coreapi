@@ -6,36 +6,37 @@ using System.Data;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Web.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
  
 
 
 namespace coreapi.Controllers
 { 
 
-    public class ProductTypeController : ApiController
+ [ApiController]
+    [Authorize]
+    public class ProductTypeController : ControllerBase
     {
-        // GET: api/ProductType
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
+         
 
         // GET: api/ProductType/5
-        public IHttpActionResult Get(string id)
+        [HttpGet("[action]")]
+        public IActionResult getProductType ([FromQuery] string cmpid)
         {
-            string _QuatationNo = id;
+            
             DataTable dt = new System.Data.DataTable();
             string _cmd;
-            _cmd = "exec dbo.[getProdTypeMaster] @CmpId=" + _QuatationNo + "";
+            _cmd = "exec dbo.[getProdTypeMaster] @CmpId='" + cmpid + "'";
             dt = DB.DBConn.GetDataTable(_cmd);
-            //string qdetail = string.Empty;
-            //qdetail = JsonConvert.SerializeObject(dt);
-            return Ok(dt);
+            string qdetail = string.Empty;
+             qdetail = JsonConvert.SerializeObject(dt);
+            return Ok(qdetail);
         }
 
         // POST: api/ProductType
-        public void Post(Prodtype prodtype)
+        [HttpPost("[action]")]
+        public void setProductType(Prodtype prodtype)
         {
 
             string _cmd = "";
@@ -47,13 +48,11 @@ namespace coreapi.Controllers
 
         }
 
-        // PUT: api/ProductType/5
-        public void Put(int id, [FromBody]string value)
-        {
-        }
+         
 
         // DELETE: api/ProductType/5
-        public void Delete(string id)
+        [HttpDelete("[action]")]
+        public void DeleteProdtype(string id)
         {
             string _cmd = "";
             _cmd = "delete from msb.mProductCategory where  ProdCateCode='" + id + "' ";

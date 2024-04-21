@@ -3,10 +3,19 @@
 version: '3.4'
 
 services:
-  goalongapi:
-    image: goalongapi
+  
+  goalongdb:
+    image: goalongdb
+    ports:
+      - 1433:1433
+
+  goalongapp:
+    image: goalongwebapi
     build:
       context: .
       dockerfile: ./Dockerfile
     ports:
-      - 6600:6600
+      - 7046:6600
+
+    depends_on:
+      - goalongdb

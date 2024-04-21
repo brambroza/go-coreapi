@@ -1,51 +1,71 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Web.Http;
- 
 using System.Data;
 using coreapi.Models;
+using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using Microsoft.AspNetCore.Authorization;
+using goalongapi.Interfaces;
+ 
 
 namespace coreapi.Controllers
 {
-   
-    public class UserPermisstionController : ApiController
+    [ApiController]
+    [Authorize]
+    public class UserPermisstionController : ControllerBase
     {
-        // GET: api/UserPermisstion
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
+        private readonly IAccountService accountService;
+         public UserPermisstionController(IAccountService accountService) => this.accountService = accountService;
+
 
         // GET: api/UserPermisstion/5
-        public IHttpActionResult Get(string id)
+
+        [HttpPost]
+        [Route("[action]/{cmpid}")]
+
+        public IActionResult GetPermission(string cmpid)
         {
-            string _QuatationNo = id;
+
             DataTable dt = new System.Data.DataTable();
             string _cmd;
-            _cmd = "exec dbo.[getUserPermisstion] @CmpId=" + _QuatationNo + "";
+            _cmd = "exec dbo.[getUserPermisstion] @CmpId=" + cmpid + "";
             dt = DB.DBConn.GetDataTable(_cmd);
             //string qdetail = string.Empty;
             //qdetail = JsonConvert.SerializeObject(dt);
-            return Ok(dt);
+            string JSONString = string.Empty;
+            JSONString = JsonConvert.SerializeObject(dt);
+
+            return Ok(JSONString);
 
         }
 
-        // POST: api/UserPermisstion
-        public void Post([FromBody]string value)
+        [HttpPost]
+        [Route("[action]/{cmpid}")]
+        public IActionResult GetUserList( string cmpid)
         {
+
+            DataTable dt = new System.Data.DataTable();
+            string _cmd;
+            _cmd = "exec dbo.[getUserlist] @CmpId=" + cmpid + "";
+            dt = DB.DBConn.GetDataTable(_cmd);
+            //string qdetail = string.Empty;
+            //qdetail = JsonConvert.SerializeObject(dt);
+            string JSONString = string.Empty;
+            JSONString = JsonConvert.SerializeObject(dt);
+
+            return Ok(JSONString);
         }
 
-        // PUT: api/UserPermisstion/5
-        public void Put(int id, [FromBody]string value)
+        [HttpDelete]
+        [Route("[action]")]
+        public bool DeleteUser(string Username)
         {
+            bool res  = accountService.removeUser(Username);
+            return res;
         }
 
-        // DELETE: api/UserPermisstion/5
-        public void Delete(int id)
-        {
-        }
+
+
     }
 }

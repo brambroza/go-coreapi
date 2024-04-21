@@ -6,48 +6,53 @@ using System.Data;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Web.Http; 
+using Microsoft.AspNetCore.Authorization;
+
+using System.IdentityModel.Tokens.Jwt;
+using Newtonsoft.Json;
+using Microsoft.AspNetCore.Mvc;
 
 namespace coreapi.Controllers.Master
 {
-    
-    public class WarehouseController : ApiController
+
+    [ApiController]
+    [Authorize]
+
+    public class WarehouseController : ControllerBase
     {
         // GET: api/Warehouse
 
 
-
-        // GET: api/Warehouse/5
-        [Route("api/Warehouse")]
-        [HttpGet]
-        public IHttpActionResult Get(int CmpId)
+        [HttpGet("[action]")]
+        public IActionResult getWarehouse([FromQuery] string CmpId)
         {
-             
+
             DataTable dt = new System.Data.DataTable();
             string _cmd;
             _cmd = "exec dbo.getWareHouseAll @CmpId='" + CmpId + "'";
             dt = DB.DBConn.GetDataTable(_cmd);
-            //string qdetail = string.Empty;
-            //qdetail = JsonConvert.SerializeObject(dt);
-            return Ok(dt);
+            string JSONString = string.Empty;
+            JSONString = JsonConvert.SerializeObject(dt);
+
+            return Ok(JSONString);
         }
 
-        // POST: api/Warehouse
-        [Route("api/Warehouse")]
-        [HttpPost]
-        public IHttpActionResult App(WareHouse  wh)
+
+        [HttpPost("[action]")]
+        public IActionResult setWarehouse(WareHouse wh)
         {
             MsgReturn msgretrun = new MsgReturn();
 
             try
             {
                 string _cmd = "";
-                _cmd = "exec  dbo.setmWareHouse_Trans"; 
+                _cmd = "exec  dbo.setmWareHouse_Trans";
                 _cmd += "  @UpdUser  ='" + wh.UpdUser + "'";
-                _cmd += ",@WareHouseId =" + wh.WareHouseId; 
+                _cmd += ",@WareHouseId =" + wh.WareHouseId;
                 _cmd += ",@WareHouseName ='" + wh.WareHouseName + "'";
-                _cmd += ",@WareHouseDescription  ='" + wh.WareHouseDescription + "'"; 
+                _cmd += ",@WareHouseDescription  ='" + wh.WareHouseDescription + "'";
                 _cmd += ",@StateActive =" + wh.StateActive;
+                _cmd += ",@CmpId ='" + wh.CmpId + "'";
                 if (DB.DBConn.ExecuteOnly(_cmd))
                 {
                     msgretrun.ReturnCode = "200";
@@ -71,20 +76,23 @@ namespace coreapi.Controllers.Master
 
 
         }
-        // PUT: api/Warehouse/5
-        [Route("api/Warehouse")]
-        [HttpPut]
 
-        public void Put(int id, [FromBody]string value)
+
+
+        [HttpGet("[action]")]
+        public IActionResult getLocationByWH([FromQuery] string CmpId, [FromQuery] string WareHouseId)
         {
+
+            DataTable dt = new System.Data.DataTable();
+            string _cmd;
+            _cmd = "exec dbo.getWareHouseLocationByWH @CmpId='" + CmpId + "' , @WH='" + WareHouseId + "'";
+            dt = DB.DBConn.GetDataTable(_cmd);
+            string JSONString = string.Empty;
+            JSONString = JsonConvert.SerializeObject(dt);
+
+            return Ok(JSONString);
         }
 
-        // DELETE: api/Warehouse/5
-        [Route("api/Warehouse")]
-        [HttpDelete]
-        public void Delete(int id)
-        {
-        }
 
 
 
@@ -92,24 +100,24 @@ namespace coreapi.Controllers.Master
         /// api location
         /// 
 
-        [Route("api/location")]
-        [HttpGet]
-        public IHttpActionResult getLocation(int CmpId)
+
+        [HttpGet("[action]")]
+        public IActionResult getLocation([FromQuery] string CmpId)
         {
 
             DataTable dt = new System.Data.DataTable();
             string _cmd;
             _cmd = "exec dbo.getWareHouseLocationAll @CmpId='" + CmpId + "'";
             dt = DB.DBConn.GetDataTable(_cmd);
-            //string qdetail = string.Empty;
-            //qdetail = JsonConvert.SerializeObject(dt);
-            return Ok(dt);
+            string JSONString = string.Empty;
+            JSONString = JsonConvert.SerializeObject(dt);
+
+            return Ok(JSONString);
         }
 
-        // POST: api/Warehouse
-        [Route("api/location")]
-        [HttpPost]
-        public IHttpActionResult setLocation(WareHouseLocation loc)
+
+        [HttpPost("[action]")]
+        public IActionResult setLocation(WareHouseLocation loc)
         {
             MsgReturn msgretrun = new MsgReturn();
 
@@ -119,10 +127,11 @@ namespace coreapi.Controllers.Master
                 _cmd = "exec  dbo.setmWareHouseLocation_Trans";
                 _cmd += " @UpdUser  ='" + loc.UpdUser + "'";
                 _cmd += ",@WareHouseLocId =" + loc.WareHouseLocId;
-                _cmd += ",@WareHouseId =" + loc.WareHouseId; 
+                _cmd += ",@WareHouseId =" + loc.WareHouseId;
                 _cmd += ",@WareHouseLocName ='" + loc.WareHouseLocName + "'";
-                _cmd += ",@WareHouseLocDescription  ='" + loc.WareHouseLocDescription + "'"; 
+                _cmd += ",@WareHouseLocDescription  ='" + loc.WareHouseLocDescription + "'";
                 _cmd += ",@StateActive =" + loc.StateActive;
+                _cmd += ",@CmpId ='" + loc.CmpId + "'";
                 if (DB.DBConn.ExecuteOnly(_cmd))
                 {
                     msgretrun.ReturnCode = "200";

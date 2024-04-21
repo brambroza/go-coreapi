@@ -104,6 +104,8 @@ namespace coreapi.Controllers
                 menus.to = r["to"].ToString();
                 menus.link = r["to"].ToString();
                 menus.icon = r["icon"].ToString();
+
+
                 foreach (DataRow xr in sdt.Select("MenuMainId=" + Convert.ToInt32(r["MenuId"])))
                 {
 
@@ -114,6 +116,9 @@ namespace coreapi.Controllers
                     sub.link = xr["to"].ToString();
                     sub.icon = xr["icon"].ToString();
                     sub.MenuId = Convert.ToInt32(xr["MenuId"]);
+                    sub.SubOverViewSales = Convert.ToInt16(xr["SubOverViewSales"]);
+                    sub.SubOverViewCust = Convert.ToInt16(xr["SubOverViewCust"]);
+                    sub.SubOverViewVendor = Convert.ToInt16(xr["SubOverViewVendor"]);
                     menus.children.Add(sub);
 
                 }

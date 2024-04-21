@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.EntityFrameworkCore;
 using static goalongapi.Installers.JwtInstaller;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.CookiePolicy;
 
 namespace goalongapi.Interfaces
 {
@@ -33,21 +34,57 @@ namespace goalongapi.Interfaces
             databaseContext.Accounts.Add(account);
             await databaseContext.SaveChangesAsync();
         }
+
+        public async Task RegisterGoogle(AccountGoogle account)
+        {
+            var existingAccount = await databaseContext.AccountsGoogle.SingleOrDefaultAsync(a => a.Email == account.Email);
+            if (existingAccount != null)
+            {
+                throw new Exception("Existing Account");
+            }
+
+
+            databaseContext.AccountsGoogle.Add(account);
+            await databaseContext.SaveChangesAsync();
+        }
+
+
         public async Task<Account?> Login(string username,
                                           string password)
         {
             /* var account = await databaseContext.Accounts.Include(a => a.Role)
             .SingleOrDefaultAsync(a => a.Username == username); */
 
+
+
+
             var account = await databaseContext.Accounts.Include(a => a.Role)
-            .SingleOrDefaultAsync(a => a.Username == username);
+            .SingleOrDefaultAsync(a => a.Username == username && a.CmpId != null && a.CmpId != "0" && a.stateEmailConfirm == 1);
 
             if (account != null && VerifyPassword(account.Password, password))
             {
                 return account;
             }
+
+
+
             return null;
         }
+
+
+        public async Task<AccountGoogle?> LoginGoogle(long Id, string Email)
+        {
+            var account = await databaseContext.AccountsGoogle.Include(a => a.Role)
+            .SingleOrDefaultAsync(a => a.Id == Id && a.Email == Email && a.CmpId != null && a.CmpId != "0"  );
+
+
+
+            return account;
+
+
+
+        }
+
 
         private string CreatePasswordHash(string password)
         {
@@ -101,15 +138,56 @@ namespace goalongapi.Interfaces
             return BuildToken(claims);
         }
 
+        public string GenerateTokenGoogle (AccountGoogle account)
+        {
+            var claims = new []{
+                new Claim(JwtRegisteredClaimNames.Sub, account.Email),
+                new Claim("role" , account.Role.Name), 
+                new Claim("additional" , "todo"),
+            };
+            return BuildToken(claims);
+        }
+
+        public string GenerateTokenRegister(string Username)
+        {
+            var claims = new[] {
+              new Claim(JwtRegisteredClaimNames.Sub , Username),
+              new Claim("role" , "admin"),
+              new Claim("additional" , "todo"),
+            };
+            return BuildToken(claims);
+        }
+
+        public bool UpdateConfirmEmail(string Username)
+        {
+            var account = databaseContext.Accounts.FirstOrDefault(a => a.Username == Username);
+            if (account != null)
+            {
+                account.stateEmailConfirm = 1;
+                databaseContext.Entry(account).State = EntityState.Modified;
+                databaseContext.SaveChanges();
+
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+
+        }
+
+
         public Account GetInfo(string accessToken)
         {
             var token = new JwtSecurityTokenHandler().ReadJwtToken(accessToken);
             var username = token.Claims.First(claim => claim.Type == JwtRegisteredClaimNames.Sub).Value;
             var role = token.Claims.First(claim => claim.Type == "role").Value;
 
-            var account = new Account{
+            var account = new Account
+            {
                 Username = username,
-                Role = new Role{
+                Role = new Role
+                {
                     Name = role
                 }
             };
@@ -117,10 +195,38 @@ namespace goalongapi.Interfaces
             return account;
         }
 
+        public bool validateEmails(string Username)
+        {
+            var account = databaseContext.Accounts.FirstOrDefault(a => a.Username == Username);
+            if (account == null)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        public bool removeUser(string Username)
+        {
+            var account = databaseContext.Accounts.FirstOrDefault(a => a.Username == Username);
+            if (account != null)
+            {
+                databaseContext.Remove(account);
+                databaseContext.SaveChanges();
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+
+        }
+
+
+
         private string BuildToken(Claim[] claims)
         {
             var expires = DateTime.Now.AddDays(Convert.ToDouble(jwtSettings.Expire));
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Key)); 
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Key));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var token = new JwtSecurityToken(
