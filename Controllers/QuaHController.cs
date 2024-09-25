@@ -48,11 +48,8 @@ namespace coreapi.Controllers
             _cmd = "exec dbo.getQuotationAll @CmpId='" + id + "', @User='" + user + "'";
             DataTable datatable = DB.DBConn.GetDataTable(_cmd);
 
-
             _cmd = "exec dbo.getQuotationItemAll @CmpId='" + id + "', @User='" + user + "'";
             DataTable datatableDetail = DB.DBConn.GetDataTable(_cmd);
-
-
 
 
 
