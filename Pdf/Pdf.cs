@@ -21,7 +21,7 @@ namespace coreapi.Pdf
                     //reportDocument.SetDataSource(dataSet);
                   //  reportDocument.SetDatabaseLogon("sa", "1234@pass", "PCLDK\\PCLDKERP", "DB_Payroll");
                     reportDocument.SetDatabaseLogon("sa", "1234", "NOHF\\NEXPROJECT", "NSDBs");
-                    reportDocument.SetParameterValue("QuatationNo", id);
+                    reportDocument.SetParameterValue("QuotationNo", id);
                     reportDocument.ExportToDisk(ExportFormatType.PortableDocFormat, newPath);
                     _contentBytes = StreamToBytes(reportDocument.ExportToStream(ExportFormatType.PortableDocFormat));
                 }
@@ -72,7 +72,7 @@ namespace coreapi.Pdf
             //  reportDocument.SetDatabaseLogon("sa", "1234", "NOHF", "DB_Payroll");
                   reportDocument.SetDatabaseLogon("sa", "1234", "NOHF\\NEXPROJECT", "NSDBs");
            // reportDocument.SetDatabaseLogon("sa", "dr0wss@p", "SRV-EXPRESS\\WEBAPP", "NSDBs");
-            reportDocument.SetParameterValue("QuatationNo", id);
+            reportDocument.SetParameterValue("QuotationNo", id);
                     reportDocument.ExportToDisk(ExportFormatType.PortableDocFormat, newPath);
                     _contentBytes = StreamToBytes(reportDocument.ExportToStream(ExportFormatType.PortableDocFormat));
                 }

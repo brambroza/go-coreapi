@@ -28,8 +28,8 @@ namespace coreapi.Controllers
 
                 switch (type)
                 {
-                    case "qua":
-                        _cmd = "Select Top 1  QuatationNo  as FTDocNo FROM  mdb.Quatation  where   CmpId =" + cmpid + " and  QuatationNo='" + DocNo + "'";
+                    case "quo":
+                        _cmd = "Select Top 1  QuotationNo  as FTDocNo FROM  mdb.Quotation  where   CmpId =" + cmpid + " and  QuotationNo='" + DocNo + "'";
                         dt = DB.DBConn.GetDataTable(_cmd);
                         if (dt.Rows.Count > 0)
                         {
@@ -39,7 +39,7 @@ namespace coreapi.Controllers
 
                         if ((_docnew.ToString() == "") || (_docnew.ToLower() == "null"))
                         {
-                            _cmd = "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo.quarun   set @Runno  = 'QT-'+@Runno  select @Runno   "; // + cmpid  ;
+                            _cmd = "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo.quorun   set @Runno  = 'QT-'+@Runno  select @Runno   "; // + cmpid  ;
                             dt = DB.DBConn.GetDataTable(_cmd);
 
                         }
@@ -566,8 +566,8 @@ namespace coreapi.Controllers
             {
                 switch (type)
                 {
-                    case "qua":
-                        _cmd = "Select Top 1  QuatationNo  as FTDocNo FROM  mdb.Quatation  where   CmpId =" + cmpid + " and  QuatationNo='" + DocNo + "'";
+                    case "quo":
+                        _cmd = "Select Top 1  QuotationNo  as FTDocNo FROM  mdb.Quotation  where   CmpId =" + cmpid + " and  QuotationNo='" + DocNo + "'";
                         dt = DB.DBConn.GetDataTable(_cmd);
                         if (dt.Rows.Count > 0)
                         {
@@ -577,7 +577,7 @@ namespace coreapi.Controllers
 
                         if ((_docnew.ToString() == "") || (_docnew.ToLower() == "null"))
                         {
-                            _cmd = "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo." + cmpid + "-quarun   set @Runno  = 'QT-'+@Runno  select @Runno   "; // + cmpid  ;
+                            _cmd = "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo." + cmpid + "-quorun   set @Runno  = 'QT-'+@Runno  select @Runno   "; // + cmpid  ;
                             dt = DB.DBConn.GetDataTable(_cmd);
 
                         }
@@ -1108,8 +1108,8 @@ namespace coreapi.Controllers
             string _cmd;
             switch (type)
             {
-                case "qua":
-                    _cmd = "Select Top 1  QuatationNo  as FTDocNo FROM  mdb.Quatation  where   CmpId =" + cmpid + " and  QuatationNo='" + DocNo + "'";
+                case "quo":
+                    _cmd = "Select Top 1  QuotationNo  as FTDocNo FROM  mdb.Quotation  where   CmpId =" + cmpid + " and  QuotationNo='" + DocNo + "'";
                     dt = DB.DBConn.GetDataTable(_cmd);
                     if (dt.Rows.Count > 0)
                     {
@@ -1119,7 +1119,7 @@ namespace coreapi.Controllers
 
                     if ((_docnew.ToString() == "") || (_docnew.ToLower() == "null"))
                     {
-                        _cmd = "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo.quarun   set @Runno  = 'QT-'+@Runno  select @Runno   "; // + cmpid  ;
+                        _cmd = "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo.quorun   set @Runno  = 'QT-'+@Runno  select @Runno   "; // + cmpid  ;
                         dt = DB.DBConn.GetDataTable(_cmd);
 
                     }

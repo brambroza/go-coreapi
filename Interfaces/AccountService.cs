@@ -109,7 +109,7 @@ namespace goalongapi.Interfaces
         {
             var parts = hashedPassword.Split('.', 2);
             if (parts.Length != 2)
-            {
+            { 
                 return false;
             }
 

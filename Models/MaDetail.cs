@@ -11,7 +11,7 @@ namespace coreapi.Models
         public string MANo { get; set; }
         public string ServiceType { get; set; }
         public string Description { get; set; }
-        public string ProdductCode { get; set; }
+        public string ProductCode { get; set; }
         public string SerialNumber { get; set; }
         public string Model { get; set; }
         public int Seq { get; set; }
@@ -24,7 +24,7 @@ namespace coreapi.Models
         public string NotificationQty { get; set; }
         public int ServiceGrp { get; set; }
         public string ProjectName { get; set; }
-        public string QuatationNo { get; set; }
+        public string QuotationNo { get; set; }
         public string PurchaseNo { get; set; }
         public string ReferNo { get; set; }
         public int ProductType { get; set; }

@@ -21,6 +21,7 @@ namespace goalongapi.Services
         {
             List<string> listFileName = new List<string>();
             string uploadPath = $"{webHostEnvironment.WebRootPath}/images/";
+              
 
             foreach (var formFile in formFiles)
             {

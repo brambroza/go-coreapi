@@ -8,47 +8,9 @@
 //    [Route("[controller]")]
 //    [Authorize]
 
-//    public class UserController : ApiController
-//    {
-//        // GET: api/User
-//        [Route("api/User")]
-//        [HttpGet]
-//        public IEnumerable<string> Get()
-//        {
-//            return new string[] { "value1", "value2" };
-//        }
-
-//        // GET: api/User/5
-//        [Route("api/User")]
-//        [HttpGet]
-//        public IHttpActionResult Get(string id)
-//        {
-//            string _QuatationNo = id;
-//            DataTable dt = new System.Data.DataTable();
-//            string _cmd;
-//            _cmd = "exec dbo.[getUserlist] @CmpId=" + _QuatationNo + "";
-//            dt = DB.DBConn.GetDataTable(_cmd);
-//            //string qdetail = string.Empty;
-//            //qdetail = JsonConvert.SerializeObject(dt);
-//            return Ok(dt);
-//        }
-
+ 
        
-
-//        [Route("api/UserSalelist")]
-//        [HttpGet]
-//        public IHttpActionResult getUserSalelist(string id)
-//        {
-//            string _QuatationNo = id;
-//            DataTable dt = new System.Data.DataTable();
-//            string _cmd;
-//            _cmd = "exec dbo.[getUserSalelist] @CmpId=" + _QuatationNo + "";
-//            dt = DB.DBConn.GetDataTable(_cmd);
-//            //string qdetail = string.Empty;
-//            //qdetail = JsonConvert.SerializeObject(dt);
-//            return Ok(dt);
-//        }
-
+ 
 
 //        [Route("api/UserProfile")]
 //        [HttpPut]

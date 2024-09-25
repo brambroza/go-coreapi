@@ -80,7 +80,7 @@ namespace coreapi.Controllers
                 _cmd += ",@JobType =" + inv.JobType;
                 _cmd += ",@StateSendApprove =" + inv.StateSendApprove;
         
-                _cmd += ",@QuatationNo ='" + inv.QuatationNo + "'";
+                _cmd += ",@QuotationNo ='" + inv.QuotationNo + "'";
                 _cmd += ",@CustomerPONo ='" + inv.CustomerPONo + "'";
                 _cmd += ",@SaleOrderNo ='" + inv.SaleOrderNo + "'";
 

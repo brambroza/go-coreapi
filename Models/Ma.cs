@@ -13,7 +13,7 @@ namespace coreapi.Models
         public string Description { get; set; }
         public int CmpId { get; set; }
         public string PurchaseNo { get; set; }
-        public string QuatationNo { get; set; }
+        public string QuotationNo { get; set; }
         public string ReferCode { get; set; }
         public string StateActive { get; set; }
 

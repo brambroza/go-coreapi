@@ -30,7 +30,7 @@ namespace coreapi.Controllers
             string _cmd = "";
             _cmd = "exec dbo.getMenuRule '" + cmpcode + "' , '" + user +"'";
             dt = DB.DBConn.GetDataTable(_cmd);
-
+ 
 
             _cmd = "exec dbo.getMenuChidrenRule '" + cmpcode + "', '" + user + "' ";
             sdt = DB.DBConn.GetDataTable(_cmd);

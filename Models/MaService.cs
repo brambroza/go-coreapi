@@ -23,7 +23,7 @@ namespace coreapi.Models
         public int ServiceGrp { get; set; }
         public string ProjectName { get; set; }
         public string ReferNo { get; set; }
-        public string QuatationNo { get; set; }
+        public string QuotationNo { get; set; }
         public string PurchaseNo { get; set; }
         public decimal PriceSale { get; set; }
         public decimal PricePur { get; set; }

@@ -5,10 +5,22 @@ using System.Web;
 
 namespace coreapi.Models
 {
-    public class Prodtype 
+    public class Prodtype
     {
-        public string UpdUser { get; set; } 
-        public string ProdCateCode { get; set; } 
-        public string ProdCateDescripton { get; set; } 
+        public string UpdUser { get; set; }
+        public string ProdCateCode { get; set; }
+        public string ProdCateDescripton { get; set; }
+        public string CmpId { get; set; }
+
+    }
+
+    public class ProdTypeSub
+    {
+        public string UpdUser { get; set; }
+        public string ProdCateSubCode { get; set; }
+        public string ProdCateSubDescripton { get; set; }
+        public string ProdCateCode { get; set; }
+        public string CmpId { get; set; }
+
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -14,12 +15,7 @@ namespace NohWebApi.Controllers
 {
 
     [ApiController]
-    [Authorize]
-
-
-
-
-
+    //[Authorize]
 
     public class UploadProfileController : ControllerBase
     {
@@ -30,28 +26,44 @@ namespace NohWebApi.Controllers
         private readonly ILogger<UploadProfileController> _logger;
 
 
-        public UploadProfileController(IWebHostEnvironment webHostEnvironment,ILogger<UploadProfileController> logger, IProductService productService)
+        public UploadProfileController(IWebHostEnvironment webHostEnvironment, ILogger<UploadProfileController> logger, IProductService productService)
         {
-                _logger = logger;
-                this.productService = productService;
-                this.webHostEnvironment = webHostEnvironment; 
+            _logger = logger;
+            this.productService = productService;
+            this.webHostEnvironment = webHostEnvironment;
         }
 
 
         [HttpPost("[action]")]
         public async Task<ActionResult<string>> UploadImageCmpProfile(List<IFormFile> formFiles)
         {
-
-            (string errorMessage, string imageName) = await productService.UploadImage(formFiles);
-            if (!String.IsNullOrEmpty(errorMessage))
+            if (formFiles == null || formFiles.Count == 0)
             {
-                return BadRequest();
+                _logger.LogWarning("No files received.");
+                return BadRequest("No files received.");
             }
 
-            return Ok(imageName);
+            try
+            {
+                (string errorMessage, string imageName) = await productService.UploadImage(formFiles);
+                if (!String.IsNullOrEmpty(errorMessage))
+                {
+                    _logger.LogError($"Error uploading image: {errorMessage}");
+                    return BadRequest(errorMessage);
+                }
 
-
+                _logger.LogInformation($"Image successfully uploaded: {imageName}");
+                return Ok(new { ImageName = imageName });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Exception during file upload: {ex}");
+                return StatusCode(500, "Internal server error");
+            }
         }
+
+ 
+
 
         [HttpPost("[action]")]
         public async Task<ActionResult<string>> uploadallfile(List<IFormFile> formFiles)
@@ -63,12 +75,12 @@ namespace NohWebApi.Controllers
                 return BadRequest();
             }
 
-            return Ok(imageName);
+            return Ok(new { ImageName = imageName });
 
 
         }
 
-      
+
         [HttpPost("[action]")]
         public IActionResult movefile(fileinfo fileinfos)
         {
@@ -89,7 +101,7 @@ namespace NohWebApi.Controllers
 
                 System.IO.File.Move(formfilepath, tofilepath);
 
-                return Ok(  fileinfos.pathto  + fileinfos.filename);
+                return Ok(fileinfos.pathto + fileinfos.filename);
 
             }
             catch (Exception e)

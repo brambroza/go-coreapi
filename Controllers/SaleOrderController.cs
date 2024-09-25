@@ -46,40 +46,40 @@ namespace coreapi.Controllers
         // POST: api/QuaH
         
         [HttpPost("[action]")]
-        public IActionResult setSaleOrder([FromBody]  saleorder quatation)
+        public IActionResult setSaleOrder([FromBody]  saleorder Quotation)
         {
             MsgReturn msgretrun = new MsgReturn();
 
             try
             {
                 string _cmd = "";
-                _cmd = "exec  dbo.setSaleOrder @SaleOrderNo='" + quatation.SaleOrderNo + "' ,@SaleOrderDate='" + quatation.SaleOrderDate + "' ,@SaleOrderBy='" + quatation.SaleOrderBy + "'";
-                _cmd += " ,@SaleOrderState=" + quatation.SaleOrderState;
-                _cmd += " ,@CustomerCode='" + quatation.CustomerCode + "'";
-                _cmd += " ,@CreditType=" + quatation.CreditType;
-                _cmd += " ,@CreditDate=" + quatation.CreditDate;
-                _cmd += " ,@ProjectName='" + Tool.Tool.validateStr(quatation.ProjectName) + "'";
-                _cmd += " ,@ReferCode='" + Tool.Tool.validateStr(quatation.ReferCode) + "'";
-                _cmd += " ,@VatType=" + quatation.VatType;
-                _cmd += " ,@Remark='" + quatation.Remark + "'";
-                _cmd += " ,@Note='" + quatation.Note + "'";
-                _cmd += " ,@SaleOrderAmt=" + quatation.SaleOrderAmt;
-                _cmd += " ,@SaleOrderDisPer=" + quatation.SaleOrderDisPer;
-                _cmd += " ,@SaleOrderDisAmt=" + quatation.SaleOrderDisAmt;
-                _cmd += " ,@SaleOrderNetAmt=" + quatation.SaleOrderNetAmt;
-                _cmd += " ,@SaleOrderVatAmt=" + quatation.SaleOrderVatAmt;
-                _cmd += " ,@SaleOrderGrandAmt=" + quatation.SaleOrderGrandAmt;
-                _cmd += " ,@WithholdingTaxState=" + quatation.WithholdingTaxState;
-                _cmd += " ,@ShowSignatureState=" + quatation.ShowSignatureState;
-                _cmd += " ,@CmpId=" + quatation.CmpId;
-                _cmd += " ,@PriceStand='" + quatation.PriceStand + "'";
-                _cmd += " ,@PaymentDue='" + quatation.PaymentDue + "'";
-                _cmd += " ,@Shipping='" + quatation.Shipping + "'";
-                _cmd += " ,@RevNo=" + quatation.RevNo;
-                _cmd += " ,@CustContact='" + Tool.Tool.validateStr(quatation.CustomerContactName) + "'";
-                _cmd += ", @Jobtype=" + quatation.Jobtype;
-                _cmd += " ,@QuatationNo='" + quatation.QuatationNo + "'";
-                _cmd += " ,@CustomerPONo='" + quatation.CustomerPONo + "'";
+                _cmd = "exec  dbo.setSaleOrder @SaleOrderNo='" + Quotation.SaleOrderNo + "' ,@SaleOrderDate='" + Quotation.SaleOrderDate + "' ,@SaleOrderBy='" + Quotation.SaleOrderBy + "'";
+                _cmd += " ,@SaleOrderState=" + Quotation.SaleOrderState;
+                _cmd += " ,@CustomerCode='" + Quotation.CustomerCode + "'";
+                _cmd += " ,@CreditType=" + Quotation.CreditType;
+                _cmd += " ,@CreditDate=" + Quotation.CreditDate;
+                _cmd += " ,@ProjectName='" + Tool.Tool.validateStr(Quotation.ProjectName) + "'";
+                _cmd += " ,@ReferCode='" + Tool.Tool.validateStr(Quotation.ReferCode) + "'";
+                _cmd += " ,@VatType=" + Quotation.VatType;
+                _cmd += " ,@Remark='" + Quotation.Remark + "'";
+                _cmd += " ,@Note='" + Quotation.Note + "'";
+                _cmd += " ,@SaleOrderAmt=" + Quotation.SaleOrderAmt;
+                _cmd += " ,@SaleOrderDisPer=" + Quotation.SaleOrderDisPer;
+                _cmd += " ,@SaleOrderDisAmt=" + Quotation.SaleOrderDisAmt;
+                _cmd += " ,@SaleOrderNetAmt=" + Quotation.SaleOrderNetAmt;
+                _cmd += " ,@SaleOrderVatAmt=" + Quotation.SaleOrderVatAmt;
+                _cmd += " ,@SaleOrderGrandAmt=" + Quotation.SaleOrderGrandAmt;
+                _cmd += " ,@WithholdingTaxState=" + Quotation.WithholdingTaxState;
+                _cmd += " ,@ShowSignatureState=" + Quotation.ShowSignatureState;
+                _cmd += " ,@CmpId=" + Quotation.CmpId;
+                _cmd += " ,@PriceStand='" + Quotation.PriceStand + "'";
+                _cmd += " ,@PaymentDue='" + Quotation.PaymentDue + "'";
+                _cmd += " ,@Shipping='" + Quotation.Shipping + "'";
+                _cmd += " ,@RevNo=" + Quotation.RevNo;
+                _cmd += " ,@CustContact='" + Tool.Tool.validateStr(Quotation.CustomerContactName) + "'";
+                _cmd += ", @Jobtype=" + Quotation.Jobtype;
+                _cmd += " ,@QuotationNo='" + Quotation.QuotationNo + "'";
+                _cmd += " ,@CustomerPONo='" + Quotation.CustomerPONo + "'";
                  
 
                 if (DB.DBConn.ExecuteOnly(_cmd))
@@ -108,18 +108,18 @@ namespace coreapi.Controllers
 
         
         [HttpPost("[action]")]
-        public IActionResult setsaleordercopy(SaleOrderCopy quatation)
+        public IActionResult setsaleordercopy(SaleOrderCopy Quotation)
         {
             MsgReturn msgretrun = new MsgReturn();
 
             try
             {
                 string _cmd = "";
-                _cmd = "exec  dbo.setSaleOrderCopy @SaleOrderNo='" + quatation.SaleOrderNo + "'";
-                _cmd += ", @SaleOrderNoNew ='" + quatation.SaleOrderNoNew + "'";
-                _cmd += " ,@RevNo=" + quatation.RevNo;
-                _cmd += ", @CmpId ='" + quatation.CmpId + "'";
-                 _cmd += ", @userlogin ='" + quatation.userlogin + "'";
+                _cmd = "exec  dbo.setSaleOrderCopy @SaleOrderNo='" + Quotation.SaleOrderNo + "'";
+                _cmd += ", @SaleOrderNoNew ='" + Quotation.SaleOrderNoNew + "'";
+                _cmd += " ,@RevNo=" + Quotation.RevNo;
+                _cmd += ", @CmpId ='" + Quotation.CmpId + "'";
+                 _cmd += ", @userlogin ='" + Quotation.userlogin + "'";
 
 
 

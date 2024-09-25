@@ -135,7 +135,7 @@ namespace coreapi.Controllers
             try
             {
                 string _cmd = "";
-                _cmd = "exec dbo.setQuatationAppToPO @CmpId='" + apppo.cmpid + "' , @DocNo='" + apppo.docno + "' , @RevNo =" + apppo.revno + ",@User='" + apppo.user + "',@state='" + apppo.state + "'";
+                _cmd = "exec dbo.setQuotationAppToPO @CmpId='" + apppo.cmpid + "' , @DocNo='" + apppo.docno + "' , @RevNo =" + apppo.revno + ",@User='" + apppo.user + "',@state='" + apppo.state + "'";
 
                 if (DB.DBConn.ExecuteOnly(_cmd))
                 {
@@ -182,7 +182,7 @@ namespace coreapi.Controllers
                 _cmd += ",@Description  ='" + project.Description + "'";
                 _cmd += ",@CmpId =" + project.CmpId;
                 _cmd += ",@PurchaseNo  ='" + project.PurchaseNo + "'";
-                _cmd += ",@QuatationNo  ='" + project.QuatationNo + "'";
+                _cmd += ",@QuotationNo  ='" + project.QuotationNo + "'";
                 _cmd += ",@ReferCode  ='" + project.ReferCode + "'";
                 _cmd += ",@StateActive =" + project.StateActive;
                 _cmd += ",@SaleOrderNo  ='" + project.SaleOrderNo + "'";
@@ -332,7 +332,7 @@ namespace coreapi.Controllers
                 _cmd += ",@Description  ='" + project.Description + "'";
                 _cmd += ",@CmpId ='" + project.CmpId + "'";
                 _cmd += ",@PurchaseNo  ='" + project.PurchaseNo + "'";
-                _cmd += ",@QuatationNo  ='" + project.QuatationNo + "'";
+                _cmd += ",@QuotationNo  ='" + project.QuotationNo + "'";
                 _cmd += ",@ReferCode  ='" + project.ReferCode + "'";
                 _cmd += ",@StateActive ='" + project.StateActive + "'";
                 _cmd += ",@ProjectDueDate  ='" + project.ProjectDueDate + "'";

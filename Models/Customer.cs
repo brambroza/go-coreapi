@@ -49,6 +49,59 @@ namespace coreapi.Models
 
     }
 
+     public class CustomerList
+    {
+        public string UpdUser { get; set; }
+        public string CustomerCode { get; set; }
+        public string CustomerName { get; set; }
+        public string CustomerAddress { get; set; }
+        public string CustomerTaxNo { get; set; }
+        public string CustomerBranch { get; set; }
+        public string CustomerBranchCode { get; set; }
+        public string CustomerBranchName { get; set; }
+        public string ContactName { get; set; }
+        public string ContactEmail { get; set; }
+        public string ContactPhone { get; set; }
+        public string ContactName1 { get; set; }
+        public string ContactEmail1 { get; set; }
+        public string ContactPhone1 { get; set; }
+        public int CreditDay { get; set; }
+        public string PhoneOffice { get; set; }
+        public string FaxOffice { get; set; }
+        public string Website { get; set; }
+        public string AddressShip { get; set; }
+        public string Remark { get; set; }
+        public string CmpId { get; set; }
+        public string ContactName2 { get; set; }
+        public string ContactEmail2 { get; set; }
+        public string ContactPhone2 { get; set; }
+        public string ContactPosition2 { get; set; }
+        public string ContactPosition1 { get; set; }
+        public string ContactPosition { get; set; }
+        public string AddrSubDistrict { get; set; }
+        public string AddrDistrict { get; set; }
+        public string AddrProvince { get; set; }
+        public string AddrPostCode { get; set; }
+        public string ImgPath { get; set; }
+        public int CreditAccId { get; set; }
+        public int DebitAccId { get; set; }
+        public string BusinessGrpCode { get;set;}
+
+        public List<Contact> contacts {get;set;}
+
+
+
+    }
+
+    public class Contact {
+     public string Name {get;set;}
+     public string Email {get;set;}
+     public string Phone {get;set;}
+     public string Position {get;set;}
+    }
+
+
+
     public class CustCodeFill
     {
         public string CustomerCode { get; set; }

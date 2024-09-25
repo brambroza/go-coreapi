@@ -42,8 +42,8 @@ namespace coreapi.DB
         {
 
 
-            //string appset = "appsettings.json";
-            string appset = "appsettings.Development.json";
+            string appset = "appsettings.json";
+            //string appset = "appsettings.Development.json";
             var builder = new ConfigurationBuilder()
                       .SetBasePath(Directory.GetCurrentDirectory())
                       .AddJsonFile(appset);

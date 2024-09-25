@@ -1,16 +1,17 @@
-﻿using System;
+﻿using System.IO;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
 namespace coreapi.Models
 {
-    public class Quatation
+    public class Quotation
     {
-        public string QuatationNo { get; set; }
-        public string QuatationDate { get; set; }
-        public string QuatationBy { get; set; }
-        public int QuatationState { get; set; }
+        public string QuotationNo { get; set; }
+        public string QuotationDate { get; set; }
+        public string QuotationBy { get; set; }
+        public string QuotationState { get; set; }
         public string CustomerCode { get; set; }
         public int CreditType { get; set; }
         public int CreditDate { get; set; }
@@ -19,32 +20,32 @@ namespace coreapi.Models
         public int VatType { get; set; }
         public string Remark { get; set; }
         public string Note { get; set; }
-        public decimal QuatationAmt { get; set; }
-        public decimal QuatationDisPer { get; set; }
-        public decimal QuatationDisAmt { get; set; }
-        public decimal QuatationNetAmt { get; set; }
-        public decimal QuatationVatAmt { get; set; }
-        public decimal QuatationGrandAmt { get; set; }
-        public string QuatationGrandAmtTHB { get; set; }
-        public string QuatationGrandAmtENB { get; set; }
+        public decimal QuotationAmt { get; set; }
+        public decimal QuotationDisPer { get; set; }
+        public decimal QuotationDisAmt { get; set; }
+        public decimal QuotationNetAmt { get; set; }
+        public decimal QuotationVatAmt { get; set; }
+        public decimal QuotationGrandAmt { get; set; }
+        public string QuotationGrandAmtTHB { get; set; }
+        public string QuotationGrandAmtENB { get; set; }
         public int WithholdingTaxState { get; set; }
         public int ShowSignatureState { get; set; }
-        public int CmpId { get; set; }
+        public string CmpId { get; set; }
         public string PriceStand { get; set; }
         public string PaymentDue { get; set; }
         public string Shipping { get; set; }
         public int RevNo { get; set; }
         public string CustomerContactName { get; set; }
 
-        public int Jobtype { get; set; }
+        public string Jobtype { get; set; }
 
 
     }
 
-    public class QuatationCopy
+    public class QuotationCopy
     {
-        public string QuatationNo { get; set; }
-        public string QuatationNoNew { get; set; }
+        public string QuotationNo { get; set; }
+        public string QuotationNoNew { get; set; }
         public int RevNo { get; set; }
         public string CmpId {get;set;}
 
@@ -207,11 +208,91 @@ namespace coreapi.Models
 
         public int Jobtype { get; set; }
 
-        public string QuatationNo {get;set;}
+        public string QuotationNo {get;set;}
         public string CustomerPONo {get;set;}
 
 
     }
+
+
+    public class QuotationListItem
+{
+    public string QuotationNo { get; set; }
+    public int Seq { get; set; }
+    public string ProdCode { get; set; } // Nullable
+    public string ProdDescription { get; set; } // Nullable
+    public decimal Qty { get; set; }
+    public string UnitCode { get; set; } // Nullable
+    public decimal UnitPrice { get; set; }
+    public decimal Amt { get; set; }
+    public decimal? DisPer { get; set; } // Nullable
+    public decimal? DisAmt { get; set; } // Nullable
+    public decimal? NetAmt { get; set; } // Nullable
+    public decimal? PricePur { get; set; } // Nullable
+    public decimal? CostAmt { get; set; } // Nullable
+    public decimal? ProfitAmt { get; set; } // Nullable
+    public int RevNo { get; set; }
+    public string GroupCaption1 { get; set; } // Nullable
+    public string GroupCaption2 { get; set; } // Nullable
+    public string GroupCaption3 { get; set; } // Nullable
+    public string CmpId { get; set; }
+
+    public decimal GrossProfitPer {get;set;}
+} 
+
+public class QuotationList
+{
+    public string QuotationNo { get; set; }
+    public string QuotationDate { get; set; } // ISO Date
+    public string QuotationBy { get; set; }
+    public string QuotationState { get; set; } // Nullable
+    public string CustomerCode { get; set; } // Nullable
+    public string CustomerName {get;set;}
+    public int CreditType { get; set; }
+    public int? CreditDate { get; set; } // Nullable
+    public string ProjectName { get; set; } // Nullable
+    public string ReferCode { get; set; } // Nullable
+    public int VatType { get; set; }
+    public string Remark { get; set; } // Nullable
+    public string Note { get; set; } // Nullable
+    public decimal QuotationAmt { get; set; }
+    public decimal QuotationDisPer { get; set; }
+    public decimal QuotationDisAmt { get; set; }
+    public decimal QuotationNetAmt { get; set; }
+    public decimal QuotationVatAmt { get; set; }
+    public decimal QuotationGrandAmt { get; set; }
+    public string QuotationGrandAmtTHB { get; set; }
+    public string QuotationGrandAmtENB { get; set; }
+    public int WithholdingTaxState { get; set; }
+    public int ShowSignatureState { get; set; }
+    public string CmpId { get; set; }
+    public string? DocState { get; set; } // Nullable
+    public string PriceStand { get; set; }
+    public string PaymentDue { get; set; }
+    public string Shipping { get; set; }
+    public int RevNo { get; set; }
+    public int RevNoMax { get; set; }
+    public int? StateApprove { get; set; } // Nullable
+    public string DateApprove { get; set; } // ISO Date Nullable
+    public string ApproveBy { get; set; } // Nullable
+    public string CustomerContactName { get; set; }
+    public int? StateApproveToPO { get; set; } // Nullable
+    public string DateApproveToPO { get; set; } // ISO Date Nullable
+    public string ApproveToPOBy { get; set; } // Nullable
+    public string JobType { get; set; }
+    public int? StateSendApprove { get; set; } // Nullable
+    public string DateSendApprove { get; set; } // ISO Date Nullable
+    public string SendApproveBy { get; set; } // Nullable
+
+    public string SignaturePath {get;set;}
+    public string FullName {get;set;}
+
+    public string JobTypeFilter {get;set;}
+    public string ImgPath {get;set;}
+
+    public List<QuotationListItem> Items { get; set; }
+}
+
 
 
 

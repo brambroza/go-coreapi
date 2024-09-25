@@ -24,28 +24,155 @@ namespace coreapi.Controllers
     {
 
 
-        // GET: api/QuaH/5 
-        [HttpGet("[action]")] 
-
+        [HttpGet("[action]")]
         public IActionResult getQuaH([FromQuery] string id, [FromQuery] string user)
         {
             string _cmd;
             DataTable dt = new System.Data.DataTable();
-            _cmd = "exec dbo.getQuatationAll @CmpId='" + id + "', @User='" + user + "'";
-            DataTable datatable = DB.DBConn.GetDataTable(_cmd);
+            _cmd = "exec dbo.getQuotationAll @CmpId='" + id + "', @User='" + user + "'";
+
             dt = DB.DBConn.GetDataTable(_cmd);
             string JSONString = string.Empty;
             JSONString = JsonConvert.SerializeObject(dt);
             return Ok(JSONString);
         }
 
-         [HttpGet("[action]")] 
+        
+        [HttpGet("[action]")]
+
+        public IActionResult getQuaHList([FromQuery] string id, [FromQuery] string user)
+        {
+            string _cmd;
+            List<QuotationList> quotationList = new List<QuotationList>();
+
+            _cmd = "exec dbo.getQuotationAll @CmpId='" + id + "', @User='" + user + "'";
+            DataTable datatable = DB.DBConn.GetDataTable(_cmd);
+
+
+            _cmd = "exec dbo.getQuotationItemAll @CmpId='" + id + "', @User='" + user + "'";
+            DataTable datatableDetail = DB.DBConn.GetDataTable(_cmd);
+
+
+
+
+
+            foreach (DataRow r in datatable.Rows)
+            {
+                var quotaion = new QuotationList();
+
+                quotaion.QuotationNo = r["QuotationNo"].ToString();
+                quotaion.QuotationDate = r["QuotationDate"].ToString();
+                quotaion.QuotationBy = r["QuotationBy"].ToString();
+                quotaion.QuotationState = r["QuotationState"].ToString();
+                quotaion.CustomerCode = r["CustomerCode"].ToString();
+                quotaion.CustomerName = r["CustomerName"].ToString();
+                quotaion.CreditType = Convert.ToInt32(r["CreditType"]);
+                quotaion.CreditDate = Convert.ToInt32(r["CreditDate"]);
+                quotaion.ProjectName = r["ProjectName"].ToString();
+                quotaion.ReferCode = r["ReferCode"].ToString();
+                quotaion.VatType = Convert.ToInt32(r["VatType"]);
+                quotaion.Remark = r["Remark"].ToString();
+                quotaion.Note = r["Note"].ToString();
+                quotaion.QuotationAmt = Convert.ToDecimal(r["QuotationAmt"]);
+                quotaion.QuotationDisPer = Convert.ToDecimal(r["QuotationDisPer"]);
+                quotaion.QuotationDisAmt = Convert.ToDecimal(r["QuotationDisAmt"]);
+                quotaion.QuotationNetAmt = Convert.ToDecimal(r["QuotationNetAmt"]);
+                quotaion.QuotationVatAmt = Convert.ToDecimal(r["QuotationVatAmt"]);
+                quotaion.QuotationGrandAmt = Convert.ToDecimal(r["QuotationGrandAmt"]);
+                quotaion.QuotationGrandAmtTHB = r["QuotationGrandAmtTHB"].ToString();
+                quotaion.QuotationGrandAmtENB = r["QuotationGrandAmtENB"].ToString();
+                quotaion.WithholdingTaxState = Convert.ToInt32(r["WithholdingTaxState"]);
+                quotaion.ShowSignatureState = Convert.ToInt32(r["ShowSignatureState"]);
+                quotaion.CmpId = r["CmpId"].ToString();
+                quotaion.DocState = r["DocState"].ToString();
+                quotaion.PriceStand = r["PriceStand"].ToString();
+                quotaion.PaymentDue = r["PaymentDue"].ToString();
+                quotaion.Shipping = r["Shipping"].ToString();
+                quotaion.RevNo = Convert.ToInt32(r["RevNo"]);
+                quotaion.RevNoMax = Convert.ToInt32(r["RevNoMax"]);
+                quotaion.StateApprove = Convert.ToInt32(r["StateApprove"]);
+
+                quotaion.DateApprove = r["DateApprove"].ToString();
+                quotaion.ApproveBy = r["ApproveBy"].ToString();
+                quotaion.CustomerContactName = r["CustomerContactName"].ToString();
+                quotaion.StateApproveToPO = Convert.ToInt32(r["StateApproveToPO"]);
+
+                quotaion.DateApproveToPO = r["DateApproveToPO"].ToString();
+                quotaion.ApproveToPOBy = r["ApproveToPOBy"].ToString();
+                quotaion.JobType = r["JobType"].ToString();
+                quotaion.StateSendApprove = Convert.ToInt32(r["StateSendApprove"]);
+                quotaion.DateSendApprove = r["DateSendApprove"].ToString();
+                quotaion.SendApproveBy = r["SendApproveBy"].ToString();
+                quotaion.SignaturePath = r["SignaturePath"].ToString();
+                quotaion.FullName = r["FullName"].ToString();
+                quotaion.JobTypeFilter = r["JobTypeFilter"].ToString();
+                quotaion.ImgPath = r["ImgPath"].ToString();
+
+                if (datatableDetail.Select("QuotationNo ='" + r["QuotationNo"].ToString() + "'  and RevNo=" + Convert.ToInt32(r["RevNo"])).Length > 0)
+                {
+                    quotaion.Items = new List<QuotationListItem>();
+                }
+
+                foreach (DataRow d in datatableDetail.Select("QuotationNo ='" + r["QuotationNo"].ToString() + "'  and RevNo=" + Convert.ToInt32(r["RevNo"])))
+                {
+                    var item = new QuotationListItem();
+                    item.QuotationNo = d["QuotationNo"].ToString();
+                    item.Seq = Convert.ToInt32(d["Seq"]);
+                    item.ProdCode = d["ProdCode"].ToString();
+                    item.ProdDescription = d["ProdDescription"].ToString();
+                    item.Qty = Convert.ToDecimal(d["Qty"]);
+                    item.UnitCode = d["UnitCode"].ToString();
+
+                    item.UnitPrice = Convert.ToDecimal(d["UnitPrice"]);
+                    item.Amt = Convert.ToDecimal(d["Amt"]);
+
+                    item.DisPer = Convert.ToDecimal(d["DisPer"]);
+
+                    item.DisAmt = Convert.ToDecimal(d["DisAmt"]);
+
+                    item.NetAmt = Convert.ToDecimal(d["NetAmt"]);
+
+                    item.PricePur = Convert.ToDecimal(d["PricePur"]);
+
+                    item.CostAmt = Convert.ToDecimal(d["CostAmt"]);
+
+                    item.ProfitAmt = Convert.ToDecimal(d["ProfitAmt"]);
+
+                    item.RevNo = Convert.ToInt32(d["RevNo"]);
+
+
+                    item.GroupCaption1 = d["GroupCaption1"].ToString();
+                    item.GroupCaption2 = d["GroupCaption2"].ToString();
+                    item.GroupCaption3 = d["GroupCaption3"].ToString();
+                    item.CmpId = d["CmpId"].ToString();
+                    item.GrossProfitPer = Convert.ToDecimal(d["GrossProfitPer"]);
+
+                    quotaion.Items.Add(item);
+
+
+                }
+
+
+
+
+                quotationList.Add(quotaion);
+
+            }
+
+            return Ok(quotationList);
+        }
+
+
+
+
+
+        [HttpGet("[action]")]
 
         public IActionResult getQuaHAccept([FromQuery] string id, [FromQuery] string user)
         {
             string _cmd;
             DataTable dt = new System.Data.DataTable();
-            _cmd = "exec dbo.getQuatationAccept @CmpId='" + id + "', @User='" + user + "'";
+            _cmd = "exec dbo.getQuotationAccept @CmpId='" + id + "', @User='" + user + "'";
             DataTable datatable = DB.DBConn.GetDataTable(_cmd);
             dt = DB.DBConn.GetDataTable(_cmd);
             string JSONString = string.Empty;
@@ -53,21 +180,11 @@ namespace coreapi.Controllers
             return Ok(JSONString);
         }
 
-
- 
-
-
-
- 
-
-
-
-
-        [HttpGet("[action]")] 
+        [HttpGet("[action]")]
         public IActionResult getQuaHState([FromQuery] string cmpid, [FromQuery] string state)
         {
             string _cmd;
-            _cmd = "exec dbo.getQuatationapprove @CmpId='" +  (cmpid) + "' ";
+            _cmd = "exec dbo.getQuotationapprove @CmpId='" + (cmpid) + "' ";
             DataTable datatable = DB.DBConn.GetDataTable(_cmd);
             string JSONString = string.Empty;
             JSONString = JsonConvert.SerializeObject(datatable);
@@ -75,79 +192,40 @@ namespace coreapi.Controllers
         }
 
         // POST: api/QuaH
-        
+
         [HttpPost("[action]")]
-        public IActionResult setQuoH([FromBody]  Quatation quatation)
+        public IActionResult setQuoH([FromBody] Quotation Quotation)
         {
             MsgReturn msgretrun = new MsgReturn();
 
             try
             {
                 string _cmd = "";
-                _cmd = "exec  dbo.setQuatation @QuatationNo='" + quatation.QuatationNo + "' ,@QuatationDate='" + quatation.QuatationDate + "' ,@QuatationBy='" + quatation.QuatationBy + "'";
-                _cmd += " ,@QuatationState=" + quatation.QuatationState;
-                _cmd += " ,@CustomerCode='" + quatation.CustomerCode + "'";
-                _cmd += " ,@CreditType=" + quatation.CreditType;
-                _cmd += " ,@CreditDate=" + quatation.CreditDate;
-                _cmd += " ,@ProjectName='" + Tool.Tool.validateStr(quatation.ProjectName) + "'";
-                _cmd += " ,@ReferCode='" + Tool.Tool.validateStr(quatation.ReferCode) + "'";
-                _cmd += " ,@VatType=" + quatation.VatType;
-                _cmd += " ,@Remark='" + quatation.Remark + "'";
-                _cmd += " ,@Note='" + quatation.Note + "'";
-                _cmd += " ,@QuatationAmt=" + quatation.QuatationAmt;
-                _cmd += " ,@QuatationDisPer=" + quatation.QuatationDisPer;
-                _cmd += " ,@QuatationDisAmt=" + quatation.QuatationDisAmt;
-                _cmd += " ,@QuatationNetAmt=" + quatation.QuatationNetAmt;
-                _cmd += " ,@QuatationVatAmt=" + quatation.QuatationVatAmt;
-                _cmd += " ,@QuatationGrandAmt=" + quatation.QuatationGrandAmt;
-                _cmd += " ,@WithholdingTaxState=" + quatation.WithholdingTaxState;
-                _cmd += " ,@ShowSignatureState=" + quatation.ShowSignatureState;
-                _cmd += " ,@CmpId=" + quatation.CmpId;
-                _cmd += " ,@PriceStand='" + quatation.PriceStand + "'";
-                _cmd += " ,@PaymentDue='" + quatation.PaymentDue + "'";
-                _cmd += " ,@Shipping='" + quatation.Shipping + "'";
-                _cmd += " ,@RevNo=" + quatation.RevNo;
-                _cmd += " ,@CustContact='" + Tool.Tool.validateStr(quatation.CustomerContactName) + "'";
-                _cmd += ", @Jobtype=" + quatation.Jobtype;
-
-                if (DB.DBConn.ExecuteOnly(_cmd))
-                {
-                    msgretrun.ReturnCode = "200";
-                    msgretrun.Msg = "Save Success !!";
-                    return Ok(msgretrun);
-                }
-                else
-                {
-                    msgretrun.ReturnCode = "400";
-                    msgretrun.Msg = "Error !!";
-                    return Ok(msgretrun);
-                }
-
-            }
-            catch
-            {
-                msgretrun.ReturnCode = "400";
-                msgretrun.Msg = "Error !!";
-                return Ok(msgretrun);
-            }
-
-        }
-
-
-        
-        [HttpPost("[action]")]
-        public IActionResult QuaHCopy(QuatationCopy quatation)
-        {
-            MsgReturn msgretrun = new MsgReturn();
-
-            try
-            {
-                string _cmd = "";
-                _cmd = "exec  dbo.setQuatationCopy @QuatationNo='" + quatation.QuatationNo + "'";
-                _cmd += ", @QuatationNoNew ='" + quatation.QuatationNoNew + "'";
-                _cmd += " ,@RevNo=" + quatation.RevNo;
-                _cmd += " , @CmpId='" + quatation.CmpId + "'";
-
+                _cmd = "exec  dbo.setQuotation @QuotationNo='" + Quotation.QuotationNo + "' ,@QuotationDate='" + Quotation.QuotationDate + "' ,@QuotationBy='" + Quotation.QuotationBy + "'";
+                _cmd += " ,@QuotationState='" + Quotation.QuotationState + "'";
+                _cmd += " ,@CustomerCode='" + Quotation.CustomerCode + "'";
+                _cmd += " ,@CreditType=" + Quotation.CreditType;
+                _cmd += " ,@CreditDate=" + Quotation.CreditDate;
+                _cmd += " ,@ProjectName='" + Tool.Tool.validateStr(Quotation.ProjectName) + "'";
+                _cmd += " ,@ReferCode='" + Tool.Tool.validateStr(Quotation.ReferCode) + "'";
+                _cmd += " ,@VatType=" + Quotation.VatType;
+                _cmd += " ,@Remark='" + Quotation.Remark + "'";
+                _cmd += " ,@Note='" + Quotation.Note + "'";
+                _cmd += " ,@QuotationAmt=" + Quotation.QuotationAmt;
+                _cmd += " ,@QuotationDisPer=" + Quotation.QuotationDisPer;
+                _cmd += " ,@QuotationDisAmt=" + Quotation.QuotationDisAmt;
+                _cmd += " ,@QuotationNetAmt=" + Quotation.QuotationNetAmt;
+                _cmd += " ,@QuotationVatAmt=" + Quotation.QuotationVatAmt;
+                _cmd += " ,@QuotationGrandAmt=" + Quotation.QuotationGrandAmt;
+                _cmd += " ,@WithholdingTaxState=" + Quotation.WithholdingTaxState;
+                _cmd += " ,@ShowSignatureState=" + Quotation.ShowSignatureState;
+                _cmd += " ,@CmpId=" + Quotation.CmpId;
+                _cmd += " ,@PriceStand='" + Quotation.PriceStand + "'";
+                _cmd += " ,@PaymentDue='" + Quotation.PaymentDue + "'";
+                _cmd += " ,@Shipping='" + Quotation.Shipping + "'";
+                _cmd += " ,@RevNo=" + Quotation.RevNo;
+                _cmd += " ,@CustContact='" + Tool.Tool.validateStr(Quotation.CustomerContactName) + "'";
+                _cmd += ", @Jobtype='" + Quotation.Jobtype + "'";
 
                 if (DB.DBConn.ExecuteOnly(_cmd))
                 {
@@ -174,16 +252,55 @@ namespace coreapi.Controllers
 
 
 
-       
         [HttpPost("[action]")]
-        public IActionResult QuaHApp(  QuoHApprove quoHApprove)
+        public IActionResult QuaHCopy(QuotationCopy Quotation)
         {
             MsgReturn msgretrun = new MsgReturn();
 
             try
             {
                 string _cmd = "";
-                _cmd = "exec dbo.setQuatationApp @CmpId=" + quoHApprove.cmpid + " , @DocNo='" + quoHApprove.docno + "' , @RevNo =" + quoHApprove.revno + ",@User='" + quoHApprove.user + "'";
+                _cmd = "exec  dbo.setQuotationCopy @QuotationNo='" + Quotation.QuotationNo + "'";
+                _cmd += ", @QuotationNoNew ='" + Quotation.QuotationNoNew + "'";
+                _cmd += " ,@RevNo=" + Quotation.RevNo;
+                _cmd += " , @CmpId='" + Quotation.CmpId + "'";
+
+
+                if (DB.DBConn.ExecuteOnly(_cmd))
+                {
+                    msgretrun.ReturnCode = "200";
+                    msgretrun.Msg = "Save Success !!";
+                    return Ok(msgretrun);
+                }
+                else
+                {
+                    msgretrun.ReturnCode = "400";
+                    msgretrun.Msg = "Error !!";
+                    return Ok(msgretrun);
+                }
+
+            }
+            catch
+            {
+                msgretrun.ReturnCode = "400";
+                msgretrun.Msg = "Error !!";
+                return Ok(msgretrun);
+            }
+
+        }
+
+
+
+
+        [HttpPost("[action]")]
+        public IActionResult QuaHApp(QuoHApprove quoHApprove)
+        {
+            MsgReturn msgretrun = new MsgReturn();
+
+            try
+            {
+                string _cmd = "";
+                _cmd = "exec dbo.setQuotationApp @CmpId=" + quoHApprove.cmpid + " , @DocNo='" + quoHApprove.docno + "' , @RevNo =" + quoHApprove.revno + ",@User='" + quoHApprove.user + "'";
 
                 if (DB.DBConn.ExecuteOnly(_cmd))
                 {
@@ -212,15 +329,15 @@ namespace coreapi.Controllers
         }
 
 
-         [HttpPost("[action]")]
-        public IActionResult QuaHSendApp( QuoHApprove quoH)
+        [HttpPost("[action]")]
+        public IActionResult QuaHSendApp(QuoHApprove quoH)
         {
             MsgReturn msgretrun = new MsgReturn();
 
             try
             {
                 string _cmd = "";
-                _cmd = "exec dbo.setQuatationSendApp @CmpId='" +  quoH.cmpid + "' , @DocNo='" + quoH.docno + "' , @RevNo =" + quoH.revno + ",@User='" + quoH.user + "'";
+                _cmd = "exec dbo.setQuotationSendApp @CmpId='" + quoH.cmpid + "' , @DocNo='" + quoH.docno + "' , @RevNo =" + quoH.revno + ",@User='" + quoH.user + "'";
 
                 if (DB.DBConn.ExecuteOnly(_cmd))
                 {
@@ -253,7 +370,7 @@ namespace coreapi.Controllers
 
 
         // DELETE: api/QuaH/5
-         
+
         [HttpDelete("[action]")]
         public IActionResult DeleteQuoH(string id, int RevNo)
         {
@@ -262,10 +379,10 @@ namespace coreapi.Controllers
             {
 
                 string _cmd = "";
-                _cmd = "delete from mdb.Quatation where  QuatationNo='" + id + "' and RevNo=" + RevNo;
+                _cmd = "delete from mdb.Quotation where  QuotationNo='" + id + "' and RevNo=" + RevNo;
 
                 DB.DBConn.ExecuteOnly(_cmd);
-                _cmd = "delete from mdb.Quatation_Detail where  QuatationNo='" + id + "'  and RevNo=" + RevNo;
+                _cmd = "delete from mdb.Quotation_Detail where  QuotationNo='" + id + "'  and RevNo=" + RevNo;
 
                 if (DB.DBConn.ExecuteOnly(_cmd))
                 {
@@ -292,21 +409,135 @@ namespace coreapi.Controllers
         }
 
 
-   
+
         [HttpGet("[action]")]
         public IActionResult GetQuaHRev(string cmpid, string DocNo, int RevNo)
         {
             string _cmd;
-            _cmd = "exec dbo.getQuatation @CmpId='" + cmpid+ "', @DocNo='" + DocNo + "' , @RevNo =" + RevNo;
+
+
+             QuotationList  quotaion = new QuotationList ();
+
+            _cmd = "exec dbo.getQuotation @CmpId='" + cmpid + "', @DocNo='" + DocNo + "' , @RevNo =" + RevNo;
             DataTable datatable = DB.DBConn.GetDataTable(_cmd);
-            return Ok(datatable);
+
+
+            _cmd = "exec dbo.getQuotationDetail @QuotationNo='" + DocNo + "' , @RevNo=" + RevNo + ", @CmpId='" + cmpid + "'";
+            DataTable datatableDetail = DB.DBConn.GetDataTable(_cmd);
+
+ 
+            foreach (DataRow r in datatable.Rows)
+            {
+              //  var quotaion = new QuotationList();
+
+                quotaion.QuotationNo = r["QuotationNo"].ToString();
+                quotaion.QuotationDate = r["QuotationDate"].ToString();
+                quotaion.QuotationBy = r["QuotationBy"].ToString();
+                quotaion.QuotationState = r["QuotationState"].ToString();
+                quotaion.CustomerCode = r["CustomerCode"].ToString();
+                quotaion.CustomerName = r["CustomerName"].ToString();
+                quotaion.CreditType = Convert.ToInt32(r["CreditType"]);
+                quotaion.CreditDate = Convert.ToInt32(r["CreditDate"]);
+                quotaion.ProjectName = r["ProjectName"].ToString();
+                quotaion.ReferCode = r["ReferCode"].ToString();
+                quotaion.VatType = Convert.ToInt32(r["VatType"]);
+                quotaion.Remark = r["Remark"].ToString();
+                quotaion.Note = r["Note"].ToString();
+                quotaion.QuotationAmt = Convert.ToDecimal(r["QuotationAmt"]);
+                quotaion.QuotationDisPer = Convert.ToDecimal(r["QuotationDisPer"]);
+                quotaion.QuotationDisAmt = Convert.ToDecimal(r["QuotationDisAmt"]);
+                quotaion.QuotationNetAmt = Convert.ToDecimal(r["QuotationNetAmt"]);
+                quotaion.QuotationVatAmt = Convert.ToDecimal(r["QuotationVatAmt"]);
+                quotaion.QuotationGrandAmt = Convert.ToDecimal(r["QuotationGrandAmt"]);
+                quotaion.QuotationGrandAmtTHB = r["QuotationGrandAmtTHB"].ToString();
+                quotaion.QuotationGrandAmtENB = r["QuotationGrandAmtENB"].ToString();
+                quotaion.WithholdingTaxState = Convert.ToInt32(r["WithholdingTaxState"]);
+                quotaion.ShowSignatureState = Convert.ToInt32(r["ShowSignatureState"]);
+                quotaion.CmpId = r["CmpId"].ToString();
+                quotaion.DocState = r["DocState"].ToString();
+                quotaion.PriceStand = r["PriceStand"].ToString();
+                quotaion.PaymentDue = r["PaymentDue"].ToString();
+                quotaion.Shipping = r["Shipping"].ToString();
+                quotaion.RevNo = Convert.ToInt32(r["RevNo"]);
+                quotaion.RevNoMax = Convert.ToInt32(r["RevNoMax"]);
+                quotaion.StateApprove = Convert.ToInt32(r["StateApprove"]);
+
+                quotaion.DateApprove = r["DateApprove"].ToString();
+                quotaion.ApproveBy = r["ApproveBy"].ToString();
+                quotaion.CustomerContactName = r["CustomerContactName"].ToString();
+                quotaion.StateApproveToPO = Convert.ToInt32(r["StateApproveToPO"]);
+
+                quotaion.DateApproveToPO = r["DateApproveToPO"].ToString();
+                quotaion.ApproveToPOBy = r["ApproveToPOBy"].ToString();
+                quotaion.JobType = r["JobType"].ToString();
+                quotaion.StateSendApprove = Convert.ToInt32(r["StateSendApprove"]);
+                quotaion.DateSendApprove = r["DateSendApprove"].ToString();
+                quotaion.SendApproveBy = r["SendApproveBy"].ToString();
+                quotaion.SignaturePath = r["SignaturePath"].ToString();
+                quotaion.FullName = r["FullName"].ToString();
+                quotaion.JobTypeFilter = r["JobTypeFilter"].ToString();
+                quotaion.ImgPath = r["ImgPath"].ToString();
+
+                if (datatableDetail.Select("QuotationNo ='" + r["QuotationNo"].ToString() + "'  and RevNo=" + Convert.ToInt32(r["RevNo"])).Length > 0)
+                {
+                    quotaion.Items = new List<QuotationListItem>();
+                }
+
+                foreach (DataRow d in datatableDetail.Select("QuotationNo ='" + r["QuotationNo"].ToString() + "'  and RevNo=" + Convert.ToInt32(r["RevNo"])))
+                {
+                    var item = new QuotationListItem();
+                    item.QuotationNo = d["QuotationNo"].ToString();
+                    item.Seq = Convert.ToInt32(d["Seq"]);
+                    item.ProdCode = d["ProdCode"].ToString();
+                    item.ProdDescription = d["ProdDescription"].ToString();
+                    item.Qty = Convert.ToDecimal(d["Qty"]);
+                    item.UnitCode = d["UnitCode"].ToString();
+
+                    item.UnitPrice = Convert.ToDecimal(d["UnitPrice"]);
+                    item.Amt = Convert.ToDecimal(d["Amt"]);
+
+                    item.DisPer = Convert.ToDecimal(d["DisPer"]);
+
+                    item.DisAmt = Convert.ToDecimal(d["DisAmt"]);
+
+                    item.NetAmt = Convert.ToDecimal(d["NetAmt"]);
+
+                    item.PricePur = Convert.ToDecimal(d["PricePur"]);
+
+                    item.CostAmt = Convert.ToDecimal(d["CostAmt"]);
+
+                    item.ProfitAmt = Convert.ToDecimal(d["ProfitAmt"]);
+
+                    item.RevNo = Convert.ToInt32(d["RevNo"]);
+
+
+                    item.GroupCaption1 = d["GroupCaption1"].ToString();
+                    item.GroupCaption2 = d["GroupCaption2"].ToString();
+                    item.GroupCaption3 = d["GroupCaption3"].ToString();
+                    item.CmpId = d["CmpId"].ToString();
+                    item.GrossProfitPer = Convert.ToDecimal(d["GrossProfitPer"]);
+
+                    quotaion.Items.Add(item);
+
+
+                }
+
+
+
+
+                 
+
+            }
+
+            return Ok(quotaion);
+
         }
 
 
 
 
 
-        [HttpGet("[action]")] 
+        [HttpGet("[action]")]
         public IActionResult getSalesbom([FromQuery] int id)
         {
 
@@ -368,7 +599,7 @@ namespace coreapi.Controllers
             dt = DB.DBConn.GetDataTable(_cmd);
             return Ok(dt);
         }
-  
+
 
 
         [HttpPost]
@@ -688,11 +919,11 @@ namespace coreapi.Controllers
                 _msg.AppendLine();
                 _msg.Append("ชื่อลูกค้า : " + r["CustomerName"].ToString());
                 _msg.AppendLine();
-                _msg.Append("เลขใบเสนอราคา : " + r["QuatationNo"].ToString());
+                _msg.Append("เลขใบเสนอราคา : " + r["QuotationNo"].ToString());
                 _msg.AppendLine();
-                _msg.Append("วันที่ : " + r["QuatationDate"].ToString());
+                _msg.Append("วันที่ : " + r["QuotationDate"].ToString());
                 _msg.AppendLine();
-                _msg.Append("ผู้สร้างใบเสนอรา : " + r["QuatationBy"].ToString());
+                _msg.Append("ผู้สร้างใบเสนอรา : " + r["QuotationBy"].ToString());
                 _msg.AppendLine();
                 _msg.Append("โปรเจค : " + r["ProjectName"].ToString());
                 _msg.AppendLine();
@@ -723,9 +954,9 @@ namespace coreapi.Controllers
             foreach (DataRow r in dt.Rows)
             {
                 _msg = new StringBuilder();
-                _msg.Append(" ใบเสนอราคาเลขที่ " + r["QuatationNo"].ToString() + " อนุมัติแล้ว");
+                _msg.Append(" ใบเสนอราคาเลขที่ " + r["QuotationNo"].ToString() + " อนุมัติแล้ว");
                 _msg.AppendLine();
-                _msg.Append(" อนุมัติโดย : " + r["QuatationBy"].ToString());
+                _msg.Append(" อนุมัติโดย : " + r["QuotationBy"].ToString());
 
 
                 lineNotify(_msg.ToString());

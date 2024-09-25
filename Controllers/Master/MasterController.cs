@@ -96,7 +96,8 @@ namespace coreapi.Controllers.Master
                 {
                     msgretrun.ReturnCode = "400";
                     msgretrun.Msg = "Error !!";
-                    return Ok(msgretrun);
+                    return StatusCode(400, new { Message = msgretrun.Msg, Error = msgretrun.Msg });
+
                 }
 
             }
@@ -104,7 +105,8 @@ namespace coreapi.Controllers.Master
             {
                 msgretrun.ReturnCode = "400";
                 msgretrun.Msg = "Error !!";
-                return Ok(msgretrun);
+                return StatusCode(400, new { Message = msgretrun.Msg, Error = msgretrun.Msg });
+
             }
 
         }
@@ -121,6 +123,22 @@ namespace coreapi.Controllers.Master
 
             return Ok(JSONString);
         }
+
+        [HttpGet("[action]")]
+        public IActionResult getBankType([FromQuery] string cmpid, [FromQuery] string user)
+        {
+            string _cmd;
+            _cmd = "exec dbo.getBankType @CmpId='" + cmpid + "' , @user='" + user + "'";
+            DataTable dt = DB.DBConn.GetDataTable(_cmd);
+            string JSONString = string.Empty;
+            JSONString = JsonConvert.SerializeObject(dt);
+
+            return Ok(JSONString);
+        }
+
+
+
+
 
         [HttpGet("[action]")]
         public IActionResult getBankBranch([FromQuery] string cmpid)
@@ -163,7 +181,8 @@ namespace coreapi.Controllers.Master
                 {
                     msgretrun.ReturnCode = "400";
                     msgretrun.Msg = "Error !!";
-                    return Ok(msgretrun);
+                    return StatusCode(400, new { Message = msgretrun.Msg, Error = msgretrun.Msg });
+
                 }
 
             }
@@ -171,7 +190,8 @@ namespace coreapi.Controllers.Master
             {
                 msgretrun.ReturnCode = "400";
                 msgretrun.Msg = "Error !!";
-                return Ok(msgretrun);
+                return StatusCode(400, new { Message = msgretrun.Msg, Error = msgretrun.Msg });
+
             }
 
 
@@ -213,7 +233,8 @@ namespace coreapi.Controllers.Master
                 {
                     msgretrun.ReturnCode = "400";
                     msgretrun.Msg = "Error !!";
-                    return Ok(msgretrun);
+                    return StatusCode(400, new { Message = msgretrun.Msg, Error = msgretrun.Msg });
+
                 }
 
             }
@@ -221,7 +242,8 @@ namespace coreapi.Controllers.Master
             {
                 msgretrun.ReturnCode = "400";
                 msgretrun.Msg = "Error !!";
-                return Ok(msgretrun);
+                return StatusCode(400, new { Message = msgretrun.Msg, Error = msgretrun.Msg });
+
             }
 
 
@@ -287,7 +309,8 @@ namespace coreapi.Controllers.Master
                 {
                     msgretrun.ReturnCode = "400";
                     msgretrun.Msg = "Error !!";
-                    return Ok(msgretrun);
+                    return StatusCode(400, new { Message = msgretrun.Msg, Error = msgretrun.Msg });
+
                 }
 
             }
@@ -295,7 +318,8 @@ namespace coreapi.Controllers.Master
             {
                 msgretrun.ReturnCode = "400";
                 msgretrun.Msg = "Error !!";
-                return Ok(msgretrun);
+                return StatusCode(400, new { Message = msgretrun.Msg, Error = msgretrun.Msg });
+
             }
 
 

@@ -32,7 +32,7 @@ namespace goalongapi.Entities
         public int RoleId { get; set; }
 
         public string FullName { get; set; }
-        public string CmpId { get; set; } 
+        public string CmpId { get; set; }
         public virtual Role Role { get; set; } = null!;
         public string imgPath { get; set; }
     }

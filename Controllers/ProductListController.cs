@@ -48,11 +48,12 @@ namespace coreapi.Controllers
                 string _cmd = "";
                 _cmd = "exec  dbo.ProductListTrans";
                 _cmd += " @UpdUser  ='" + productList.UpdUser + "'";
-                _cmd += ",@ProdductCode  ='" + Tool.Tool.validateStr(productList.ProdductCode) + "'";
-                _cmd += ",@ProdductName  ='" + Tool.Tool.validateStr(productList.ProdductName) + "'";
-                _cmd += ",@ProdductDescripton  ='" + Tool.Tool.validateStr(productList.ProdductDescripton) + "'";
+                _cmd += ",@ProductCode  ='" + Tool.Tool.validateStr(productList.ProductCode) + "'";
+                _cmd += ",@ProductName  ='" + Tool.Tool.validateStr(productList.ProductName) + "'";
+                _cmd += ",@ProductDescripton  ='" + Tool.Tool.validateStr(productList.ProductDescripton) + "'";
                 _cmd += ",@UnitCode  ='" + productList.UnitCode + "'";
-                _cmd += ",@ProductType =" + productList.ProductType;
+                _cmd += ",@ProductType ='" + productList.ProductType + "'";
+                _cmd += ",@ProductTypeSub ='" + productList.ProductTypeSub + "'";
                 _cmd += ",@BarcodeNo  ='" + Tool.Tool.validateStr(productList.BarcodeNo) + "'";
                 _cmd += ",@PriceSale =" + productList.PriceSale;
                 _cmd += ",@PricePur =" + productList.PricePur;
@@ -62,10 +63,12 @@ namespace coreapi.Controllers
                 _cmd += ",@ProdCateCode  ='" + productList.ProdCateCode + "'";
                 _cmd += ",@Warrantry  ='" + productList.Warranty + "'";
                 _cmd += ",@BrandName  ='" + productList.BrandName + "'";
-                _cmd += ",@ProdductStateActive =" + productList.ProdductStateActive;
-                _cmd += ",@CmpId = '" + productList.CmpId+"'";
+                _cmd += ",@ProductStateActive =" + productList.ProductStateActive;
+                _cmd += ",@CmpId = '" + productList.CmpId + "'";
                 _cmd += ",@ShowReport='" + productList.ShowReport + "'";
                 _cmd += ",@imgpath='" + productList.imgpath + "'";
+                _cmd += ",@ProductCodeRef='" + productList.ShowReport + "'";
+                _cmd += ",@AccountCode='" + productList.AccountCode + "'";
 
                 if (DB.DBConn.ExecuteOnly(_cmd))
                 {
@@ -95,12 +98,12 @@ namespace coreapi.Controllers
 
         // DELETE: api/ProductList/5
         [HttpDelete("[action]")]
-        public void DeleteProduct([FromQuery] string cmpid , [FromQuery] string prodcode )
+        public void DeleteProduct([FromQuery] string cmpid, [FromQuery] string prodcode)
         {
             try
             {
                 string cmd = "";
-                cmd = "delete  from msb.mProductList where ProdductCode='" + prodcode + "' and cmpid='" + cmpid + "'";
+                cmd = "delete  from msb.mProductList where ProductCode='" + prodcode + "' and cmpid='" + cmpid + "'";
                 DB.DBConn.GetDataTable(cmd);
             }
             catch (Exception)

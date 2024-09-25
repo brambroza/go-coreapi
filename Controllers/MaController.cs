@@ -40,7 +40,7 @@ namespace coreapi.Controllers
             _cmd += ",@Description  ='" + Tool.Tool.validateStr(ma.Description )+ "'";
             _cmd += ",@PurchaseNo  ='" + ma.PurchaseNo + "'";
             _cmd += ",@ReferCode  ='" + ma.ReferCode + "'";
-            _cmd += ",@QuatationNo  ='" + ma.QuatationNo + "'";
+            _cmd += ",@QuotationNo  ='" + ma.QuotationNo + "'";
             _cmd += ",@StateActive  ='" + ma.StateActive + "'";
             _cmd += ",@CmpId =" + ma.CmpId;
 

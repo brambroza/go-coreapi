@@ -45,7 +45,7 @@ namespace coreapi.Models
         public int StateSendApprove { get; set; }
      
         
-        public string QuatationNo { get; set; }
+        public string QuotationNo { get; set; }
         public string CustomerPONo { get; set; }
         public string SaleOrderNo { get; set; }
     }

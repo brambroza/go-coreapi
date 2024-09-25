@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using Microsoft.AspNetCore.SignalR.Protocol;
 
 namespace coreapi.Models
 {
@@ -33,7 +34,8 @@ namespace coreapi.Models
         public string AddrDistrict { get; set; }
         public string AddrSubDistrict { get; set; }
         public string AddrPostCode { get; set; }
-
+      
+ 
     }
 
     public class mapuser
@@ -54,8 +56,8 @@ namespace coreapi.Models
         public string CmpName { get; set; }
         public string CmpAddress { get; set; }
         public string CmpTaxid { get; set; }
-        public string CmpType { get; set; }
-        public string StateActive { get; set; }
+        public int CmpType { get; set; }
+        public int StateActive { get; set; }
         public string Email { get; set; }
         public string Fax { get; set; }
         public string Phone { get; set; }
@@ -80,6 +82,8 @@ namespace coreapi.Models
         public string BankCode { get; set; }
         public string BankBranchCode { get; set; }
         public string LineId { get; set; }
+        public string ColorThemeReport { get; set; }
+        public string FaviconUrl { get; set; }
 
 
 
@@ -126,6 +130,20 @@ namespace coreapi.Models
         public int StateActive { get; set; }
         public string CmpId { get; set; }
 
+    }
+
+
+
+    public class paymentmethod {
+        public string UpdUser {get;set;}
+        public string CmpId {get;set;}
+        public int PaymnetMethodId {get;set;}
+        public string BankAccCode {get;set;}
+        public string BankAccName {get;set;}
+        public string BankCode {get;set;}
+        public string BankBranchCode {get;set;}
+        public int BankType {get;set;}
+        public string BankTypeName {get;set;}
     }
 
 

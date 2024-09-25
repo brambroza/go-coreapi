@@ -11,27 +11,27 @@ using System.Data;
 
 namespace coreapi.Controllers
 {
-    public class QuatationController : ApiController
+    public class QuotationController : ApiController
     {
 
-        QuatationDetail[] quatations;
+        QuotationDetail[] Quotations;
         public void getall()
         {
             string _cmd;
-            _cmd = "exec dbo.getQuatationDetail @QuatationNo=''";
+            _cmd = "exec dbo.getQuotationDetail @QuotationNo=''";
               DB.DBConn.GetDataTable(_cmd);
 
         }
 
-        public IEnumerable<QuatationDetail> GetAllQuatationDetail()
+        public IEnumerable<QuotationDetail> GetAllQuotationDetail()
         {
-            return quatations;
+            return Quotations;
         }
 
-        public IHttpActionResult GetQuatation(string  id)
+        public IHttpActionResult GetQuotation(string  id)
         {
             string _cmd;
-            _cmd = "exec dbo.getQuatationDetail @QuatationNo=''";
+            _cmd = "exec dbo.getQuotationDetail @QuotationNo=''";
           DataTable datatable =   DB.DBConn.GetDataTable(_cmd);
             return Ok(datatable);
         }

@@ -58,10 +58,10 @@ namespace coreapi.Controllers
         [HttpGet]
         public IActionResult getUserSaleAsgin([FromQuery] string id)
         {
-            string _QuatationNo = id;
+            string _QuotationNo = id;
             DataTable dt = new System.Data.DataTable();
             string _cmd;
-            _cmd = "exec dbo.[getUserSaleAsgin] @CmpId=" + _QuatationNo + "";
+            _cmd = "exec dbo.[getUserSaleAsgin] @CmpId=" + _QuotationNo + "";
             dt = DB.DBConn.GetDataTable(_cmd);
             //string qdetail = string.Empty;
             //qdetail = JsonConvert.SerializeObject(dt);

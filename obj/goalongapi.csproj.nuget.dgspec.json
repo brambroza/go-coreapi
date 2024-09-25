@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/Users/amnartkongpet/Project/GoAlong/coreapi/goalongapi.csproj": {}
+    "/Users/amnartkongpet/Project/GoAlong/coreapi-new/goalongapi.csproj": {}
   },
   "projects": {
-    "/Users/amnartkongpet/Project/GoAlong/coreapi/goalongapi.csproj": {
+    "/Users/amnartkongpet/Project/GoAlong/coreapi-new/goalongapi.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/amnartkongpet/Project/GoAlong/coreapi/goalongapi.csproj",
+        "projectUniqueName": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/goalongapi.csproj",
         "projectName": "goalongapi",
-        "projectPath": "/Users/amnartkongpet/Project/GoAlong/coreapi/goalongapi.csproj",
+        "projectPath": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/goalongapi.csproj",
         "packagesPath": "/Users/amnartkongpet/.nuget/packages/",
-        "outputPath": "/Users/amnartkongpet/Project/GoAlong/coreapi/obj/",
+        "outputPath": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/Users/amnartkongpet/.nuget/NuGet/NuGet.Config"
@@ -53,6 +53,10 @@
             "CrystalDecisions.Shared": {
               "target": "Package",
               "version": "[1.0.0, )"
+            },
+            "Google.Apis.Sheets.v4": {
+              "target": "Package",
+              "version": "[1.68.0.3525, )"
             },
             "Mapster": {
               "target": "Package",

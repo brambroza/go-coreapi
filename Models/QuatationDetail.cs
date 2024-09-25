@@ -5,9 +5,9 @@ using System.Web;
 
 namespace coreapi.Models
 {
-    public class QuatationDetail
+    public class QuotationDetail
     {
-        public string QuatationNo { get; set; }
+        public string QuotationNo { get; set; }
         public int Seq { get; set; }
         public string ProdCode { get; set; }
         public string ProdDescription { get; set; }
@@ -30,6 +30,8 @@ namespace coreapi.Models
         public string GroupCaption3 { get; set; }
         public string UpdUser { get; set; }
         public string CmpId { get; set; }
+
+        
 
     }
 

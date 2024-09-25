@@ -385,8 +385,8 @@ namespace coreapi.Controllers
             return Ok(JSONString);
         }
 
-
-        public IActionResult getAPBilling_D([FromQuery] string CmpId,[FromQuery] string DocNo ,  [FromQuery] string Userlogin)
+        [HttpGet("[action]")]
+        public IActionResult getAPBilling_D([FromQuery] string CmpId, [FromQuery] string DocNo, [FromQuery] string Userlogin)
         {
             string _cmd;
             _cmd = "exec dbo.getAPBilling_D @CmpId='" + CmpId + "' , @DocNo='" + DocNo + "'";
@@ -396,9 +396,10 @@ namespace coreapi.Controllers
             return Ok(JSONString);
         }
 
-        public IActionResult getAPPayblesForBilling([FromQuery] string CmpId,[FromQuery] string SupplierCode , [FromQuery] string DocNo ,  [FromQuery] string Userlogin)
+        [HttpGet("[action]")]
+        public IActionResult getAPPayblesForBilling([FromQuery] string CmpId, [FromQuery] string SupplierCode, [FromQuery] string DocNo, [FromQuery] string Userlogin)
         {
-             string _cmd;
+            string _cmd;
             _cmd = "exec dbo.getAPPayblesForBilling @CmpId='" + CmpId + "'";
             _cmd += " , @SupplierCode='" + SupplierCode + "' , @DocNo='" + DocNo + "'";
             DataTable datatable = DB.DBConn.GetDataTable(_cmd);

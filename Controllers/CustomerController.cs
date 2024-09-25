@@ -25,8 +25,7 @@ namespace coreapi.Controllers
     {
 
 
-        // GET: api/QuaH/5
-
+       
         [HttpGet]
         [Route("Customer")]
         public IActionResult Get([FromQuery] string cmpid)
@@ -36,12 +35,91 @@ namespace coreapi.Controllers
             string _cmd;
             _cmd = "exec dbo.getCustomer @CmpId='" + cmpid + "'";
             dt = DB.DBConn.GetDataTable(_cmd);
-            //string qdetail = string.Empty;
-            //qdetail = JsonConvert.SerializeObject(dt);
-            string JSONString = string.Empty;
-            JSONString = JsonConvert.SerializeObject(dt);
 
-            return Ok(JSONString);
+            List<CustomerList> customerLists = new List<CustomerList>();
+
+            foreach (DataRow r in dt.Rows)
+            {
+
+                var customer = new CustomerList();
+
+                customer.UpdUser = r["UpdUser"].ToString();
+                customer.CustomerCode = r["CustomerCode"].ToString();
+                customer.CustomerName = r["CustomerName"].ToString();
+                customer.CustomerAddress = r["CustomerAddress"].ToString();
+                customer.CustomerTaxNo = r["CustomerTaxNo"].ToString();
+                customer.CustomerBranch = r["CustomerBranch"].ToString();
+                customer.CustomerBranchCode = r["CustomerBranchCode"].ToString();
+                customer.CustomerBranchName = r["CustomerBranchName"].ToString();
+                customer.ContactName = r["ContactName"].ToString();
+                customer.ContactEmail = r["ContactEmail"].ToString();
+                customer.ContactPhone = r["ContactPhone"].ToString();
+                customer.ContactName1 = r["ContactName1"].ToString();
+                customer.ContactEmail1 = r["ContactEmail1"].ToString();
+                customer.ContactPhone1 = r["ContactPhone1"].ToString();
+                customer.CreditDay = Convert.ToInt32(r["CreditDay"]);
+                customer.PhoneOffice = r["PhoneOffice"].ToString();
+                customer.FaxOffice = r["FaxOffice"].ToString();
+                customer.Website = r["Website"].ToString();
+                customer.AddressShip = r["AddressShip"].ToString();
+                customer.Remark = r["Remark"].ToString();
+                customer.CmpId = r["CmpId"].ToString();
+                customer.ContactName2 = r["ContactName2"].ToString();
+                customer.ContactEmail2 = r["ContactEmail2"].ToString();
+                customer.ContactPhone2 = r["ContactPhone2"].ToString();
+                customer.ContactPosition2 = r["ContactPosition2"].ToString();
+                customer.ContactPosition1 = r["ContactPosition1"].ToString();
+                customer.ContactPosition = r["ContactPosition"].ToString();
+                customer.AddrSubDistrict = r["AddrSubDistrict"].ToString();
+                customer.AddrDistrict = r["AddrDistrict"].ToString();
+                customer.AddrProvince = r["AddrProvince"].ToString();
+                customer.AddrPostCode = r["AddrPostCode"].ToString();
+                customer.ImgPath = r["ImgPath"].ToString();
+                customer.CreditAccId = Convert.ToInt32(r["CreditAccId"]);
+                customer.DebitAccId = Convert.ToInt32(r["DebitAccId"]);
+                customer.BusinessGrpCode = r["BusinessGrpCode"].ToString();
+
+                if (r["ContactName"].ToString() != "")
+                {
+                    customer.contacts = new List<Contact>();
+
+                    var item = new Contact();
+                    item.Name = r["ContactName"].ToString();
+                    item.Email = r["ContactEmail"].ToString();
+                    item.Phone = r["ContactPhone"].ToString();
+                    item.Position = r["ContactPosition"].ToString();
+                    customer.contacts.Add(item);
+
+                }
+                if (r["ContactName1"].ToString() != "")
+                {
+                    var item = new Contact();
+                    item.Name = r["ContactName1"].ToString();
+                    item.Email = r["ContactEmail1"].ToString();
+                    item.Phone = r["ContactPhone1"].ToString();
+                    item.Position = r["ContactPosition1"].ToString();
+                    customer.contacts.Add(item);
+
+                }
+                if (r["ContactName2"].ToString() != "")
+                {
+                    var item = new Contact();
+                    item.Name = r["ContactName2"].ToString();
+                    item.Email = r["ContactEmail2"].ToString();
+                    item.Phone = r["ContactPhone2"].ToString();
+                    item.Position = r["ContactPosition2"].ToString();
+                    customer.contacts.Add(item);
+
+
+                }
+
+                customerLists.Add(customer);
+            }
+
+
+
+
+            return Ok(customerLists);
         }
 
         [HttpGet]
@@ -72,14 +150,15 @@ namespace coreapi.Controllers
             string _cmd;
             _cmd = "exec dbo.getCustContact @CmpId='" + CmpId + "' , @CustCode='" + CustCode + "'";
             dt = DB.DBConn.GetDataTable(_cmd);
-            //string qdetail = string.Empty;
-            //qdetail = JsonConvert.SerializeObject(dt);
+
+
+
             string JSONString = string.Empty;
             JSONString = JsonConvert.SerializeObject(dt);
 
             return Ok(JSONString);
         }
-        // POST: api/QuaH
+    
 
         [HttpPost]
         [Route("Customer")]
@@ -163,7 +242,7 @@ namespace coreapi.Controllers
 
 
 
-        // DELETE: api/QuaH/5
+        
         [HttpDelete]
         [Route("Customer")]
         public void Delete([FromQuery] string customercode, [FromQuery] string cmpid)

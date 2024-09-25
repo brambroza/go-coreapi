@@ -22,10 +22,10 @@ namespace coreapi.Controllers
         // GET: api/MAService/5
         public IHttpActionResult Get(string id)
         {
-            string _QuatationNo = id;
+            string _QuotationNo = id;
             DataTable dt = new System.Data.DataTable();
             string _cmd;
-            _cmd = "exec dbo.[getMAService] @MANo='" + _QuatationNo + "'";
+            _cmd = "exec dbo.[getMAService] @MANo='" + _QuotationNo + "'";
             dt = DB.DBConn.GetDataTable(_cmd);
             //string qdetail = string.Empty;
             //qdetail = JsonConvert.SerializeObject(dt);
@@ -72,7 +72,7 @@ namespace coreapi.Controllers
                     _cmd += ",@PurchaseNo  ='" + maServices[i].PurchaseNo + "'";
                     _cmd += ",@ReferNo  ='" + maServices[i].ReferNo + "'";
                     _cmd += ",@ProjectName  ='" + maServices[i].ProjectName + "'";
-                    _cmd += ",@QuatationNo  ='" + maServices[i].QuatationNo + "'";
+                    _cmd += ",@QuotationNo  ='" + maServices[i].QuotationNo + "'";
                     _cmd += ",@PricePur  ='" + maServices[i].PricePur + "'";
                     _cmd += ",@PriceSale  ='" + maServices[i].PriceSale + "'";
 

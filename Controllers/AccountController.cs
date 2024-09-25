@@ -1,4 +1,3 @@
-
 using System.Net;
 using goalongapi.Datatools.Account;
 using goalongapi.Entities;
@@ -13,17 +12,21 @@ using System.Net.Mail;
 using coreapi.Models;
 using System.Data;
 using Newtonsoft.Json;
-using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity; 
+using Microsoft.Data.SqlClient;
+ 
 
 namespace goalongapi.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    
+
 
     public class AccountController : ControllerBase
     {
         static bool mailSent = false;
+
+       
         private readonly IAccountService accountService;
         public AccountController(IAccountService accountService) => this.accountService = accountService;
 
@@ -41,20 +44,20 @@ namespace goalongapi.Controllers
         [HttpPost("[action]")]
         public async Task<ActionResult> RegisterGoogle(RegisterGoogle registerRequestGoogle)
         {
-            var account  = registerRequestGoogle.Adapt<AccountGoogle>(); 
+            var account = registerRequestGoogle.Adapt<AccountGoogle>();
             await accountService.RegisterGoogle(account);
             var tokenregis = accountService.GenerateTokenRegister(account.Email);
 
 
 
-            return StatusCode((int)HttpStatusCode.Created); 
+            return StatusCode((int)HttpStatusCode.Created);
 
         }
 
         [HttpPost("[action]")]
         public async Task<ActionResult> LoginGoogle(LoginRequestGoogle loginRequest)
         {
-          var account = await accountService.LoginGoogle(loginRequest.Id, loginRequest.Email);
+            var account = await accountService.LoginGoogle(loginRequest.Id, loginRequest.Email);
             if (account == null)
             {
                 return Unauthorized();
@@ -64,7 +67,7 @@ namespace goalongapi.Controllers
 
 
         }
-     
+
 
 
         [HttpPost("[action]")]
@@ -82,6 +85,28 @@ namespace goalongapi.Controllers
 
 
         }
+
+        [HttpGet("[action]")]
+
+        public async Task<ActionResult> TestConnect() 
+        {
+             var connectionString = "Server=PCLDK\\PCLDKERP;Database=NSDBs;User ID=sa;Password=1234@pass;Encrypt=False;TrustServerCertificate=True;";
+            try
+            {
+                using (var connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+                     return Ok("Connection successful!");
+                }
+            }
+            catch (Exception ex)
+            {
+                 return BadRequest("Error: " + ex.Message);
+            }
+        }
+      
+
+
 
         [HttpGet("[action]")]
         public async Task<ActionResult> Info()
@@ -310,6 +335,16 @@ namespace goalongapi.Controllers
         }
 
 
+        [HttpPost("[action]")]
+        public IActionResult testSendmail(string mailfrom ,   string mailto  ,string smtphost , string smtpuser , string smtppass , string subject , string msg )
+        {
+            
+        MailConfirm.testmail(mailfrom , mailto ,  smtphost , smtpuser , smtppass , subject , msg);
+            return StatusCode((int)HttpStatusCode.Created);
+          
+        }
+
+
 
 
 
@@ -382,6 +417,100 @@ namespace goalongapi.Controllers
                 Console.WriteLine("Failed to send email: " + ex.Message);
             }
         }
+
+
+
+
+        public static void testmail( string emailfrom , string emailto, string smtphost , string smtpuser , string smtppass , string subject , string msg)
+        {
+
+            // SMTP settings for Gmail
+            var smtpHost = smtphost;
+            var smtpPort =587;
+            var smtpUsername =smtpuser;
+            var smtpPassword =smtppass ;
+
+            // Sender and recipient email addresses
+            var fromEmail = emailfrom;
+            var toEmail = emailto;
+
+            // Create a new SMTP client
+            var smtpClient = new SmtpClient(smtpHost, smtpPort);
+            smtpClient.EnableSsl = true;
+            smtpClient.UseDefaultCredentials = false;
+
+            smtpClient.Credentials = new NetworkCredential(smtpUsername, smtpPassword);
+
+            try
+            {
+                // Create a new email message
+                var message = new MailMessage(fromEmail, toEmail);
+                message.Subject = subject;
+                 message.Body = mailbodyTest(msg);
+                message.IsBodyHtml = true;
+
+                // Send the email
+                smtpClient.Send(message);
+                Console.WriteLine("Email sent successfully.");
+
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Failed to send email: " + ex.Message);
+            }
+        }
+
+
+
+
+        public static string mailbodyTest( string msg)
+        {
+            var _str = "";
+            _str = @"<!DOCTYPE html>  <html> <head> <style>";
+            _str += " body {  font-family: Arial, sans-serif;   background-color: #F1F9F4;  }";
+            _str += " .container {";
+            _str += "   max-width: 600px;";
+            _str += "   margin: 0 auto;";
+            _str += "   padding: 20px;";
+            _str += "   background-color: #FFFFFF;";
+            _str += "  border-radius: 5px;";
+            _str += "   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);";
+            _str += "  }";
+            _str += " h1 {";
+            _str += "     color: #2E8B57;";
+            _str += "    margin-bottom: 20px;";
+            _str += " }";
+            _str += " p {";
+            _str += " color: #333333;";
+            _str += "  line-height: 1.6;";
+            _str += "}";
+            _str += " .button {";
+            _str += "    display: inline-block;";
+            _str += "    padding: 10px 20px;";
+            _str += "  background-color: #2E8B57;";
+            _str += "  color: #FFFFFF;";
+            _str += "  text-decoration: none;";
+            _str += "  border-radius: 5px;";
+            _str += " }";
+            _str += ".button:hover {";
+            _str += "    background-color: #228B22;";
+            _str += " }";
+            _str += "</style>";
+            _str += "</head>";
+            _str += "<body>";
+            _str += " <div class=\"container\">";
+            _str += "  <h1>Welcome  System!</h1>"; 
+            _str += "  <p>" + msg + "</p>";
+       
+             
+            _str += "</div>";
+            _str += "</body>";
+            _str += "</html>";
+
+            return _str;
+        }
+
 
         public static string mailbody(string toname, string linkconfirm)
         {

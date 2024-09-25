@@ -29,10 +29,10 @@ namespace coreapi.Controllers
             //    Console.WriteLine("Value {0} has {1} items", group.Key, group.Count());
             //int s = int.Parse(id);
 
-            string _QuatationNo = id;
+            string _QuotationNo = id;
             DataTable dt = new System.Data.DataTable();
             string _cmd;
-            _cmd = "exec dbo.[getMADetail] @MANo='" + _QuatationNo + "'";
+            _cmd = "exec dbo.[getMADetail] @MANo='" + _QuotationNo + "'";
             dt = DB.DBConn.GetDataTable(_cmd);
             //string qdetail = string.Empty;
             //qdetail = JsonConvert.SerializeObject(dt);
@@ -40,10 +40,10 @@ namespace coreapi.Controllers
         }
         public IHttpActionResult Get(string DocNo , int CmpId)
         {
-            string _QuatationNo = DocNo;
+            string _QuotationNo = DocNo;
             DataTable dt = new System.Data.DataTable();
             string _cmd;
-            _cmd = "exec dbo.[getMADetail_PODetail] @MANo='" + _QuatationNo + "'";
+            _cmd = "exec dbo.[getMADetail_PODetail] @MANo='" + _QuotationNo + "'";
             dt = DB.DBConn.GetDataTable(_cmd);
             //string qdetail = string.Empty;
             //qdetail = JsonConvert.SerializeObject(dt);
@@ -79,7 +79,7 @@ namespace coreapi.Controllers
                     _cmd += ",@MANo  ='" + maDetail[i].MANo + "'";
                     _cmd += ",@Description  ='" + Tool.Tool.validateStr(maDetail[i].Description ) + "'";
                     _cmd += ",@ServiceType =1";// + maDetail[i].ServiceType;
-                    _cmd += ",@ProdductCode  ='" + maDetail[i].ProdductCode + "'";
+                    _cmd += ",@ProductCode  ='" + maDetail[i].ProductCode + "'";
                     _cmd += ",@SerialNumber  ='" + maDetail[i].SerialNumber + "'";
                     _cmd += ",@Model  ='" + maDetail[i].Model + "'";
                     _cmd += ",@Seq =" + maDetail[i].Seq;
@@ -92,7 +92,7 @@ namespace coreapi.Controllers
                     _cmd += ",@NotificationQty =" + maDetail[i].NotificationQty;
                     _cmd += ",@ServiceGrp =" + maDetail[i].ServiceGrp;
                     _cmd += ",@ProjectName  ='" + maDetail[i].ProjectName + "'";
-                    _cmd += ",@QuatationNo  ='" + maDetail[i].QuatationNo + "'";
+                    _cmd += ",@QuotationNo  ='" + maDetail[i].QuotationNo + "'";
                     _cmd += ",@PurchaseNo  ='" + maDetail[i].PurchaseNo + "'";
                     _cmd += ",@ReferNo  ='" + maDetail[i].ReferNo + "'";
                     _cmd += ",@ProductType =" + maDetail[i].ProductType;

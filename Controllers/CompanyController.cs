@@ -33,6 +33,23 @@ namespace coreapi.Controllers
             return Ok(JSONString);
         }
 
+
+        [HttpGet("[action]")]
+        public IActionResult getPaymentMethod([FromQuery] string cmpid, [FromQuery] string user)
+        {
+            string _cmd;
+            _cmd = "exec dbo.getPaymentmethod @CmpId='" + cmpid + "' , @userlogin='" + user + "'";
+            DataTable dt = DB.DBConn.GetDataTable(_cmd);
+            string JSONString = string.Empty;
+            JSONString = JsonConvert.SerializeObject(dt);
+
+            return Ok(JSONString);
+        }
+
+
+
+
+
         [HttpGet("images/{fileName}")]
         public IActionResult GetImage(string fileName)
         {
@@ -59,6 +76,51 @@ namespace coreapi.Controllers
             {
                 return NotFound();
             }
+        }
+
+
+        [HttpPost("[action]")]
+        public IActionResult setPaymentMethod(paymentmethod pm)
+        {
+            MsgReturn msgretrun = new MsgReturn();
+
+            try
+            {
+                string _cmd = "";
+
+                _cmd = "exec  dbo.set_PaymentMethod";
+                _cmd += " @UpdUser  ='" + pm.UpdUser + "'";
+                _cmd += ",@CmpId  ='" + pm.CmpId + "'";
+                _cmd += ",@PaymentMethodId  =" + pm.PaymnetMethodId + "";
+                _cmd += ",@BankAccCode  ='" + pm.BankAccCode + "'";
+                _cmd += ",@BankAccName  ='" + pm.BankAccName + "'";
+                _cmd += ",@BankCode  ='" + pm.BankCode + "'";
+                _cmd += ",@BankBranchCode  ='" + pm.BankBranchCode + "'";
+                _cmd += ",@BankType  ='" + pm.BankType + "'";
+                _cmd += ",@BankTypeName ='" + pm.BankTypeName + "'";
+
+
+                if (DB.DBConn.ExecuteOnly(_cmd))
+                {
+                    msgretrun.ReturnCode = "200";
+                    msgretrun.Msg = "Save Success !!";
+                    return Ok(msgretrun);
+                }
+                else
+                {
+                    msgretrun.ReturnCode = "400";
+                    msgretrun.Msg = "Error !!";
+                    return StatusCode(400, new { Message = msgretrun.Msg, Error = msgretrun.Msg });
+                }
+
+            }
+            catch
+            {
+                msgretrun.ReturnCode = "400";
+                msgretrun.Msg = "Error !!";
+                return StatusCode(400, new { Message = msgretrun.Msg, Error = msgretrun.Msg });
+            }
+
         }
 
 
@@ -107,6 +169,8 @@ namespace coreapi.Controllers
                 _cmd += ",@BankCode  ='" + cmp.BankCode + "'";
                 _cmd += ",@BankBranchCode  ='" + cmp.BankBranchCode + "'";
                 _cmd += ",@LineId  ='" + cmp.LineId + "'";
+                _cmd += ",@ColorThemeReport  ='" + cmp.ColorThemeReport + "'";
+                _cmd += ",@FaviconUrl  ='" + cmp.FaviconUrl + "'";
 
 
                 if (DB.DBConn.ExecuteOnly(_cmd))
@@ -119,7 +183,7 @@ namespace coreapi.Controllers
                 {
                     msgretrun.ReturnCode = "400";
                     msgretrun.Msg = "Error !!";
-                    return Ok(msgretrun);
+                    return StatusCode(400, new { Message = msgretrun.Msg, Error = msgretrun.Msg });
                 }
 
             }
@@ -127,7 +191,7 @@ namespace coreapi.Controllers
             {
                 msgretrun.ReturnCode = "400";
                 msgretrun.Msg = "Error !!";
-                return Ok(msgretrun);
+                return StatusCode(400, new { Message = msgretrun.Msg, Error = msgretrun.Msg });
             }
 
 
@@ -161,7 +225,7 @@ namespace coreapi.Controllers
                 {
                     msgretrun.ReturnCode = "400";
                     msgretrun.Msg = "Error !!";
-                    return Ok(msgretrun);
+                    return StatusCode(400, new { Message = msgretrun.Msg, Error = msgretrun.Msg });
                 }
 
             }
@@ -169,7 +233,7 @@ namespace coreapi.Controllers
             {
                 msgretrun.ReturnCode = "400";
                 msgretrun.Msg = "Error !!";
-                return Ok(msgretrun);
+                return StatusCode(400, new { Message = msgretrun.Msg, Error = msgretrun.Msg });
             }
 
         }

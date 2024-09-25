@@ -21,16 +21,15 @@ namespace coreapi.Controllers
     public class QuaController : ControllerBase
     {
 
-
-        // GET: api/Qua/5
+ 
         [HttpGet("[action]")]
         
         public IActionResult GetQuoDetail([FromQuery] string id, [FromQuery] int RevNo , [FromQuery] string CmpId )
         {
-            string _QuatationNo = id;
+            string _QuotationNo = id;
             DataTable dt = new System.Data.DataTable();
             string _cmd;
-            _cmd = "exec dbo.getQuatationDetail @QuatationNo='" + _QuatationNo + "' , @RevNo=" + RevNo + ", @CmpId='" + CmpId + "'";
+            _cmd = "exec dbo.getQuotationDetail @QuotationNo='" + _QuotationNo + "' , @RevNo=" + RevNo + ", @CmpId='" + CmpId + "'";
             dt = DB.DBConn.GetDataTable(_cmd);
             //string qdetail = string.Empty;
             //qdetail = JsonConvert.SerializeObject(dt);
@@ -39,10 +38,10 @@ namespace coreapi.Controllers
             return Ok(JSONString);
         }
 
-        // POST: api/Qua
+      
         [HttpPost("[action]")]
          
-        public void setQuoDetail( [FromBody] List<QuatationDetail> quatation)
+        public void setQuoDetail( [FromBody] List<QuotationDetail> Quotation)
         {
 
 
@@ -54,32 +53,34 @@ namespace coreapi.Controllers
             {
 
                 string _cmd;
-                if (quatation.Count > 0)
+                if (Quotation.Count > 0)
                 {
-                    _cmd = "Delete From mdb.Quatation_Detail where QuatationNo='" + quatation[0].QuatationNo + "'";
-                    _cmd += " and  RevNo=" + quatation[0].RevNo;
+                    _cmd = "Delete From mdb.Quotation_Detail where QuotationNo='" + Quotation[0].QuotationNo + "'";
+                    _cmd += " and  RevNo=" + Quotation[0].RevNo;
                     DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran);
                 }
                 int il = 0;
-                for (int i = 0; i < quatation.Count; i++)
+                for (int i = 0; i < Quotation.Count; i++)
                 {
                     il++;
-                    _cmd = "Exec setQuatationDetail @QuatationNo='" + quatation[i].QuatationNo + "'";
+                    _cmd = "Exec setQuotationDetail @QuotationNo='" + Quotation[i].QuotationNo + "'";
                     _cmd += ",@Seq=" + il;
-                    _cmd += ",@ProdCode='" + quatation[i].ProdCode + "'";
-                    _cmd += ",@ProdDesc='" + Tool.Tool.validateStr(quatation[i].ProdDescription) + "'";
-                    _cmd += ",@UnitPrice=" + quatation[i].UnitPrice;
-                    _cmd += ",@UnitCode='" + quatation[i].UnitCode + "'";
-                    _cmd += ",@Qty=" + quatation[i].Qty;
-                    _cmd += ",@Amt=" + quatation[i].Amt;
-                    _cmd += ",@PricePur=" + quatation[i].PricePur;
-                    _cmd += ",@CostAmt=" + quatation[i].CostAmt;
-                    _cmd += ",@ProfitAmt=" + quatation[i].ProfitAmt;
-                    _cmd += ",@RevNo=" + quatation[i].RevNo;
-                    _cmd += " ,@GroupCaption1='" + Tool.Tool.validateStr(quatation[i].GroupCaption1) + "'";
-                    _cmd += " ,@GroupCaption2='" + Tool.Tool.validateStr(quatation[i].GroupCaption2) + "'";
-                    _cmd += " ,@GroupCaption3='" + Tool.Tool.validateStr(quatation[i].GroupCaption3) + "'";
-                    _cmd += " , @CmpId='" + quatation[i].CmpId +"'" ; 
+                    _cmd += ",@ProdCode='" + Quotation[i].ProdCode + "'";
+                    _cmd += ",@ProdDesc='" + Tool.Tool.validateStr(Quotation[i].ProdDescription) + "'";
+                    _cmd += ",@UnitPrice=" + Quotation[i].UnitPrice;
+                    _cmd += ",@UnitCode='" + Quotation[i].UnitCode + "'";
+                    _cmd += ",@Qty=" + Quotation[i].Qty;
+                    _cmd += ",@Amt=" + Quotation[i].Amt;
+                    _cmd += ",@PricePur=" + Quotation[i].PricePur;
+                    _cmd += ",@CostAmt=" + Quotation[i].CostAmt;
+                    _cmd += ",@ProfitAmt=" + Quotation[i].ProfitAmt;
+                    _cmd += ",@RevNo=" + Quotation[i].RevNo;
+                    _cmd += " ,@GroupCaption1='" + Tool.Tool.validateStr(Quotation[i].GroupCaption1) + "'";
+                    _cmd += " ,@GroupCaption2='" + Tool.Tool.validateStr(Quotation[i].GroupCaption2) + "'";
+                    _cmd += " ,@GroupCaption3='" + Tool.Tool.validateStr(Quotation[i].GroupCaption3) + "'";
+                    _cmd += " , @CmpId='" + Quotation[i].CmpId +"'" ; 
+                    _cmd += ",@GrossProfitPer=" + Quotation[i].GrossProfitPer;
+                    _cmd += ",@UpdUser='" + Quotation[i].UpdUser + "'";
                     if (DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran) <= 0)
                     {
                         DB.DBConn.Tran.Rollback();
