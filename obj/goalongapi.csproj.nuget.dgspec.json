@@ -58,6 +58,10 @@
               "target": "Package",
               "version": "[1.68.0.3525, )"
             },
+            "Line.Messaging": {
+              "target": "Package",
+              "version": "[1.4.5, )"
+            },
             "Mapster": {
               "target": "Package",
               "version": "[7.3.0, )"
