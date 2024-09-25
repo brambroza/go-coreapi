@@ -21,8 +21,8 @@ jobs:
 
     - name: Build and push Docker image
       run: |
-        docker build -t nohservdoc/coreapi23 .
-        docker push nohservdoc/coreapi23
+        docker build -t nohservdoc/go-crmapi24 .
+        docker push nohservdoc/go-crmapi24
       env:
         DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
         DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
