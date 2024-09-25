@@ -297,6 +297,14 @@
       "PackagePath": "staticwebassets/images/08db416d-58d4-40b3-baef-db488f0f4d11.png"
     },
     {
+      "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/0b3f99dd-f772-45fe-bb8c-6e35ff61acc0.jpg",
+      "PackagePath": "staticwebassets/images/0b3f99dd-f772-45fe-bb8c-6e35ff61acc0.jpg"
+    },
+    {
+      "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/19857561-c437-48c7-b530-2fe4d11ab726.jpg",
+      "PackagePath": "staticwebassets/images/19857561-c437-48c7-b530-2fe4d11ab726.jpg"
+    },
+    {
       "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/20319273-78d9-46be-a3dc-8b52535e6570.png",
       "PackagePath": "staticwebassets/images/20319273-78d9-46be-a3dc-8b52535e6570.png"
     },
@@ -317,8 +325,24 @@
       "PackagePath": "staticwebassets/images/3d3674bc-7629-4b73-ab01-98be8b1b3b0d.jpg"
     },
     {
+      "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/3e85d71f-6d3a-48c4-a44c-6813875c6f2d.jpg",
+      "PackagePath": "staticwebassets/images/3e85d71f-6d3a-48c4-a44c-6813875c6f2d.jpg"
+    },
+    {
       "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/404d80bb-a40f-469c-91d0-9b319d11b0dd.jpg",
       "PackagePath": "staticwebassets/images/404d80bb-a40f-469c-91d0-9b319d11b0dd.jpg"
+    },
+    {
+      "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/4890d336-b9b9-4310-9798-50d8100692c0.jpg",
+      "PackagePath": "staticwebassets/images/4890d336-b9b9-4310-9798-50d8100692c0.jpg"
+    },
+    {
+      "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/53c08cea-32d6-4d3d-9039-f247fc7ab4aa.jpg",
+      "PackagePath": "staticwebassets/images/53c08cea-32d6-4d3d-9039-f247fc7ab4aa.jpg"
+    },
+    {
+      "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/566e1cab-fbe5-4f82-a609-de46da65c963.jpg",
+      "PackagePath": "staticwebassets/images/566e1cab-fbe5-4f82-a609-de46da65c963.jpg"
     },
     {
       "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/5b0913bb-4503-4e6a-b9e4-923a9cb2fc37.png",
@@ -357,12 +381,24 @@
       "PackagePath": "staticwebassets/images/93875d0d-dd8d-435b-a116-30405c01c739.jpg"
     },
     {
+      "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/96cba71c-ab7c-4b12-b308-cbbcf6f76e4a.jpg",
+      "PackagePath": "staticwebassets/images/96cba71c-ab7c-4b12-b308-cbbcf6f76e4a.jpg"
+    },
+    {
       "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/9af8c5b9-2a60-4d20-bb86-46150aea7fd5.png",
       "PackagePath": "staticwebassets/images/9af8c5b9-2a60-4d20-bb86-46150aea7fd5.png"
     },
     {
       "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/9e173806-22d5-4b8c-b5da-4f0774f06f43.png",
       "PackagePath": "staticwebassets/images/9e173806-22d5-4b8c-b5da-4f0774f06f43.png"
+    },
+    {
+      "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/a84a9073-eef9-4e37-9ff9-844f4f706659.jpg",
+      "PackagePath": "staticwebassets/images/a84a9073-eef9-4e37-9ff9-844f4f706659.jpg"
+    },
+    {
+      "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/b84e82fe-e411-4115-8273-99305304fc82.jpg",
+      "PackagePath": "staticwebassets/images/b84e82fe-e411-4115-8273-99305304fc82.jpg"
     },
     {
       "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/c1548a60-75f1-4a2f-ac9f-488fd4815fa7.png",
@@ -401,8 +437,16 @@
       "PackagePath": "staticwebassets/images/de12d8db-f833-4593-9fc7-2ffa1a94fec0.jpg"
     },
     {
+      "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/e13f8efb-4c24-4c57-b3dd-8bd5492b989b.jpg",
+      "PackagePath": "staticwebassets/images/e13f8efb-4c24-4c57-b3dd-8bd5492b989b.jpg"
+    },
+    {
       "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/e3c842a6-1206-470f-9797-5b5105fa0294.png",
       "PackagePath": "staticwebassets/images/e3c842a6-1206-470f-9797-5b5105fa0294.png"
+    },
+    {
+      "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/e9316269-eb36-4a99-8b38-b4c325234abb.jpg",
+      "PackagePath": "staticwebassets/images/e9316269-eb36-4a99-8b38-b4c325234abb.jpg"
     },
     {
       "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/efcd0ce4-62c3-40d8-acbf-c1a534314826.png",
@@ -419,6 +463,10 @@
     {
       "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/f5f92832-ccb2-4687-8503-cc37d58a1096.png",
       "PackagePath": "staticwebassets/images/f5f92832-ccb2-4687-8503-cc37d58a1096.png"
+    },
+    {
+      "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/f93dfce0-4471-483b-8cc8-bef07f277668.jpg",
+      "PackagePath": "staticwebassets/images/f93dfce0-4471-483b-8cc8-bef07f277668.jpg"
     },
     {
       "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/fa1f235f-9c0c-4033-844e-65b8f49b9330.jpg",

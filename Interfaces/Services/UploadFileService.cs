@@ -36,6 +36,8 @@ namespace goalongapi.Services
             return listFileName;
         }
 
+        
+
         public async Task<List<string>> Uploadfilemulti(List<IFormFile> formFiles)
         {
             List<string> listFileName = new List<string>();
