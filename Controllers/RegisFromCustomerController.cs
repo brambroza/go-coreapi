@@ -13,6 +13,7 @@ using Google.Apis.Sheets.v4.Data;
 using Google;
 using System.Text.Json;
 using goalongapi.Interfaces;
+using Newtonsoft.Json;
 
 
 namespace coreapi.Controllers
@@ -31,7 +32,7 @@ namespace coreapi.Controllers
 
             this.productService = productService;
 
-        } 
+        }
 
 
 
@@ -59,7 +60,8 @@ namespace coreapi.Controllers
             _cmd += ", @SLA  ='" + request.sla + "'";
             _cmd += ", @AdditionalDetail  ='" + request.additionalDetail + "'";
             _cmd += ", @FromApp  ='" + request.fromApp + "'";
-               if (url != null)
+            _cmd += ", @docno='" + request.docno + "'";
+            if (url != null)
             {
                 _cmd += ", @FileUrl  ='" + string.Join(",", url) + "'";
             }
@@ -69,9 +71,14 @@ namespace coreapi.Controllers
             }
 
 
-            DB.DBConn.ExecuteOnly(_cmd);
+            DataTable dt = DB.DBConn.GetDataTable(_cmd);
 
-            return Ok(new { message = "Message sent" });
+
+            string JSONString = string.Empty;
+            JSONString = JsonConvert.SerializeObject(dt);
+            return Ok(JSONString);
+
+
         }
 
 
@@ -101,6 +108,7 @@ namespace coreapi.Controllers
             _cmd += ", @SLA  ='" + request.sla + "'";
             _cmd += ", @AdditionalDetail  ='" + request.additionalDetail + "'";
             _cmd += ", @FromApp  ='" + request.fromApp + "'";
+            _cmd += ", @docno='" + request.docno + "'";
             if (url != null)
             {
                 _cmd += ", @FileUrl  ='" + string.Join(",", url) + "'";
@@ -111,9 +119,12 @@ namespace coreapi.Controllers
             }
 
 
-            DB.DBConn.ExecuteOnly(_cmd);
+            DataTable dt = DB.DBConn.GetDataTable(_cmd);
 
-            return Ok(new { message = "Message sent" });
+
+            string JSONString = string.Empty;
+            JSONString = JsonConvert.SerializeObject(dt);
+            return Ok(JSONString);
         }
 
 
@@ -136,7 +147,8 @@ namespace coreapi.Controllers
             _cmd += ", @DesiredService ='" + request.desiredService + "'";
             _cmd += ", @AdditionalDetail  ='" + request.additionalDetail + "'";
             _cmd += ", @FromApp  ='" + request.fromApp + "'";
-              if (url != null)
+            _cmd += ", @docno='" + request.docno + "'";
+            if (url != null)
             {
                 _cmd += ", @FileUrl  ='" + string.Join(",", url) + "'";
             }
@@ -146,10 +158,155 @@ namespace coreapi.Controllers
             }
 
 
-            DB.DBConn.ExecuteOnly(_cmd);
+            DataTable dt = DB.DBConn.GetDataTable(_cmd);
 
-            return Ok(new { message = "Message sent" });
+
+            string JSONString = string.Empty;
+            JSONString = JsonConvert.SerializeObject(dt);
+            return Ok(JSONString);
         }
+
+
+
+        [HttpPost("sendReqOtherFromGoalongFile")]
+        public async Task<IActionResult> ReqOtherFromGoalongFiles(List<IFormFile> formFiles)
+        {
+            var url = await UploadFilesAsyn(formFiles);
+            return Ok(url);
+
+        }
+
+
+
+        [HttpPost("sendReqOtherFromGoalong")]
+        public async Task<IActionResult> ReqOtherFromGoalong(ReqFromCustList request)
+        {
+
+
+            /*    var url = await UploadFilesAsyn(formFiles); */
+
+            string _cmd;
+            string JSONString = string.Empty;
+
+            for (int i = 0; i < request.ReqItem.Count; i++)
+            {
+                _cmd = "exec  dbo.setReqOtherFromGoAlong";
+                _cmd += " @CustomerName  ='" + request.CustomerName + "'";
+                _cmd += ", @ContactName  ='" + request.ContactName + "'";
+                _cmd += ", @ContactPhone  ='" + request.ContactPhone + "'";
+                _cmd += ", @ContactEmail  ='" + request.ContactEmail + "'";
+                _cmd += ", @Address  ='" + request.Address + "'";
+                _cmd += ", @ServiceType  ='" + request.ServiceType + "'";
+                _cmd += ", @FromApp  ='" + request.FromApp + "'";
+                _cmd += ", @CmpId='" + request.CmpId + "'";
+                _cmd += ",@DesiredService='" + request.ReqItem[i].DesiredService + "'";
+
+                _cmd += ", @AdditionalDetail  ='" + request.ReqItem[i].AdditionalDetail + "'";
+                if (request.ReqItem[i].FileUrl != null)
+                {
+                    _cmd += ", @FileUrl  ='" + string.Join(",", request.ReqItem[i].FileUrl) + "'";
+                }
+                else
+                {
+                    _cmd += ", @FileUrl  =''";
+                }
+                DataTable dt = DB.DBConn.GetDataTable(_cmd);
+                JSONString = JsonConvert.SerializeObject(dt);
+
+
+            }
+
+            return Ok(JSONString);
+        }
+
+
+
+        [HttpPost("setReqComment")]
+        public async Task<IActionResult> setReqComment(ReqComment comment)
+        {
+
+            System.Globalization.CultureInfo thaiCulture = new System.Globalization.CultureInfo("th-TH");
+            thaiCulture.DateTimeFormat.Calendar = new System.Globalization.GregorianCalendar();
+            /*    var url = await UploadFilesAsyn(formFiles); */
+            MsgReturn msgretrun = new MsgReturn();
+            DB.DBConn.SqlConnectionOpen();
+            DB.DBConn.Cmd = DB.DBConn.Cnn.CreateCommand();
+            DB.DBConn.Tran = DB.DBConn.Cnn.BeginTransaction();
+
+            try
+            {
+                string _cmd;
+
+
+                _cmd = "exec  dbo.setReqComment";
+                _cmd += " @CmpId  ='" + comment.CmpId + "'";
+                _cmd += ", @TicketId  =" + comment.TicketId + "";
+                _cmd += ", @Id  ='" + comment.Id + "'";
+                _cmd += ", @name  ='" + comment.Name + "'";
+                _cmd += ", @message  ='" + comment.Message + "'";
+                _cmd += " ,@avatarUrl  =''";
+                _cmd += ", @postedAt ='" + comment.PostedAt.ToString("yyyy-MM-dd HH:mm", thaiCulture)  + "'";
+
+                if (DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran) <= 0)
+                {
+                    DB.DBConn.Tran.Rollback();
+                    DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
+                    DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
+                    msgretrun.ReturnCode = "400";
+                    msgretrun.Msg = "Error !!";
+                    return NotFound(msgretrun);
+                };
+
+
+                for (int i = 0; i < comment.replyComment.Count; i++)
+                {
+                    _cmd = "exec  dbo.setReqReplyComment";
+                    _cmd += " @CmpId  ='" + comment.replyComment[i].CmpId + "'";
+                    _cmd += " ,@TicketId  =" + comment.replyComment[i].TicketId + "";
+                    _cmd += ", @Id  ='" + comment.replyComment[i].Id + "'";
+                    _cmd += " ,@name  ='" + comment.replyComment[i].UserId + "'";
+                    _cmd += " ,@message  ='" + comment.replyComment[i].Message + "'";
+                    _cmd += " ,@avatarUrl  =''";
+                    _cmd += ", @postedAt ='" + comment.replyComment[i].PostedAt.ToString("yyyy-MM-dd HH:mm", thaiCulture) + "'";
+                    _cmd += " ,@CommentId ='" + comment.replyComment[i].CommentId + "'";
+
+                    if (DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran) <= 0)
+                    {
+                        DB.DBConn.Tran.Rollback();
+                        DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
+                        DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
+                        msgretrun.ReturnCode = "400";
+                        msgretrun.Msg = "Error !!";
+                        return NotFound(msgretrun);
+                    };
+
+
+                }
+
+
+                DB.DBConn.Tran.Commit();
+                DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
+                DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
+                msgretrun.ReturnCode = "200";
+                msgretrun.Msg = "Save Success !!";
+                return Ok(msgretrun);
+            }
+            catch (Exception ex)
+            {
+                DB.DBConn.Tran.Rollback();
+                DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
+                DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
+
+                msgretrun.ReturnCode = "400";
+                msgretrun.Msg = "Error !!";
+                return NotFound(msgretrun);
+
+            }
+ 
+
+        }
+
+
 
 
 
@@ -166,7 +323,7 @@ namespace coreapi.Controllers
 
             try
             {
-                (string errorMessage, List<string> imageName) = await productService.UploadMultiFiles(formFiles);
+                (string errorMessage, List<string> imageName) = await productService.UploadMultiFilesReq(formFiles);
                 if (!String.IsNullOrEmpty(errorMessage))
                 {
 
@@ -182,6 +339,30 @@ namespace coreapi.Controllers
                 return null;
             }
         }
+
+
+
+
+        [HttpPost("setReqStatus")]
+        public async Task<IActionResult> ReqUpdateStatus(ReqUpdateStatus data)
+        {
+            string _cmd;
+            _cmd = "exec  dbo.setReqStatus";
+            _cmd += " @CmpId  ='" + data.cmpid + "'";
+            _cmd += ", @status  ='" + data.status + "'";
+            _cmd += ", @ticketId  =" + data.ticketId + "";
+            if (DB.DBConn.ExecuteOnly(_cmd))
+            {
+                return StatusCode((int)HttpStatusCode.OK);
+            }
+            else
+            {
+                return StatusCode((int)HttpStatusCode.BadRequest);
+            }
+
+        }
+
+
 
 
 

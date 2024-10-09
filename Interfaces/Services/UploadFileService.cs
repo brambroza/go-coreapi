@@ -38,6 +38,26 @@ namespace goalongapi.Services
 
         
 
+            public async Task<List<string>> UploadFileReq(List<IFormFile> formFiles)
+        {
+            List<string> listFileName = new List<string>();
+            string uploadPath = $"{webHostEnvironment.WebRootPath}/reqfromcust/fileall/";
+              
+
+            foreach (var formFile in formFiles)
+            {
+                string fileName = Guid.NewGuid().ToString() + Path.GetExtension(formFile.FileName);
+                string fullPath = uploadPath + fileName;
+                using (var stream = File.Create(fullPath))
+                {
+                    await formFile.CopyToAsync(stream);
+                }
+                listFileName.Add(fileName);
+            }
+            return listFileName;
+        }
+
+
         public async Task<List<string>> Uploadfilemulti(List<IFormFile> formFiles)
         {
             List<string> listFileName = new List<string>();
@@ -86,7 +106,7 @@ namespace goalongapi.Services
 
         public bool ValidationExtension(string fileName)
         {
-            string[] permittedExtensions = { ".jpg", ".png" , ".pdf" ,".xlsx" , ".xls"  };
+            string[] permittedExtensions = { ".jpg", ".png" , ".pdf" ,".xlsx" , ".xls", ".csv" , ".txt", ".doc" , ".docx"  };
             var ext = Path.GetExtension(fileName).ToLowerInvariant();
             if (String.IsNullOrEmpty(ext) || !permittedExtensions.Contains(ext))
             {

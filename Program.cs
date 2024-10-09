@@ -1,6 +1,7 @@
 using System.Reflection;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
+using coreapi.Hubs;
 using goalongapi.Data;
 using goalongapi.Installers;
 // using goalongapi.Interfaces;
@@ -14,9 +15,15 @@ System.Net.ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolTyp
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
+builder.Services.AddSignalR();
 builder.Services.AddCors(p => p.AddPolicy("_MyAllowSpecificOrigins", builder =>
 {
-  builder.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();
+   /*  builder.WithOrigins("*").AllowAnyMethod().AllowAnyHeader(); */  
+    builder.WithOrigins("http://localhost:8080")  
+           .AllowAnyMethod()
+           .AllowAnyHeader()
+           .AllowCredentials(); 
+ 
 }));
 
 // Add services to the container.
@@ -55,30 +62,29 @@ builder.Host.ConfigureContainer<ContainerBuilder>(builder =>
 });
 
 
-var app = builder.Build();
-
-// Configure the HTTP request pipeline.
+var app = builder.Build(); 
 if (app.Environment.IsDevelopment())
 {
   app.UseSwagger();
   app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "goalong api"));
-}
-
-
-// else
-// {
-//     app.UseSwagger();
-//     app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "goalong api"));
-// }
-
-
+} 
 
 app.UseCors("_MyAllowSpecificOrigins");
 app.UseStaticFiles();
 app.UseHttpsRedirection();
 
+app.UseRouting();
+
 app.UseAuthentication();
 app.UseAuthorization();
-app.MapControllers();
+/* app.MapControllers(); */
+app.UseEndpoints(endpoints =>
+    {
+      endpoints.MapControllers();
+
+      // SignalR  
+      endpoints.MapHub<NotificationHub>("/notificationhub");
+    });
+
 
 app.Run();

@@ -9,7 +9,7 @@ using System.Net;
 using System.Net.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
- 
+
 
 
 
@@ -21,10 +21,10 @@ namespace coreapi.Controllers
     public class QuaController : ControllerBase
     {
 
- 
+
         [HttpGet("[action]")]
-        
-        public IActionResult GetQuoDetail([FromQuery] string id, [FromQuery] int RevNo , [FromQuery] string CmpId )
+
+        public IActionResult GetQuoDetail([FromQuery] string id, [FromQuery] int RevNo, [FromQuery] string CmpId)
         {
             string _QuotationNo = id;
             DataTable dt = new System.Data.DataTable();
@@ -38,10 +38,10 @@ namespace coreapi.Controllers
             return Ok(JSONString);
         }
 
-      
+
         [HttpPost("[action]")]
-         
-        public void setQuoDetail( [FromBody] List<QuotationDetail> Quotation)
+
+        public void setQuoDetail([FromBody] List<QuotationDetail> Quotation)
         {
 
 
@@ -78,7 +78,7 @@ namespace coreapi.Controllers
                     _cmd += " ,@GroupCaption1='" + Tool.Tool.validateStr(Quotation[i].GroupCaption1) + "'";
                     _cmd += " ,@GroupCaption2='" + Tool.Tool.validateStr(Quotation[i].GroupCaption2) + "'";
                     _cmd += " ,@GroupCaption3='" + Tool.Tool.validateStr(Quotation[i].GroupCaption3) + "'";
-                    _cmd += " , @CmpId='" + Quotation[i].CmpId +"'" ; 
+                    _cmd += " , @CmpId='" + Quotation[i].CmpId + "'";
                     _cmd += ",@GrossProfitPer=" + Quotation[i].GrossProfitPer;
                     _cmd += ",@UpdUser='" + Quotation[i].UpdUser + "'";
                     if (DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran) <= 0)
@@ -109,6 +109,10 @@ namespace coreapi.Controllers
 
         }
 
-       
+
+
+        
+
+
     }
 }

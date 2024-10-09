@@ -6,6 +6,7 @@ namespace goalongapi.Interfaces
          string Validation(List<IFormFile> formFiles);
          Task<List<string>> UploadImages(List<IFormFile> formFiles);
          Task<List<string>> Uploadfilemulti(List<IFormFile> formFiles);
+         Task<List<string>> UploadFileReq(List<IFormFile> formFiles);
 
     }
 }

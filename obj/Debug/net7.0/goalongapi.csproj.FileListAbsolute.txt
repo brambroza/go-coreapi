@@ -404,3 +404,4 @@ D:/Project/Goalong/webapi/coreapi/bin/Debug/net7.0/Microsoft.AspNetCore.Mvc.Newt
 /Users/amnartkongpet/Project/GoAlong/coreapi-new/obj/Debug/net7.0/goalongapi.genruntimeconfig.cache
 /Users/amnartkongpet/Project/GoAlong/coreapi-new/obj/Debug/net7.0/ref/goalongapi.dll
 /Users/amnartkongpet/Project/GoAlong/coreapi-new/bin/Debug/net7.0/Line.Messaging.dll
+/Users/amnartkongpet/Project/GoAlong/coreapi-new/bin/Debug/net7.0/System.Net.WebSockets.WebSocketProtocol.dll

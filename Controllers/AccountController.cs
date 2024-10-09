@@ -69,7 +69,7 @@ namespace goalongapi.Controllers
         }
 
 
-
+          
         [HttpPost("[action]")]
         public async Task<ActionResult> Login(LoginRequest loginRequest)
         {
