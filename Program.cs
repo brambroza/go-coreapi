@@ -18,12 +18,12 @@ builder.Services.AddControllers();
 builder.Services.AddSignalR();
 builder.Services.AddCors(p => p.AddPolicy("_MyAllowSpecificOrigins", builder =>
 {
-   /*  builder.WithOrigins("*").AllowAnyMethod().AllowAnyHeader(); */  
-    builder.WithOrigins("http://localhost:8080", "http://nisolution.fortiddns.com:8284")  
-           .AllowAnyMethod()
-           .AllowAnyHeader()
-           .AllowCredentials(); 
- 
+  /*  builder.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();  */
+  builder.WithOrigins("http://nisolution.fortiddns.com:8284", "http://localhost:8080")
+         .AllowAnyMethod()
+         .AllowAnyHeader()
+         .AllowCredentials();
+
 }));
 
 // Add services to the container.
@@ -62,12 +62,12 @@ builder.Host.ConfigureContainer<ContainerBuilder>(builder =>
 });
 
 
-var app = builder.Build(); 
+var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
   app.UseSwagger();
   app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "goalong api"));
-} 
+}
 
 app.UseCors("_MyAllowSpecificOrigins");
 app.UseStaticFiles();
