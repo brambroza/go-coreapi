@@ -28,7 +28,7 @@ builder.Services.AddCors(p => p.AddPolicy("_MyAllowSpecificOrigins", builder =>
 
 // Add services to the container.
 builder.Services.InstallServiceInAssembly(builder.Configuration);
-
+ 
 
 /// google auth
 /// 
