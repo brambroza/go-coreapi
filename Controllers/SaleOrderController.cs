@@ -81,7 +81,7 @@ namespace coreapi.Controllers
                     JobType = r["JobType"].ToString(),
                     QuotationNo = r["QuotationNo"].ToString(),
                     CustomerPONo = r["CustomerPONo"].ToString(),
-                    TicketId = Convert.ToInt64(r["TicketId"]),
+                    TicketId = r["TicketId"].ToString(),
                     items = new List<SaleOrderItem>()
                 };
 
@@ -131,7 +131,7 @@ namespace coreapi.Controllers
         {
             MsgReturn msgretrun = new MsgReturn();
 
- System.Globalization.CultureInfo thaiCulture = new System.Globalization.CultureInfo("th-TH");
+            System.Globalization.CultureInfo thaiCulture = new System.Globalization.CultureInfo("th-TH");
             thaiCulture.DateTimeFormat.Calendar = new System.Globalization.GregorianCalendar();
 
             DB.DBConn.SqlConnectionOpen();
@@ -150,10 +150,10 @@ namespace coreapi.Controllers
                     DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran);
                 }
 
- 
+
                 _cmd = "exec  dbo.setSaleOrder @SaleOrderNo='" + Quotation.SaleOrderNo + "' ";
                 _cmd += " ,@SaleOrderDate='" + Quotation.SaleOrderDate.ToString("yyyy-MM-dd HH:mm", thaiCulture) + "' ,@SaleOrderBy='" + Quotation.SaleOrderBy + "'";
-                _cmd += " ,@SaleOrderState='" + Quotation.SaleOrderState+ "'";
+                _cmd += " ,@SaleOrderState='" + Quotation.SaleOrderState + "'";
                 _cmd += " ,@CustomerCode='" + Quotation.CustomerCode + "'";
                 _cmd += " ,@CreditType=" + Quotation.CreditType;
                 _cmd += " ,@CreditDate=" + Quotation.CreditDate;
@@ -179,7 +179,7 @@ namespace coreapi.Controllers
                 _cmd += ", @Jobtype=" + Quotation.JobType;
                 _cmd += " ,@QuotationNo='" + Quotation.QuotationNo + "'";
                 _cmd += " ,@CustomerPONo='" + Quotation.CustomerPONo + "'";
-                _cmd += ", @TicketId=" + Quotation.TicketId;
+                _cmd += ", @TicketId='" + Quotation.TicketId + "'";
 
                 if (DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran) <= 0)
                 {

@@ -104,7 +104,7 @@ namespace coreapi.Controllers
                 quotaion.FullName = r["FullName"].ToString();
                 quotaion.JobTypeFilter = r["JobTypeFilter"].ToString();
                 quotaion.ImgPath = r["ImgPath"].ToString();
-                quotaion.TicketId = Convert.ToInt64(r["TicketId"]);
+                quotaion.TicketId =  r["TicketId"].ToString();
 
                 if (datatableDetail.Select("QuotationNo ='" + r["QuotationNo"].ToString() + "'  and RevNo=" + Convert.ToInt32(r["RevNo"])).Length > 0)
                 {
@@ -215,7 +215,7 @@ namespace coreapi.Controllers
                 _cmd += " ,@QuotationGrandAmt=" + Quotation.QuotationGrandAmt;
                 _cmd += " ,@WithholdingTaxState=" + Quotation.WithholdingTaxState;
                 _cmd += " ,@ShowSignatureState=" + Quotation.ShowSignatureState;
-                _cmd += " ,@CmpId=" + Quotation.CmpId;
+                _cmd += " ,@CmpId='" + Quotation.CmpId+ "'";
                 _cmd += " ,@PriceStand='" + Quotation.PriceStand + "'";
                 _cmd += " ,@PaymentDue='" + Quotation.PaymentDue + "'";
                 _cmd += " ,@Shipping='" + Quotation.Shipping + "'";

@@ -125,7 +125,7 @@ namespace coreapi.Models
         public string BomState { get; set; }
         public string CmpId { get; set; }
 
-        public Int64 TicketId { get; set; }
+        public string TicketId { get; set; }
 
         public List<SalesBom_Detail> items { get; set; }
     }
@@ -252,7 +252,7 @@ namespace coreapi.Models
 
         public List<SaleOrderItem> items { get; set; }
 
-        public Int64 TicketId {get;set;}
+        public string TicketId {get;set;}
 
 
     }
@@ -365,7 +365,7 @@ namespace coreapi.Models
         public string JobTypeFilter { get; set; }
         public string ImgPath { get; set; }
 
-        public Int64 TicketId { get; set; }
+        public string TicketId { get; set; }
 
         public List<QuotationListItem> Items { get; set; }
     }

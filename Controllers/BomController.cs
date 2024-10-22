@@ -64,7 +64,7 @@ namespace coreapi.Controllers
                 bom.CmpId = r["CmpId"].ToString();
                 bom.UpdUser = r["UpdUser"].ToString();
                 bom.BomState = r["BomState"].ToString();
-                bom.TicketId = Convert.ToInt64(r["TicketId"]);
+                bom.TicketId =  r["TicketId"].ToString();
                 bom.items = new List<SalesBom_Detail>();
                 foreach (DataRow x in dtItem.Select("BomNo='" + bom.BomNo + "' and RevNo=" + bom.RevNo + " and CmpId='" + bom.CmpId + "'"))
                 {
@@ -216,7 +216,7 @@ namespace coreapi.Controllers
                 _cmd += " ,@CmpId ='" + salebom.CmpId + "'";
                 _cmd += " ,@BomState ='" + salebom.BomState + "'";
                 _cmd += " ,@BomDate ='" + salebom.BomDate + "'";
-                _cmd += " ,@TicketId =" + salebom.TicketId;
+                _cmd += " ,@TicketId ='" + salebom.TicketId + "'";
 
 
                 if (DB.DBConn.ExecuteOnly(_cmd))

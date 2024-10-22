@@ -70,8 +70,9 @@ namespace coreapi.Models
     public class ReqFromCustList
     {
 
+        public string UpdUser { get; set; }
         public string CmpId { get; set; }
-        public Int64 TicketId { get; set; }
+        public string TicketId { get; set; }
         public string ServiceType { get; set; }
         public string CustomerName { get; set; }
         public string ContactName { get; set; }
@@ -84,20 +85,22 @@ namespace coreapi.Models
 
         public List<ReqFromCustItem> ReqItem { get; set; }
         public List<ReqFromCustAssign> ReqAssign { get; set; }
-        public List<ReqComment> ReqComments {get;set;}
-   
-        public List<ReqFromCustOwner> ReqOwner {get;set;}
-        public List<CustomerReqTicketRoute>? ReqRoute {get;set;}
-       
-       public  string todo {get;set;}
-       public  decimal  completepercent {get;set;}
-  public DateTime DueDate { get; set; }
+        public List<ReqComment> ReqComments { get; set; }
+
+        public List<ReqFromCustOwner> ReqOwner { get; set; }
+        public List<CustomerReqTicketRoute>? ReqRoute { get; set; }
+
+        public string todo { get; set; }
+        public decimal completepercent { get; set; }
+        public string ticketIdRef { get; set; }
+        public string DueDate { get; set; }
+
     }
 
     public class ReqFromCustItem
     {
         public string CmpId { get; set; }
-        public Int64 TicketId { get; set; }
+        public string TicketId { get; set; }
         public string ServiceType { get; set; }
         public string ModelName { get; set; }
         public string SerialNo { get; set; }
@@ -110,6 +113,7 @@ namespace coreapi.Models
         public string AdditionalDetail { get; set; }
         public string DesiredService { get; set; }
         public string FileUrl { get; set; }
+        public int Seq { get; set; }
 
 
     }
@@ -119,22 +123,25 @@ namespace coreapi.Models
     {
 
         public string CmpId { get; set; }
-        public Int64 TicketId { get; set; }
+        public string TicketId { get; set; }
         public string UserId { get; set; }
         public string UserFullName { get; set; }
         public string ImgPath { get; set; }
+
+        public string RouteId { get; set; }
+        public string RemindId { get; set; }
 
         public string Permission { get; set; }
 
     }
 
-      public class ReqFromCustOwner
+    public class ReqFromCustOwner
     {
         public string CmpId { get; set; }
-        public Int64 TicketId { get; set; }
+        public string TicketId { get; set; }
         public string UserId { get; set; }
         public string UserFullName { get; set; }
-        public string ImgPath { get; set; } 
+        public string ImgPath { get; set; }
 
     }
 
@@ -142,22 +149,22 @@ namespace coreapi.Models
     public class ReqComment
     {
         public string CmpId { get; set; }
-        public string CommentId { get;set;  }
-        public Int64 TicketId { get; set; }
+        public string CommentId { get; set; }
+        public string TicketId { get; set; }
         public string Id { get; set; }
         public string Name { get; set; }
         public string AvatarUrl { get; set; }
         public string Message { get; set; }
         public DateTime PostedAt { get; set; }
 
-        public List<ReplyComment> replyComment {get;set;}
+        public List<ReplyComment> replyComment { get; set; }
     }
 
     public class ReplyComment
     {
         public string CmpId { get; set; }
         public string CommentId { get; set; }
-        public Int64 TicketId { get; set; }
+        public string TicketId { get; set; }
         public string Id { get; set; }
         public string UserId { get; set; }
         public string Message { get; set; }
@@ -166,29 +173,34 @@ namespace coreapi.Models
     }
 
 
-    public class ReqUpdateStatus {
-        public string cmpid {get;set;}
-        public string status {get;set;}
-        public Int64 ticketId {get;set;}
+    public class ReqUpdateStatus
+    {
+        public string cmpid { get; set; }
+        public string status { get; set; }
+        public string ticketId { get; set; }
     }
 
 
 
-public class CustomerReqTicketRoute
-{
-    public long TicketId { get; set; }  
-    public string CmpId { get; set; }  
-    public string RouteId { get; set; }  
-    public string RemindId { get; set; }  
-    public string RouteIdBefore { get; set; }  
-    public DateTime DueDate { get; set; }  
-    public int StatusFinish { get; set; }  
-    public string RouteName { get; set; }  
-    public string Department { get; set; }  
-    public int Seq { get; set; }  
-    public string RemideDescription { get; set; } 
+    public class CustomerReqTicketRoute
+    {
+        public string TicketId { get; set; }
+        public string CmpId { get; set; }
+        public string RouteId { get; set; }
+        public string RemindId { get; set; }
+        public string RouteIdBefore { get; set; }
+        public DateTime? DueDate { get; set; }
+        public int StatusFinish { get; set; }
+        public string RouteName { get; set; }
+        public string Department { get; set; }
+        public int Seq { get; set; }
+        public string RemideDescription { get; set; }
+        public string DateFinish { get; set; } = "";
+        public string UserFinish { get; set; } = "";
 
-}
+        public List<ReqFromCustAssign>? reqAssign { get; set; }
+
+    }
 
 
 
