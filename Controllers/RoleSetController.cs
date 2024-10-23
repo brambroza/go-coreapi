@@ -85,12 +85,7 @@ namespace coreapi.Controllers
             return Ok(listmenu);
 
         }
-
-
-
-
-
-
+ 
 
         // POST: api/RoleSet
         [HttpPost("[action]")]
@@ -405,19 +400,7 @@ namespace coreapi.Controllers
             return Ok(JSONString);
         }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+ 
 
 
     }

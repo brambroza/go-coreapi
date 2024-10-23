@@ -22,6 +22,26 @@ namespace goalongapi.Datatools.Account
 
     }
 
+
+    public class PasswordChange
+    {
+
+        [Required]
+        [EmailAddress]
+        public string Username { get; set; }
+
+        [Required]
+        [MinLength(8)]
+        public string OldPassword { get; set; }
+
+        [Required]
+        [MinLength(8)]
+        public string NewPassword { get; set; }
+
+
+
+    }
+
     public class RegisterGoogle
     {
         [Required]

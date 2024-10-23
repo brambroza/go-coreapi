@@ -35,6 +35,22 @@ namespace goalongapi.Interfaces
             await databaseContext.SaveChangesAsync();
         }
 
+        public async Task ChangePassword(string username,  string newPassword)
+        {
+            var account = await databaseContext.Accounts
+                .SingleOrDefaultAsync(a => a.Username == username);
+
+            if (account == null)
+            {
+                throw new Exception("Account not found");
+            }
+            // Hash and update the new password
+            account.Password = CreatePasswordHash(newPassword);
+            databaseContext.Accounts.Update(account);
+            await databaseContext.SaveChangesAsync();
+        }
+
+
         public async Task RegisterGoogle(AccountGoogle account)
         {
             var existingAccount = await databaseContext.AccountsGoogle.SingleOrDefaultAsync(a => a.Email == account.Email);
@@ -75,7 +91,7 @@ namespace goalongapi.Interfaces
         public async Task<AccountGoogle?> LoginGoogle(long Id, string Email)
         {
             var account = await databaseContext.AccountsGoogle.Include(a => a.Role)
-            .SingleOrDefaultAsync(a => a.Id == Id && a.Email == Email && a.CmpId != null && a.CmpId != "0"  );
+            .SingleOrDefaultAsync(a => a.Id == Id && a.Email == Email && a.CmpId != null && a.CmpId != "0");
 
 
 
@@ -109,7 +125,7 @@ namespace goalongapi.Interfaces
         {
             var parts = hashedPassword.Split('.', 2);
             if (parts.Length != 2)
-            { 
+            {
                 return false;
             }
 
@@ -138,11 +154,11 @@ namespace goalongapi.Interfaces
             return BuildToken(claims);
         }
 
-        public string GenerateTokenGoogle (AccountGoogle account)
+        public string GenerateTokenGoogle(AccountGoogle account)
         {
-            var claims = new []{
+            var claims = new[]{
                 new Claim(JwtRegisteredClaimNames.Sub, account.Email),
-                new Claim("role" , account.Role.Name), 
+                new Claim("role" , account.Role.Name),
                 new Claim("additional" , "todo"),
             };
             return BuildToken(claims);

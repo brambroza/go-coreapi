@@ -34,6 +34,7 @@ namespace coreapi.Models
         public string AddrDistrict { get; set; }
         public string AddrSubDistrict { get; set; }
         public string AddrPostCode { get; set; }
+        public int RoleID {get;set;}
       
  
     }
