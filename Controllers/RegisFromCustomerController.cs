@@ -317,6 +317,54 @@ namespace coreapi.Controllers
         }
 
 
+        [HttpPost("setReqAssign")]
+        public async Task<IActionResult> setReqAssign(ReqFromCustAssign assign)
+        {
+
+            string _cmd;
+            DB.DBConn.SqlConnectionOpen();
+            DB.DBConn.Cmd = DB.DBConn.Cnn.CreateCommand();
+            DB.DBConn.Tran = DB.DBConn.Cnn.BeginTransaction();
+
+            try
+            {
+                _cmd = " exec dbo.[setReqOtherFromGoAlong_Route_Assign]";
+                _cmd += "  @CmpId='" + assign.CmpId + "'";
+                _cmd += " , @TicketId='" + assign.TicketId + "'";
+                _cmd += " , @RouteId='" + assign.RouteId + "'";
+                _cmd += "  ,@RemindId='" + assign.RemindId + "'";
+                _cmd += "  ,@UserId='" + assign.UserId + "'";
+                _cmd += "  ,@Permission='" + assign.Permission + "'";
+                if (DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran) <= 0)
+                {
+                    DB.DBConn.Tran.Rollback();
+                    DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
+                    DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
+
+                    return BadRequest();
+                };
+
+                DB.DBConn.Tran.Commit();
+                DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
+                DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
+
+
+
+                return Ok();
+            }
+            catch
+            {
+
+                DB.DBConn.Tran.Rollback();
+                DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
+                DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
+
+                return BadRequest();
+            }
+
+        }
+
+
 
         [HttpPost("setReqComment")]
         public async Task<IActionResult> setReqComment(ReqComment comment)
