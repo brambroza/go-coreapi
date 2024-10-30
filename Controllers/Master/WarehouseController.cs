@@ -31,10 +31,26 @@ namespace coreapi.Controllers.Master
             string _cmd;
             _cmd = "exec dbo.getWareHouseAll @CmpId='" + CmpId + "'";
             dt = DB.DBConn.GetDataTable(_cmd);
-            string JSONString = string.Empty;
-            JSONString = JsonConvert.SerializeObject(dt);
 
-            return Ok(JSONString);
+            List<WareHouse> whs = new List<WareHouse>();
+            foreach (DataRow r in dt.Rows)
+            {
+
+                var wh = new WareHouse();
+                wh.CmpId = r["CmpId"].ToString();
+                wh.UpdUser = r["UpdUser"].ToString();
+                wh.WareHouseId = int.Parse(r["WareHouseId"].ToString());
+                wh.StateActive = int.Parse(r["StateActive"].ToString());
+                wh.WareHouseDescription = r["WareHouseDescription"].ToString();
+                wh.WareHouseName = r["WareHouseName"].ToString();
+
+                whs.Add(wh);
+
+            }
+
+
+
+            return Ok(whs);
         }
 
 
@@ -87,10 +103,27 @@ namespace coreapi.Controllers.Master
             string _cmd;
             _cmd = "exec dbo.getWareHouseLocationByWH @CmpId='" + CmpId + "' , @WH='" + WareHouseId + "'";
             dt = DB.DBConn.GetDataTable(_cmd);
-            string JSONString = string.Empty;
-            JSONString = JsonConvert.SerializeObject(dt);
 
-            return Ok(JSONString);
+            List<WareHouseLocation> whs = new List<WareHouseLocation>();
+            foreach (DataRow r in dt.Rows)
+            {
+
+                var wh = new WareHouseLocation();
+                wh.CmpId = r["CmpId"].ToString();
+                wh.UpdUser = r["UpdUser"].ToString();
+                wh.WareHouseId = int.Parse(r["WareHouseId"].ToString());
+                wh.StateActive = int.Parse(r["StateActive"].ToString());
+                wh.WareHouseLocId = int.Parse(r["WareHouseLocId"].ToString());
+                wh.WareHouseLocDescription = r["WareHouseLocDescription"].ToString();
+                wh.WareHouseLocName = r["WareHouseLocName"].ToString();
+
+                whs.Add(wh);
+
+            }
+
+
+
+            return Ok(whs);
         }
 
 
@@ -109,10 +142,26 @@ namespace coreapi.Controllers.Master
             string _cmd;
             _cmd = "exec dbo.getWareHouseLocationAll @CmpId='" + CmpId + "'";
             dt = DB.DBConn.GetDataTable(_cmd);
-            string JSONString = string.Empty;
-            JSONString = JsonConvert.SerializeObject(dt);
+           List<WareHouseLocation> whs = new List<WareHouseLocation>();
+            foreach (DataRow r in dt.Rows)
+            {
 
-            return Ok(JSONString);
+                var wh = new WareHouseLocation();
+                wh.CmpId = r["CmpId"].ToString();
+                wh.UpdUser = r["UpdUser"].ToString();
+                wh.WareHouseId = int.Parse(r["WareHouseId"].ToString());
+                wh.StateActive = int.Parse(r["StateActive"].ToString());
+                wh.WareHouseLocId = int.Parse(r["WareHouseLocId"].ToString());
+                wh.WareHouseLocDescription = r["WareHouseLocDescription"].ToString();
+                wh.WareHouseLocName = r["WareHouseLocName"].ToString();
+
+                whs.Add(wh);
+
+            }
+
+
+
+            return Ok(whs);
         }
 
 
