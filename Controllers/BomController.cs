@@ -81,6 +81,8 @@ namespace coreapi.Controllers
                     item.Amt = Convert.ToDecimal(x["Amt"]);
                     item.CmpId = x["CmpId"].ToString();
                     item.ReplaceStatus = Convert.ToInt32(x["ReplaceStatus"]);
+                    item.Vendor= "";
+                    item.VendorName = "";
 
                     item.bomitemPrice = new List<SalesBom_Price_Item>();
 

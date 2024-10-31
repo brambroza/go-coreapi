@@ -146,6 +146,9 @@ namespace coreapi.Models
         public int ReplaceStatus { get; set; }
         public string Remark { get; set; }
 
+        public string Vendor {get;set;} ="";
+        public string VendorName {get;set;} = "";
+
         public List<SalesBom_Price_Item> bomitemPrice { get; set; }
 
     }
