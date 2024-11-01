@@ -12,6 +12,7 @@ public class Notification
     public string AvatarUrl { get; set; }
     public bool IsUnRead { get; set; }
     public bool IsUnAlert { get; set; }
+    public string urllink {get;set;}
 }
 
 }

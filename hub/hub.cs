@@ -42,6 +42,7 @@ namespace coreapi.Hubs
                 _cmd += " , @Title='" + data[0].Title.ToString() + "'";
                 _cmd += " , @Category='" + data[0].Category.ToString() + "'";
                 _cmd += " , @Type='" + data[0].Type.ToString() + "'";
+                _cmd +=" , @linkTo='" + data[0].urllink.ToString() + "'";
 
                 if (DB.DBConn.ExecuteOnly(_cmd))
                 {
