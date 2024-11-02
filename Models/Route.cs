@@ -14,9 +14,18 @@ namespace coreapi.Models
         public int Seq {get;set;} 
         public string RemindDescription { get; set; } 
         public int Manday { get; set; }
-        public string CmpId {get;set;}
+        public string CmpId {get;set;} 
+    }
 
 
 
+    public class Route {
+        public  string CmpId {get;set;}
+        public string RouteId {get;set;}
+        public string RouteName {get;set;}
+        public string Department {get;set;}
+
+        public double completepercent {get;set;}
+        public int Seq {get;set;}
     }
 }

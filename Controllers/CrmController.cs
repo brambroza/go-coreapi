@@ -33,7 +33,7 @@ namespace coreapi.Controllers
             DataTable dtOwner = new DataTable();
             DataTable dtRoute = new DataTable();
 
-    System.Globalization.CultureInfo thaiCulture = new System.Globalization.CultureInfo("th-TH");
+            System.Globalization.CultureInfo thaiCulture = new System.Globalization.CultureInfo("th-TH");
             thaiCulture.DateTimeFormat.Calendar = new System.Globalization.GregorianCalendar();
 
 
@@ -87,7 +87,7 @@ namespace coreapi.Controllers
                 crm.DueDate = DateTime.Parse(r["DueDate"].ToString()).ToString("yyyy-MM-dd HH:mm", thaiCulture);
                 crm.UpdUser = r["updUser"].ToString();
                 crm.ticketIdRef = r["TicketIdRef"].ToString();
-               
+
                 crm.ReqRoute = new List<CustomerReqTicketRoute>();
                 foreach (DataRow i in dtRoute.Select(" TicketId='" + r["TicketId"].ToString() + "'  "))
                 {
@@ -249,6 +249,275 @@ namespace coreapi.Controllers
 
             return Ok(crms);
         }
+
+
+
+        [HttpGet("[action]")]
+        public IActionResult getreqfromcustkanban([FromQuery] string userlogin, [FromQuery] string cmpid)
+        {
+
+            DataTable dt = new System.Data.DataTable();
+            DataTable dtItem = new System.Data.DataTable();
+            DataTable dtAssign = new System.Data.DataTable();
+            DataTable dtComment = new DataTable();
+            DataTable dtCommentReply = new DataTable();
+            DataTable dtOwner = new DataTable();
+            DataTable dtRoute = new DataTable();
+            DataTable dtystemroute = new DataTable();
+
+            System.Globalization.CultureInfo thaiCulture = new System.Globalization.CultureInfo("th-TH");
+            thaiCulture.DateTimeFormat.Calendar = new System.Globalization.GregorianCalendar();
+
+
+            string _cmd;
+
+            _cmd = "exec dbo.sp_getsystemroute @CmpId='" + cmpid + "', @System='Sales'";
+            dtystemroute = DB.DBConn.GetDataTable(_cmd);
+
+            _cmd = "exec dbo.[getReqFromCustomer] @user='" + userlogin + "', @cmpid='" + cmpid + "'";
+            dt = DB.DBConn.GetDataTable(_cmd);
+
+            _cmd = "exec dbo.[getReqFromCustomerItem] @user='" + userlogin + "', @cmpid='" + cmpid + "'";
+            dtItem = DB.DBConn.GetDataTable(_cmd);
+
+
+            _cmd = "exec dbo.[getReqFromCustomerAssign] @user='" + userlogin + "', @cmpid='" + cmpid + "'";
+            dtAssign = DB.DBConn.GetDataTable(_cmd);
+
+            _cmd = "exec dbo.[getReqFromCustomerOwner] @user='" + userlogin + "', @cmpid='" + cmpid + "'";
+            dtOwner = DB.DBConn.GetDataTable(_cmd);
+
+            _cmd = "exec dbo.[getReqFromCustomerRoute] @user='" + userlogin + "', @cmpid='" + cmpid + "'";
+            dtRoute = DB.DBConn.GetDataTable(_cmd);
+
+
+
+            _cmd = "exec dbo.[sp_getManageReqComment] @Operation='COMMENT' ,   @cmpid='" + cmpid + "'";
+            dtComment = DB.DBConn.GetDataTable(_cmd);
+
+
+            _cmd = "exec dbo.[sp_getManageReqComment] @Operation='REPLY' ,   @cmpid='" + cmpid + "'";
+            dtCommentReply = DB.DBConn.GetDataTable(_cmd);
+
+
+            List<Models.Route> routes = new List<Models.Route>();
+            var columns = new List<object>();
+            var tasks = new Dictionary<string, List<object>>();
+            foreach (DataRow rt in dtystemroute.Rows)
+            {
+                var route = new Models.Route();
+                route.CmpId = rt["CmpId"].ToString();
+                route.RouteId = rt["RouteId"].ToString();
+                route.RouteName = rt["RouteName"].ToString();
+                route.Department = rt["Department"].ToString();
+                route.completepercent = double.Parse(rt["completepercent"].ToString());
+                route.Seq = int.Parse(rt["Seq"].ToString());
+                columns.Add(route);
+
+                if (dt.Select("RouteId='" + route.RouteId + "'").Length > 0)
+                {
+                    tasks[route.RouteId] = new List<object>();
+                }
+
+
+                List<ReqFromCustList> crms = new List<ReqFromCustList>();
+                foreach (DataRow r in dt.Select("RouteId='" + route.RouteId + "'"))
+                {
+
+                    var crm = new ReqFromCustList();
+                    crm.CmpId = r["CmpId"].ToString();
+                    crm.TicketId = r["TicketId"].ToString();
+                    crm.ticketIdRef = r["ticketIdRef"].ToString();
+                    crm.ServiceType = r["ServiceType"].ToString();
+                    crm.CustomerName = r["CustomerName"].ToString();
+                    crm.ContactName = r["ContactName"].ToString();
+                    crm.ContactPhone = r["ContactPhone"].ToString();
+                    crm.ContactEmail = r["ContactEmail"].ToString();
+                    crm.Address = r["Address"].ToString();
+                    crm.CreateAt = DateTime.Parse(r["CreateAt"].ToString());
+                    crm.Status = r["Status"].ToString();
+                    crm.FromApp = r["FromApp"].ToString();
+                    crm.todo = r["todo"].ToString();
+                    crm.completepercent = decimal.Parse(r["completepercent"].ToString());
+                    crm.DueDate = DateTime.Parse(r["DueDate"].ToString()).ToString("yyyy-MM-dd HH:mm", thaiCulture);
+                    crm.UpdUser = r["updUser"].ToString();
+                    crm.ticketIdRef = r["TicketIdRef"].ToString();
+
+                    crm.ReqRoute = new List<CustomerReqTicketRoute>();
+                    foreach (DataRow i in dtRoute.Select(" TicketId='" + r["TicketId"].ToString() + "'  "))
+                    {
+                        var item = new CustomerReqTicketRoute();
+                        item.CmpId = i["CmpId"].ToString();
+                        item.TicketId = i["TicketId"].ToString();
+                        item.RouteId = i["RouteId"].ToString();
+                        item.RemindId = i["RemindId"].ToString();
+                        item.RouteIdBefore = i["RouteIdBefore"].ToString();
+                        item.StatusFinish = Int16.Parse(i["StatusFinish"].ToString());
+                        item.DueDate = DateTime.Parse(i["DueDate"].ToString());
+                        item.RouteName = i["RouteName"].ToString();
+                        item.Department = i["Department"].ToString();
+                        item.RemideDescription = i["RemideDescription"].ToString();
+                        item.Seq = Int16.Parse(i["Seq"].ToString());
+                        item.DateFinish = "";
+                        item.UserFinish = "";
+
+                        item.reqAssign = new List<ReqFromCustAssign>();
+
+                        foreach (DataRow a in dtAssign.Select("TicketId='" + item.TicketId + "' and RemindId='" + item.RemindId + "' and RouteId='" + item.RouteId + "'"))
+                        {
+
+                            var itema = new ReqFromCustAssign();
+                            itema.CmpId = a["CmpId"].ToString();
+                            itema.TicketId = a["TicketId"].ToString();
+                            itema.UserFullName = a["FullName"].ToString();
+                            itema.ImgPath = a["ImgPath"].ToString();
+                            itema.Permission = a["Permission"].ToString();
+                            itema.RouteId = item.RouteId.ToString();
+                            itema.RemindId = item.RemindId.ToString();
+                            itema.UserId = a["UserId"].ToString();
+
+                            item.reqAssign.Add(itema);
+                        }
+
+
+                        crm.ReqRoute.Add(item);
+
+                    }
+
+
+                    crm.ReqOwner = new List<ReqFromCustOwner>();
+                    foreach (DataRow i in dtOwner.Select(" TicketId='" + r["TicketId"].ToString() + "' and  CmpId='" + r["CmpId"].ToString() + "'"))
+                    {
+                        var item = new ReqFromCustOwner();
+                        item.CmpId = i["CmpId"].ToString();
+                        item.TicketId = i["TicketId"].ToString();
+                        item.UserFullName = i["FullName"].ToString();
+                        item.ImgPath = i["ImgPath"].ToString();
+                        item.UserId = i["UserId"].ToString();
+
+
+                        crm.ReqOwner.Add(item);
+
+                    }
+
+
+
+
+                    crm.ReqItem = new List<ReqFromCustItem>();
+
+                    foreach (DataRow i in dtItem.Select(" TicketId='" + r["TicketId"].ToString() + "' and  CmpId='" + r["CmpId"].ToString() + "'"))
+                    {
+
+                        var item = new ReqFromCustItem();
+                        item.CmpId = i["CmpId"].ToString();
+                        item.TicketId = i["TicketId"].ToString();
+                        item.ServiceType = i["ServiceType"].ToString();
+                        item.ModelName = i["ModelName"].ToString();
+                        item.SerialNo = i["SerialNo"].ToString();
+                        item.PartNo = i["PartNo"].ToString();
+
+                        item.Forticloud = i["Forticloud"].ToString();
+                        item.MABy = i["MABy"].ToString();
+                        item.MADuration = i["MADuration"].ToString();
+                        item.AdvanceReplacement = i["AdvanceReplacement"].ToString();
+
+                        item.SLA = i["SLA"].ToString();
+                        item.AdditionalDetail = i["AdditionalDetail"].ToString();
+                        item.DesiredService = i["DesiredService"].ToString();
+                        item.FileUrl = i["FIleUrl"].ToString();
+                        item.Seq = int.Parse(i["Seq"].ToString());
+                        crm.ReqItem.Add(item);
+
+                    }
+
+
+                    crm.ReqAssign = new List<ReqFromCustAssign>();
+                    foreach (DataRow i in dtAssign.Select(" TicketId='" + r["TicketId"].ToString() + "' and  CmpId='" + r["CmpId"].ToString() + "'"))
+                    {
+                        var item = new ReqFromCustAssign();
+                        item.CmpId = i["CmpId"].ToString();
+                        item.TicketId = i["TicketId"].ToString();
+                        item.UserFullName = i["FullName"].ToString();
+                        item.ImgPath = i["ImgPath"].ToString();
+                        item.Permission = i["Permission"].ToString();
+                        item.UserId = i["UserId"].ToString();
+                        item.RemindId = i["RemindId"].ToString();
+                        item.RouteId = i["RouteId"].ToString();
+
+
+
+
+
+
+                        crm.ReqAssign.Add(item);
+
+                    }
+
+
+                    crm.ReqComments = new List<ReqComment>();
+                    foreach (DataRow i in dtComment.Select(" TicketId='" + r["TicketId"].ToString() + "' and  CmpId='" + r["CmpId"].ToString() + "'"))
+                    {
+                        var comment = new ReqComment();
+
+                        comment.CmpId = i["CmpId"].ToString();
+                        comment.CommentId = i["CommentId"].ToString();
+                        comment.TicketId = i["TicketId"].ToString();
+                        comment.Id = i["Id"].ToString();
+                        comment.Name = i["Name"].ToString();
+                        comment.AvatarUrl = i["AvatarUrl"].ToString();
+                        comment.Message = i["Message"].ToString();
+                        comment.PostedAt = DateTime.Parse(i["PostedAt"].ToString());
+                        comment.replyComment = new List<ReplyComment>();
+                        foreach (DataRow x in dtCommentReply.Select("TicketId='" + i["TicketId"].ToString() + "' and CmpId='" + i["CmpId"].ToString() + "' and CommentId='" + i["CommentId"].ToString() + "'"))
+                        {
+                            var reply = new ReplyComment();
+                            reply.CmpId = x["CmpId"].ToString();
+                            reply.CommentId = x["Comment"].ToString();
+                            reply.TicketId = x["TicketId"].ToString();
+                            reply.Id = x["Id"].ToString();
+                            reply.UserId = x["UserId"].ToString();
+                            reply.Message = x["Message"].ToString();
+
+                            reply.TagUser = x["TagUser"].ToString();
+                            reply.PostedAt = DateTime.Parse(i["PostedAt"].ToString());
+
+                            comment.replyComment.Add(reply);
+
+                        }
+
+                        crm.ReqComments.Add(comment);
+
+
+                    }
+
+
+                    crms.Add(crm);
+                    tasks[route.RouteId].Add(crm);
+
+                }
+
+
+
+
+
+
+
+
+            }
+
+            var response = new
+            {
+                board = new
+                {
+                    tasks,
+                    columns
+                }
+            };
+
+            return Ok(response);
+        }
+
+
 
 
 

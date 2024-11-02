@@ -13,7 +13,7 @@ using Newtonsoft.Json;
 using Microsoft.AspNetCore.Mvc;
 
 namespace coreapi.Controllers
-{
+{ 
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
