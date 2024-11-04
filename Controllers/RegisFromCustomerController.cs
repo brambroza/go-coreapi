@@ -456,6 +456,130 @@ namespace coreapi.Controllers
 
 
 
+        [HttpPost("setReqRouteFinish")]
+        public async Task<IActionResult> setReqRouteFinish(CustomerReqTicketRoute comment)
+        {
+
+            System.Globalization.CultureInfo thaiCulture = new System.Globalization.CultureInfo("th-TH");
+            thaiCulture.DateTimeFormat.Calendar = new System.Globalization.GregorianCalendar();
+            /*    var url = await UploadFilesAsyn(formFiles); */
+            MsgReturn msgretrun = new MsgReturn();
+            DB.DBConn.SqlConnectionOpen();
+            DB.DBConn.Cmd = DB.DBConn.Cnn.CreateCommand();
+            DB.DBConn.Tran = DB.DBConn.Cnn.BeginTransaction();
+
+            try
+            {
+                string _cmd;
+
+
+                _cmd = "exec  dbo.setReqRouteFinish";
+                _cmd += " @CmpId  ='" + comment.CmpId + "'";
+                _cmd += ", @TicketId  ='" + comment.TicketId + "'";
+                _cmd += ", @RouteId  ='" + comment.RouteId + "'";
+                _cmd += ", @RemindId  ='" + comment.RemindId + "'";
+                _cmd += ", @StatusFinish  =" + Int16.Parse(comment.StatusFinish.ToString());
+                _cmd += ", @UserFinish  ='" + comment.UserFinish + "'";
+
+                if (DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran) <= 0)
+                {
+                    DB.DBConn.Tran.Rollback();
+                    DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
+                    DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
+                    msgretrun.ReturnCode = "400";
+                    msgretrun.Msg = "Error !!";
+                    return NotFound(msgretrun);
+                };
+ 
+
+
+                DB.DBConn.Tran.Commit();
+                DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
+                DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
+                msgretrun.ReturnCode = "200";
+                msgretrun.Msg = "Save Success !!";
+                return Ok(msgretrun);
+            }
+            catch (Exception ex)
+            {
+                DB.DBConn.Tran.Rollback();
+                DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
+                DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
+
+                msgretrun.ReturnCode = "400";
+                msgretrun.Msg = "Error !!";
+                return NotFound(msgretrun);
+
+            }
+
+
+        }
+
+
+
+
+
+        [HttpPost("setReqUpdateTask")]
+        public async Task<IActionResult> setUpdateTask(TaskUpdate comment)
+        {
+
+            System.Globalization.CultureInfo thaiCulture = new System.Globalization.CultureInfo("th-TH");
+            thaiCulture.DateTimeFormat.Calendar = new System.Globalization.GregorianCalendar();
+            /*    var url = await UploadFilesAsyn(formFiles); */
+            MsgReturn msgretrun = new MsgReturn();
+            DB.DBConn.SqlConnectionOpen();
+            DB.DBConn.Cmd = DB.DBConn.Cnn.CreateCommand();
+            DB.DBConn.Tran = DB.DBConn.Cnn.BeginTransaction();
+
+            try
+            {
+                string _cmd;
+
+
+                _cmd = "exec  dbo.setReqUpdateColumn";
+                _cmd += " @CmpId  ='" + comment.CmpId + "'";
+                _cmd += ", @TicketId  ='" + comment.TicketId + "'";
+                _cmd += ", @RouteId  ='" + comment.RouteId + "'";
+                _cmd += ", @updUser  ='" + comment.updUser + "'"; 
+
+                if (DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran) <= 0)
+                {
+                    DB.DBConn.Tran.Rollback();
+                    DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
+                    DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
+                    msgretrun.ReturnCode = "400";
+                    msgretrun.Msg = "Error !!";
+                    return NotFound(msgretrun);
+                };
+ 
+
+
+                DB.DBConn.Tran.Commit();
+                DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
+                DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
+                msgretrun.ReturnCode = "200";
+                msgretrun.Msg = "Save Success !!";
+                return Ok(msgretrun);
+            }
+            catch (Exception ex)
+            {
+                DB.DBConn.Tran.Rollback();
+                DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
+                DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
+
+                msgretrun.ReturnCode = "400";
+                msgretrun.Msg = "Error !!";
+                return NotFound(msgretrun);
+
+            }
+
+
+        }
+
+
+
+
+
 
 
         private async Task<List<string>> UploadFilesAsyn(List<IFormFile> formFiles)

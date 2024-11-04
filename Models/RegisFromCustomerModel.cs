@@ -203,6 +203,14 @@ namespace coreapi.Models
     }
 
 
+    public class TaskUpdate {
+        public string updUser {get;set;}
+        public string TicketId {get;set;}
+        public string RouteId {get;set;}
+        public string CmpId {get;set;}
+    }
+
+
 
 
 }

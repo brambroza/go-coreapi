@@ -127,7 +127,7 @@ namespace coreapi.Models
         public string UpdUser { get; set; }
         public string BusinessGrpCode { get; set; }
         public string BusinessGrpName { get; set; }
-        public string BusinessGrpDescripton { get; set; }
+        public string BusinessGrpDescription { get; set; }
         public int StateActive { get; set; }
         public string CmpId { get; set; }
 

@@ -295,7 +295,7 @@ namespace coreapi.Controllers.Master
                 _cmd += "  @UpdUser  ='" + bk.UpdUser + "'";
                 _cmd += " ,@BusinessGrpCode ='" + bk.BusinessGrpCode + "'";
                 _cmd += " ,@BusinessGrpName ='" + bk.BusinessGrpName + "'";
-                _cmd += " ,@BusinessGrpDescription ='" + bk.BusinessGrpDescripton + "'";
+                _cmd += " ,@BusinessGrpDescription ='" + bk.BusinessGrpDescription + "'";
                 _cmd += " ,@StateActive =" + bk.StateActive + "";
                 _cmd += " ,@CmpId ='" + bk.CmpId + "'";
 
