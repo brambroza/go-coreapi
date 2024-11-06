@@ -314,10 +314,9 @@ namespace coreapi.Controllers
                 route.Seq = int.Parse(rt["Seq"].ToString());
                 columns.Add(route);
 
-                if (dt.Select("RouteId='" + route.RouteId + "'").Length > 0)
-                {
-                    tasks[route.RouteId] = new List<object>();
-                }
+
+                tasks[route.RouteId] = new List<object>();
+
 
 
                 List<ReqFromCustList> crms = new List<ReqFromCustList>();
