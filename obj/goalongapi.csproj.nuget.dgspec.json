@@ -54,6 +54,10 @@
               "target": "Package",
               "version": "[1.0.0, )"
             },
+            "Google.Apis.Gmail.v1": {
+              "target": "Package",
+              "version": "[1.68.0.3427, )"
+            },
             "Google.Apis.Sheets.v4": {
               "target": "Package",
               "version": "[1.68.0.3525, )"
@@ -103,6 +107,10 @@
             "Microsoft.EntityFrameworkCore.SqlServer": {
               "target": "Package",
               "version": "[7.0.5, )"
+            },
+            "MimeKit": {
+              "target": "Package",
+              "version": "[4.8.0, )"
             },
             "Net.Json.Serializer": {
               "target": "Package",
