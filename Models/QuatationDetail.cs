@@ -31,6 +31,9 @@ namespace coreapi.Models
         public string UpdUser { get; set; }
         public string CmpId { get; set; }
 
+        public string MainProdCode {get;set;}
+        public int MainSeq {get;set;}
+
         
 
     }

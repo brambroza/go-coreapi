@@ -145,6 +145,9 @@ namespace coreapi.Controllers
                     item.CmpId = d["CmpId"].ToString();
                     item.GrossProfitPer = Convert.ToDecimal(d["GrossProfitPer"]);
 
+                    item.MainProdCode = d["MainProdCode"].ToString();
+                    item.MainSeq = Convert.ToInt32(d["MainSeq"]);
+
                     quotaion.Items.Add(item);
 
 

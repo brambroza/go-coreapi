@@ -9,9 +9,9 @@ public class MailController : ControllerBase
 {
     private readonly GmailServiceHelper _gmailService;
 
-    public MailController()
+    public MailController(IWebHostEnvironment env)
     {
-        _gmailService = new GmailServiceHelper();
+        _gmailService = new GmailServiceHelper(env);
     }
 
     [HttpGet("emails")]

@@ -11,12 +11,17 @@ using System.Threading.Tasks;
 public class GmailServiceHelper
 {
     private static string[] Scopes = { GmailService.Scope.GmailReadonly, GmailService.Scope.GmailSend };
-    private static string ApplicationName = "goalongwebapp";
+    private static string ApplicationName = "webapigmail";
     private GmailService _service;
+    private readonly IWebHostEnvironment _env;
+    public GmailServiceHelper(IWebHostEnvironment env)
+    {
+        _env = env ?? throw new ArgumentNullException(nameof(env));
+        InitializeGmailService().Wait();
+    }
 
     public GmailServiceHelper()
     {
-        InitializeGmailService().Wait();
     }
 
     public async Task<IList<Label>> GetLabelsAsync(string userId = "me")
@@ -30,8 +35,10 @@ public class GmailServiceHelper
     private async Task InitializeGmailService()
     {
         UserCredential credential;
+        string fileConfig = Path.Combine(_env.ContentRootPath, "config", "client_secret.json");
 
-        using (var stream = new FileStream("credentials.json", FileMode.Open, FileAccess.Read))
+
+        using (var stream = new FileStream(fileConfig, FileMode.Open, FileAccess.Read))
         {
             var credPath = "token.json";
             credential = await GoogleWebAuthorizationBroker.AuthorizeAsync(
@@ -66,7 +73,7 @@ public class GmailServiceHelper
         {
             Raw = EncodeMessageToBase64(new MimeKit.MimeMessage
             {
-                From = { new MimeKit.MailboxAddress("Your Name", "your-email@example.com") },
+                From = { new MimeKit.MailboxAddress("Amnart Kongpet", "brambroza@gmail.com") },
                 To = { new MimeKit.MailboxAddress(recipient, recipient) },
                 Subject = subject,
                 Body = new MimeKit.TextPart("plain") { Text = body }

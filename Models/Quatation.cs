@@ -316,6 +316,9 @@ namespace coreapi.Models
         public string CmpId { get; set; }
 
         public decimal GrossProfitPer { get; set; }
+          public string MainProdCode {get;set;}
+        public int MainSeq {get;set;}
+        
     }
 
     public class QuotationList

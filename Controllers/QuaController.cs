@@ -81,6 +81,9 @@ namespace coreapi.Controllers
                     _cmd += " , @CmpId='" + Quotation[i].CmpId + "'";
                     _cmd += ",@GrossProfitPer=" + Quotation[i].GrossProfitPer;
                     _cmd += ",@UpdUser='" + Quotation[i].UpdUser + "'";
+                    _cmd += ",@MainProdCode='" + Quotation[i].MainProdCode + "'";
+                    _cmd += ",@MainSeq=" + Quotation[i].MainSeq;
+
                     if (DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran) <= 0)
                     {
                         DB.DBConn.Tran.Rollback();
@@ -111,7 +114,7 @@ namespace coreapi.Controllers
 
 
 
-        
+
 
 
     }
