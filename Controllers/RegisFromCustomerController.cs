@@ -199,9 +199,15 @@ namespace coreapi.Controllers
 
                 string _cmd;
                 string JSONString = string.Empty;
+                string ticketIdRef = "";
 
                 for (int i = 0; i < request.ReqItem.Count; i++)
                 {
+                    if (ticketIdRef != ""){
+                        request.ticketIdRef = ticketIdRef;
+                    }
+
+
                     _cmd = "exec  dbo.setReqOtherFromGoAlong";
                     _cmd += " @CustomerName  ='" + request.CustomerName + "'";
                     _cmd += ", @ContactName  ='" + request.ContactName + "'";
@@ -217,7 +223,7 @@ namespace coreapi.Controllers
                     _cmd += ", @SerialNo='" + request.ReqItem[i].SerialNo + "'";
                     _cmd += ", @Forticloud='" + request.ReqItem[i].Forticloud + "'";
                     _cmd += ", @MADuration='" + request.ReqItem[i].MADuration + "'";
-                    _cmd += ", @TicketIdRef='" + request.ticketIdRef + "'";
+                    _cmd += ", @TicketIdRef='" +   request.ticketIdRef    + "'";
                     _cmd += " , @Seq=" + request.ReqItem[i].Seq + "";
                     _cmd += ", @PartNo='" + request.ReqItem[i].PartNo + "'";
                     _cmd += ", @MABy='" + request.ReqItem[i].MABy + "'";
@@ -240,7 +246,14 @@ namespace coreapi.Controllers
                     }
                     DataTable dt = DB.DBConn.GetDataTable(_cmd);
                     JSONString = JsonConvert.SerializeObject(dt);
-
+                    if (dt.Rows.Count > 0)  
+                    {
+                        ticketIdRef = dt.Rows[0][0].ToString();  
+                    }
+                    else
+                    {
+                        ticketIdRef = "";  
+                    }
 
                     for (int r = 0; r < request.ReqRoute.Count; r++)
                     {
@@ -490,7 +503,7 @@ namespace coreapi.Controllers
                     msgretrun.Msg = "Error !!";
                     return NotFound(msgretrun);
                 };
- 
+
 
 
                 DB.DBConn.Tran.Commit();
@@ -540,7 +553,7 @@ namespace coreapi.Controllers
                 _cmd += " @CmpId  ='" + comment.CmpId + "'";
                 _cmd += ", @TicketId  ='" + comment.TicketId + "'";
                 _cmd += ", @RouteId  ='" + comment.RouteId + "'";
-                _cmd += ", @updUser  ='" + comment.updUser + "'"; 
+                _cmd += ", @updUser  ='" + comment.updUser + "'";
 
                 if (DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran) <= 0)
                 {
@@ -551,7 +564,7 @@ namespace coreapi.Controllers
                     msgretrun.Msg = "Error !!";
                     return NotFound(msgretrun);
                 };
- 
+
 
 
                 DB.DBConn.Tran.Commit();

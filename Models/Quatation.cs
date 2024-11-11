@@ -146,8 +146,8 @@ namespace coreapi.Models
         public int ReplaceStatus { get; set; }
         public string Remark { get; set; }
 
-        public string Vendor {get;set;} ="";
-        public string VendorName {get;set;} = "";
+        public string Vendor { get; set; } = "";
+        public string VendorName { get; set; } = "";
 
         public List<SalesBom_Price_Item> bomitemPrice { get; set; }
 
@@ -225,7 +225,7 @@ namespace coreapi.Models
         public string SaleOrderBy { get; set; }
         public string SaleOrderState { get; set; }
         public string CustomerCode { get; set; }
-        public string CustomerName  {get;set;}
+        public string CustomerName { get; set; }
         public int CreditType { get; set; }
         public int CreditDate { get; set; }
         public string ProjectName { get; set; }
@@ -244,7 +244,7 @@ namespace coreapi.Models
         public int WithholdingTaxState { get; set; }
         public int ShowSignatureState { get; set; }
         public string CmpId { get; set; }
-        public string PriceStand { get; set; } ="";
+        public string PriceStand { get; set; } = "";
         public string PaymentDue { get; set; }
         public string Shipping { get; set; }
         public int RevNo { get; set; }
@@ -255,7 +255,7 @@ namespace coreapi.Models
 
         public List<SaleOrderItem> items { get; set; }
 
-        public string TicketId {get;set;}
+        public string TicketId { get; set; }
 
 
     }
@@ -283,7 +283,7 @@ namespace coreapi.Models
         public string GroupCaption3 { get; set; }
         public string CmpId { get; set; }
 
-        public int RevNo {get;  set;}
+        public int RevNo { get; set; }
     }
 
 
@@ -316,9 +316,9 @@ namespace coreapi.Models
         public string CmpId { get; set; }
 
         public decimal GrossProfitPer { get; set; }
-          public string MainProdCode {get;set;}
-        public int MainSeq {get;set;}
-        
+        public string MainProdCode { get; set; }
+        public int MainSeq { get; set; }
+
     }
 
     public class QuotationList
