@@ -5,8 +5,6 @@ using System.Web;
 
 namespace coreapi.Models
 {
-
-
     public class Customer
     {
         public string UpdUser { get; set; }
@@ -43,13 +41,12 @@ namespace coreapi.Models
         public string ImgPath { get; set; }
         public int CreditAccId { get; set; }
         public int DebitAccId { get; set; }
-        public string BusinessGrpCode { get;set;}
-
-
-
+        public string BusinessGrpCode { get; set; }
+        public string StateCustomer { get; set; }
+        public string StateVendor { get; set; }
     }
 
-     public class CustomerList
+    public class CustomerList
     {
         public string UpdUser { get; set; }
         public string CustomerCode { get; set; }
@@ -85,22 +82,21 @@ namespace coreapi.Models
         public string ImgPath { get; set; }
         public int CreditAccId { get; set; }
         public int DebitAccId { get; set; }
-        public string BusinessGrpCode { get;set;}
+        public string BusinessGrpCode { get; set; }
 
-        public List<Contact> contacts {get;set;}
+        public List<Contact> contacts { get; set; }
 
-
-
+        public string StateCustomer { get; set; }
+        public string StateVendor { get; set; }
     }
 
-    public class Contact {
-     public string Name {get;set;}
-     public string Email {get;set;}
-     public string Phone {get;set;}
-     public string Position {get;set;}
+    public class Contact
+    {
+        public string Name { get; set; }
+        public string Email { get; set; }
+        public string Phone { get; set; }
+        public string Position { get; set; }
     }
-
-
 
     public class CustCodeFill
     {
@@ -111,8 +107,6 @@ namespace coreapi.Models
     {
         string sdate { get; set; }
     }
-
-
 
     public class CustomerDBD
     {
@@ -128,7 +122,6 @@ namespace coreapi.Models
         public string standardObjective { get; set; }
         public standardObjectiveDetail standardObjectiveDetail { get; set; }
         public addressDetail addressDetail { get; set; }
-
     }
 
     public class standardObjectiveDetail
@@ -150,9 +143,5 @@ namespace coreapi.Models
         public string subDistrict { get; set; }
         public string district { get; set; }
         public string province { get; set; }
-
-
     }
-
-
 }

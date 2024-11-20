@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.SignalR.Protocol;
 
 namespace coreapi.Models
 {
-
     public class Company
     {
         public string CmpId { get; set; }
@@ -34,9 +33,7 @@ namespace coreapi.Models
         public string AddrDistrict { get; set; }
         public string AddrSubDistrict { get; set; }
         public string AddrPostCode { get; set; }
-        public int RoleID {get;set;}
-      
- 
+        public int RoleID { get; set; }
     }
 
     public class mapuser
@@ -49,6 +46,16 @@ namespace coreapi.Models
     {
         public string imgpath { get; set; }
         public string cmpid { get; set; }
+    }
+
+    public class cmpSocialChannel
+    {
+        public string CmpId { get; set; }
+        public string UpdUser { get; set; }
+        public int Seq { get; set; }
+        public string SocialType { get; set; }
+        public string AccountHook { get; set; }
+        public string AccountName {get;set;}
     }
 
     public class cmpinfo
@@ -85,12 +92,7 @@ namespace coreapi.Models
         public string LineId { get; set; }
         public string ColorThemeReport { get; set; }
         public string FaviconUrl { get; set; }
-
-
-
     }
-
-
 
     public class Bank
     {
@@ -121,7 +123,6 @@ namespace coreapi.Models
         public string CmpId { get; set; }
     }
 
-
     public class mBussinetGrp
     {
         public string UpdUser { get; set; }
@@ -130,22 +131,18 @@ namespace coreapi.Models
         public string BusinessGrpDescription { get; set; }
         public int StateActive { get; set; }
         public string CmpId { get; set; }
-
     }
 
-
-
-    public class paymentmethod {
-        public string UpdUser {get;set;}
-        public string CmpId {get;set;}
-        public int PaymnetMethodId {get;set;}
-        public string BankAccCode {get;set;}
-        public string BankAccName {get;set;}
-        public string BankCode {get;set;}
-        public string BankBranchCode {get;set;}
-        public int BankType {get;set;}
-        public string BankTypeName {get;set;}
+    public class paymentmethod
+    {
+        public string UpdUser { get; set; }
+        public string CmpId { get; set; }
+        public int PaymnetMethodId { get; set; }
+        public string BankAccCode { get; set; }
+        public string BankAccName { get; set; }
+        public string BankCode { get; set; }
+        public string BankBranchCode { get; set; }
+        public int BankType { get; set; }
+        public string BankTypeName { get; set; }
     }
-
-
 }

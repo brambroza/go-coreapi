@@ -11,7 +11,7 @@ namespace coreapi.Models
         public string PurchaseNo { get; set; }
         public string PurchaseDate { get; set; }
         public string PurchaseBy { get; set; }
-        public int PurchaseState { get; set; }
+        public string PurchaseState { get; set; }
         public string SupplierCode { get; set; }
         public int CreditType { get; set; }
         public int CreditDate { get; set; }
@@ -25,6 +25,7 @@ namespace coreapi.Models
         public decimal PurchaseDisAmt { get; set; }
         public decimal PurchaseNetAmt { get; set; }
         public decimal PurchaseVatAmt { get; set; }
+        public decimal PurchaseVatPer  { get; set; }
         public decimal PurchaseGrandAmt { get; set; }
         public string PurchaseGrandAmtTHB { get; set; }
         public string PurchaseGrandAmtENB { get; set; }
@@ -33,10 +34,15 @@ namespace coreapi.Models
         public string CmpId { get; set; }
         public int DocState { get; set; }
         public string PriceStand { get; set; }
-        public string PaymentDue { get; set; }
-        public string Shipping { get; set; }
+        public DateTime PaymentDue { get; set; }
+        public DateTime Shipping { get; set; }
         public int RevNo { get; set; }
         public string ProjectNo { get; set; }
+
+        public string SupplierName {get;set;}
+        public string ContactName {get;set;}
+
+        public List<Purchase_Detail> items {get;set;}
 
 
     }

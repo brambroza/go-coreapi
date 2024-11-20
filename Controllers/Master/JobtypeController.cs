@@ -1,17 +1,16 @@
-﻿using coreapi.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using Newtonsoft.Json;
-using Microsoft.AspNetCore.Mvc;
+using coreapi.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace coreapi.Controllers.Master
 {
-
     [ApiController]
     [Authorize]
     public class JobtypeController : ControllerBase
@@ -20,7 +19,6 @@ namespace coreapi.Controllers.Master
         [HttpGet("[action]")]
         public IActionResult GetJobtype([FromQuery] string cmpid)
         {
-
             DataTable dt = new System.Data.DataTable();
             string _cmd;
             _cmd = "exec dbo.getJobtypelist @CmpId=" + cmpid + "";
@@ -31,12 +29,10 @@ namespace coreapi.Controllers.Master
             return Ok(JSONString);
         }
 
-
         // POST: api/Jobtype
         [HttpPost("[action]")]
         public IActionResult setJobtype(Jobtype jt)
         {
-
             MsgReturn msgretrun = new MsgReturn();
             try
             {
@@ -47,7 +43,7 @@ namespace coreapi.Controllers.Master
                 _cmd += ",@JobTypeName  ='" + jt.JobTypeName + "'";
                 _cmd += ",@JobTypeDescripton  ='" + jt.JobTypeDescripton + "'";
                 _cmd += ",@JobTypeStateActive =" + jt.JobTypeStateActive;
-
+                _cmd += ",@CmpId  ='" + jt.CmpId + "'";
 
                 if (DB.DBConn.ExecuteOnly(_cmd))
                 {
@@ -61,7 +57,6 @@ namespace coreapi.Controllers.Master
                     msgretrun.Msg = "Error !!";
                     return Ok(msgretrun);
                 }
-
             }
             catch
             {
@@ -69,13 +64,9 @@ namespace coreapi.Controllers.Master
                 msgretrun.Msg = "Error !!";
                 return Ok(msgretrun);
             }
-
-
-
         }
 
         [HttpDelete("[action]")]
-
         public void DeleteJobtype([FromQuery] string jobid)
         {
             string _cmd = "";

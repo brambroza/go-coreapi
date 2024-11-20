@@ -16,10 +16,20 @@ namespace coreapi.Models
         public string QuotationNo { get; set; }
         public string ReferCode { get; set; }
         public string StateActive { get; set; }
-        public string ProjectDueDate { get; set; }
-        public string ProjectDate { get; set; }
+        public DateTime ProjectDueDate { get; set; }
+        public DateTime ProjectDate { get; set; }
         public string SaleOrderNo { get; set; }
+        public int TotalQty {get;set;}
 
+        public  CustomerList  customer {get;set;}
+
+        public List<Project_Detail> items { get; set; }
+        public List<Project_Task> tasks { get; set; }
+        public List<Project_TaskInstall> installs { get; set; }
+        public List<Project_File> attachfile { get; set; }
+        public List<ProjectCost> costs { get; set; }
+
+        public  ProjectHistory history {get;set;}
     }
 
     public class Apppo
@@ -34,8 +44,6 @@ namespace coreapi.Models
         public string ReferCode { get; set; }
         public string StateActive { get; set; }
         public string SaleOrderNo { get; set; }
-
-
     }
 
     public class AppInvoice
@@ -44,13 +52,7 @@ namespace coreapi.Models
         public string SaleOrderNo { get; set; }
         public string CmpId { get; set; }
         public string State { get; set; }
-
-
-
     }
-
-
-
 
     public class Project_Detail
     {
@@ -76,6 +78,8 @@ namespace coreapi.Models
         public string PurchaseNo { get; set; }
         public string DeliveryDate { get; set; }
         public int RevNo { get; set; }
+
+        public string imgpath { get; set; }
     }
 
     public class Project_Task
@@ -97,9 +101,7 @@ namespace coreapi.Models
         public string EndTime { get; set; } = null;
         public string InstallDescription { get; set; }
         public string CmpId { get; set; }
-
     }
-
 
     public class Project_TaskInstall
     {
@@ -116,12 +118,7 @@ namespace coreapi.Models
         public string InstallDescription { get; set; }
 
         public string CmpId { get; set; }
-
     }
-
-
-
-
 
     public class Project_File
     {
@@ -132,7 +129,6 @@ namespace coreapi.Models
         public string FilePath { get; set; }
         public byte[] Files { get; set; }
     }
-
 
     public class ProjectCost
     {
@@ -145,4 +141,22 @@ namespace coreapi.Models
         public string CmpId { get; set; }
     }
 
+    public class ProjectHistory
+    {
+        public string ProjectNo { get; set; }
+        public DateTime ProjectTime { get; set; }
+        public DateTime PaymentTime { get; set; }
+        public DateTime DeliveryTime { get; set; }
+        public DateTime CompletionTime { get; set; }
+        public string CmpId { get; set; }
+        public List<ProjectTimeline> timeline {get;set;}
+    }
+
+    public class ProjectTimeline
+    {
+        public string ProjectNo { get; set; }
+        public string Title { get; set; }
+        public DateTime Time { get; set; }
+        public string CmpId { get; set; }
+    }
 }

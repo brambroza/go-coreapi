@@ -83,6 +83,7 @@ namespace coreapi.Controllers
                 crm.Status = r["Status"].ToString();
                 crm.FromApp = r["FromApp"].ToString();
                 crm.todo = r["todo"].ToString();
+                crm.AdditionalDetail = r["AdditionalDetail"].ToString();
                 crm.completepercent = decimal.Parse(r["completepercent"].ToString());
                 crm.DueDate = DateTime.Parse(r["DueDate"].ToString()).ToString("yyyy-MM-dd HH:mm", thaiCulture);
                 crm.UpdUser = r["updUser"].ToString();
@@ -336,6 +337,7 @@ namespace coreapi.Controllers
                     crm.CreateAt = DateTime.Parse(r["CreateAt"].ToString());
                     crm.Status = r["Status"].ToString();
                     crm.FromApp = r["FromApp"].ToString();
+                    crm.AdditionalDetail = r["AdditionalDetail"].ToString();
                     crm.todo = r["todo"].ToString();
                     crm.completepercent = decimal.Parse(r["completepercent"].ToString());
                     crm.DueDate = DateTime.Parse(r["DueDate"].ToString()).ToString("yyyy-MM-dd HH:mm", thaiCulture);

@@ -12,5 +12,6 @@ namespace coreapi.Models
     public string JobTypeName { get; set; }
     public string JobTypeDescripton { get; set; }
     public int JobTypeStateActive { get; set; }
+    public string CmpId {get;set;}
     }
 }

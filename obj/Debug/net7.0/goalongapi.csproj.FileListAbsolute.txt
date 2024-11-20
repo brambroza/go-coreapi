@@ -412,3 +412,4 @@ D:/Project/Goalong/webapi/coreapi/bin/Debug/net7.0/Microsoft.AspNetCore.Mvc.Newt
 /Users/amnartkongpet/Project/GoAlong/coreapi-new/bin/Debug/net7.0/System.Security.Cryptography.Pkcs.dll
 /Users/amnartkongpet/Project/GoAlong/coreapi-new/bin/Debug/net7.0/runtimes/win/lib/net7.0/System.Security.Cryptography.Pkcs.dll
 /Users/amnartkongpet/Project/GoAlong/coreapi-new/bin/Debug/net7.0/config/client_secret.json
+/Users/amnartkongpet/Project/GoAlong/coreapi-new/bin/Debug/net7.0/config/client_secret2.json

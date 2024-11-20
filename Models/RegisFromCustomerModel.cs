@@ -79,6 +79,7 @@ namespace coreapi.Models
         public string ContactPhone { get; set; }
         public string ContactEmail { get; set; }
         public string Address { get; set; }
+        public string AdditionalDetail { get;set;}
         public DateTime CreateAt { get; set; }
         public string Status { get; set; }
         public string FromApp { get; set; }

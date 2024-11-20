@@ -5,7 +5,6 @@ using System.Web;
 
 namespace coreapi.Models
 {
-
     public class CrmGrpModel
     {
         public string CreateUser { get; set; }
@@ -50,7 +49,6 @@ namespace coreapi.Models
         public string Note { get; set; }
     }
 
-
     public class CRMFilesModel
     {
         public string CreateUser { get; set; }
@@ -61,7 +59,7 @@ namespace coreapi.Models
         public string Description { get; set; }
     }
 
-        public class CRMAppointmentModel
+    public class CRMAppointmentModel
     {
         public string CreateUser { get; set; }
         public string CmpId { get; set; }
@@ -69,13 +67,9 @@ namespace coreapi.Models
         public int Seq { get; set; }
         public string AppointmentDescription { get; set; }
         public string AppointmentDate { get; set; }
-        public string AppointmentTime {get;set;}
-        public string AppointmentType {get;set;}
+        public string AppointmentTime { get; set; }
+        public string AppointmentType { get; set; }
     }
-
-
-
-
 
     public class CRMCommentModel
     {
@@ -101,7 +95,6 @@ namespace coreapi.Models
         public string Userlikes { get; set; }
     }
 
-
     public class CRMComment_dislikesModel
     {
         public string CreateUser { get; set; }
@@ -111,8 +104,6 @@ namespace coreapi.Models
         public int Seq { get; set; }
         public string Userdislikes { get; set; }
     }
-
-
 
     public class CRMComment_filesModel
     {
@@ -124,23 +115,17 @@ namespace coreapi.Models
         public string FilePath { get; set; }
     }
 
-
-
     public class getCrm
     {
         public string grpid { get; set; }
         public string grpname { get; set; }
         public string grpdesciption { get; set; }
         public List<getCrmTask> items { get; set; }
-        public decimal expRevenueTotal { get;set;}
-
+        public decimal expRevenueTotal { get; set; }
     }
-
-
 
     public class getCrmTask
     {
-
         public string taskId { get; set; }
         public string taskname { get; set; }
         public string salesname { get; set; }
@@ -163,27 +148,20 @@ namespace coreapi.Models
         public string note { get; set; }
         public List<getCrmFile> files { get; set; }
         public List<getCRMComment> comments { get; set; }
-        public List<getCrmAppointment> appointment {get;set;}
+        public List<getCrmAppointment> appointment { get; set; }
 
-        public int Progress {get;set;}
+        public int Progress { get; set; }
     }
-
-
-
-
 
     public class getCrmFile
     {
-
         public int Seq { get; set; }
         public string filePath { get; set; }
         public string description { get; set; }
     }
 
-
     public class getCRMComment
     {
-
         public string commentId { get; set; }
         public string author { get; set; }
         public string avatar { get; set; }
@@ -193,37 +171,25 @@ namespace coreapi.Models
         public int dislikes { get; set; }
     }
 
-
-      public class getCrmAppointment
+    public class getCrmAppointment
     {
-
         public int Seq { get; set; }
         public string appointmentdescription { get; set; }
         public string appointmentdate { get; set; }
         public string appointmenttime { get; set; }
         public string appointmenttype { get; set; }
-
-
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    public class TicketFromQuo
+    {
+        public string CmpId { get; set; }
+        public string CustomerName { get; set; }
+        public string ContactName { get; set; }
+        public string ContactPhone { get; set; }
+        public string ContactEmail { get; set; }
+        public string Address { get; set; }
+        public string TicketId { get; set; }
+        public string AdditionalDetail { get; set; }
+        public string UpdUser { get; set; }
+    }
 }
-
-
-
-
-

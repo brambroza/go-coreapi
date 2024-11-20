@@ -38,6 +38,7 @@ namespace coreapi.Models
         public string CustomerContactName { get; set; }
 
         public string Jobtype { get; set; }
+         public string TicketId { get; set; }
 
     }
 
@@ -61,10 +62,7 @@ namespace coreapi.Models
         public int RevNo { get; set; }
 
         public string CmpId { get; set; }
-        public string userlogin { get; set; }
-
-
-
+        public string userlogin { get; set; } 
 
     }
 
@@ -284,13 +282,7 @@ namespace coreapi.Models
         public string CmpId { get; set; }
 
         public int RevNo { get; set; }
-    }
-
-
-
-
-
-
+    } 
 
 
     public class QuotationListItem

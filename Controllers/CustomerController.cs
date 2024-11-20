@@ -1,46 +1,37 @@
-﻿
-using coreapi.Models;
-using System.Net;
-using System;
-using goalongapi.Data;
-using goalongapi.Entities;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using goalongapi.Datatools.Product;
-using Mapster;
-using goalongapi.Interfaces;
-using Microsoft.AspNetCore.Authorization;
+﻿using System;
 using System.Data;
 using System.IdentityModel.Tokens.Jwt;
+using System.Net;
+using coreapi.Models;
+using goalongapi.Data;
+using goalongapi.Datatools.Product;
+using goalongapi.Entities;
+using goalongapi.Interfaces;
+using Mapster;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
-
 
 namespace coreapi.Controllers
 {
     [ApiController]
     [Authorize]
-
-
     public class CustomerController : ControllerBase
     {
-
-
-       
         [HttpGet]
         [Route("Customer")]
-        public IActionResult Get([FromQuery] string cmpid)
+        public IActionResult Get([FromQuery] string cmpid, [FromQuery] string type)
         {
-
             DataTable dt = new System.Data.DataTable();
             string _cmd;
-            _cmd = "exec dbo.getCustomer @CmpId='" + cmpid + "'";
+            _cmd = "exec dbo.getCustomer @CmpId='" + cmpid + "' , @Type='" + type + "'";
             dt = DB.DBConn.GetDataTable(_cmd);
 
             List<CustomerList> customerLists = new List<CustomerList>();
 
             foreach (DataRow r in dt.Rows)
             {
-
                 var customer = new CustomerList();
 
                 customer.UpdUser = r["UpdUser"].ToString();
@@ -78,6 +69,8 @@ namespace coreapi.Controllers
                 customer.CreditAccId = Convert.ToInt32(r["CreditAccId"]);
                 customer.DebitAccId = Convert.ToInt32(r["DebitAccId"]);
                 customer.BusinessGrpCode = r["BusinessGrpCode"].ToString();
+                customer.StateCustomer = r["StateCustomer"].ToString();
+                customer.StateVendor = r["StateVendor"].ToString();
 
                 if (r["ContactName"].ToString() != "")
                 {
@@ -89,7 +82,6 @@ namespace coreapi.Controllers
                     item.Phone = r["ContactPhone"].ToString();
                     item.Position = r["ContactPosition"].ToString();
                     customer.contacts.Add(item);
-
                 }
                 if (r["ContactName1"].ToString() != "")
                 {
@@ -99,7 +91,6 @@ namespace coreapi.Controllers
                     item.Phone = r["ContactPhone1"].ToString();
                     item.Position = r["ContactPosition1"].ToString();
                     customer.contacts.Add(item);
-
                 }
                 if (r["ContactName2"].ToString() != "")
                 {
@@ -109,27 +100,26 @@ namespace coreapi.Controllers
                     item.Phone = r["ContactPhone2"].ToString();
                     item.Position = r["ContactPosition2"].ToString();
                     customer.contacts.Add(item);
-
-
                 }
 
                 customerLists.Add(customer);
             }
-
-
-
 
             return Ok(customerLists);
         }
 
         [HttpGet]
         [Route("CustomerById")]
-        public IActionResult Get([FromQuery] string cmpid, [FromQuery] string customerCode)
+        public IActionResult getCustomerById([FromQuery] string cmpid, [FromQuery] string customerCode)
         {
-
             DataTable dt = new System.Data.DataTable();
             string _cmd;
-            _cmd = "exec dbo.getCustomer_ById @CmpId='" + cmpid + "' , @CustomerCode='" + customerCode + "'";
+            _cmd =
+                "exec dbo.getCustomer_ById @CmpId='"
+                + cmpid
+                + "' , @CustomerCode='"
+                + customerCode
+                + "'";
             dt = DB.DBConn.GetDataTable(_cmd);
             //string qdetail = string.Empty;
             //qdetail = JsonConvert.SerializeObject(dt);
@@ -139,26 +129,20 @@ namespace coreapi.Controllers
             return Ok(JSONString);
         }
 
-
         [HttpGet]
         [Route("CustomerContact")]
-
         public IActionResult getContact([FromQuery] string CmpId, [FromQuery] string CustCode)
         {
-
             DataTable dt = new System.Data.DataTable();
             string _cmd;
             _cmd = "exec dbo.getCustContact @CmpId='" + CmpId + "' , @CustCode='" + CustCode + "'";
             dt = DB.DBConn.GetDataTable(_cmd);
-
-
 
             string JSONString = string.Empty;
             JSONString = JsonConvert.SerializeObject(dt);
 
             return Ok(JSONString);
         }
-    
 
         [HttpPost]
         [Route("Customer")]
@@ -166,7 +150,7 @@ namespace coreapi.Controllers
         {
             //if (Request.Headers.Contains("authToken")){
             //    if (Request.Headers.GetValues("authToken").First() != "XXX")
-            //        return   Ok(HttpStatusCode.Unauthorized); 
+            //        return   Ok(HttpStatusCode.Unauthorized);
             //}
 
 
@@ -213,7 +197,8 @@ namespace coreapi.Controllers
                 _cmd += ",@CreditAccId =" + customer.CreditAccId;
                 _cmd += ",@DebitAccId =" + customer.DebitAccId;
                 _cmd += " , @BusinessGrpCode='" + customer.BusinessGrpCode + "'";
-
+                _cmd += " , @StateCustomer=" + customer.StateCustomer + "";
+                _cmd += " , @StateVendor=" + customer.StateVendor + "";
 
                 if (DB.DBConn.ExecuteOnly(_cmd))
                 {
@@ -227,7 +212,6 @@ namespace coreapi.Controllers
                     msgretrun.Msg = "Error !!";
                     return Ok(msgretrun);
                 }
-
             }
             catch
             {
@@ -235,22 +219,20 @@ namespace coreapi.Controllers
                 msgretrun.Msg = "Error !!";
                 return Ok(msgretrun);
             }
-
-
-
         }
 
-
-
-        
         [HttpDelete]
         [Route("Customer")]
         public void Delete([FromQuery] string customercode, [FromQuery] string cmpid)
         {
             string _cmd = "";
-            _cmd = "delete from msb.mCustomer where  CustomerCode='" + customercode + "' and cmpid='" + cmpid + "'";
+            _cmd =
+                "delete from msb.mCustomer where  CustomerCode='"
+                + customercode
+                + "' and cmpid='"
+                + cmpid
+                + "'";
             DB.DBConn.ExecuteOnly(_cmd);
         }
-
     }
 }
