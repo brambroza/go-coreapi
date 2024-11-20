@@ -9,7 +9,7 @@ namespace coreapi.Models
     {
         public string UpdUser { get; set; }
         public string ProdCateCode { get; set; }
-        public string ProdCateDescripton { get; set; }
+        public string ProdCateName { get; set; }
         public string CmpId { get; set; }
 
     }
@@ -18,7 +18,7 @@ namespace coreapi.Models
     {
         public string UpdUser { get; set; }
         public string ProdCateSubCode { get; set; }
-        public string ProdCateSubDescripton { get; set; }
+        public string ProdCateSubName { get; set; }
         public string ProdCateCode { get; set; }
         public string CmpId { get; set; }
 

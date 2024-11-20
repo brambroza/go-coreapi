@@ -60,7 +60,8 @@ namespace coreapi.Controllers
             _cmd = "exec  dbo.mProductCategory_Trans";
             _cmd += " @UpdUser  ='" + prodtype.UpdUser + "'";
             _cmd += ",@ProdCateCode  ='" + prodtype.ProdCateCode + "'";
-            _cmd += ",@ProdCateDescripton  ='" + Tool.Tool.validateStr(prodtype.ProdCateDescripton) + "'";
+            _cmd += ",@CmpId  ='" + prodtype.CmpId + "'";
+            _cmd += ",@ProdCateDescripton  ='" + Tool.Tool.validateStr(prodtype.ProdCateName) + "'";
             DB.DBConn.ExecuteOnly(_cmd);
 
         }
@@ -74,8 +75,9 @@ namespace coreapi.Controllers
             _cmd = "exec  dbo.mProductCategorySub_Trans";
             _cmd += " @UpdUser  ='" + prodtype.UpdUser + "'";
             _cmd += ",@ProdCateCode  ='" + prodtype.ProdCateCode + "'";
-            _cmd += ",@ProdCateSubCode  ='" + prodtype.ProdCateCode + "'";
-            _cmd += ",@ProdCateSUbDescripton  ='" + Tool.Tool.validateStr(prodtype.ProdCateSubDescripton) + "'";
+            _cmd += ",@ProdCateSubCode  ='" + prodtype.ProdCateSubCode + "'";
+            _cmd += ",@CmpId  ='" + prodtype.CmpId + "'";
+            _cmd += ",@ProdCateSUbDescripton  ='" + Tool.Tool.validateStr(prodtype.ProdCateSubName) + "'";
             DB.DBConn.ExecuteOnly(_cmd);
 
         }
