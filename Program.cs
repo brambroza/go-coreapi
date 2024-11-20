@@ -67,6 +67,11 @@ if (app.Environment.IsDevelopment())
 {
   app.UseSwagger();
   app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "goalong api"));
+}else {
+app.UseSwagger();
+  app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "goalong api"));
+
+
 }
 
 app.UseCors("_MyAllowSpecificOrigins");
