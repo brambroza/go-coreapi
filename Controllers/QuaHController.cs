@@ -341,6 +341,8 @@ namespace coreapi.Controllers
                 _cmd += ", @QuotationNoNew ='" + Quotation.QuotationNoNew + "'";
                 _cmd += " ,@RevNo=" + Quotation.RevNo;
                 _cmd += " , @CmpId='" + Quotation.CmpId + "'";
+                _cmd += " , @CustomerCode='" + Quotation.CustomerCode + "'";
+                _cmd += " , @TicketId='" + Quotation.TicketId + "'";
 
                 if (DB.DBConn.ExecuteOnly(_cmd))
                 {

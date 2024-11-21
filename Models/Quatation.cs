@@ -1,6 +1,6 @@
-﻿using System.IO;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 
@@ -38,8 +38,7 @@ namespace coreapi.Models
         public string CustomerContactName { get; set; }
 
         public string Jobtype { get; set; }
-         public string TicketId { get; set; }
-
+        public string TicketId { get; set; }
     }
 
     public class QuotationCopy
@@ -49,11 +48,9 @@ namespace coreapi.Models
         public int RevNo { get; set; }
         public string CmpId { get; set; }
 
-
-
-
+        public string CustomerCode { get; set; }
+        public string TicketId { get; set; }
     }
-
 
     public class SaleOrderCopy
     {
@@ -62,12 +59,8 @@ namespace coreapi.Models
         public int RevNo { get; set; }
 
         public string CmpId { get; set; }
-        public string userlogin { get; set; } 
-
+        public string userlogin { get; set; }
     }
-
-
-
 
     public class QuoHApprove
     {
@@ -75,7 +68,6 @@ namespace coreapi.Models
         public string docno { get; set; }
         public int revno { get; set; }
         public string user { get; set; }
-
     }
 
     public class QuoHApprovetoPo
@@ -85,15 +77,7 @@ namespace coreapi.Models
         public int revno { get; set; }
         public string state { get; set; }
         public string user { get; set; }
-
     }
-
-
-
-
-
-
-
 
     public class SalesBomApprove
     {
@@ -104,6 +88,7 @@ namespace coreapi.Models
         public int Rev { get; set; }
         public int StateApp { get; set; }
     }
+
     public class SalesBom
     {
         public string UpdUser { get; set; }
@@ -148,9 +133,7 @@ namespace coreapi.Models
         public string VendorName { get; set; } = "";
 
         public List<SalesBom_Price_Item> bomitemPrice { get; set; }
-
     }
-
 
     public class SalesBom_Price_Version
     {
@@ -190,9 +173,6 @@ namespace coreapi.Models
         public decimal Amt { get; set; }
     }
 
-
-
-
     public class SalesBom_Action
     {
         public string UpdUser { get; set; }
@@ -214,7 +194,6 @@ namespace coreapi.Models
         public string FlieSize { get; set; }
         public string Remark { get; set; }
     }
-
 
     public class saleorder
     {
@@ -254,10 +233,7 @@ namespace coreapi.Models
         public List<SaleOrderItem> items { get; set; }
 
         public string TicketId { get; set; }
-
-
     }
-
 
     public class SaleOrderItem
     {
@@ -282,8 +258,7 @@ namespace coreapi.Models
         public string CmpId { get; set; }
 
         public int RevNo { get; set; }
-    } 
-
+    }
 
     public class QuotationListItem
     {
@@ -310,7 +285,6 @@ namespace coreapi.Models
         public decimal GrossProfitPer { get; set; }
         public string MainProdCode { get; set; }
         public int MainSeq { get; set; }
-
     }
 
     public class QuotationList
@@ -367,8 +341,4 @@ namespace coreapi.Models
 
         public List<QuotationListItem> Items { get; set; }
     }
-
-
-
-
 }
