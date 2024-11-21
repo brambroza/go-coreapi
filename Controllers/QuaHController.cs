@@ -162,6 +162,141 @@ namespace coreapi.Controllers
         }
 
         [HttpGet("[action]")]
+        public IActionResult getQuaHByDocno(
+            [FromQuery] string id,
+            [FromQuery] string user,
+            [FromQuery] string docno
+        )
+        {
+            string _cmd;
+            List<QuotationList> quotationList = new List<QuotationList>();
+
+            _cmd = "exec dbo.getQuotationByDocNoAll @CmpId='" + id + "', @User='" + user + "' , @DocNo='" + docno + "'";
+            DataTable datatable = DB.DBConn.GetDataTable(_cmd);
+
+            _cmd = "exec dbo.getQuotationItemByDocNoAll @CmpId='" + id + "', @User='" + user + "' , @DocNo='" + docno + "'";
+            DataTable datatableDetail = DB.DBConn.GetDataTable(_cmd);
+
+            foreach (DataRow r in datatable.Rows)
+            {
+                var quotaion = new QuotationList();
+
+                quotaion.QuotationNo = r["QuotationNo"].ToString();
+                quotaion.QuotationDate = r["QuotationDate"].ToString();
+                quotaion.QuotationBy = r["QuotationBy"].ToString();
+                quotaion.QuotationState = r["QuotationState"].ToString();
+                quotaion.CustomerCode = r["CustomerCode"].ToString();
+                quotaion.CustomerName = r["CustomerName"].ToString();
+                quotaion.CreditType = Convert.ToInt32(r["CreditType"]);
+                quotaion.CreditDate = Convert.ToInt32(r["CreditDate"]);
+                quotaion.ProjectName = r["ProjectName"].ToString();
+                quotaion.ReferCode = r["ReferCode"].ToString();
+                quotaion.VatType = Convert.ToInt32(r["VatType"]);
+                quotaion.Remark = r["Remark"].ToString();
+                quotaion.Note = r["Note"].ToString();
+                quotaion.QuotationAmt = Convert.ToDecimal(r["QuotationAmt"]);
+                quotaion.QuotationDisPer = Convert.ToDecimal(r["QuotationDisPer"]);
+                quotaion.QuotationDisAmt = Convert.ToDecimal(r["QuotationDisAmt"]);
+                quotaion.QuotationNetAmt = Convert.ToDecimal(r["QuotationNetAmt"]);
+                quotaion.QuotationVatAmt = Convert.ToDecimal(r["QuotationVatAmt"]);
+                quotaion.QuotationGrandAmt = Convert.ToDecimal(r["QuotationGrandAmt"]);
+                quotaion.QuotationGrandAmtTHB = r["QuotationGrandAmtTHB"].ToString();
+                quotaion.QuotationGrandAmtENB = r["QuotationGrandAmtENB"].ToString();
+                quotaion.WithholdingTaxState = Convert.ToInt32(r["WithholdingTaxState"]);
+                quotaion.ShowSignatureState = Convert.ToInt32(r["ShowSignatureState"]);
+                quotaion.CmpId = r["CmpId"].ToString();
+                quotaion.DocState = r["DocState"].ToString();
+                quotaion.PriceStand = r["PriceStand"].ToString();
+                quotaion.PaymentDue = r["PaymentDue"].ToString();
+                quotaion.Shipping = r["Shipping"].ToString();
+                quotaion.RevNo = Convert.ToInt32(r["RevNo"]);
+                quotaion.RevNoMax = Convert.ToInt32(r["RevNoMax"]);
+                quotaion.StateApprove = Convert.ToInt32(r["StateApprove"]);
+
+                quotaion.DateApprove = r["DateApprove"].ToString();
+                quotaion.ApproveBy = r["ApproveBy"].ToString();
+                quotaion.CustomerContactName = r["CustomerContactName"].ToString();
+                quotaion.StateApproveToPO = Convert.ToInt32(r["StateApproveToPO"]);
+
+                quotaion.DateApproveToPO = r["DateApproveToPO"].ToString();
+                quotaion.ApproveToPOBy = r["ApproveToPOBy"].ToString();
+                quotaion.JobType = r["JobType"].ToString();
+                quotaion.StateSendApprove = Convert.ToInt32(r["StateSendApprove"]);
+                quotaion.DateSendApprove = r["DateSendApprove"].ToString();
+                quotaion.SendApproveBy = r["SendApproveBy"].ToString();
+                quotaion.SignaturePath = r["SignaturePath"].ToString();
+                quotaion.FullName = r["FullName"].ToString();
+                quotaion.JobTypeFilter = r["JobTypeFilter"].ToString();
+                quotaion.ImgPath = r["ImgPath"].ToString();
+                quotaion.TicketId = r["TicketId"].ToString();
+
+                if (
+                    datatableDetail
+                        .Select(
+                            "QuotationNo ='"
+                                + r["QuotationNo"].ToString()
+                                + "'  and RevNo="
+                                + Convert.ToInt32(r["RevNo"])
+                        )
+                        .Length > 0
+                )
+                {
+                    quotaion.Items = new List<QuotationListItem>();
+                }
+
+                foreach (
+                    DataRow d in datatableDetail.Select(
+                        "QuotationNo ='"
+                            + r["QuotationNo"].ToString()
+                            + "'  and RevNo="
+                            + Convert.ToInt32(r["RevNo"])
+                    )
+                )
+                {
+                    var item = new QuotationListItem();
+                    item.QuotationNo = d["QuotationNo"].ToString();
+                    item.Seq = Convert.ToInt32(d["Seq"]);
+                    item.ProdCode = d["ProdCode"].ToString();
+                    item.ProdDescription = d["ProdDescription"].ToString();
+                    item.Qty = Convert.ToDecimal(d["Qty"]);
+                    item.UnitCode = d["UnitCode"].ToString();
+
+                    item.UnitPrice = Convert.ToDecimal(d["UnitPrice"]);
+                    item.Amt = Convert.ToDecimal(d["Amt"]);
+
+                    item.DisPer = Convert.ToDecimal(d["DisPer"]);
+
+                    item.DisAmt = Convert.ToDecimal(d["DisAmt"]);
+
+                    item.NetAmt = Convert.ToDecimal(d["NetAmt"]);
+
+                    item.PricePur = Convert.ToDecimal(d["PricePur"]);
+
+                    item.CostAmt = Convert.ToDecimal(d["CostAmt"]);
+
+                    item.ProfitAmt = Convert.ToDecimal(d["ProfitAmt"]);
+
+                    item.RevNo = Convert.ToInt32(d["RevNo"]);
+
+                    item.GroupCaption1 = d["GroupCaption1"].ToString();
+                    item.GroupCaption2 = d["GroupCaption2"].ToString();
+                    item.GroupCaption3 = d["GroupCaption3"].ToString();
+                    item.CmpId = d["CmpId"].ToString();
+                    item.GrossProfitPer = Convert.ToDecimal(d["GrossProfitPer"]);
+
+                    item.MainProdCode = d["MainProdCode"].ToString();
+                    item.MainSeq = Convert.ToInt32(d["MainSeq"]);
+
+                    quotaion.Items.Add(item);
+                }
+
+                quotationList.Add(quotaion);
+            }
+
+            return Ok(quotationList);
+        }
+
+        [HttpGet("[action]")]
         public IActionResult getQuaHAccept([FromQuery] string id, [FromQuery] string user)
         {
             string _cmd;
@@ -386,7 +521,7 @@ namespace coreapi.Controllers
 
                 if (DB.DBConn.ExecuteOnly(_cmd))
                 {
-                    linenotiapp(quoHApprove.docno);
+                    //linenotiapp(quoHApprove.docno);
                     msgretrun.ReturnCode = "200";
                     msgretrun.Msg = "Save Success !!";
                     return Ok(msgretrun);
@@ -427,7 +562,7 @@ namespace coreapi.Controllers
 
                 if (DB.DBConn.ExecuteOnly(_cmd))
                 {
-                    var x = linenotisendapp(quoH.docno);
+                    /*  var x = linenotisendapp(quoH.docno); */
 
                     msgretrun.ReturnCode = "200";
                     msgretrun.Msg = "Save Success !!";
