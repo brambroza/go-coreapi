@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "OELVA2s3C+xlxuyXASqcsmzexBG+1UT7OQH3IoGFzAc=",
+  "Hash": "aT4iN3+XWMmlGopuDG1CGTCgRbPjmqrqrmbmSl/V5+o=",
   "Source": "goalongapi",
   "BasePath": "_content/goalongapi",
   "Mode": "Default",
@@ -2225,23 +2225,6 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot/images/d761eb8b-957c-4f39-9ff0-f4d505b6b68f.jpg"
-    },
-    {
-      "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/dae4a756-6d39-48dd-8ec6-1bf9b02e0e3d.jpg",
-      "SourceId": "goalongapi",
-      "SourceType": "Discovered",
-      "ContentRoot": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/",
-      "BasePath": "_content/goalongapi",
-      "RelativePath": "images/dae4a756-6d39-48dd-8ec6-1bf9b02e0e3d.jpg",
-      "AssetKind": "All",
-      "AssetMode": "All",
-      "AssetRole": "Primary",
-      "RelatedAsset": "",
-      "AssetTraitName": "",
-      "AssetTraitValue": "",
-      "CopyToOutputDirectory": "Never",
-      "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot/images/dae4a756-6d39-48dd-8ec6-1bf9b02e0e3d.jpg"
     },
     {
       "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/de12d8db-f833-4593-9fc7-2ffa1a94fec0.jpg",

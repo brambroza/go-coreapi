@@ -95,7 +95,7 @@ namespace coreapi.Models
         public string BomNo { get; set; }
         public int RevNo { get; set; }
         public string BomBy { get; set; }
-        public string BomDate { get; set; }
+        public DateTime BomDate { get; set; }
         public string SaleName { get; set; }
         public string CustomerName { get; set; }
         public string CustomerContactName { get; set; }
@@ -166,11 +166,28 @@ namespace coreapi.Models
         public decimal Qty { get; set; }
         public decimal? QtyBal { get; set; }
         public DateTime? DeliveryDate { get; set; }
-        public DateTime? BalCheckDate { get; set; }
+        public DateTime? BalCheckDate { get; set; } = DateTime.Now;
         public string Remark { get; set; }
         public string UnitCode { get; set; }
         public decimal UnitPrice { get; set; }
         public decimal Amt { get; set; }
+        public int StateSelect { get; set; }
+        public int StateDelete { get; set; }
+    }
+
+    public class SaleBomToQuo
+    {
+        public string BomNo { get; set; }
+        public int RevNo { get; set; }
+        public string User { get; set; }
+        public string CustomerName { get; set; }
+        public string ContactName { get; set; }
+        public string ContactPhone { get; set; }
+        public string ContactMail { get; set; }
+        public string CmpId { get; set; }
+        public string QuotationNo {get;set;}
+
+        public List<SalesBom_Detail> items { get; set; }
     }
 
     public class SalesBom_Action

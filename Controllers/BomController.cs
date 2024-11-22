@@ -1,4 +1,3 @@
-using coreapi.Models;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -7,26 +6,20 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
-using Microsoft.AspNetCore.Mvc;
+using coreapi.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-
-
 
 namespace coreapi.Controllers
 {
-
     [ApiController]
     [Authorize]
-
-
     public class BomController : ControllerBase
     {
-
         [HttpGet("[action]")]
         public IActionResult getSalesbom([FromQuery] string id, [FromQuery] string user)
         {
-
             DataTable dt = new System.Data.DataTable();
             DataTable dtItem = new System.Data.DataTable();
             DataTable dtItemPrice = new System.Data.DataTable();
@@ -37,22 +30,18 @@ namespace coreapi.Controllers
             _cmd = "exec dbo.sp_getSaleBomItem_All @CmpId='" + id + "' , @user='" + user + "'";
             dtItem = DB.DBConn.GetDataTable(_cmd);
 
-
-            _cmd = "exec dbo.sp_getSaleBomItem_Price_All @CmpId='" + id + "' , @user='" + user + "'";
+            _cmd =
+                "exec dbo.sp_getSaleBomItem_Price_All @CmpId='" + id + "' , @user='" + user + "'";
             dtItemPrice = DB.DBConn.GetDataTable(_cmd);
-
 
             List<SalesBom> bomList = new List<SalesBom>();
 
-
-
             foreach (DataRow r in dt.Rows)
             {
-
                 var bom = new SalesBom();
                 bom.BomNo = r["BomNo"].ToString();
                 bom.BomBy = r["BomBy"].ToString();
-                bom.BomDate = r["BomDate"].ToString();
+                bom.BomDate = DateTime.Parse(r["BomDate"].ToString());
                 bom.SaleName = r["SaleName"].ToString();
                 bom.CustomerName = r["CustomerName"].ToString();
                 bom.CustomerContactName = r["CustomerContactName"].ToString();
@@ -64,9 +53,19 @@ namespace coreapi.Controllers
                 bom.CmpId = r["CmpId"].ToString();
                 bom.UpdUser = r["UpdUser"].ToString();
                 bom.BomState = r["BomState"].ToString();
-                bom.TicketId =  r["TicketId"].ToString();
+                bom.TicketId = r["TicketId"].ToString();
                 bom.items = new List<SalesBom_Detail>();
-                foreach (DataRow x in dtItem.Select("BomNo='" + bom.BomNo + "' and RevNo=" + bom.RevNo + " and CmpId='" + bom.CmpId + "'"))
+                foreach (
+                    DataRow x in dtItem.Select(
+                        "BomNo='"
+                            + bom.BomNo
+                            + "' and RevNo="
+                            + bom.RevNo
+                            + " and CmpId='"
+                            + bom.CmpId
+                            + "'"
+                    )
+                )
                 {
                     var item = new SalesBom_Detail();
                     item.BomNo = bom.BomNo;
@@ -81,12 +80,26 @@ namespace coreapi.Controllers
                     item.Amt = Convert.ToDecimal(x["Amt"]);
                     item.CmpId = x["CmpId"].ToString();
                     item.ReplaceStatus = Convert.ToInt32(x["ReplaceStatus"]);
-                    item.Vendor= "";
+                    item.Vendor = "";
                     item.VendorName = "";
+                    item.Remark = x["Remark"].ToString();
 
                     item.bomitemPrice = new List<SalesBom_Price_Item>();
 
-                    foreach (DataRow i in dtItemPrice.Select("BomNo='" + bom.BomNo + "' and RevNo=" + bom.RevNo + " and CmpId='" + bom.CmpId + "' and ProdCode='" + item.ProdCode + "' and Seq=" + item.Seq))
+                    foreach (
+                        DataRow i in dtItemPrice.Select(
+                            "BomNo='"
+                                + bom.BomNo
+                                + "' and RevNo="
+                                + bom.RevNo
+                                + " and CmpId='"
+                                + bom.CmpId
+                                + "' and ProdCode='"
+                                + item.ProdCode
+                                + "' and Seq="
+                                + item.Seq
+                        )
+                    )
                     {
                         var itemprice = new SalesBom_Price_Item();
 
@@ -106,101 +119,131 @@ namespace coreapi.Controllers
                         itemprice.CmpId = i["CmpId"].ToString();
                         itemprice.Remark = i["Remark"].ToString();
                         itemprice.PriceSeq = Convert.ToInt32(i["PriceSeq"]);
-
+                        itemprice.StateDelete = Convert.ToInt32(i["StateDelete"]);
+                        itemprice.StateSelect = Convert.ToInt32(i["StateSelect"]);
 
                         item.bomitemPrice.Add(itemprice);
-
-
                     }
 
                     bom.items.Add(item);
-
                 }
 
                 bomList.Add(bom);
-
-
-
-
             }
 
             return Ok(bomList);
-
-
         }
-
 
         [HttpGet]
         [Route("salesbomRev")]
-        public IActionResult salesbomGetR([FromQuery] string cmpid, [FromQuery] string bomno, [FromQuery] int RevNo, [FromQuery] string user)
+        public IActionResult salesbomGetR(
+            [FromQuery] string cmpid,
+            [FromQuery] string bomno,
+            [FromQuery] int RevNo,
+            [FromQuery] string user
+        )
         {
-
             DataTable dt = new System.Data.DataTable();
             string _cmd;
-            _cmd = "exec dbo.sp_getSaleBom_Rev  @BomNo='" + bomno + "' , @Rev=" + RevNo + " ,@CmpId='" + cmpid + "' , @user='" + user + "'";
+            _cmd =
+                "exec dbo.sp_getSaleBom_Rev  @BomNo='"
+                + bomno
+                + "' , @Rev="
+                + RevNo
+                + " ,@CmpId='"
+                + cmpid
+                + "' , @user='"
+                + user
+                + "'";
             dt = DB.DBConn.GetDataTable(_cmd);
             string JSONString = string.Empty;
             JSONString = JsonConvert.SerializeObject(dt);
             return Ok(JSONString);
         }
-
 
         [HttpGet]
         [Route("salesbomD")]
-        public IActionResult salesbomDGet([FromQuery] string cmpid, [FromQuery] string bomno, [FromQuery] int RevNo)
+        public IActionResult salesbomDGet(
+            [FromQuery] string cmpid,
+            [FromQuery] string bomno,
+            [FromQuery] int RevNo
+        )
         {
-
             DataTable dt = new System.Data.DataTable();
             string _cmd;
-            _cmd = "exec dbo.sp_getSaleBom_D @BomNo='" + bomno + "' , @Rev=" + RevNo + " ,@CmpId='" + cmpid + "'";
+            _cmd =
+                "exec dbo.sp_getSaleBom_D @BomNo='"
+                + bomno
+                + "' , @Rev="
+                + RevNo
+                + " ,@CmpId='"
+                + cmpid
+                + "'";
             dt = DB.DBConn.GetDataTable(_cmd);
             string JSONString = string.Empty;
             JSONString = JsonConvert.SerializeObject(dt);
             return Ok(JSONString);
         }
 
-
         [HttpGet]
         [Route("salesbomF")]
-        public IActionResult salesbomFGet([FromQuery] string cmpid, [FromQuery] string bomno, [FromQuery] int RevNo)
+        public IActionResult salesbomFGet(
+            [FromQuery] string cmpid,
+            [FromQuery] string bomno,
+            [FromQuery] int RevNo
+        )
         {
-
             DataTable dt = new System.Data.DataTable();
             string _cmd;
-            _cmd = "exec dbo.sp_getSaleBom_F @BomNo='" + bomno + "' , @Rev=" + RevNo + " ,@CmpId='" + cmpid + "'";
+            _cmd =
+                "exec dbo.sp_getSaleBom_F @BomNo='"
+                + bomno
+                + "' , @Rev="
+                + RevNo
+                + " ,@CmpId='"
+                + cmpid
+                + "'";
             dt = DB.DBConn.GetDataTable(_cmd);
             return Ok(dt);
         }
 
-
         [HttpGet]
         [Route("salesbomA")]
-        public IActionResult salesbomAGet([FromQuery] string cmpid, [FromQuery] string bomno, [FromQuery] int RevNo)
+        public IActionResult salesbomAGet(
+            [FromQuery] string cmpid,
+            [FromQuery] string bomno,
+            [FromQuery] int RevNo
+        )
         {
-
             DataTable dt = new System.Data.DataTable();
             string _cmd;
-            _cmd = "exec dbo.sp_getSaleBom_A @BomNo='" + bomno + "' , @Rev=" + RevNo + " ,@CmpId='" + cmpid + "'";
+            _cmd =
+                "exec dbo.sp_getSaleBom_A @BomNo='"
+                + bomno
+                + "' , @Rev="
+                + RevNo
+                + " ,@CmpId='"
+                + cmpid
+                + "'";
             dt = DB.DBConn.GetDataTable(_cmd);
             string JSONString = string.Empty;
             JSONString = JsonConvert.SerializeObject(dt);
             return Ok(JSONString);
         }
-
-
 
         [HttpPost]
         [Route("salesbom")]
         public IActionResult Post(SalesBom salebom)
         {
-
-
+            System.Globalization.CultureInfo thaiCulture = new System.Globalization.CultureInfo(
+                "th-TH"
+            );
+            thaiCulture.DateTimeFormat.Calendar = new System.Globalization.GregorianCalendar();
 
             MsgReturn msgretrun = new MsgReturn();
 
             try
             {
-
                 string _cmd = "";
                 _cmd = "exec  dbo.sp_SetSalesBom";
                 _cmd += "  @UpdUser  ='" + salebom.UpdUser + "'";
@@ -217,9 +260,8 @@ namespace coreapi.Controllers
                 _cmd += " ,@Remark ='" + salebom.Remark + "'";
                 _cmd += " ,@CmpId ='" + salebom.CmpId + "'";
                 _cmd += " ,@BomState ='" + salebom.BomState + "'";
-                _cmd += " ,@BomDate ='" + salebom.BomDate + "'";
+                _cmd += " ,@BomDate ='" + salebom.BomDate.ToString("yyyy-MM-dd", thaiCulture) + "'";
                 _cmd += " ,@TicketId ='" + salebom.TicketId + "'";
-
 
                 if (DB.DBConn.ExecuteOnly(_cmd))
                 {
@@ -233,7 +275,6 @@ namespace coreapi.Controllers
                     msgretrun.Msg = "Error !!";
                     return Ok(msgretrun);
                 }
-
             }
             catch
             {
@@ -241,17 +282,12 @@ namespace coreapi.Controllers
                 msgretrun.Msg = "Error !!";
                 return Ok(msgretrun);
             }
-
-
-
         }
-
 
         [HttpPost]
         [Route("salesbomD")]
         public IActionResult postsalesbomD(List<SalesBom_Detail> salebomD)
         {
-
             DB.DBConn.SqlConnectionOpen();
             DB.DBConn.Cmd = DB.DBConn.Cnn.CreateCommand();
             DB.DBConn.Tran = DB.DBConn.Cnn.BeginTransaction();
@@ -259,17 +295,20 @@ namespace coreapi.Controllers
 
             try
             {
-
                 string _cmd;
                 if (salebomD.Count > 0)
                 {
-                    _cmd = "Delete From dbo.SalesBom_Detail where 	WHERE BomNo = '" + salebomD[0].BomNo + "' AND Rev = '" + salebomD[0].RevNo + "'";
+                    _cmd =
+                        "Delete From dbo.SalesBom_Detail where 	WHERE BomNo = '"
+                        + salebomD[0].BomNo
+                        + "' AND Rev = '"
+                        + salebomD[0].RevNo
+                        + "'";
                     DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran);
                 }
 
                 for (int i = 0; i < salebomD.Count; i++)
                 {
-
                     _cmd = "exec  dbo.sp_SetSalesBom_Detail";
 
                     _cmd += "  @UpdUser  ='" + salebomD[i].UpdUser + "'";
@@ -286,15 +325,14 @@ namespace coreapi.Controllers
                     _cmd += ",@Remark  ='" + salebomD[i].Remark + "'";
                     _cmd += ",@CmpId  ='" + salebomD[i].CmpId + "'";
 
-
                     if (DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran) <= 0)
                     {
                         DB.DBConn.Tran.Rollback();
                         DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
                         DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
                         return BadRequest();
-                    };
-
+                    }
+                    ;
                 }
 
                 DB.DBConn.Tran.Commit();
@@ -311,16 +349,14 @@ namespace coreapi.Controllers
                 DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
                 return BadRequest(ex.Message);
             }
-
         }
 
-
-
         [HttpPost("[action]")]
-
         public IActionResult updateBomPrice([FromBody] SalesBom_Price_Version item)
         {
-            System.Globalization.CultureInfo thaiCulture = new System.Globalization.CultureInfo("th-TH");
+            System.Globalization.CultureInfo thaiCulture = new System.Globalization.CultureInfo(
+                "th-TH"
+            );
             thaiCulture.DateTimeFormat.Calendar = new System.Globalization.GregorianCalendar();
 
             MsgReturn msgretrun = new MsgReturn();
@@ -330,10 +366,7 @@ namespace coreapi.Controllers
 
             try
             {
-
                 string _cmd;
-
-
 
                 _cmd = "exec  dbo.sp_SetSalesBom_Detail_UpdatePrice";
 
@@ -349,8 +382,10 @@ namespace coreapi.Controllers
                 _cmd += ",@Amt =" + item.Amt;
                 _cmd += ",@Remark  ='" + item.Remark + "'";
                 _cmd += ",@CmpId  ='" + item.CmpId + "'";
-                _cmd += ",@DeliveryDate  ='" + item.DeliveryDate.ToString("yyyy-MM-dd HH:mm", thaiCulture)  + "'";
-
+                _cmd +=
+                    ",@DeliveryDate  ='"
+                    + item.DeliveryDate.ToString("yyyy-MM-dd HH:mm", thaiCulture)
+                    + "'";
 
                 if (DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran) <= 0)
                 {
@@ -360,9 +395,8 @@ namespace coreapi.Controllers
                     msgretrun.ReturnCode = "400";
                     msgretrun.Msg = "Error !!";
                     return NotFound(msgretrun);
-                };
-
-
+                }
+                ;
 
                 DB.DBConn.Tran.Commit();
                 DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
@@ -380,29 +414,149 @@ namespace coreapi.Controllers
                 msgretrun.ReturnCode = "400";
                 msgretrun.Msg = "Error !!";
                 return NotFound(msgretrun);
-
             }
-
-
-
-
         }
 
+        [HttpPost("[action]")]
+        public IActionResult deleteBomPrice([FromBody] SalesBom_Price_Item item)
+        {
+            System.Globalization.CultureInfo thaiCulture = new System.Globalization.CultureInfo(
+                "th-TH"
+            );
+            thaiCulture.DateTimeFormat.Calendar = new System.Globalization.GregorianCalendar();
 
+            MsgReturn msgretrun = new MsgReturn();
+            DB.DBConn.SqlConnectionOpen();
+            DB.DBConn.Cmd = DB.DBConn.Cnn.CreateCommand();
+            DB.DBConn.Tran = DB.DBConn.Cnn.BeginTransaction();
 
+            try
+            {
+                string _cmd;
 
+                _cmd = "exec  dbo.sp_SetSalesBom_Detail_DeletePrice";
 
+                _cmd += "  @UpdUser  ='" + item.UpdUser + "'";
+                _cmd += ",@BomNo  ='" + item.BomNo + "'";
+                _cmd += ",@RevNo =" + item.RevNo;
+                _cmd += ",@Seq =" + item.Seq;
+                _cmd += ",@ProdCode  ='" + item.ProdCode + "'";
+                _cmd += ",@PriceSeq =" + item.PriceSeq;
+                _cmd += ",@CmpId  ='" + item.CmpId + "'";
+                _cmd += ",@VenderCode='" + item.SupplierCode + "'";
+
+                if (DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran) <= 0)
+                {
+                    DB.DBConn.Tran.Rollback();
+                    DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
+                    DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
+                    msgretrun.ReturnCode = "400";
+                    msgretrun.Msg = "Error !!";
+                    return NotFound(msgretrun);
+                }
+                ;
+
+                DB.DBConn.Tran.Commit();
+                DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
+                DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
+                msgretrun.ReturnCode = "200";
+                msgretrun.Msg = "Save Success !!";
+                return Ok(msgretrun);
+            }
+            catch (Exception ex)
+            {
+                DB.DBConn.Tran.Rollback();
+                DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
+                DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
+
+                msgretrun.ReturnCode = "400";
+                msgretrun.Msg = "Error !!";
+                return NotFound(msgretrun);
+            }
+        }
+
+        [HttpPost("[action]")]
+        public IActionResult selectBomPrice([FromBody] SalesBom_Price_Item item)
+        {
+            System.Globalization.CultureInfo thaiCulture = new System.Globalization.CultureInfo(
+                "th-TH"
+            );
+            thaiCulture.DateTimeFormat.Calendar = new System.Globalization.GregorianCalendar();
+
+            MsgReturn msgretrun = new MsgReturn();
+            DB.DBConn.SqlConnectionOpen();
+            DB.DBConn.Cmd = DB.DBConn.Cnn.CreateCommand();
+            DB.DBConn.Tran = DB.DBConn.Cnn.BeginTransaction();
+
+            try
+            {
+                string _cmd;
+
+                _cmd = "exec  dbo.sp_SetSalesBom_Detail_SelectPrice";
+
+                _cmd += "  @UpdUser  ='" + item.UpdUser + "'";
+                _cmd += ",@BomNo  ='" + item.BomNo + "'";
+                _cmd += ",@RevNo =" + item.RevNo;
+                _cmd += ",@Seq =" + item.Seq;
+                _cmd += ",@ProdCode  ='" + item.ProdCode + "'";
+                _cmd += ",@PriceSeq =" + item.PriceSeq;
+                _cmd += ",@CmpId  ='" + item.CmpId + "'";
+                _cmd += ",@VenderCode='" + item.SupplierCode + "'";
+
+                if (DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran) <= 0)
+                {
+                    DB.DBConn.Tran.Rollback();
+                    DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
+                    DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
+                    msgretrun.ReturnCode = "400";
+                    msgretrun.Msg = "Error !!";
+                    return NotFound(msgretrun);
+                }
+                ;
+
+                DB.DBConn.Tran.Commit();
+                DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
+                DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
+                msgretrun.ReturnCode = "200";
+                msgretrun.Msg = "Save Success !!";
+                return Ok(msgretrun);
+            }
+            catch (Exception ex)
+            {
+                DB.DBConn.Tran.Rollback();
+                DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
+                DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
+
+                msgretrun.ReturnCode = "400";
+                msgretrun.Msg = "Error !!";
+                return NotFound(msgretrun);
+            }
+        }
 
         [HttpPost]
         [Route("salesbomapprove")]
-        public IActionResult BomApp([FromQuery] string cmpid, [FromQuery] string DocNo, [FromQuery] int RevNo, [FromQuery] string user)
+        public IActionResult BomApp(
+            [FromQuery] string cmpid,
+            [FromQuery] string DocNo,
+            [FromQuery] int RevNo,
+            [FromQuery] string user
+        )
         {
             MsgReturn msgretrun = new MsgReturn();
 
             try
             {
                 string _cmd = "";
-                _cmd = "exec dbo.sp_SetSalesBomApp @CmpId='" + cmpid + "' , @DocNo='" + DocNo + "' , @RevNo =" + RevNo + ",@User='" + user + "'";
+                _cmd =
+                    "exec dbo.sp_SetSalesBomApp @CmpId='"
+                    + cmpid
+                    + "' , @DocNo='"
+                    + DocNo
+                    + "' , @RevNo ="
+                    + RevNo
+                    + ",@User='"
+                    + user
+                    + "'";
 
                 if (DB.DBConn.ExecuteOnly(_cmd))
                 {
@@ -416,7 +570,6 @@ namespace coreapi.Controllers
                     msgretrun.Msg = "Error !!";
                     return Ok(msgretrun);
                 }
-
             }
             catch
             {
@@ -424,14 +577,85 @@ namespace coreapi.Controllers
                 msgretrun.Msg = "Error !!";
                 return Ok(msgretrun);
             }
-
-
-
         }
 
+        [HttpPost("[action]")]
+        public IActionResult setBomtoQuo([FromBody] SaleBomToQuo item)
+        {
+            System.Globalization.CultureInfo thaiCulture = new System.Globalization.CultureInfo(
+                "th-TH"
+            );
+            thaiCulture.DateTimeFormat.Calendar = new System.Globalization.GregorianCalendar();
 
+            MsgReturn msgretrun = new MsgReturn();
+            DB.DBConn.SqlConnectionOpen();
+            DB.DBConn.Cmd = DB.DBConn.Cnn.CreateCommand();
+            DB.DBConn.Tran = DB.DBConn.Cnn.BeginTransaction();
 
+            try
+            {
+                string _cmd;
 
+                _cmd = "exec  dbo.setBomtoQuo";
+                _cmd += "  @User  ='" + item.User + "'";
+                _cmd += ",@BomNo  ='" + item.BomNo + "'";
+                _cmd += ",@RevNo =" + item.RevNo;
+                _cmd += ",@CustomerName  ='" + item.CustomerName + "'";
+                _cmd += ",@ContactName ='" + item.ContactName + "'";
+                _cmd += ",@CmpId  ='" + item.CmpId + "'";
+                _cmd += ",@ContactMail='" + item.ContactMail + "'";
+                _cmd += ",@ContactPhone='" + item.ContactPhone + "'";
+                _cmd += ",@QuotationNo='" + item.QuotationNo + "'";
+
+                if (DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran) <= 0)
+                {
+                    DB.DBConn.Tran.Rollback();
+                    DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
+                    DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
+                    msgretrun.ReturnCode = "400";
+                    msgretrun.Msg = "Error !!";
+                    return NotFound(msgretrun);
+                }
+
+                for (int i = 0; i < item.items.Count; i++)
+                {
+                    _cmd = "exec  dbo.setBomtoQuo_Item";
+
+                    _cmd += "  @User  ='" + item.User + "'";
+                    _cmd += ",@BomNo  ='" + item.BomNo + "'";
+                    _cmd += ",@RevNo =" + item.RevNo;
+                    _cmd += ",@QuotationNo='" + item.QuotationNo + "'";
+                    _cmd += ",@CmpId  ='" + item.CmpId + "'";
+                    _cmd += " ,@Seq=" + item.items[i].Seq;
+                    _cmd += ", @ProdCode='" + item.items[i].ProdCode + "'";
+
+                    if (DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran) <= 0)
+                    {
+                        DB.DBConn.Tran.Rollback();
+                        DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
+                        DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
+                        return BadRequest();
+                    }
+                }
+
+                DB.DBConn.Tran.Commit();
+                DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
+                DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
+                msgretrun.ReturnCode = "200";
+                msgretrun.Msg = "Save Success !!";
+                return Ok(msgretrun);
+            }
+            catch (Exception ex)
+            {
+                DB.DBConn.Tran.Rollback();
+                DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
+                DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
+
+                msgretrun.ReturnCode = "400";
+                msgretrun.Msg = "Error !!";
+                return NotFound(msgretrun);
+            }
+        }
 
         [HttpPost]
         [Route("salesbomaction")]
@@ -441,21 +665,22 @@ namespace coreapi.Controllers
             DB.DBConn.Cmd = DB.DBConn.Cnn.CreateCommand();
             DB.DBConn.Tran = DB.DBConn.Cnn.BeginTransaction();
 
-
             try
             {
-
-
                 string _cmd = "";
                 if (salebomA.Count > 0)
                 {
-                    _cmd = "Delete From dbo.SalesBom_Action where 	WHERE BomNo = '" + salebomA[0].BomNo + "' AND Rev = '" + salebomA[0].Rev + "'";
+                    _cmd =
+                        "Delete From dbo.SalesBom_Action where 	WHERE BomNo = '"
+                        + salebomA[0].BomNo
+                        + "' AND Rev = '"
+                        + salebomA[0].Rev
+                        + "'";
                     DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran);
                 }
 
                 for (int i = 0; i < salebomA.Count; i++)
                 {
-
                     _cmd = "exec  dbo.sp_SetSalesBom_Action";
                     _cmd += " @UpdUser  ='" + salebomA[i].UpdUser + "'";
                     _cmd += ",@BomNo  ='" + salebomA[i].BomNo + "'";
@@ -464,60 +689,52 @@ namespace coreapi.Controllers
                     _cmd += ",@DescActions  ='" + salebomA[i].DescActions + "'";
                     _cmd += ",@DateActions ='" + salebomA[i].DateActions + "'";
 
-
                     if (DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran) <= 0)
                     {
                         DB.DBConn.Tran.Rollback();
                         DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
                         DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
                         return;
-                    };
-
+                    }
+                    ;
                 }
 
                 DB.DBConn.Tran.Commit();
                 DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
                 DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
-
             }
             catch (Exception ex)
             {
                 DB.DBConn.Tran.Rollback();
                 DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
                 DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
-
             }
-
-
         }
-
-
-
 
         [HttpPost]
         [Route("salesbomfile")]
         public void PostbomFile(List<SalesBom_File> salebomF)
         {
-
             DB.DBConn.SqlConnectionOpen();
             DB.DBConn.Cmd = DB.DBConn.Cnn.CreateCommand();
             DB.DBConn.Tran = DB.DBConn.Cnn.BeginTransaction();
 
-
             try
             {
-
-
                 string _cmd = "";
                 if (salebomF.Count > 0)
                 {
-                    _cmd = "Delete From dbo.SalesBom_File where 	WHERE BomNo = '" + salebomF[0].BomNo + "' AND Rev = '" + salebomF[0].Rev + "'";
+                    _cmd =
+                        "Delete From dbo.SalesBom_File where 	WHERE BomNo = '"
+                        + salebomF[0].BomNo
+                        + "' AND Rev = '"
+                        + salebomF[0].Rev
+                        + "'";
                     DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran);
                 }
 
                 for (int i = 0; i < salebomF.Count; i++)
                 {
-
                     _cmd = "exec  dbo.sp_SetSalesBom_File";
                     _cmd += " @UpdUser  ='" + salebomF[i].UpdUser + "'";
                     _cmd += ",@BomNo  ='" + salebomF[i].BomNo + "'";
@@ -528,39 +745,26 @@ namespace coreapi.Controllers
                     _cmd += ",@FlieSize ='" + salebomF[i].FlieSize + "'";
                     _cmd += ",@Remark  ='" + salebomF[i].Remark + "'";
 
-
                     if (DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran) <= 0)
                     {
                         DB.DBConn.Tran.Rollback();
                         DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
                         DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
                         return;
-                    };
-
+                    }
+                    ;
                 }
 
                 DB.DBConn.Tran.Commit();
                 DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
                 DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
-
             }
             catch (Exception ex)
             {
                 DB.DBConn.Tran.Rollback();
                 DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
                 DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
-
             }
-
         }
-
-
-
-
-
-
-
-
     }
-
 }
