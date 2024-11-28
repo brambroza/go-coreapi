@@ -42,7 +42,13 @@ namespace goalongapi.Services
         {
             List<string> listFileName = new List<string>();
             string uploadPath = $"{webHostEnvironment.WebRootPath}/reqfromcust/fileall/";
-              
+                if (IsValidPath(uploadPath) )
+            {
+                 if (!Directory.Exists(uploadPath)){
+                     Directory.CreateDirectory(uploadPath);
+                 }
+               
+            }
 
             foreach (var formFile in formFiles)
             {
@@ -62,18 +68,22 @@ namespace goalongapi.Services
         {
             List<string> listFileName = new List<string>();
             string uploadPath = $"{webHostEnvironment.WebRootPath}/allfileupload/";
+            
 
             if (IsValidPath(uploadPath) )
             {
                  if (!Directory.Exists(uploadPath)){
                      Directory.CreateDirectory(uploadPath);
-                 }
+                 } 
                
             }
 
             foreach (var formFile in formFiles)
             {
                 string fileName = Guid.NewGuid().ToString() + Path.GetExtension(formFile.FileName);
+             
+
+
                 string fullPath = uploadPath + fileName;
                 using (var stream = File.Create(fullPath))
                 {

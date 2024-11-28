@@ -83,6 +83,8 @@ namespace coreapi.Hubs
             }
         }
 
+        
+
         public override async Task OnConnectedAsync()
         {
             var httpContext = Context.GetHttpContext();

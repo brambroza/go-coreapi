@@ -1,38 +1,37 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using Microsoft.AspNetCore.Authorization;
-using System.Data;
-using Microsoft.AspNetCore.Mvc;
+using coreapi.Models;
 using goalongapi.Datatools.Product;
 using goalongapi.Interfaces;
-using coreapi.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace NohWebApi.Controllers
 {
-
     [ApiController]
     //[Authorize]
 
     public class UploadProfileController : ControllerBase
     {
-
         private readonly IWebHostEnvironment webHostEnvironment;
 
         private readonly IProductService productService;
         private readonly ILogger<UploadProfileController> _logger;
 
-
-        public UploadProfileController(IWebHostEnvironment webHostEnvironment, ILogger<UploadProfileController> logger, IProductService productService)
+        public UploadProfileController(
+            IWebHostEnvironment webHostEnvironment,
+            ILogger<UploadProfileController> logger,
+            IProductService productService
+        )
         {
             _logger = logger;
             this.productService = productService;
             this.webHostEnvironment = webHostEnvironment;
         }
-
 
         [HttpPost("[action]")]
         public async Task<ActionResult<string>> UploadImageCmpProfile(List<IFormFile> formFiles)
@@ -45,7 +44,9 @@ namespace NohWebApi.Controllers
 
             try
             {
-                (string errorMessage, string imageName) = await productService.UploadImage(formFiles);
+                (string errorMessage, string imageName) = await productService.UploadImage(
+                    formFiles
+                );
                 if (!String.IsNullOrEmpty(errorMessage))
                 {
                     _logger.LogError($"Error uploading image: {errorMessage}");
@@ -62,13 +63,9 @@ namespace NohWebApi.Controllers
             }
         }
 
- 
-
-
         [HttpPost("[action]")]
         public async Task<ActionResult<string>> uploadallfile(List<IFormFile> formFiles)
         {
-
             (string errorMessage, string imageName) = await productService.uploadallfile(formFiles);
             if (!String.IsNullOrEmpty(errorMessage))
             {
@@ -76,18 +73,20 @@ namespace NohWebApi.Controllers
             }
 
             return Ok(new { ImageName = imageName });
-
-
         }
-
 
         [HttpPost("[action]")]
         public IActionResult movefile(fileinfo fileinfos)
         {
             try
             {
-                string formfilepath = $"{webHostEnvironment.WebRootPath}/allfileupload/" + fileinfos.filename;
-                string tofilepath = $"{webHostEnvironment.WebRootPath}/" + fileinfos.pathto + "/" + fileinfos.filename;
+                string formfilepath =
+                    $"{webHostEnvironment.WebRootPath}/allfileupload/" + fileinfos.filename;
+                string tofilepath =
+                    $"{webHostEnvironment.WebRootPath}/"
+                    + fileinfos.pathto
+                    + "/"
+                    + fileinfos.filename;
                 string uploadPath = $"{webHostEnvironment.WebRootPath}/" + fileinfos.pathto + "/";
 
                 if (IsValidPaths(uploadPath))
@@ -96,21 +95,45 @@ namespace NohWebApi.Controllers
                     {
                         Directory.CreateDirectory(uploadPath);
                     }
-
                 }
 
                 System.IO.File.Move(formfilepath, tofilepath);
 
                 return Ok(fileinfos.pathto + fileinfos.filename);
-
             }
             catch (Exception e)
             {
-                return NotFound();
+                try
+                {
+                    string formfilepath =
+                        $"{webHostEnvironment.WebRootPath}/reqfromcust/fileall/"
+                        + fileinfos.filename;
+                    string tofilepath =
+                        $"{webHostEnvironment.WebRootPath}/"
+                        + fileinfos.pathto
+                        + "/"
+                        + fileinfos.filename;
+                    string uploadPath =
+                        $"{webHostEnvironment.WebRootPath}/" + fileinfos.pathto + "/";
+
+                    if (IsValidPaths(uploadPath))
+                    {
+                        if (!Directory.Exists(uploadPath))
+                        {
+                            Directory.CreateDirectory(uploadPath);
+                        }
+                    }
+
+                    System.IO.File.Move(formfilepath, tofilepath);
+
+                    return Ok(fileinfos.pathto + fileinfos.filename);
+                }
+                catch (Exception ex)
+                {
+                    return NotFound();
+                }
             }
-
         }
-
 
         private bool IsValidPaths(string path)
         {
@@ -125,9 +148,5 @@ namespace NohWebApi.Controllers
                 return false;
             }
         }
-
-
-
-
     }
 }

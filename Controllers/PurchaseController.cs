@@ -60,7 +60,7 @@ namespace coreapi.Controllers
                 purchase.DocState = Convert.ToInt32(r["DocState"]);
                 purchase.PriceStand = r["PriceStand"].ToString();
                 purchase.PaymentDue = DateTime.Parse(r["PaymentDue"].ToString());
-                purchase.Shipping = DateTime.Parse(r["Shipping"].ToString() );
+                purchase.Shipping = DateTime.Parse(r["Shipping"].ToString());
                 purchase.RevNo = Convert.ToInt32(r["RevNo"]);
                 purchase.ProjectNo = r["ProjectNo"].ToString();
                 purchase.SupplierName = r["SupplierName"].ToString();
@@ -236,8 +236,9 @@ namespace coreapi.Controllers
         [HttpPost("[action]")]
         public IActionResult setPurchase(Purchase po)
         {
-
-               System.Globalization.CultureInfo thaiCulture = new System.Globalization.CultureInfo("th-TH");
+            System.Globalization.CultureInfo thaiCulture = new System.Globalization.CultureInfo(
+                "th-TH"
+            );
             thaiCulture.DateTimeFormat.Calendar = new System.Globalization.GregorianCalendar();
 
             MsgReturn msgretrun = new MsgReturn();
@@ -272,7 +273,8 @@ namespace coreapi.Controllers
                 _cmd += "  ,@CmpId ='" + po.CmpId + "'";
                 _cmd += " ,@DocState =" + po.DocState;
                 _cmd += " ,@PriceStand  ='" + po.PriceStand + "'";
-                _cmd += " ,@PaymentDue  ='" + po.PaymentDue.ToString("yyyy-MM-dd", thaiCulture) + "'";
+                _cmd +=
+                    " ,@PaymentDue  ='" + po.PaymentDue.ToString("yyyy-MM-dd", thaiCulture) + "'";
                 _cmd += " ,@Shipping  ='" + po.Shipping.ToString("yyyy-MM-dd", thaiCulture) + "'";
                 _cmd += " ,@RevNo =" + po.RevNo;
                 _cmd += " ,@ProjectNo  ='" + po.ProjectNo + "'";
@@ -288,14 +290,14 @@ namespace coreapi.Controllers
                 {
                     msgretrun.ReturnCode = "400";
                     msgretrun.Msg = "Error !!";
-                    return Ok(msgretrun);
+                    return BadRequest(msgretrun);
                 }
             }
             catch
             {
                 msgretrun.ReturnCode = "400";
                 msgretrun.Msg = "Error !!";
-                return Ok(msgretrun);
+                return BadRequest(msgretrun);
             }
         }
 
@@ -375,7 +377,7 @@ namespace coreapi.Controllers
 
                         msgretrun.ReturnCode = "400";
                         msgretrun.Msg = "Error !!";
-                        return Ok(msgretrun);
+                        return BadRequest(msgretrun);
                     }
                 }
 
@@ -394,8 +396,455 @@ namespace coreapi.Controllers
 
                 msgretrun.ReturnCode = "400";
                 msgretrun.Msg = "Error !!";
+                return BadRequest(msgretrun);
+            }
+        }
+
+        [HttpPost("[action]")]
+        public IActionResult setTicketPurchaseClose(TicketPurchaseList po)
+        {
+            MsgReturn msgretrun = new MsgReturn();
+            try
+            {
+                string _cmd = "";
+                _cmd = "exec  dbo.setTicketPurchase_Close";
+                _cmd += " @User  ='" + po.DocBy + "'";
+                _cmd += " ,@DocNo  ='" + po.DocNo + "'";
+                _cmd += " ,@DocType  ='" + po.DocType + "'";
+                _cmd += " ,@DocState  ='" + po.DocState + "'";
+                _cmd += " ,@DocRemind ='" + po.DocRemind + "'";
+                _cmd += "  ,@CmpId ='" + po.CmpId + "'";
+                _cmd += " ,@RevNo =" + po.RevNo;
+                _cmd += " , @TicketId='" + po.TicketId + "'";
+
+                if (DB.DBConn.ExecuteOnly(_cmd))
+                {
+                    msgretrun.ReturnCode = "200";
+                    msgretrun.Msg = "Save Success !!";
+                    return Ok(msgretrun);
+                }
+                else
+                {
+                    msgretrun.ReturnCode = "400";
+                    msgretrun.Msg = "Error !!";
+                    return BadRequest(msgretrun);
+                }
+            }
+            catch
+            {
+                msgretrun.ReturnCode = "400";
+                msgretrun.Msg = "Error !!";
+                return BadRequest(msgretrun);
+            }
+        }
+
+
+         [HttpPost("[action]")]
+        public IActionResult setTicketPurchaseCloseItem(List<TicketPurchase_Item> po)
+        {
+            MsgReturn msgretrun = new MsgReturn(); 
+            DB.DBConn.SqlConnectionOpen();
+            DB.DBConn.Cmd = DB.DBConn.Cnn.CreateCommand();
+            DB.DBConn.Tran = DB.DBConn.Cnn.BeginTransaction();
+
+            try
+            {
+                string _cmd = "";
+               for (int i = 0; i < po.Count; i++)
+                {
+                    _cmd = "exec  dbo.[setTicketPurchase_Item_Close]";
+                    _cmd += " @DocNo  ='" + po[i].DocNo + "'";
+                    _cmd += ",@Seq =" + po[i].Seq;
+                    _cmd += ",@ProdCode  ='" + po[i].ProdCode + "'";
+                    _cmd += ",@RevNo =" + po[i].RevNo;
+                    _cmd += ",@TicketId  ='" + po[i].TicketId + "'";
+                    _cmd += ",@User  ='" + po[i].User + "'";
+                    _cmd += ",@CmpId  ='" + po[i].CmpId + "'";
+
+                    if (DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran) <= 0)
+                    {
+                        DB.DBConn.Tran.Rollback();
+                        DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
+                        DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
+
+                        msgretrun.ReturnCode = "400";
+                        msgretrun.Msg = "Error !!";
+                        return BadRequest(msgretrun);
+                    }
+                }
+              
+
+                
+                DB.DBConn.Tran.Commit();
+                DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
+                DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
+                msgretrun.ReturnCode = "200";
+                msgretrun.Msg = "Save Success !!";
                 return Ok(msgretrun);
             }
+            catch
+            {
+                msgretrun.ReturnCode = "400";
+                msgretrun.Msg = "Error !!";
+                return BadRequest(msgretrun);
+            }
+        }
+
+
+
+
+        [HttpPost("[action]")]
+        public IActionResult setTicketPurchase(TicketPurchase po)
+        {
+            MsgReturn msgretrun = new MsgReturn();
+            try
+            {
+                string _cmd = "";
+                _cmd = "exec  dbo.setTicketPurchase";
+                _cmd += " @User  ='" + po.User + "'";
+                _cmd += " ,@DocNo  ='" + po.DocNo + "'";
+                _cmd += " ,@DocType  ='" + po.DocType + "'";
+                _cmd += " ,@DocState  ='" + po.DocState + "'";
+                _cmd += " ,@DocRemind ='" + po.DocRemind + "'";
+                _cmd += "  ,@CmpId ='" + po.CmpId + "'";
+                _cmd += " ,@RevNo =" + po.RevNo;
+                _cmd += " , @TicketId='" + po.TicketId + "'";
+
+                if (DB.DBConn.ExecuteOnly(_cmd))
+                {
+                    msgretrun.ReturnCode = "200";
+                    msgretrun.Msg = "Save Success !!";
+                    return Ok(msgretrun);
+                }
+                else
+                {
+                    msgretrun.ReturnCode = "400";
+                    msgretrun.Msg = "Error !!";
+                    return BadRequest(msgretrun);
+                }
+            }
+            catch
+            {
+                msgretrun.ReturnCode = "400";
+                msgretrun.Msg = "Error !!";
+                return BadRequest(msgretrun);
+            }
+        }
+
+        [HttpPost("[action]")]
+        public IActionResult setTicketPurchaseItem(List<TicketPurchase_Item> po)
+        {
+            MsgReturn msgretrun = new MsgReturn();
+            DB.DBConn.SqlConnectionOpen();
+            DB.DBConn.Cmd = DB.DBConn.Cnn.CreateCommand();
+            DB.DBConn.Tran = DB.DBConn.Cnn.BeginTransaction();
+
+            try
+            {
+                string _cmd;
+
+                for (int i = 0; i < po.Count; i++)
+                {
+                    _cmd = "exec  dbo.setTicketPurchase_Item";
+                    _cmd += " @DocNo  ='" + po[i].DocNo + "'";
+                    _cmd += ",@Seq =" + po[i].Seq;
+                    _cmd += ",@ProdCode  ='" + po[i].ProdCode + "'";
+                    _cmd += ",@RevNo =" + po[i].RevNo;
+                    _cmd += ",@TicketId  ='" + po[i].TicketId + "'";
+                    _cmd += ",@User  ='" + po[i].User + "'";
+                    _cmd += ",@CmpId  ='" + po[i].CmpId + "'";
+
+                    if (DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran) <= 0)
+                    {
+                        DB.DBConn.Tran.Rollback();
+                        DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
+                        DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
+
+                        msgretrun.ReturnCode = "400";
+                        msgretrun.Msg = "Error !!";
+                        return BadRequest(msgretrun);
+                    }
+                }
+
+                DB.DBConn.Tran.Commit();
+                DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
+                DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
+                msgretrun.ReturnCode = "200";
+                msgretrun.Msg = "Save Success !!";
+                return Ok(msgretrun);
+            }
+            catch
+            {
+                DB.DBConn.Tran.Rollback();
+                DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
+                DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
+
+                msgretrun.ReturnCode = "400";
+                msgretrun.Msg = "Error !!";
+                return BadRequest(msgretrun);
+            }
+        }
+
+        [HttpPost("[action]")]
+        public IActionResult setTicketPurchaseAssign(List<TicketPurchase_Assign> po)
+        {
+            MsgReturn msgretrun = new MsgReturn();
+            DB.DBConn.SqlConnectionOpen();
+            DB.DBConn.Cmd = DB.DBConn.Cnn.CreateCommand();
+            DB.DBConn.Tran = DB.DBConn.Cnn.BeginTransaction();
+
+            try
+            {
+                string _cmd;
+
+                for (int i = 0; i < po.Count; i++)
+                {
+                    _cmd = "exec  dbo.setTicketPurchase_Assign";
+                    _cmd += " @User  ='" + po[i].User + "'";
+                    _cmd += ",@TicketId  ='" + po[i].TicketId + "'";
+                    _cmd += ",@CmpId  ='" + po[i].CmpId + "'";
+
+                    if (DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran) <= 0)
+                    {
+                        DB.DBConn.Tran.Rollback();
+                        DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
+                        DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
+
+                        msgretrun.ReturnCode = "400";
+                        msgretrun.Msg = "Error !!";
+                        return BadRequest(msgretrun);
+                    }
+                }
+
+                DB.DBConn.Tran.Commit();
+                DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
+                DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
+                msgretrun.ReturnCode = "200";
+                msgretrun.Msg = "Save Success !!";
+                return Ok(msgretrun);
+            }
+            catch
+            {
+                DB.DBConn.Tran.Rollback();
+                DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
+                DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
+
+                msgretrun.ReturnCode = "400";
+                msgretrun.Msg = "Error !!";
+                return BadRequest(msgretrun);
+            }
+        }
+
+        [HttpGet("[action]")]
+        public IActionResult getTicketPurchase([FromQuery] string cmpid, [FromQuery] string user)
+        {
+            string _cmd;
+            _cmd = "exec dbo.getTicketPurchase @CmpId='" + cmpid + "' , @User='" + user + "'";
+            DataTable dt = DB.DBConn.GetDataTable(_cmd);
+
+            _cmd = "exec dbo.getTicketPurchase_Item @CmpId='" + cmpid + "' , @User='" + user + "'";
+            DataTable dtItem = DB.DBConn.GetDataTable(_cmd);
+
+            List<TicketPurchaseList> purchases = new List<TicketPurchaseList>();
+
+            foreach (DataRow r in dt.Rows)
+            {
+                var purchase = new TicketPurchaseList();
+                purchase.DocBy = r["DocBy"].ToString();
+                purchase.DocDate = DateTime.Parse(r["DocDate"].ToString());
+                purchase.DocNo = r["DocNo"].ToString();
+                purchase.DocType = r["DocType"].ToString();
+                purchase.DocState = r["DocState"].ToString();
+                purchase.DocRemind = r["DocRemind"].ToString();
+                purchase.RevNo = Convert.ToInt32(r["RevNo"]);
+                purchase.CmpId = r["CmpId"].ToString();
+                purchase.TicketId = r["TicketId"].ToString();
+                purchase.Seq = Convert.ToInt32(r["Seq"]);
+                purchase.StateClose = Convert.ToInt32(r["StateClose"]);
+                purchase.items = new List<TicketPurchaseItemList>();
+                foreach (
+                    DataRow d in dtItem.Select(
+                        "DocNo ='"
+                            + r["DocNo"].ToString()
+                            + "'  and RevNo="
+                            + Convert.ToInt32(r["RevNo"])
+                            + "  and TicketId='"
+                            + r["TicketId"].ToString()
+                            + "'"
+                    )
+                )
+                {
+                    var item = new TicketPurchaseItemList();
+                    item.DocNo = d["DocNo"].ToString();
+                    item.Seq = Convert.ToInt32(d["Seq"]);
+                    item.ProdCode = d["ProdCode"].ToString();
+                    item.TicketId = d["TicketId"].ToString();
+
+                    item.RevNo = Convert.ToInt32(d["RevNo"]);
+                    item.CmpId = d["CmpId"].ToString();
+
+                    purchase.items.Add(item);
+                }
+
+                purchases.Add(purchase);
+            }
+
+            return Ok(purchases);
+        }
+
+        [HttpGet("[action]")]
+        public IActionResult getTicketPurchaseBom(
+            [FromQuery] string cmpid,
+            [FromQuery] string user,
+            [FromQuery] string DocNo,
+            [FromQuery] string TicketId
+        )
+        {
+            DataTable dt = new System.Data.DataTable();
+            DataTable dtItem = new System.Data.DataTable();
+            DataTable dtItemPrice = new System.Data.DataTable();
+            string _cmd;
+            _cmd =
+                "exec dbo.[getTicketPurchase_Bom] @CmpId='"
+                + cmpid
+                + "' , @user='"
+                + user
+                + "',@TicketId='"
+                + TicketId
+                + "' , @DocNo='"
+                + DocNo
+                + "'";
+            dt = DB.DBConn.GetDataTable(_cmd);
+
+            _cmd =
+                "exec dbo.[getTicketPurchase_BomItem]  @CmpId='"
+                + cmpid
+                + "' , @user='"
+                + user
+                + "',@TicketId='"
+                + TicketId
+                + "' , @DocNo='"
+                + DocNo
+                + "'";
+            dtItem = DB.DBConn.GetDataTable(_cmd);
+
+            _cmd =
+                "exec dbo.[getTicketPurchase_BomItem_Price]  @CmpId='"
+                + cmpid
+                + "' , @user='"
+                + user
+                + "',@TicketId='"
+                + TicketId
+                + "' , @DocNo='"
+                + DocNo
+                + "'";
+            dtItemPrice = DB.DBConn.GetDataTable(_cmd);
+
+            List<SalesBom> bomList = new List<SalesBom>();
+
+            foreach (DataRow r in dt.Rows)
+            {
+                var bom = new SalesBom();
+                bom.BomNo = r["BomNo"].ToString();
+                bom.BomBy = r["BomBy"].ToString();
+                bom.BomDate = DateTime.Parse(r["BomDate"].ToString());
+                bom.SaleName = r["SaleName"].ToString();
+                bom.CustomerName = r["CustomerName"].ToString();
+                bom.CustomerContactName = r["CustomerContactName"].ToString();
+                bom.CustomerContactEmail = r["CustomerContactEmail"].ToString();
+                bom.CustomerContactPhone = r["CustomerContactPhone"].ToString();
+                bom.ProjectName = r["ProjectName"].ToString();
+                bom.ProjectStatus = Convert.ToInt32(r["ProjectStatus"]);
+                bom.Remark = r["Remark"].ToString();
+                bom.CmpId = r["CmpId"].ToString();
+                bom.UpdUser = r["UpdUser"].ToString();
+                bom.BomState = r["BomState"].ToString();
+                bom.TicketId = r["TicketId"].ToString();
+                bom.StateApp = Convert.ToInt32(r["StateApp"]);
+                bom.RevNoMax = Convert.ToInt32(r["RevNoMax"]);
+                bom.RevNo = Convert.ToInt32(r["RevNo"]);
+                bom.items = new List<SalesBom_Detail>();
+                foreach (
+                    DataRow x in dtItem.Select(
+                        "BomNo='"
+                            + bom.BomNo
+                            + "' and RevNo="
+                            + bom.RevNo
+                            + " and CmpId='"
+                            + bom.CmpId
+                            + "'"
+                    )
+                )
+                {
+                    var item = new SalesBom_Detail();
+                    item.BomNo = bom.BomNo;
+                    item.UpdUser = x["UpdUser"].ToString();
+                    item.RevNo = bom.RevNo;
+                    item.Seq = Convert.ToInt32(x["Seq"]);
+                    item.ProdCode = x["ProdCode"].ToString();
+                    item.ProdDescription = x["ProdDescription"].ToString();
+                    item.Qty = Convert.ToDecimal(x["Qty"]);
+                    item.UnitPrice = Convert.ToDecimal(x["UnitPrice"]);
+                    item.UnitCode = x["UnitCode"].ToString();
+                    item.Amt = Convert.ToDecimal(x["Amt"]);
+                    item.CmpId = x["CmpId"].ToString();
+                    item.ReplaceStatus = Convert.ToInt32(x["ReplaceStatus"]);
+                    item.Vendor = "";
+                    item.VendorName = "";
+                    item.Remark = x["Remark"].ToString();
+                    item.OutofstockStatus = Convert.ToInt32(x["OutofstockStatus"]);
+                    item.ReplaceProdCode = x["ReplaceProdCode"].ToString();
+                    item.StatePriceReq = Convert.ToInt32(x["StatePriceReq"]);
+                    item.StateUpdatePrice = Convert.ToInt32(x["StateUpdatePrice"]);
+
+                    item.bomitemPrice = new List<SalesBom_Price_Item>();
+
+                    foreach (
+                        DataRow i in dtItemPrice.Select(
+                            "BomNo='"
+                                + bom.BomNo
+                                + "' and RevNo="
+                                + bom.RevNo
+                                + " and CmpId='"
+                                + bom.CmpId
+                                + "' and ProdCode='"
+                                + item.ProdCode
+                                + "' and Seq="
+                                + item.Seq
+                        )
+                    )
+                    {
+                        var itemprice = new SalesBom_Price_Item();
+
+                        itemprice.BomNo = bom.BomNo;
+                        itemprice.UpdUser = i["UpdUser"].ToString();
+                        itemprice.RevNo = bom.RevNo;
+                        itemprice.Seq = Convert.ToInt32(i["Seq"]);
+                        itemprice.ProdCode = i["ProdCode"].ToString();
+                        itemprice.SupplierCode = i["SupplierCode"].ToString();
+                        itemprice.SupplierName = i["SupplierName"].ToString();
+                        itemprice.DeliveryDate = DateTime.Parse(i["DeliveryDate"].ToString());
+                        itemprice.Qty = Convert.ToDecimal(i["Qty"]);
+                        itemprice.QtyBal = Convert.ToDecimal(i["QtyBal"]);
+                        itemprice.UnitPrice = Convert.ToDecimal(i["UnitPrice"]);
+                        itemprice.UnitCode = i["UnitCode"].ToString();
+                        itemprice.Amt = Convert.ToDecimal(i["Amt"]);
+                        itemprice.CmpId = i["CmpId"].ToString();
+                        itemprice.Remark = i["Remark"].ToString();
+                        itemprice.PriceSeq = Convert.ToInt32(i["PriceSeq"]);
+                        itemprice.StateDelete = Convert.ToInt32(i["StateDelete"]);
+                        itemprice.StateSelect = Convert.ToInt32(i["StateSelect"]);
+
+                        item.bomitemPrice.Add(itemprice);
+                    }
+
+                    bom.items.Add(item);
+                }
+
+                bomList.Add(bom);
+            }
+
+            return Ok(bomList);
         }
     }
 }

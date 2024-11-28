@@ -816,6 +816,22 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\230015\vendor\images\dc8d7fb5-a763-43ef-9a2d-2ad08d961459.png))</OriginalItemSpec>
     </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\allfileupload\079c7ff6-83ef-4be8-b9b6-3fa16493ade8.jpg))">
+      <SourceType>Package</SourceType>
+      <SourceId>goalongapi</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/goalongapi</BasePath>
+      <RelativePath>allfileupload/079c7ff6-83ef-4be8-b9b6-3fa16493ade8.jpg</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\allfileupload\079c7ff6-83ef-4be8-b9b6-3fa16493ade8.jpg))</OriginalItemSpec>
+    </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\allfileupload\0aee628c-42ef-4f29-9146-33ac2067eb43.jpg))">
       <SourceType>Package</SourceType>
       <SourceId>goalongapi</SourceId>
@@ -831,6 +847,22 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\allfileupload\0aee628c-42ef-4f29-9146-33ac2067eb43.jpg))</OriginalItemSpec>
+    </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\allfileupload\0f2ada59-167b-4eb6-a4b3-f6092d42d3af.jpg))">
+      <SourceType>Package</SourceType>
+      <SourceId>goalongapi</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/goalongapi</BasePath>
+      <RelativePath>allfileupload/0f2ada59-167b-4eb6-a4b3-f6092d42d3af.jpg</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\allfileupload\0f2ada59-167b-4eb6-a4b3-f6092d42d3af.jpg))</OriginalItemSpec>
     </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\allfileupload\107d9556-6192-40ed-841d-a3daf152b582.pdf))">
       <SourceType>Package</SourceType>
@@ -863,6 +895,38 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\allfileupload\156f2d0c-c681-4940-9d4b-e3f5fce63315.jpg))</OriginalItemSpec>
+    </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\allfileupload\1a80e4b1-f3a8-46db-b7e0-f27dafe82aea.jpg))">
+      <SourceType>Package</SourceType>
+      <SourceId>goalongapi</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/goalongapi</BasePath>
+      <RelativePath>allfileupload/1a80e4b1-f3a8-46db-b7e0-f27dafe82aea.jpg</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\allfileupload\1a80e4b1-f3a8-46db-b7e0-f27dafe82aea.jpg))</OriginalItemSpec>
+    </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\allfileupload\1d60596c-73a1-45dd-81fd-791111623155.jpg))">
+      <SourceType>Package</SourceType>
+      <SourceId>goalongapi</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/goalongapi</BasePath>
+      <RelativePath>allfileupload/1d60596c-73a1-45dd-81fd-791111623155.jpg</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\allfileupload\1d60596c-73a1-45dd-81fd-791111623155.jpg))</OriginalItemSpec>
     </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\allfileupload\274dc8e8-1847-46e5-9c84-55e4a6270a1d.pdf))">
       <SourceType>Package</SourceType>
@@ -912,6 +976,22 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\allfileupload\321e6adc-23ca-4092-bfff-b3981f143c23.pdf))</OriginalItemSpec>
     </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\allfileupload\362b43a9-d98b-4626-b12c-51eeb7e9a0ed.png))">
+      <SourceType>Package</SourceType>
+      <SourceId>goalongapi</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/goalongapi</BasePath>
+      <RelativePath>allfileupload/362b43a9-d98b-4626-b12c-51eeb7e9a0ed.png</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\allfileupload\362b43a9-d98b-4626-b12c-51eeb7e9a0ed.png))</OriginalItemSpec>
+    </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\allfileupload\3c9b6533-5eae-43ed-8502-dde89551337a.jpg))">
       <SourceType>Package</SourceType>
       <SourceId>goalongapi</SourceId>
@@ -960,6 +1040,54 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\allfileupload\52f066d3-0e24-4b19-a783-d6dc590a655c.pdf))</OriginalItemSpec>
     </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\allfileupload\568fc841-8357-430a-81f7-d028a89bad81.jpg))">
+      <SourceType>Package</SourceType>
+      <SourceId>goalongapi</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/goalongapi</BasePath>
+      <RelativePath>allfileupload/568fc841-8357-430a-81f7-d028a89bad81.jpg</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\allfileupload\568fc841-8357-430a-81f7-d028a89bad81.jpg))</OriginalItemSpec>
+    </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\allfileupload\705c4a49-a69f-4fd7-bf39-59abffcd6571.png))">
+      <SourceType>Package</SourceType>
+      <SourceId>goalongapi</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/goalongapi</BasePath>
+      <RelativePath>allfileupload/705c4a49-a69f-4fd7-bf39-59abffcd6571.png</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\allfileupload\705c4a49-a69f-4fd7-bf39-59abffcd6571.png))</OriginalItemSpec>
+    </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\allfileupload\95a8dde3-1784-4a39-b844-3aecec640607.jpg))">
+      <SourceType>Package</SourceType>
+      <SourceId>goalongapi</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/goalongapi</BasePath>
+      <RelativePath>allfileupload/95a8dde3-1784-4a39-b844-3aecec640607.jpg</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\allfileupload\95a8dde3-1784-4a39-b844-3aecec640607.jpg))</OriginalItemSpec>
+    </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\allfileupload\9c4f6688-dc4a-40a3-b16e-eb3f1d354192.jpg))">
       <SourceType>Package</SourceType>
       <SourceId>goalongapi</SourceId>
@@ -991,6 +1119,22 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\allfileupload\a84e04fa-26fe-4d9f-92f1-b0cb9ec9ba35.jpg))</OriginalItemSpec>
+    </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\allfileupload\a897f432-50da-48f9-8ddb-caf31a465755.jpg))">
+      <SourceType>Package</SourceType>
+      <SourceId>goalongapi</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/goalongapi</BasePath>
+      <RelativePath>allfileupload/a897f432-50da-48f9-8ddb-caf31a465755.jpg</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\allfileupload\a897f432-50da-48f9-8ddb-caf31a465755.jpg))</OriginalItemSpec>
     </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\allfileupload\b07f8653-f305-4d24-9130-608a872e7728.jpg))">
       <SourceType>Package</SourceType>
@@ -1040,6 +1184,22 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\allfileupload\ccd6652d-2e26-480d-abc1-02884b140012.pdf))</OriginalItemSpec>
     </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\allfileupload\cdfab9f1-7508-4d6e-9b84-eb15327473c7.png))">
+      <SourceType>Package</SourceType>
+      <SourceId>goalongapi</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/goalongapi</BasePath>
+      <RelativePath>allfileupload/cdfab9f1-7508-4d6e-9b84-eb15327473c7.png</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\allfileupload\cdfab9f1-7508-4d6e-9b84-eb15327473c7.png))</OriginalItemSpec>
+    </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\allfileupload\dbf17d7f-a24c-4fd4-8521-d591a3c7f726.pdf))">
       <SourceType>Package</SourceType>
       <SourceId>goalongapi</SourceId>
@@ -1071,6 +1231,22 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\allfileupload\dc4e1738-c4a1-4cca-a40f-0b0e280cc831.jpg))</OriginalItemSpec>
+    </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\allfileupload\e0752606-be26-4599-9b0c-b995b88969bf.png))">
+      <SourceType>Package</SourceType>
+      <SourceId>goalongapi</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/goalongapi</BasePath>
+      <RelativePath>allfileupload/e0752606-be26-4599-9b0c-b995b88969bf.png</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\allfileupload\e0752606-be26-4599-9b0c-b995b88969bf.png))</OriginalItemSpec>
     </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\allfileupload\e462f43e-5084-48da-a017-da5706d3675d.jpg))">
       <SourceType>Package</SourceType>
@@ -1151,6 +1327,38 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\allfileupload\f2ba5d8c-1539-4e8d-84bb-383128c5efad.pdf))</OriginalItemSpec>
+    </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\allfileupload\f670b2d0-b63e-43b6-aa8e-94a6cfa20e5a.jpg))">
+      <SourceType>Package</SourceType>
+      <SourceId>goalongapi</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/goalongapi</BasePath>
+      <RelativePath>allfileupload/f670b2d0-b63e-43b6-aa8e-94a6cfa20e5a.jpg</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\allfileupload\f670b2d0-b63e-43b6-aa8e-94a6cfa20e5a.jpg))</OriginalItemSpec>
+    </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\allfileupload\f9c6df33-dc9a-4e49-a1ae-fc1a9bc295bb.jpg))">
+      <SourceType>Package</SourceType>
+      <SourceId>goalongapi</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/goalongapi</BasePath>
+      <RelativePath>allfileupload/f9c6df33-dc9a-4e49-a1ae-fc1a9bc295bb.jpg</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\allfileupload\f9c6df33-dc9a-4e49-a1ae-fc1a9bc295bb.jpg))</OriginalItemSpec>
     </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\allfileupload\fbbb16ca-ddd7-4e22-8086-b72cba8b38ff.jpg))">
       <SourceType>Package</SourceType>
@@ -1391,6 +1599,22 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\images\28544115-e53d-4b79-a697-69a143495c19.png))</OriginalItemSpec>
+    </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\images\29b62eec-95c9-4187-af89-c3913e9540b2.png))">
+      <SourceType>Package</SourceType>
+      <SourceId>goalongapi</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/goalongapi</BasePath>
+      <RelativePath>images/29b62eec-95c9-4187-af89-c3913e9540b2.png</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\images\29b62eec-95c9-4187-af89-c3913e9540b2.png))</OriginalItemSpec>
     </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\images\399a7641-9d4e-4750-ac24-d8e435dfa23b.jpg))">
       <SourceType>Package</SourceType>
@@ -1807,6 +2031,22 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\images\9af8c5b9-2a60-4d20-bb86-46150aea7fd5.png))</OriginalItemSpec>
+    </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\images\9c2b17a1-4a08-4491-82e6-f9ad99d50aee.png))">
+      <SourceType>Package</SourceType>
+      <SourceId>goalongapi</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/goalongapi</BasePath>
+      <RelativePath>images/9c2b17a1-4a08-4491-82e6-f9ad99d50aee.png</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\images\9c2b17a1-4a08-4491-82e6-f9ad99d50aee.png))</OriginalItemSpec>
     </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\images\9e173806-22d5-4b8c-b5da-4f0774f06f43.png))">
       <SourceType>Package</SourceType>
@@ -2384,6 +2624,22 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\0baf7034-a26f-4273-8bc9-b954cc2f633d.csv))</OriginalItemSpec>
     </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\0d987996-4db6-4b64-a43a-715f301ff1b8.docx))">
+      <SourceType>Package</SourceType>
+      <SourceId>goalongapi</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/goalongapi</BasePath>
+      <RelativePath>reqfromcust/fileall/0d987996-4db6-4b64-a43a-715f301ff1b8.docx</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\0d987996-4db6-4b64-a43a-715f301ff1b8.docx))</OriginalItemSpec>
+    </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\0e64f31a-985c-4ab0-b003-2186a6648616.jpg))">
       <SourceType>Package</SourceType>
       <SourceId>goalongapi</SourceId>
@@ -2399,6 +2655,22 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\0e64f31a-985c-4ab0-b003-2186a6648616.jpg))</OriginalItemSpec>
+    </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\1448bf1e-9fc0-460c-a178-899c6271a8f3.xlsx))">
+      <SourceType>Package</SourceType>
+      <SourceId>goalongapi</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/goalongapi</BasePath>
+      <RelativePath>reqfromcust/fileall/1448bf1e-9fc0-460c-a178-899c6271a8f3.xlsx</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\1448bf1e-9fc0-460c-a178-899c6271a8f3.xlsx))</OriginalItemSpec>
     </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\190cc7e1-7242-4e5d-af97-8b8912b9502d.jpg))">
       <SourceType>Package</SourceType>
@@ -2464,6 +2736,22 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\30ddb2f1-5878-4e52-bbe0-d66fbd3d7698.jpg))</OriginalItemSpec>
     </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\38de0cd4-8c01-4ed7-be86-654c1b59b0b7.pdf))">
+      <SourceType>Package</SourceType>
+      <SourceId>goalongapi</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/goalongapi</BasePath>
+      <RelativePath>reqfromcust/fileall/38de0cd4-8c01-4ed7-be86-654c1b59b0b7.pdf</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\38de0cd4-8c01-4ed7-be86-654c1b59b0b7.pdf))</OriginalItemSpec>
+    </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\3dea98f4-ce29-4d69-b512-4086934b3078.jpg))">
       <SourceType>Package</SourceType>
       <SourceId>goalongapi</SourceId>
@@ -2528,6 +2816,22 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\41bad616-78ca-4035-8b3f-3f9d5d83680d.jpg))</OriginalItemSpec>
     </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\42767af0-77b3-4c18-83a8-74dfdb51c0ad.jpg))">
+      <SourceType>Package</SourceType>
+      <SourceId>goalongapi</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/goalongapi</BasePath>
+      <RelativePath>reqfromcust/fileall/42767af0-77b3-4c18-83a8-74dfdb51c0ad.jpg</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\42767af0-77b3-4c18-83a8-74dfdb51c0ad.jpg))</OriginalItemSpec>
+    </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\42fc00f5-7658-4402-bdfa-32b68d99c025.jpg))">
       <SourceType>Package</SourceType>
       <SourceId>goalongapi</SourceId>
@@ -2544,6 +2848,22 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\42fc00f5-7658-4402-bdfa-32b68d99c025.jpg))</OriginalItemSpec>
     </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\558c3b13-e5b3-4454-a718-bc66f3651246.jpg))">
+      <SourceType>Package</SourceType>
+      <SourceId>goalongapi</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/goalongapi</BasePath>
+      <RelativePath>reqfromcust/fileall/558c3b13-e5b3-4454-a718-bc66f3651246.jpg</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\558c3b13-e5b3-4454-a718-bc66f3651246.jpg))</OriginalItemSpec>
+    </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\56371626-c6b0-41c3-ab27-dfb1a93b8ce5.jpg))">
       <SourceType>Package</SourceType>
       <SourceId>goalongapi</SourceId>
@@ -2559,6 +2879,22 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\56371626-c6b0-41c3-ab27-dfb1a93b8ce5.jpg))</OriginalItemSpec>
+    </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\59994dda-c501-4f0f-ae86-bcba27c8a4a3.jpg))">
+      <SourceType>Package</SourceType>
+      <SourceId>goalongapi</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/goalongapi</BasePath>
+      <RelativePath>reqfromcust/fileall/59994dda-c501-4f0f-ae86-bcba27c8a4a3.jpg</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\59994dda-c501-4f0f-ae86-bcba27c8a4a3.jpg))</OriginalItemSpec>
     </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\59e37040-49e5-49e2-a424-7482703c9403.jpg))">
       <SourceType>Package</SourceType>
@@ -2592,6 +2928,22 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\59ee7af0-31c7-41a4-8785-6dd4989dd6db.jpg))</OriginalItemSpec>
     </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\5b1c1a92-dab7-49fa-a236-c776966cf8ac.jpg))">
+      <SourceType>Package</SourceType>
+      <SourceId>goalongapi</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/goalongapi</BasePath>
+      <RelativePath>reqfromcust/fileall/5b1c1a92-dab7-49fa-a236-c776966cf8ac.jpg</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\5b1c1a92-dab7-49fa-a236-c776966cf8ac.jpg))</OriginalItemSpec>
+    </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\5bd4dabd-60cc-4e70-bff7-92d98e7568d3.jpg))">
       <SourceType>Package</SourceType>
       <SourceId>goalongapi</SourceId>
@@ -2624,6 +2976,22 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\5ee7382f-dfdb-42a2-aab2-30fd414d6fe9.jpg))</OriginalItemSpec>
     </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\5fd413a1-7a2b-4718-9595-2ccd10de5a2e.jpg))">
+      <SourceType>Package</SourceType>
+      <SourceId>goalongapi</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/goalongapi</BasePath>
+      <RelativePath>reqfromcust/fileall/5fd413a1-7a2b-4718-9595-2ccd10de5a2e.jpg</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\5fd413a1-7a2b-4718-9595-2ccd10de5a2e.jpg))</OriginalItemSpec>
+    </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\67345492-d3a8-427b-b7b7-9f90ec2d5f0e.jpg))">
       <SourceType>Package</SourceType>
       <SourceId>goalongapi</SourceId>
@@ -2639,6 +3007,22 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\67345492-d3a8-427b-b7b7-9f90ec2d5f0e.jpg))</OriginalItemSpec>
+    </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\68c92493-38d9-42d0-bc2c-dec95703d647.jpg))">
+      <SourceType>Package</SourceType>
+      <SourceId>goalongapi</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/goalongapi</BasePath>
+      <RelativePath>reqfromcust/fileall/68c92493-38d9-42d0-bc2c-dec95703d647.jpg</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\68c92493-38d9-42d0-bc2c-dec95703d647.jpg))</OriginalItemSpec>
     </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\6ae1cc31-8018-4614-9d87-4c2dc7974f17.jpg))">
       <SourceType>Package</SourceType>
@@ -2656,6 +3040,38 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\6ae1cc31-8018-4614-9d87-4c2dc7974f17.jpg))</OriginalItemSpec>
     </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\6b85b7b7-527b-4b93-b66e-7918f46e818a.jpg))">
+      <SourceType>Package</SourceType>
+      <SourceId>goalongapi</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/goalongapi</BasePath>
+      <RelativePath>reqfromcust/fileall/6b85b7b7-527b-4b93-b66e-7918f46e818a.jpg</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\6b85b7b7-527b-4b93-b66e-7918f46e818a.jpg))</OriginalItemSpec>
+    </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\6c8f03b1-90bf-442d-b0ea-9bbb603b7991.jpg))">
+      <SourceType>Package</SourceType>
+      <SourceId>goalongapi</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/goalongapi</BasePath>
+      <RelativePath>reqfromcust/fileall/6c8f03b1-90bf-442d-b0ea-9bbb603b7991.jpg</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\6c8f03b1-90bf-442d-b0ea-9bbb603b7991.jpg))</OriginalItemSpec>
+    </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\6e102a4a-fb29-4ba7-9755-b0bfc1cd7391.jpg))">
       <SourceType>Package</SourceType>
       <SourceId>goalongapi</SourceId>
@@ -2672,6 +3088,22 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\6e102a4a-fb29-4ba7-9755-b0bfc1cd7391.jpg))</OriginalItemSpec>
     </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\6e9fefb7-bea6-4ba5-9fed-c939d6dd6801.jpg))">
+      <SourceType>Package</SourceType>
+      <SourceId>goalongapi</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/goalongapi</BasePath>
+      <RelativePath>reqfromcust/fileall/6e9fefb7-bea6-4ba5-9fed-c939d6dd6801.jpg</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\6e9fefb7-bea6-4ba5-9fed-c939d6dd6801.jpg))</OriginalItemSpec>
+    </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\751e0931-7ef9-4ac6-ba63-c2b885b14f19.jpg))">
       <SourceType>Package</SourceType>
       <SourceId>goalongapi</SourceId>
@@ -2687,6 +3119,38 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\751e0931-7ef9-4ac6-ba63-c2b885b14f19.jpg))</OriginalItemSpec>
+    </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\7c1d07c3-28e7-4087-9867-329570c99fd1.jpg))">
+      <SourceType>Package</SourceType>
+      <SourceId>goalongapi</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/goalongapi</BasePath>
+      <RelativePath>reqfromcust/fileall/7c1d07c3-28e7-4087-9867-329570c99fd1.jpg</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\7c1d07c3-28e7-4087-9867-329570c99fd1.jpg))</OriginalItemSpec>
+    </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\7f14aeb9-4373-4d7a-9148-9283e52fa18f.jpg))">
+      <SourceType>Package</SourceType>
+      <SourceId>goalongapi</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/goalongapi</BasePath>
+      <RelativePath>reqfromcust/fileall/7f14aeb9-4373-4d7a-9148-9283e52fa18f.jpg</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\7f14aeb9-4373-4d7a-9148-9283e52fa18f.jpg))</OriginalItemSpec>
     </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\8040aa8d-0176-4744-af2f-3e4c68747e18.jpg))">
       <SourceType>Package</SourceType>
@@ -2736,6 +3200,22 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\83de0c65-fd1f-466f-be4d-090ba8ce82d4.jpg))</OriginalItemSpec>
     </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\89909857-5e05-4f11-9f5d-b06af14edeab.jpg))">
+      <SourceType>Package</SourceType>
+      <SourceId>goalongapi</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/goalongapi</BasePath>
+      <RelativePath>reqfromcust/fileall/89909857-5e05-4f11-9f5d-b06af14edeab.jpg</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\89909857-5e05-4f11-9f5d-b06af14edeab.jpg))</OriginalItemSpec>
+    </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\8e279142-ed35-48c5-a19d-fcc6a4bd0d15.jpg))">
       <SourceType>Package</SourceType>
       <SourceId>goalongapi</SourceId>
@@ -2752,6 +3232,38 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\8e279142-ed35-48c5-a19d-fcc6a4bd0d15.jpg))</OriginalItemSpec>
     </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\8f30e614-7bc6-4a02-a336-2ca010cb9c5b.jpg))">
+      <SourceType>Package</SourceType>
+      <SourceId>goalongapi</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/goalongapi</BasePath>
+      <RelativePath>reqfromcust/fileall/8f30e614-7bc6-4a02-a336-2ca010cb9c5b.jpg</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\8f30e614-7bc6-4a02-a336-2ca010cb9c5b.jpg))</OriginalItemSpec>
+    </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\8ff26d5a-c5f4-4918-a580-2a2c6f366b38.jpg))">
+      <SourceType>Package</SourceType>
+      <SourceId>goalongapi</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/goalongapi</BasePath>
+      <RelativePath>reqfromcust/fileall/8ff26d5a-c5f4-4918-a580-2a2c6f366b38.jpg</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\8ff26d5a-c5f4-4918-a580-2a2c6f366b38.jpg))</OriginalItemSpec>
+    </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\904d8a1d-3630-4695-bbcf-fbfba1bfffaf.jpg))">
       <SourceType>Package</SourceType>
       <SourceId>goalongapi</SourceId>
@@ -2767,6 +3279,22 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\904d8a1d-3630-4695-bbcf-fbfba1bfffaf.jpg))</OriginalItemSpec>
+    </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\9ddeee7b-2b1b-4ce9-8f47-9fd8f1abc89a.pdf))">
+      <SourceType>Package</SourceType>
+      <SourceId>goalongapi</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/goalongapi</BasePath>
+      <RelativePath>reqfromcust/fileall/9ddeee7b-2b1b-4ce9-8f47-9fd8f1abc89a.pdf</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\9ddeee7b-2b1b-4ce9-8f47-9fd8f1abc89a.pdf))</OriginalItemSpec>
     </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\a06f5ab0-391f-4d2c-941d-4068629b57c6.jpg))">
       <SourceType>Package</SourceType>
@@ -2848,6 +3376,38 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\a6ef4454-5189-4e61-8a04-aefe81451a84.jpg))</OriginalItemSpec>
     </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\a8b56380-7137-405b-8ab6-db2b9be36ae0.jpg))">
+      <SourceType>Package</SourceType>
+      <SourceId>goalongapi</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/goalongapi</BasePath>
+      <RelativePath>reqfromcust/fileall/a8b56380-7137-405b-8ab6-db2b9be36ae0.jpg</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\a8b56380-7137-405b-8ab6-db2b9be36ae0.jpg))</OriginalItemSpec>
+    </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\a8d19eda-e78c-411e-a81f-f0f399d8dc6c.jpg))">
+      <SourceType>Package</SourceType>
+      <SourceId>goalongapi</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/goalongapi</BasePath>
+      <RelativePath>reqfromcust/fileall/a8d19eda-e78c-411e-a81f-f0f399d8dc6c.jpg</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\a8d19eda-e78c-411e-a81f-f0f399d8dc6c.jpg))</OriginalItemSpec>
+    </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\aa25e982-c802-4857-ace2-635ef7d7a37a.jpg))">
       <SourceType>Package</SourceType>
       <SourceId>goalongapi</SourceId>
@@ -2896,6 +3456,22 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\b32aa9a6-4686-47b6-9aec-128a23fb8d42.jpg))</OriginalItemSpec>
     </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\b4dae21f-43fc-4630-857a-9eedf81911a5.pdf))">
+      <SourceType>Package</SourceType>
+      <SourceId>goalongapi</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/goalongapi</BasePath>
+      <RelativePath>reqfromcust/fileall/b4dae21f-43fc-4630-857a-9eedf81911a5.pdf</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\b4dae21f-43fc-4630-857a-9eedf81911a5.pdf))</OriginalItemSpec>
+    </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\b4f2bbf6-54ac-45ce-b6fb-d50449a3ed7a.jpg))">
       <SourceType>Package</SourceType>
       <SourceId>goalongapi</SourceId>
@@ -2928,6 +3504,22 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\ba90f16b-2fd6-49d2-8514-79e6076e0233.jpg))</OriginalItemSpec>
     </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\c0bae106-0b0e-4b3f-bb0a-e7249858d48b.docx))">
+      <SourceType>Package</SourceType>
+      <SourceId>goalongapi</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/goalongapi</BasePath>
+      <RelativePath>reqfromcust/fileall/c0bae106-0b0e-4b3f-bb0a-e7249858d48b.docx</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\c0bae106-0b0e-4b3f-bb0a-e7249858d48b.docx))</OriginalItemSpec>
+    </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\c60c5d67-75bc-461e-ac1b-85babbfa2f3e.jpg))">
       <SourceType>Package</SourceType>
       <SourceId>goalongapi</SourceId>
@@ -2943,6 +3535,22 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\c60c5d67-75bc-461e-ac1b-85babbfa2f3e.jpg))</OriginalItemSpec>
+    </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\c6c7451b-733a-4faf-9939-b02b883a008e.docx))">
+      <SourceType>Package</SourceType>
+      <SourceId>goalongapi</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/goalongapi</BasePath>
+      <RelativePath>reqfromcust/fileall/c6c7451b-733a-4faf-9939-b02b883a008e.docx</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\c6c7451b-733a-4faf-9939-b02b883a008e.docx))</OriginalItemSpec>
     </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\c80990e3-9d2f-4ef0-afd1-498e5e8aa849.jpg))">
       <SourceType>Package</SourceType>
@@ -3056,6 +3664,22 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\d01d6f75-8530-414a-b44e-dd341998a65d.jpg))</OriginalItemSpec>
     </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\d1f272c6-baeb-4c65-ae26-fb6286f75d8b.jpg))">
+      <SourceType>Package</SourceType>
+      <SourceId>goalongapi</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/goalongapi</BasePath>
+      <RelativePath>reqfromcust/fileall/d1f272c6-baeb-4c65-ae26-fb6286f75d8b.jpg</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\d1f272c6-baeb-4c65-ae26-fb6286f75d8b.jpg))</OriginalItemSpec>
+    </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\d4459a6e-11d2-4d7b-bd28-f55324a4e3d1.jpg))">
       <SourceType>Package</SourceType>
       <SourceId>goalongapi</SourceId>
@@ -3120,6 +3744,22 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\d579df8b-a23a-4f29-9812-ae9aec0929a9.jpg))</OriginalItemSpec>
     </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\d93c6dd6-6167-4bc0-9413-bfe1a04efb16.jpg))">
+      <SourceType>Package</SourceType>
+      <SourceId>goalongapi</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/goalongapi</BasePath>
+      <RelativePath>reqfromcust/fileall/d93c6dd6-6167-4bc0-9413-bfe1a04efb16.jpg</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\d93c6dd6-6167-4bc0-9413-bfe1a04efb16.jpg))</OriginalItemSpec>
+    </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\da0558bc-cfdd-49dc-a3bd-53522a171286.jpg))">
       <SourceType>Package</SourceType>
       <SourceId>goalongapi</SourceId>
@@ -3135,6 +3775,22 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\da0558bc-cfdd-49dc-a3bd-53522a171286.jpg))</OriginalItemSpec>
+    </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\dcf8f2dd-23f6-4d48-8be9-73b50bce4cdc.xlsx))">
+      <SourceType>Package</SourceType>
+      <SourceId>goalongapi</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/goalongapi</BasePath>
+      <RelativePath>reqfromcust/fileall/dcf8f2dd-23f6-4d48-8be9-73b50bce4cdc.xlsx</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\dcf8f2dd-23f6-4d48-8be9-73b50bce4cdc.xlsx))</OriginalItemSpec>
     </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\e13f8efb-4c24-4c57-b3dd-8bd5492b989b.jpg))">
       <SourceType>Package</SourceType>
@@ -3200,6 +3856,38 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\ea32c67f-dcd4-4428-a91a-f348329baf95.jpg))</OriginalItemSpec>
     </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\ed2132cd-3b4a-4a33-91e0-effd1c046402.jpg))">
+      <SourceType>Package</SourceType>
+      <SourceId>goalongapi</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/goalongapi</BasePath>
+      <RelativePath>reqfromcust/fileall/ed2132cd-3b4a-4a33-91e0-effd1c046402.jpg</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\ed2132cd-3b4a-4a33-91e0-effd1c046402.jpg))</OriginalItemSpec>
+    </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\ed653545-07c9-4dd4-9013-6b228459da54.pdf))">
+      <SourceType>Package</SourceType>
+      <SourceId>goalongapi</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/goalongapi</BasePath>
+      <RelativePath>reqfromcust/fileall/ed653545-07c9-4dd4-9013-6b228459da54.pdf</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\ed653545-07c9-4dd4-9013-6b228459da54.pdf))</OriginalItemSpec>
+    </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\edc910db-10b5-412e-ae9f-f36582ab37fd.jpg))">
       <SourceType>Package</SourceType>
       <SourceId>goalongapi</SourceId>
@@ -3216,6 +3904,22 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\edc910db-10b5-412e-ae9f-f36582ab37fd.jpg))</OriginalItemSpec>
     </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\f01aaa34-8c54-4fbf-a74b-3bcc5c2ff776.jpg))">
+      <SourceType>Package</SourceType>
+      <SourceId>goalongapi</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/goalongapi</BasePath>
+      <RelativePath>reqfromcust/fileall/f01aaa34-8c54-4fbf-a74b-3bcc5c2ff776.jpg</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\f01aaa34-8c54-4fbf-a74b-3bcc5c2ff776.jpg))</OriginalItemSpec>
+    </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\f7ba95b4-1923-4e3b-b4be-a221f3b29ab6.jpg))">
       <SourceType>Package</SourceType>
       <SourceId>goalongapi</SourceId>
@@ -3231,6 +3935,22 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\f7ba95b4-1923-4e3b-b4be-a221f3b29ab6.jpg))</OriginalItemSpec>
+    </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\feb184c6-b3de-4358-9362-2c77f5fb95e9.png))">
+      <SourceType>Package</SourceType>
+      <SourceId>goalongapi</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/goalongapi</BasePath>
+      <RelativePath>reqfromcust/fileall/feb184c6-b3de-4358-9362-2c77f5fb95e9.png</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\feb184c6-b3de-4358-9362-2c77f5fb95e9.png))</OriginalItemSpec>
     </StaticWebAsset>
   </ItemGroup>
 </Project>

@@ -33,7 +33,7 @@ namespace coreapi.Controllers
 
             return Ok(JSONString);
         }
-
+ 
         [HttpGet("[action]")]
         public IActionResult getRolelistById([FromQuery] string cmpid, [FromQuery] string RoleId)
         {

@@ -1,30 +1,24 @@
-using coreapi.Models;
-using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
 using System.Data;
 using System.Net;
 using System.Text;
-
+using System.Text.Json;
+using System.Threading.Tasks;
+using coreapi.Models;
+using Google;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Sheets.v4;
 using Google.Apis.Sheets.v4.Data;
-using Google;
-using System.Text.Json;
-
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace coreapi.Controllers
 {
-
     [ApiController]
     [Authorize]
     public class CalendarController : ControllerBase
     {
-
-
         [HttpGet("[action]")]
-
         public IActionResult getCalendarEvent([FromQuery] string cmpid, [FromQuery] string user)
         {
             string _cmd;
@@ -44,7 +38,6 @@ namespace coreapi.Controllers
                 {
                     if (column.ColumnName != "invite")
                     {
-
                         eventObj[column.ColumnName] = row[column];
                     }
                 }
@@ -53,7 +46,6 @@ namespace coreapi.Controllers
                 if (row["invite"]?.ToString() != "")
                 {
                     var invites = row["invite"]?.ToString().Split(',');
-
 
                     if (invites.Length > 0)
                     {
@@ -77,10 +69,6 @@ namespace coreapi.Controllers
                         // Add the invite list to the event object
                         eventObj["invite"] = inviteList;
                     }
-
-
-
-
                 }
                 else
                 {
@@ -88,22 +76,19 @@ namespace coreapi.Controllers
                 }
 
                 eventList.Add(eventObj);
-
             }
-
-
-
 
             return Ok(new { events = eventList });
         }
-
 
         [HttpPost("[action]")]
         public IActionResult setCalendarEvent(Calendar mt)
         {
             MsgReturn msgretrun = new MsgReturn();
 
-            System.Globalization.CultureInfo thaiCulture = new System.Globalization.CultureInfo("th-TH");
+            System.Globalization.CultureInfo thaiCulture = new System.Globalization.CultureInfo(
+                "th-TH"
+            );
             thaiCulture.DateTimeFormat.Calendar = new System.Globalization.GregorianCalendar();
 
             try
@@ -138,23 +123,54 @@ namespace coreapi.Controllers
                     msgretrun.Msg = "Error !!";
                     return NotFound(msgretrun);
                 }
-
             }
             catch
             {
-
                 msgretrun.ReturnCode = "400";
                 msgretrun.Msg = "Error !!";
                 return NotFound(msgretrun);
             }
         }
 
+        [HttpPatch("[action]")]
+        public IActionResult delCalendarEvent(calendarDel model)
+        {
+            MsgReturn msgretrun = new MsgReturn();
 
+            System.Globalization.CultureInfo thaiCulture = new System.Globalization.CultureInfo(
+                "th-TH"
+            );
+            thaiCulture.DateTimeFormat.Calendar = new System.Globalization.GregorianCalendar();
 
+            try
+            {
+                string _cmd = "";
+                _cmd = " delete from CalendarEvent where CalendarId ='" + model.EventId + "'";
 
+                if (DB.DBConn.ExecuteOnly(_cmd))
+                {
+                    msgretrun.ReturnCode = "200";
+                    msgretrun.Msg = "Save Success !!";
+                    return Ok(msgretrun);
+                }
+                else
+                {
+                    msgretrun.ReturnCode = "400";
+                    msgretrun.Msg = "Error !!";
+                    return NotFound(msgretrun);
+                }
+            }
+            catch
+            {
+                msgretrun.ReturnCode = "400";
+                msgretrun.Msg = "Error !!";
+                return NotFound(msgretrun);
+            }
+        }
 
-
+        public class calendarDel
+        {
+            public int EventId { get; set; }
+        }
     }
-
-
 }

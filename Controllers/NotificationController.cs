@@ -56,6 +56,39 @@ namespace coreapi.Controllers
         }
 
 
+        [HttpPost("[action]")]
+        public IActionResult setReadNotificationId (ReadNotification noti)
+        {
+            string _cmd = "";
+            _cmd = " update a set a.IsUnRead = 0  ";
+            _cmd += "  FROM  dbo.SystemNotification  a ";
+            _cmd += " where Id=" + noti.Id + "";
+
+
+
+            DB.DBConn.ExecuteOnly(_cmd);
+            return Ok();
+
+        }
+
+           [HttpPost("[action]")]
+        public IActionResult setDeleteNotificationId (ReadNotification noti)
+        {
+            string _cmd = "";
+            _cmd = " update a set a.stateDelete = 1 ";
+            _cmd += "  FROM  dbo.SystemNotification  a ";
+            _cmd += " where Id=" + noti.Id + "";
+
+
+
+            DB.DBConn.ExecuteOnly(_cmd);
+            return Ok();
+
+        }
+
+
+
+
         [HttpPost("sendFromDB")]
         public async Task<IActionResult> SendNotifications([FromQuery] string cmpid  , [FromQuery] string userlogin)
         {
@@ -81,6 +114,10 @@ namespace coreapi.Controllers
         }
 
 
+
+        public class ReadNotification {
+            public int Id {get ;set;} 
+        }
 
 
 

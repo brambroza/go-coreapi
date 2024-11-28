@@ -25,7 +25,7 @@ namespace coreapi.Models
         public decimal PurchaseDisAmt { get; set; }
         public decimal PurchaseNetAmt { get; set; }
         public decimal PurchaseVatAmt { get; set; }
-        public decimal PurchaseVatPer  { get; set; }
+        public decimal PurchaseVatPer { get; set; }
         public decimal PurchaseGrandAmt { get; set; }
         public string PurchaseGrandAmtTHB { get; set; }
         public string PurchaseGrandAmtENB { get; set; }
@@ -39,12 +39,10 @@ namespace coreapi.Models
         public int RevNo { get; set; }
         public string ProjectNo { get; set; }
 
-        public string SupplierName {get;set;}
-        public string ContactName {get;set;}
+        public string SupplierName { get; set; }
+        public string ContactName { get; set; }
 
-        public List<Purchase_Detail> items {get;set;}
-
-
+        public List<Purchase_Detail> items { get; set; }
     }
 
     public class Purchase_Detail
@@ -72,5 +70,62 @@ namespace coreapi.Models
         public string CmpId { get; set; }
     }
 
+    public class TicketPurchase
+    {
+        public string User { get; set; }
+        public string DocNo { get; set; }
+        public string DocType { get; set; }
+        public string DocState { get; set; }
+        public string DocRemind { get; set; }
+        public string CmpId { get; set; }
+        public int RevNo { get; set; }
+        public string TicketId { get; set; }
+    }
 
+    public class TicketPurchase_Item
+    {
+        public string User { get; set; }
+        public string DocNo { get; set; }
+        public string ProdCode { get; set; }
+        public int Seq { get; set; }
+        public string CmpId { get; set; }
+        public int RevNo { get; set; }
+        public string TicketId { get; set; }
+    }
+
+    public class TicketPurchase_Assign
+    {
+        public string TicketId { get; set; }
+        public string CmpId { get; set; }
+        public string User { get; set; }
+    }
+
+    public class TicketPurchaseList
+    {
+        public string DocBy { get; set; }
+        public DateTime DocDate { get; set; }
+        public string DocNo { get; set; }
+        public string DocType { get; set; }
+        public string DocState { get; set; }
+        public string DocRemind { get; set; }
+        public string CmpId { get; set; }
+        public int RevNo { get; set; }
+        public string TicketId { get; set; }
+
+        public int Seq { get; set; }
+        public int StateClose { get; set; }
+        public List<TicketPurchaseItemList> items { get; set; }
+        
+    }
+
+    public class TicketPurchaseItemList
+    {
+        public string DocNo { get; set; }
+        public int Seq { get; set; }
+        public string ProdCode { get; set; }
+        public int RevNo { get; set; }
+        public string CmpId { get; set; }
+
+        public string TicketId { get; set; }
+    }
 }

@@ -110,7 +110,27 @@ namespace coreapi.Models
 
         public string TicketId { get; set; }
 
+        public int StateApp { get; set; }
+        public int RevNoMax { get; set; }
+
         public List<SalesBom_Detail> items { get; set; }
+    }
+
+    public class SalesBomCopy
+    {
+        public string UpdUser { get; set; }
+        public string BomNo { get; set; }
+        public string BomNoNew { get; set; }
+        public int RevNo { get; set; }
+
+        public string CustomerName { get; set; }
+        public string CustomerContactName { get; set; }
+        public string CustomerContactPhone { get; set; }
+        public string CustomerContactEmail { get; set; }
+
+        public string CmpId { get; set; }
+
+        public string TicketId { get; set; }
     }
 
     public class SalesBom_Detail
@@ -127,6 +147,12 @@ namespace coreapi.Models
         public decimal Amt { get; set; }
         public string CmpId { get; set; }
         public int ReplaceStatus { get; set; }
+        public int OutofstockStatus { get; set; }
+
+        public int StatePriceReq { get; set; }
+        public int StateUpdatePrice { get; set; }
+
+        public string ReplaceProdCode { get; set; }
         public string Remark { get; set; }
 
         public string Vendor { get; set; } = "";
@@ -185,7 +211,7 @@ namespace coreapi.Models
         public string ContactPhone { get; set; }
         public string ContactMail { get; set; }
         public string CmpId { get; set; }
-        public string QuotationNo {get;set;}
+        public string QuotationNo { get; set; }
 
         public List<SalesBom_Detail> items { get; set; }
     }
