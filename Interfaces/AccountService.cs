@@ -75,7 +75,7 @@ namespace goalongapi.Interfaces
 
 
             var account = await databaseContext.Accounts.Include(a => a.Role)
-            .SingleOrDefaultAsync(a => a.Username == username && a.CmpId != null && a.CmpId != "0" && a.stateEmailConfirm == 1);
+            .SingleOrDefaultAsync(a => a.Username == username && a.CmpId != null && a.CmpId != "0" ); //&& a.stateEmailConfirm == 1
 
             if (account != null && VerifyPassword(account.Password, password))
             {

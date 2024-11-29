@@ -363,7 +363,7 @@ namespace coreapi.Controllers
 
 
 
-                return Ok();
+                return Ok("");
             }
             catch
             {
