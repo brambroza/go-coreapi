@@ -17,7 +17,7 @@ namespace goalongapi.Entities
 
         public string FullName { get; set; }
         public string CmpId { get; set; }
-        public int stateEmailConfirm { get; set; }
+        public int stateEmailConfirm { get; set; } = 1;
 
         public virtual Role Role { get; set; } = null!;
         public string imgPath { get; set; }

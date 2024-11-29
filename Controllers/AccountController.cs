@@ -1,34 +1,31 @@
+using System;
+using System.Data;
 using System.Net;
+using System.Net.Mail;
+using coreapi.Models;
 using goalongapi.Datatools.Account;
 using goalongapi.Entities;
 using goalongapi.Interfaces;
 using Mapster;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Cors;
-using Microsoft.AspNetCore.Mvc;
-
-using System;
-using System.Net.Mail;
-using coreapi.Models;
-using System.Data;
-using Newtonsoft.Json;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
-
+using Newtonsoft.Json;
 
 namespace goalongapi.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-
-
     public class AccountController : ControllerBase
     {
         static bool mailSent = false;
 
-
         private readonly IAccountService accountService;
-        public AccountController(IAccountService accountService) => this.accountService = accountService;
+
+        public AccountController(IAccountService accountService) =>
+            this.accountService = accountService;
 
         [HttpPost("[action]")]
         public async Task<ActionResult> Register(RegisterRequest registerRequest)
@@ -41,33 +38,38 @@ namespace goalongapi.Controllers
 
             DataTable dt = new System.Data.DataTable();
             string _cmd;
-            _cmd = "exec dbo.[getAccountInfo] @CmpId='" + registerRequest.CmpId + "' , @User='" + registerRequest.Username + "'";
+            _cmd =
+                "exec dbo.[getAccountInfo] @CmpId='"
+                + registerRequest.CmpId
+                + "' , @User='"
+                + registerRequest.Username
+                + "'";
             dt = coreapi.DB.DBConn.GetDataTable(_cmd);
-           string JSONString = string.Empty;
-            JSONString = JsonConvert.SerializeObject(dt); 
+            string JSONString = string.Empty;
+            JSONString = JsonConvert.SerializeObject(dt);
 
             return Ok(JSONString);
-
         }
 
         [HttpPost("[action]")]
         public async Task<ActionResult> ChangePassword(PasswordChange registerRequest)
         {
-
-            var account = await accountService.Login(registerRequest.Username, registerRequest.OldPassword);
+            var account = await accountService.Login(
+                registerRequest.Username,
+                registerRequest.OldPassword
+            );
             if (account == null)
             {
                 return StatusCode((int)HttpStatusCode.BadRequest);
             }
 
-
-            await accountService.ChangePassword(registerRequest.Username, registerRequest.NewPassword);
+            await accountService.ChangePassword(
+                registerRequest.Username,
+                registerRequest.NewPassword
+            );
 
             return StatusCode((int)HttpStatusCode.OK);
         }
-
-
-
 
         [HttpPost("[action]")]
         public async Task<ActionResult> RegisterGoogle(RegisterGoogle registerRequestGoogle)
@@ -77,7 +79,6 @@ namespace goalongapi.Controllers
             var tokenregis = accountService.GenerateTokenRegister(account.Email);
 
             return StatusCode((int)HttpStatusCode.Created);
-
         }
 
         [HttpPost("[action]")]
@@ -89,34 +90,40 @@ namespace goalongapi.Controllers
                 return Unauthorized();
             }
 
-            return Ok(new { token = accountService.GenerateTokenGoogle(account), CmpId = account.CmpId, imgurl = account.imgPath });
-
-
+            return Ok(
+                new
+                {
+                    token = accountService.GenerateTokenGoogle(account),
+                    CmpId = account.CmpId,
+                    imgurl = account.imgPath,
+                }
+            );
         }
-
-
 
         [HttpPost("[action]")]
         public async Task<ActionResult> Login(LoginRequest loginRequest)
         {
-
             var account = await accountService.Login(loginRequest.Username, loginRequest.Password);
             if (account == null)
             {
                 return Unauthorized();
             }
 
-            return Ok(new { token = accountService.GenerateToken(account), CmpId = account.CmpId, imgurl = account.imgPath });
-
-
-
+            return Ok(
+                new
+                {
+                    token = accountService.GenerateToken(account),
+                    CmpId = account.CmpId,
+                    imgurl = account.imgPath,
+                }
+            );
         }
 
         [HttpGet("[action]")]
-
         public async Task<ActionResult> TestConnect()
         {
-            var connectionString = "Server=PCLDK\\PCLDKERP;Database=NSDBs;User ID=sa;Password=1234@pass;Encrypt=False;TrustServerCertificate=True;";
+            var connectionString =
+                "Server=PCLDK\\PCLDKERP;Database=NSDBs;User ID=sa;Password=1234@pass;Encrypt=False;TrustServerCertificate=True;";
             try
             {
                 using (var connection = new SqlConnection(connectionString))
@@ -131,29 +138,20 @@ namespace goalongapi.Controllers
             }
         }
 
-
-
-
         [HttpGet("[action]")]
         public async Task<ActionResult> Info()
         {
             var accessToken = await HttpContext.GetTokenAsync("access_token");
             if (accessToken == null)
             {
-                return Ok("40441");// Unauthorized();
+                return Ok("40441"); // Unauthorized();
             }
 
             var account = accountService.GetInfo(accessToken);
-            return Ok(new
-            {
-                username = account.Username,
-                role = account.Role.Name
-            });
+            return Ok(new { username = account.Username, role = account.Role.Name });
         }
 
-
         [HttpGet("[action]/{token}")]
-
         public IActionResult ConfirmEmailEnjoy(string token)
         {
             // Verify the token and perform email confirmation
@@ -169,7 +167,6 @@ namespace goalongapi.Controllers
                 {
                     return BadRequest("Invalid token or email already confirmed.");
                 }
-
             }
             else
             {
@@ -180,7 +177,6 @@ namespace goalongapi.Controllers
         [HttpGet("[action]/{token}")]
         public IActionResult GetUserInfo(string token)
         {
-
             Account account = accountService.GetInfo(token);
             if (account.Username != "")
             {
@@ -190,14 +186,17 @@ namespace goalongapi.Controllers
                 if (dt.Rows.Count <= 0)
                 {
                     return BadRequest("Invalid token or email already confirmed.");
-
                 }
                 else
                 {
-                    return Ok(new { fullname = dt.Rows[0]["fullname"].ToString(), cmpname = dt.Rows[0]["cmpname"].ToString() });
-
+                    return Ok(
+                        new
+                        {
+                            fullname = dt.Rows[0]["fullname"].ToString(),
+                            cmpname = dt.Rows[0]["cmpname"].ToString(),
+                        }
+                    );
                 }
-
             }
             else
             {
@@ -211,8 +210,6 @@ namespace goalongapi.Controllers
             var res = accountService.validateEmails(Email);
             return res;
         }
-
-
 
         [HttpPost("[action]")]
         public IActionResult setup(Company cmp)
@@ -230,13 +227,9 @@ namespace goalongapi.Controllers
                 _cmd += " ,@email  ='" + cmp.Email + "'";
                 _cmd += " ,@teloffice  ='" + cmp.teloffice + "'";
 
-
                 DataTable dt = coreapi.DB.DBConn.GetDataTable(_cmd);
 
                 return Ok(dt.Rows[0][0]);
-
-
-
             }
             catch
             {
@@ -244,15 +237,11 @@ namespace goalongapi.Controllers
                 msgretrun.Msg = "Error !!";
                 return Ok(msgretrun);
             }
-
         }
-
 
         [HttpGet("[action]")]
         public IActionResult getAccountInfo([FromQuery] string user, [FromQuery] string cmpid)
         {
-
-
             DataTable dt = new System.Data.DataTable();
             string _cmd;
             _cmd = "exec dbo.[getAccountInfo] @CmpId='" + cmpid + "' , @User='" + user + "'";
@@ -261,15 +250,11 @@ namespace goalongapi.Controllers
             JSONString = JsonConvert.SerializeObject(dt);
 
             return Ok(JSONString);
-
-
         }
 
         [HttpGet("[action]")]
         public IActionResult getAccountInfoList([FromQuery] string user, [FromQuery] string cmpid)
         {
-
-
             DataTable dt = new System.Data.DataTable();
             string _cmd;
             _cmd = "exec dbo.[getAccountInfoList] @CmpId='" + cmpid + "' , @User='" + user + "'";
@@ -278,12 +263,7 @@ namespace goalongapi.Controllers
             JSONString = JsonConvert.SerializeObject(dt);
 
             return Ok(JSONString);
-
-
         }
-
-
-
 
         [HttpPost("[action]")]
         public IActionResult setAccountInfo(UserAccouter user)
@@ -309,7 +289,37 @@ namespace goalongapi.Controllers
                 _cmd += " ,@AddrPostCode  ='" + user.AddrPostCode + "'";
                 _cmd += " ,@RoleID  =" + user.RoleID + "";
 
+                if (coreapi.DB.DBConn.ExecuteOnly(_cmd))
+                {
+                    msgretrun.ReturnCode = "200";
+                    msgretrun.Msg = "Save Success !!";
+                    return Ok(msgretrun);
+                }
+                else
+                {
+                    msgretrun.ReturnCode = "400";
+                    msgretrun.Msg = "Error !!";
+                    return Ok(msgretrun);
+                }
+            }
+            catch
+            {
+                msgretrun.ReturnCode = "400";
+                msgretrun.Msg = "Error !!";
+                return Ok(msgretrun);
+            }
+        }
 
+        [HttpDelete("[action]")]
+        public IActionResult delAccountInfo(UserAccouter user)
+        {
+            MsgReturn msgretrun = new MsgReturn();
+            try
+            {
+                string _cmd = "";
+                _cmd = "exec  dbo.setDeleteAccountInfo";
+                _cmd += " @AccountID  =" + user.AccountID + "";
+                _cmd += " ,@CmpId  ='" + user.CmpId + "'";
 
                 if (coreapi.DB.DBConn.ExecuteOnly(_cmd))
                 {
@@ -323,7 +333,6 @@ namespace goalongapi.Controllers
                     msgretrun.Msg = "Error !!";
                     return Ok(msgretrun);
                 }
-
             }
             catch
             {
@@ -331,14 +340,7 @@ namespace goalongapi.Controllers
                 msgretrun.Msg = "Error !!";
                 return Ok(msgretrun);
             }
-
         }
-
-
-
-
-
-
 
         [HttpPost("[action]")]
         public IActionResult setUpMapUser(mapuser cmp)
@@ -351,9 +353,6 @@ namespace goalongapi.Controllers
                 _cmd += " @cmpid  ='" + cmp.cmpid + "'";
                 _cmd += " ,@email  ='" + cmp.email + "'";
 
-
-
-
                 if (coreapi.DB.DBConn.ExecuteOnly(_cmd))
                 {
                     msgretrun.ReturnCode = "200";
@@ -366,7 +365,6 @@ namespace goalongapi.Controllers
                     msgretrun.Msg = "Error !!";
                     return Ok(msgretrun);
                 }
-
             }
             catch
             {
@@ -374,23 +372,22 @@ namespace goalongapi.Controllers
                 msgretrun.Msg = "Error !!";
                 return Ok(msgretrun);
             }
-
         }
-
 
         [HttpPost("[action]")]
-        public IActionResult testSendmail(string mailfrom, string mailto, string smtphost, string smtpuser, string smtppass, string subject, string msg)
+        public IActionResult testSendmail(
+            string mailfrom,
+            string mailto,
+            string smtphost,
+            string smtpuser,
+            string smtppass,
+            string subject,
+            string msg
+        )
         {
-
             MailConfirm.testmail(mailfrom, mailto, smtphost, smtpuser, smtppass, subject, msg);
             return StatusCode((int)HttpStatusCode.Created);
-
         }
-
-
-
-
-
 
         /*  public void SendEmail()
          {
@@ -416,15 +413,12 @@ namespace goalongapi.Controllers
          }
 
   */
-
     }
 
     public class MailConfirm
     {
-
         public static void main(string emailto, string fullname, string token, string url)
         {
-
             // SMTP settings for Gmail
             var smtpHost = "smtp.gmail.com";
             var smtpPort = 587;
@@ -452,8 +446,6 @@ namespace goalongapi.Controllers
                 // Send the email
                 smtpClient.Send(message);
                 Console.WriteLine("Email sent successfully.");
-
-
             }
             catch (Exception ex)
             {
@@ -461,12 +453,16 @@ namespace goalongapi.Controllers
             }
         }
 
-
-
-
-        public static void testmail(string emailfrom, string emailto, string smtphost, string smtpuser, string smtppass, string subject, string msg)
+        public static void testmail(
+            string emailfrom,
+            string emailto,
+            string smtphost,
+            string smtpuser,
+            string smtppass,
+            string subject,
+            string msg
+        )
         {
-
             // SMTP settings for Gmail
             var smtpHost = smtphost;
             var smtpPort = 587;
@@ -495,17 +491,12 @@ namespace goalongapi.Controllers
                 // Send the email
                 smtpClient.Send(message);
                 Console.WriteLine("Email sent successfully.");
-
-
             }
             catch (Exception ex)
             {
                 Console.WriteLine("Failed to send email: " + ex.Message);
             }
         }
-
-
-
 
         public static string mailbodyTest(string msg)
         {
@@ -546,14 +537,12 @@ namespace goalongapi.Controllers
             _str += "  <h1>Welcome  System!</h1>";
             _str += "  <p>" + msg + "</p>";
 
-
             _str += "</div>";
             _str += "</body>";
             _str += "</html>";
 
             return _str;
         }
-
 
         public static string mailbody(string toname, string linkconfirm)
         {
@@ -593,12 +582,17 @@ namespace goalongapi.Controllers
             _str += " <div class=\"container\">";
             _str += "  <h1>Welcome to GoAlong System!</h1>";
             _str += "  <p>Dear " + toname + ",</p>";
-            _str += "  <p>Thank you for choosing GoAlong System for your registration. We are excited to have you on board! To get started and unlock all the amazing features, we kindly request you to verify your email address.</p>";
-            _str += "  <p><strong>To proceed with email verification, please click the button below:</strong></p>";
+            _str +=
+                "  <p>Thank you for choosing GoAlong System for your registration. We are excited to have you on board! To get started and unlock all the amazing features, we kindly request you to verify your email address.</p>";
+            _str +=
+                "  <p><strong>To proceed with email verification, please click the button below:</strong></p>";
             _str += " <p><a class=\"button\" href=\"" + linkconfirm + "\">Verify Email</a></p>";
-            _str += " <p>By verifying your email, you will embark on an incredible journey with GoAlong System, where you can connect with like-minded individuals, discover exciting events, and make lasting memories.</p>";
-            _str += " <p>If you have any questions or need assistance during the registration process, our dedicated support team is ready to help. Feel free to reach out to us at support team support@goalong.co.</p>";
-            _str += " <p>Thank you for joining the GoAlong System community! Let's illuminate the path to unforgettable experiences together!</p>";
+            _str +=
+                " <p>By verifying your email, you will embark on an incredible journey with GoAlong System, where you can connect with like-minded individuals, discover exciting events, and make lasting memories.</p>";
+            _str +=
+                " <p>If you have any questions or need assistance during the registration process, our dedicated support team is ready to help. Feel free to reach out to us at support team support@goalong.co.</p>";
+            _str +=
+                " <p>Thank you for joining the GoAlong System community! Let's illuminate the path to unforgettable experiences together!</p>";
             _str += " <p>Best regards,</p>";
             _str += " <p>Go Along Support Team <br> Goalong ltd <br> 085-608-3298</p>";
             _str += "</div>";
@@ -608,6 +602,4 @@ namespace goalongapi.Controllers
             return _str;
         }
     }
-
-
 }
