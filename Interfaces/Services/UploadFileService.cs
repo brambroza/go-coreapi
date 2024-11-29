@@ -6,7 +6,11 @@ namespace goalongapi.Services
     {
         private readonly IConfiguration configuration;
         private readonly IWebHostEnvironment webHostEnvironment;
-        public UploadFileService(IWebHostEnvironment webHostEnvironment, IConfiguration configuration)
+
+        public UploadFileService(
+            IWebHostEnvironment webHostEnvironment,
+            IConfiguration configuration
+        )
         {
             this.webHostEnvironment = webHostEnvironment;
             this.configuration = configuration;
@@ -21,7 +25,6 @@ namespace goalongapi.Services
         {
             List<string> listFileName = new List<string>();
             string uploadPath = $"{webHostEnvironment.WebRootPath}/images/";
-              
 
             foreach (var formFile in formFiles)
             {
@@ -36,18 +39,16 @@ namespace goalongapi.Services
             return listFileName;
         }
 
-        
-
-            public async Task<List<string>> UploadFileReq(List<IFormFile> formFiles)
+        public async Task<List<string>> UploadFileReq(List<IFormFile> formFiles)
         {
             List<string> listFileName = new List<string>();
             string uploadPath = $"{webHostEnvironment.WebRootPath}/reqfromcust/fileall/";
-                if (IsValidPath(uploadPath) )
+            if (IsValidPath(uploadPath))
             {
-                 if (!Directory.Exists(uploadPath)){
-                     Directory.CreateDirectory(uploadPath);
-                 }
-               
+                if (!Directory.Exists(uploadPath))
+                {
+                    Directory.CreateDirectory(uploadPath);
+                }
             }
 
             foreach (var formFile in formFiles)
@@ -62,27 +63,23 @@ namespace goalongapi.Services
             }
             return listFileName;
         }
-
 
         public async Task<List<string>> Uploadfilemulti(List<IFormFile> formFiles)
         {
             List<string> listFileName = new List<string>();
             string uploadPath = $"{webHostEnvironment.WebRootPath}/allfileupload/";
-            
 
-            if (IsValidPath(uploadPath) )
+            if (IsValidPath(uploadPath))
             {
-                 if (!Directory.Exists(uploadPath)){
-                     Directory.CreateDirectory(uploadPath);
-                 } 
-               
+                if (!Directory.Exists(uploadPath))
+                {
+                    Directory.CreateDirectory(uploadPath);
+                }
             }
 
             foreach (var formFile in formFiles)
             {
                 string fileName = Guid.NewGuid().ToString() + Path.GetExtension(formFile.FileName);
-             
-
 
                 string fullPath = uploadPath + fileName;
                 using (var stream = File.Create(fullPath))
@@ -93,8 +90,6 @@ namespace goalongapi.Services
             }
             return listFileName;
         }
-
-
 
         public string? Validation(List<IFormFile> formFiles)
         {
@@ -116,7 +111,18 @@ namespace goalongapi.Services
 
         public bool ValidationExtension(string fileName)
         {
-            string[] permittedExtensions = { ".jpg", ".png" , ".pdf" ,".xlsx" , ".xls", ".csv" , ".txt", ".doc" , ".docx"  };
+            string[] permittedExtensions =
+            {
+                ".jpg",
+                ".png",
+                ".pdf",
+                ".xlsx",
+                ".xls",
+                ".csv",
+                ".txt",
+                ".doc",
+                ".docx",
+            };
             var ext = Path.GetExtension(fileName).ToLowerInvariant();
             if (String.IsNullOrEmpty(ext) || !permittedExtensions.Contains(ext))
             {
@@ -125,12 +131,8 @@ namespace goalongapi.Services
             return true;
         }
 
-        public bool ValidationSize(long fileSize) => configuration.GetValue<long>("FileSizeLimit") >= fileSize;
-
-
-
- 
-
+        public bool ValidationSize(long fileSize) =>
+            configuration.GetValue<long>("FileSizeLimit") >= fileSize;
 
         public bool IsValidPath(string path)
         {
@@ -145,7 +147,5 @@ namespace goalongapi.Services
                 return false;
             }
         }
-
-
     }
 }
