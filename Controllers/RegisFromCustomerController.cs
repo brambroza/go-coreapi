@@ -227,6 +227,7 @@ namespace coreapi.Controllers
                     _cmd += " , @Seq=" + request.ReqItem[i].Seq + "";
                     _cmd += ", @PartNo='" + request.ReqItem[i].PartNo + "'";
                     _cmd += ", @MABy='" + request.ReqItem[i].MABy + "'";
+                    _cmd += ", @Priority='" + request.Priority + "'";
 
 
 

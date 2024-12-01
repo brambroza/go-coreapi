@@ -88,6 +88,7 @@ namespace coreapi.Controllers
                 crm.DueDate = DateTime.Parse(r["DueDate"].ToString()).ToString("yyyy-MM-dd HH:mm", thaiCulture);
                 crm.UpdUser = r["updUser"].ToString();
                 crm.ticketIdRef = r["TicketIdRef"].ToString();
+                crm.Priority = r["Priority"].ToString();
 
                 crm.ReqRoute = new List<CustomerReqTicketRoute>();
                 foreach (DataRow i in dtRoute.Select(" TicketId='" + r["TicketId"].ToString() + "'  "))
@@ -248,7 +249,8 @@ namespace coreapi.Controllers
 
 
 
-            return Ok(crms);
+             
+            return Ok(new { tickets = crms });
         }
 
 
@@ -343,6 +345,7 @@ namespace coreapi.Controllers
                     crm.DueDate = DateTime.Parse(r["DueDate"].ToString()).ToString("yyyy-MM-dd HH:mm", thaiCulture);
                     crm.UpdUser = r["updUser"].ToString();
                     crm.ticketIdRef = r["TicketIdRef"].ToString();
+                    crm.Priority = r["Priority"].ToString();
 
                     crm.ReqRoute = new List<CustomerReqTicketRoute>();
                     foreach (DataRow i in dtRoute.Select(" TicketId='" + r["TicketId"].ToString() + "'  "))

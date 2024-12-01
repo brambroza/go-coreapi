@@ -95,6 +95,7 @@ namespace coreapi.Models
         public decimal completepercent { get; set; }
         public string ticketIdRef { get; set; }
         public string DueDate { get; set; }
+        public string Priority {get;set;}
 
     }
 
@@ -192,8 +193,8 @@ namespace coreapi.Models
         public string RouteIdBefore { get; set; }
         public DateTime? DueDate { get; set; }
         public int StatusFinish { get; set; }
-        public string RouteName { get; set; }
-        public string Department { get; set; }
+        public string RouteName { get; set; } = ""; 
+        public string Department { get; set; }  = "";
         public int Seq { get; set; }
         public string RemideDescription { get; set; }
         public string DateFinish { get; set; } = "";
