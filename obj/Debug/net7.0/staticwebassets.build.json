@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "CyfggfqLcaVmK+HgtaHqqSzXR+1noxEIq5t7CNLG1ME=",
+  "Hash": "awT8CORKtVfWloJo4fc/QQRV5noizj8ZZhJ1E1ikF1k=",
   "Source": "goalongapi",
   "BasePath": "_content/goalongapi",
   "Mode": "Default",
@@ -1904,6 +1904,23 @@
       "OriginalItemSpec": "wwwroot/images/1ddf67de-7db1-4900-b615-cb54796d8da3.png"
     },
     {
+      "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/1ef0bbdf-868d-496f-8cc1-8d75999d3785.png",
+      "SourceId": "goalongapi",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/",
+      "BasePath": "_content/goalongapi",
+      "RelativePath": "images/1ef0bbdf-868d-496f-8cc1-8d75999d3785.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/images/1ef0bbdf-868d-496f-8cc1-8d75999d3785.png"
+    },
+    {
       "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/20319273-78d9-46be-a3dc-8b52535e6570.png",
       "SourceId": "goalongapi",
       "SourceType": "Discovered",
@@ -1987,6 +2004,23 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot/images/29b62eec-95c9-4187-af89-c3913e9540b2.png"
+    },
+    {
+      "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/2d186dc9-ff13-4f49-bab7-11447806289a.png",
+      "SourceId": "goalongapi",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/",
+      "BasePath": "_content/goalongapi",
+      "RelativePath": "images/2d186dc9-ff13-4f49-bab7-11447806289a.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/images/2d186dc9-ff13-4f49-bab7-11447806289a.png"
     },
     {
       "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/399a7641-9d4e-4750-ac24-d8e435dfa23b.jpg",
@@ -2106,6 +2140,23 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot/images/566e1cab-fbe5-4f82-a609-de46da65c963.jpg"
+    },
+    {
+      "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/56b8f67d-97db-45e4-ab87-d2ef456500da.png",
+      "SourceId": "goalongapi",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/",
+      "BasePath": "_content/goalongapi",
+      "RelativePath": "images/56b8f67d-97db-45e4-ab87-d2ef456500da.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/images/56b8f67d-97db-45e4-ab87-d2ef456500da.png"
     },
     {
       "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/56e72d50-67b7-429d-bc2d-da00d0388dc8.jpg",
@@ -2482,6 +2533,40 @@
       "OriginalItemSpec": "wwwroot/images/9e173806-22d5-4b8c-b5da-4f0774f06f43.png"
     },
     {
+      "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/9face500-9e62-428e-b0e3-2f3f5aca0ea8.png",
+      "SourceId": "goalongapi",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/",
+      "BasePath": "_content/goalongapi",
+      "RelativePath": "images/9face500-9e62-428e-b0e3-2f3f5aca0ea8.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/images/9face500-9e62-428e-b0e3-2f3f5aca0ea8.png"
+    },
+    {
+      "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/a2f3683b-543c-4730-9a94-2dca19fab580.png",
+      "SourceId": "goalongapi",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/",
+      "BasePath": "_content/goalongapi",
+      "RelativePath": "images/a2f3683b-543c-4730-9a94-2dca19fab580.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/images/a2f3683b-543c-4730-9a94-2dca19fab580.png"
+    },
+    {
       "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/a84a9073-eef9-4e37-9ff9-844f4f706659.jpg",
       "SourceId": "goalongapi",
       "SourceType": "Discovered",
@@ -2565,6 +2650,23 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot/images/b96dc5f5-53fd-488d-85f7-93610f79bb1b.jpg"
+    },
+    {
+      "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/bf5c9704-77e2-40ff-b516-92efd2525974.png",
+      "SourceId": "goalongapi",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/",
+      "BasePath": "_content/goalongapi",
+      "RelativePath": "images/bf5c9704-77e2-40ff-b516-92efd2525974.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/images/bf5c9704-77e2-40ff-b516-92efd2525974.png"
     },
     {
       "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/bf91d1e6-2c06-4c14-9cfb-8262e8d1da2a.jpg",
@@ -2769,6 +2871,23 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot/images/de12d8db-f833-4593-9fc7-2ffa1a94fec0.jpg"
+    },
+    {
+      "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/e04ad004-505b-4633-8152-361757e22692.png",
+      "SourceId": "goalongapi",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/",
+      "BasePath": "_content/goalongapi",
+      "RelativePath": "images/e04ad004-505b-4633-8152-361757e22692.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/images/e04ad004-505b-4633-8152-361757e22692.png"
     },
     {
       "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/e3c842a6-1206-470f-9797-5b5105fa0294.png",
