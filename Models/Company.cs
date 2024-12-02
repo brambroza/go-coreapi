@@ -55,7 +55,7 @@ namespace coreapi.Models
         public int Seq { get; set; }
         public string SocialType { get; set; }
         public string AccountHook { get; set; }
-        public string AccountName {get;set;}
+        public string AccountName { get; set; }
     }
 
     public class cmpinfo
@@ -92,6 +92,8 @@ namespace coreapi.Models
         public string LineId { get; set; }
         public string ColorThemeReport { get; set; }
         public string FaviconUrl { get; set; }
+        public string CmpNameEN { get; set; }
+        public string CmpAddressEN { get; set; }
     }
 
     public class Bank

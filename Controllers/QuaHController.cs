@@ -94,6 +94,8 @@ namespace coreapi.Controllers
                 quotaion.JobTypeFilter = r["JobTypeFilter"].ToString();
                 quotaion.ImgPath = r["ImgPath"].ToString();
                 quotaion.TicketId = r["TicketId"].ToString();
+                quotaion.PhoneNo = r["PhoneNo"].ToString();
+                quotaion.LineId = r["LineId"].ToString(); 
 
                 if (
                     datatableDetail
@@ -229,6 +231,8 @@ namespace coreapi.Controllers
                 quotaion.JobTypeFilter = r["JobTypeFilter"].ToString();
                 quotaion.ImgPath = r["ImgPath"].ToString();
                 quotaion.TicketId = r["TicketId"].ToString();
+                quotaion.PhoneNo = r["PhoneNo"].ToString(); 
+                quotaion.LineId = r["LineId"].ToString(); 
 
                 if (
                     datatableDetail

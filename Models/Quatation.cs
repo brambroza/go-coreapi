@@ -383,5 +383,7 @@ namespace coreapi.Models
         public string TicketId { get; set; }
 
         public List<QuotationListItem> Items { get; set; }
+        public string PhoneNo {get;set;} = "";
+        public string LineId  {get;set;} = ""; 
     }
 }

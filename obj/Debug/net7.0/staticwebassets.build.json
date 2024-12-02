@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "WTIjO6OHpKsOYOywX3m2/TalvqK06H0W/uVyqmII7iE=",
+  "Hash": "CyfggfqLcaVmK+HgtaHqqSzXR+1noxEIq5t7CNLG1ME=",
   "Source": "goalongapi",
   "BasePath": "_content/goalongapi",
   "Mode": "Default",
@@ -1836,6 +1836,23 @@
       "OriginalItemSpec": "wwwroot/images/0d0c27dc-faa3-4420-a352-71a1e130cad1.jpg"
     },
     {
+      "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/10241598-91ed-451c-8cf4-3041080273ed.png",
+      "SourceId": "goalongapi",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/",
+      "BasePath": "_content/goalongapi",
+      "RelativePath": "images/10241598-91ed-451c-8cf4-3041080273ed.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/images/10241598-91ed-451c-8cf4-3041080273ed.png"
+    },
+    {
       "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/1563be3e-9a1c-49bc-8959-0a79c013d968.jpg",
       "SourceId": "goalongapi",
       "SourceType": "Discovered",
@@ -2225,6 +2242,23 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot/images/65cb1dfb-eb45-42a6-a89c-56d6cbc6c4a8.png"
+    },
+    {
+      "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/66fba2cc-6612-4ae7-bf6c-8a2e477e54d5.png",
+      "SourceId": "goalongapi",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/",
+      "BasePath": "_content/goalongapi",
+      "RelativePath": "images/66fba2cc-6612-4ae7-bf6c-8a2e477e54d5.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/images/66fba2cc-6612-4ae7-bf6c-8a2e477e54d5.png"
     },
     {
       "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/69879a02-569f-4d13-bf7b-14c02728cd80.png",

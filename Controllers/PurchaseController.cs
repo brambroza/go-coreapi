@@ -689,7 +689,8 @@ namespace coreapi.Controllers
                 purchases.Add(purchase);
             }
 
-            return Ok(purchases);
+         
+               return Ok(new { tickets = purchases });
         }
 
         [HttpGet("[action]")]

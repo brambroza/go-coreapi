@@ -218,6 +218,8 @@ namespace coreapi.Controllers
                 _cmd += ",@LineId  ='" + cmp.LineId + "'";
                 _cmd += ",@ColorThemeReport  ='" + cmp.ColorThemeReport + "'";
                 _cmd += ",@FaviconUrl  ='" + cmp.FaviconUrl + "'";
+                _cmd += ",@CmpNameEN  ='" + cmp.CmpNameEN + "'";
+                _cmd += ",@CmpAddressEN  ='" + cmp.CmpAddressEN + "'";
 
                 if (DB.DBConn.ExecuteOnly(_cmd))
                 {
