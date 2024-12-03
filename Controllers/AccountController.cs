@@ -204,10 +204,10 @@ namespace goalongapi.Controllers
             }
         }
 
-        [HttpPost("[action]/{email}")]
-        public bool validateEmail(string Email)
+        [HttpGet("[action]/{email}")]
+        public bool validateEmail(string email)
         {
-            var res = accountService.validateEmails(Email);
+            var res = accountService.validateEmails(email);
             return res;
         }
 

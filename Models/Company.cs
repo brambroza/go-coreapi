@@ -139,7 +139,7 @@ namespace coreapi.Models
     {
         public string UpdUser { get; set; }
         public string CmpId { get; set; }
-        public int PaymnetMethodId { get; set; }
+        public int PaymentMethodId { get; set; }
         public string BankAccCode { get; set; }
         public string BankAccName { get; set; }
         public string BankCode { get; set; }

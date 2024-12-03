@@ -34,10 +34,32 @@ namespace coreapi.Controllers
             string _cmd;
             _cmd = "exec dbo.getPaymentmethod @CmpId='" + cmpid + "' , @userlogin='" + user + "'";
             DataTable dt = DB.DBConn.GetDataTable(_cmd);
-            string JSONString = string.Empty;
+          /*   string JSONString = string.Empty;
             JSONString = JsonConvert.SerializeObject(dt);
 
-            return Ok(JSONString);
+            return Ok(new { payments = JSONString}); */
+
+            List<paymentmethod> paymentmethods = new List<paymentmethod>();
+
+            foreach (DataRow r in dt.Rows)
+            {
+                var paymentmethod = new paymentmethod()
+                {
+                    UpdUser = r["UpdUser"].ToString(),
+                    CmpId = r["CmpId"].ToString(),
+                    BankAccCode = r["BankAccCode"].ToString(),
+                    PaymentMethodId = int.Parse(r["PaymentMethodId"].ToString()),
+                    BankAccName = r["BankAccName"].ToString(),
+                    BankBranchCode = r["BankBranchCode"].ToString(),
+                    BankCode = r["BankCode"].ToString(),
+                    BankType = int.Parse(r["BankType"].ToString()),
+                    BankTypeName = r["BankTypeName"].ToString(),
+                };
+
+                paymentmethods.Add(paymentmethod);
+            }
+
+            return Ok(new { payments = paymentmethods });  
         }
 
         [HttpGet("[action]")]
@@ -109,13 +131,49 @@ namespace coreapi.Controllers
                 _cmd = "exec  dbo.set_PaymentMethod";
                 _cmd += " @UpdUser  ='" + pm.UpdUser + "'";
                 _cmd += ",@CmpId  ='" + pm.CmpId + "'";
-                _cmd += ",@PaymentMethodId  =" + pm.PaymnetMethodId + "";
+                _cmd += ",@PaymentMethodId  =" + pm.PaymentMethodId + "";
                 _cmd += ",@BankAccCode  ='" + pm.BankAccCode + "'";
                 _cmd += ",@BankAccName  ='" + pm.BankAccName + "'";
                 _cmd += ",@BankCode  ='" + pm.BankCode + "'";
                 _cmd += ",@BankBranchCode  ='" + pm.BankBranchCode + "'";
                 _cmd += ",@BankType  ='" + pm.BankType + "'";
                 _cmd += ",@BankTypeName ='" + pm.BankTypeName + "'";
+
+                if (DB.DBConn.ExecuteOnly(_cmd))
+                {
+                    msgretrun.ReturnCode = "200";
+                    msgretrun.Msg = "Save Success !!";
+                    return Ok(msgretrun);
+                }
+                else
+                {
+                    msgretrun.ReturnCode = "400";
+                    msgretrun.Msg = "Error !!";
+                    return StatusCode(400, new { Message = msgretrun.Msg, Error = msgretrun.Msg });
+                }
+            }
+            catch
+            {
+                msgretrun.ReturnCode = "400";
+                msgretrun.Msg = "Error !!";
+                return StatusCode(400, new { Message = msgretrun.Msg, Error = msgretrun.Msg });
+            }
+        }
+
+        [HttpPost("[action]")]
+        public IActionResult delPaymentMethod(paymentmethod pm)
+        {
+            MsgReturn msgretrun = new MsgReturn();
+
+            try
+            {
+                string _cmd = "";
+
+                _cmd = "exec  dbo.set_PaymentMethod_Del";
+                _cmd += " @UpdUser  ='" + pm.UpdUser + "'";
+                _cmd += ",@CmpId  ='" + pm.CmpId + "'";
+                _cmd += ",@PaymentMethodId  =" + pm.PaymentMethodId + "";
+               
 
                 if (DB.DBConn.ExecuteOnly(_cmd))
                 {
