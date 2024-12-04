@@ -74,7 +74,7 @@ namespace coreapi.Controllers
                     ProductTypeName = r["ProductTypeName"]?.ToString(),
                     ProductTypeSubName = r["ProductTypeSubName"]?.ToString(),
                     ShowReport = r["ShowReport"]?.ToString(),
-                    ImgPath = r["ImgPath"]?.ToString(),
+                    ImgPath = r["imgpath"]?.ToString(),
                     UpdDate = DateTime.Parse(r["UpdDate"]?.ToString()) ,
                     CmpId = r["CmpId"]?.ToString(),
                     StateActive =
