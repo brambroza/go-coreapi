@@ -122,6 +122,7 @@ namespace goalongapi.Services
                 ".txt",
                 ".doc",
                 ".docx",
+                ".jpeg",
             };
             var ext = Path.GetExtension(fileName).ToLowerInvariant();
             if (String.IsNullOrEmpty(ext) || !permittedExtensions.Contains(ext))
