@@ -24,9 +24,23 @@ namespace coreapi.Controllers
         public IActionResult Get([FromQuery] string cmpid, [FromQuery] string type)
         {
             DataTable dt = new System.Data.DataTable();
+            DataTable dtContact = new System.Data.DataTable();
             string _cmd;
             _cmd = "exec dbo.getCustomer @CmpId='" + cmpid + "' , @Type='" + type + "'";
             dt = DB.DBConn.GetDataTable(_cmd);
+
+            _cmd = "exec dbo.getContact @CmpId='" + cmpid + "'";
+            dtContact = DB.DBConn.GetDataTable(_cmd);
+
+            string _DocType = "";
+            if (type == "0")
+            {
+                _DocType = "customer";
+            }
+            else
+            {
+                _DocType = "vendor";
+            }
 
             List<CustomerList> customerLists = new List<CustomerList>();
 
@@ -71,34 +85,28 @@ namespace coreapi.Controllers
                 customer.BusinessGrpCode = r["BusinessGrpCode"].ToString();
                 customer.StateCustomer = r["StateCustomer"].ToString();
                 customer.StateVendor = r["StateVendor"].ToString();
+                customer.contacts = new List<ContactList>();
 
-                if (r["ContactName"].ToString() != "")
+                foreach (
+                    DataRow c in dtContact.Select(
+                        "DocType='" + _DocType + "' and DocNo='" + customer.CustomerCode + "'"
+                    )
+                )
                 {
-                    customer.contacts = new List<Contact>();
+                    var item = new ContactList();
+                    item.UpdUser = c["UpdUser"].ToString();
+                    item.ContactName = c["ContactName"].ToString();
+                    item.ContactPhone = c["ContactPhone"].ToString();
+                    item.ContactEmail = c["ContactEmail"].ToString();
+                    item.ContactPosition = c["ContactPosition"].ToString();
+                    item.ContactLineId = c["ContactLineId"].ToString();
+                    item.Remark = c["Remark"].ToString();
+                    item.CmpId = c["CmpId"].ToString();
+                    item.ContactId = c["ContactId"].ToString();
+                    item.ImgPath = c["ImgPath"].ToString();
+                    item.DocNo = c["DocNo"].ToString();
+                    item.DocType = c["DocType"].ToString();
 
-                    var item = new Contact();
-                    item.Name = r["ContactName"].ToString();
-                    item.Email = r["ContactEmail"].ToString();
-                    item.Phone = r["ContactPhone"].ToString();
-                    item.Position = r["ContactPosition"].ToString();
-                    customer.contacts.Add(item);
-                }
-                if (r["ContactName1"].ToString() != "")
-                {
-                    var item = new Contact();
-                    item.Name = r["ContactName1"].ToString();
-                    item.Email = r["ContactEmail1"].ToString();
-                    item.Phone = r["ContactPhone1"].ToString();
-                    item.Position = r["ContactPosition1"].ToString();
-                    customer.contacts.Add(item);
-                }
-                if (r["ContactName2"].ToString() != "")
-                {
-                    var item = new Contact();
-                    item.Name = r["ContactName2"].ToString();
-                    item.Email = r["ContactEmail2"].ToString();
-                    item.Phone = r["ContactPhone2"].ToString();
-                    item.Position = r["ContactPosition2"].ToString();
                     customer.contacts.Add(item);
                 }
 
@@ -110,7 +118,10 @@ namespace coreapi.Controllers
 
         [HttpGet]
         [Route("CustomerById")]
-        public IActionResult getCustomerById([FromQuery] string cmpid, [FromQuery] string customerCode)
+        public IActionResult getCustomerById(
+            [FromQuery] string cmpid,
+            [FromQuery] string customerCode
+        )
         {
             DataTable dt = new System.Data.DataTable();
             string _cmd;

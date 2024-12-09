@@ -84,7 +84,7 @@ namespace coreapi.Models
         public int DebitAccId { get; set; }
         public string BusinessGrpCode { get; set; }
 
-        public List<Contact> contacts { get; set; }
+        public List<ContactList> contacts { get; set; }
 
         public string StateCustomer { get; set; }
         public string StateVendor { get; set; }

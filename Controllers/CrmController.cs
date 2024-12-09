@@ -1,16 +1,16 @@
-using System.Dynamic;
-using coreapi.Models;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Dynamic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using Microsoft.AspNetCore.Authorization;
-using System.IdentityModel.Tokens.Jwt;
-using Newtonsoft.Json;
-using Microsoft.AspNetCore.Mvc;
+using coreapi.Models;
 using coreapi.Models.Trial;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace coreapi.Controllers
 {
@@ -19,12 +19,12 @@ namespace coreapi.Controllers
     [Authorize]
     public class CrmController : ControllerBase
     {
-
-
         [HttpGet("[action]")]
-        public IActionResult getreqfromcustlist([FromQuery] string userlogin, [FromQuery] string cmpid)
+        public IActionResult getreqfromcustlist(
+            [FromQuery] string userlogin,
+            [FromQuery] string cmpid
+        )
         {
-
             DataTable dt = new System.Data.DataTable();
             DataTable dtItem = new System.Data.DataTable();
             DataTable dtAssign = new System.Data.DataTable();
@@ -32,43 +32,70 @@ namespace coreapi.Controllers
             DataTable dtCommentReply = new DataTable();
             DataTable dtOwner = new DataTable();
             DataTable dtRoute = new DataTable();
+            DataTable dtRouteReply = new DataTable();
 
-            System.Globalization.CultureInfo thaiCulture = new System.Globalization.CultureInfo("th-TH");
+            System.Globalization.CultureInfo thaiCulture = new System.Globalization.CultureInfo(
+                "th-TH"
+            );
             thaiCulture.DateTimeFormat.Calendar = new System.Globalization.GregorianCalendar();
 
-
             string _cmd;
-            _cmd = "exec dbo.[getReqFromCustomer] @user='" + userlogin + "', @cmpid='" + cmpid + "'";
+            _cmd =
+                "exec dbo.[getReqFromCustomer] @user='" + userlogin + "', @cmpid='" + cmpid + "'";
             dt = DB.DBConn.GetDataTable(_cmd);
 
-            _cmd = "exec dbo.[getReqFromCustomerItem] @user='" + userlogin + "', @cmpid='" + cmpid + "'";
+            _cmd =
+                "exec dbo.[getReqFromCustomerItem] @user='"
+                + userlogin
+                + "', @cmpid='"
+                + cmpid
+                + "'";
             dtItem = DB.DBConn.GetDataTable(_cmd);
 
-
-            _cmd = "exec dbo.[getReqFromCustomerAssign] @user='" + userlogin + "', @cmpid='" + cmpid + "'";
+            _cmd =
+                "exec dbo.[getReqFromCustomerAssign] @user='"
+                + userlogin
+                + "', @cmpid='"
+                + cmpid
+                + "'";
             dtAssign = DB.DBConn.GetDataTable(_cmd);
 
-            _cmd = "exec dbo.[getReqFromCustomerOwner] @user='" + userlogin + "', @cmpid='" + cmpid + "'";
+            _cmd =
+                "exec dbo.[getReqFromCustomerOwner] @user='"
+                + userlogin
+                + "', @cmpid='"
+                + cmpid
+                + "'";
             dtOwner = DB.DBConn.GetDataTable(_cmd);
 
-            _cmd = "exec dbo.[getReqFromCustomerRoute] @user='" + userlogin + "', @cmpid='" + cmpid + "'";
+            _cmd =
+                "exec dbo.[getReqFromCustomerRoute] @user='"
+                + userlogin
+                + "', @cmpid='"
+                + cmpid
+                + "'";
             dtRoute = DB.DBConn.GetDataTable(_cmd);
 
+            _cmd =
+                "exec dbo.[getReqFromCustomerRoute_Reply] @user='"
+                + userlogin
+                + "', @cmpid='"
+                + cmpid
+                + "'";
+            dtRouteReply = DB.DBConn.GetDataTable(_cmd);
 
-
-            _cmd = "exec dbo.[sp_getManageReqComment] @Operation='COMMENT' ,   @cmpid='" + cmpid + "'";
+            _cmd =
+                "exec dbo.[sp_getManageReqComment] @Operation='COMMENT' ,   @cmpid='" + cmpid + "'";
             dtComment = DB.DBConn.GetDataTable(_cmd);
 
-
-            _cmd = "exec dbo.[sp_getManageReqComment] @Operation='REPLY' ,   @cmpid='" + cmpid + "'";
+            _cmd =
+                "exec dbo.[sp_getManageReqComment] @Operation='REPLY' ,   @cmpid='" + cmpid + "'";
             dtCommentReply = DB.DBConn.GetDataTable(_cmd);
-
 
             List<ReqFromCustList> crms = new List<ReqFromCustList>();
 
             foreach (DataRow r in dt.Rows)
             {
-
                 var crm = new ReqFromCustList();
                 crm.CmpId = r["CmpId"].ToString();
                 crm.TicketId = r["TicketId"].ToString();
@@ -85,13 +112,17 @@ namespace coreapi.Controllers
                 crm.todo = r["todo"].ToString();
                 crm.AdditionalDetail = r["AdditionalDetail"].ToString();
                 crm.completepercent = decimal.Parse(r["completepercent"].ToString());
-                crm.DueDate = DateTime.Parse(r["DueDate"].ToString()).ToString("yyyy-MM-dd HH:mm", thaiCulture);
+                crm.DueDate = DateTime
+                    .Parse(r["DueDate"].ToString())
+                    .ToString("yyyy-MM-dd HH:mm", thaiCulture);
                 crm.UpdUser = r["updUser"].ToString();
                 crm.ticketIdRef = r["TicketIdRef"].ToString();
                 crm.Priority = r["Priority"].ToString();
 
                 crm.ReqRoute = new List<CustomerReqTicketRoute>();
-                foreach (DataRow i in dtRoute.Select(" TicketId='" + r["TicketId"].ToString() + "'  "))
+                foreach (
+                    DataRow i in dtRoute.Select(" TicketId='" + r["TicketId"].ToString() + "'  ")
+                )
                 {
                     var item = new CustomerReqTicketRoute();
                     item.CmpId = i["CmpId"].ToString();
@@ -108,11 +139,68 @@ namespace coreapi.Controllers
                     item.DateFinish = "";
                     item.UserFinish = "";
 
+                    item.reqReply = new List<CustomerReqTicketRouteReply>();
+
+                    foreach (
+                        DataRow a in dtRouteReply.Select(
+                            "TicketId='"
+                                + item.TicketId
+                                + "' and RemindId='"
+                                + item.RemindId
+                                + "' and RouteId='"
+                                + item.RouteId
+                                + "'"
+                        )
+                    )
+                    {
+                        var itemr = new CustomerReqTicketRouteReply();
+                        itemr.CmpId = a["CmpId"].ToString();
+                        itemr.TicketId = a["TicketId"].ToString();
+                        itemr.UpdUser = a["updUser"].ToString();
+                        itemr.FileUrl = a["FileUrl"].ToString();
+                        itemr.Comment = a["Comment"].ToString();
+                        itemr.RouteId = item.RouteId.ToString();
+                        itemr.RemindId = item.RemindId.ToString();
+                        itemr.createAt = DateTime.Parse(a["createAt"].ToString());
+                        itemr.Seq = int.Parse(a["Seq"].ToString());
+                        itemr.ImgPath =  a["ImgPath"].ToString();
+
+                        item.reqReply.Add(itemr);
+                    }
+
+                    // new comment 
+                        var itemrb = new CustomerReqTicketRouteReply();
+                        itemrb.CmpId = item.CmpId;
+                        itemrb.TicketId = item.TicketId;
+                        itemrb.UpdUser = "";
+                        itemrb.FileUrl =  "";
+                        itemrb.Comment = "";
+                        itemrb.RouteId =  item.RouteId;
+                        itemrb.RemindId =  item.RemindId;
+                        itemrb.createAt =  DateTime.Now.AddMinutes(1);
+                        itemrb.Seq = 99999999;
+                        itemrb.ImgPath = "";
+
+                        item.reqReply.Add(itemrb);
+
+                    // end comment 
+
+
+
                     item.reqAssign = new List<ReqFromCustAssign>();
 
-                    foreach (DataRow a in dtAssign.Select("TicketId='" + item.TicketId + "' and RemindId='" + item.RemindId + "' and RouteId='" + item.RouteId + "'"))
+                    foreach (
+                        DataRow a in dtAssign.Select(
+                            "TicketId='"
+                                + item.TicketId
+                                + "' and RemindId='"
+                                + item.RemindId
+                                + "' and RouteId='"
+                                + item.RouteId
+                                + "'"
+                        )
+                    )
                     {
-
                         var itema = new ReqFromCustAssign();
                         itema.CmpId = a["CmpId"].ToString();
                         itema.TicketId = a["TicketId"].ToString();
@@ -126,14 +214,19 @@ namespace coreapi.Controllers
                         item.reqAssign.Add(itema);
                     }
 
-
                     crm.ReqRoute.Add(item);
-
                 }
 
-
                 crm.ReqOwner = new List<ReqFromCustOwner>();
-                foreach (DataRow i in dtOwner.Select(" TicketId='" + r["TicketId"].ToString() + "' and  CmpId='" + r["CmpId"].ToString() + "'"))
+                foreach (
+                    DataRow i in dtOwner.Select(
+                        " TicketId='"
+                            + r["TicketId"].ToString()
+                            + "' and  CmpId='"
+                            + r["CmpId"].ToString()
+                            + "'"
+                    )
+                )
                 {
                     var item = new ReqFromCustOwner();
                     item.CmpId = i["CmpId"].ToString();
@@ -142,19 +235,21 @@ namespace coreapi.Controllers
                     item.ImgPath = i["ImgPath"].ToString();
                     item.UserId = i["UserId"].ToString();
 
-
                     crm.ReqOwner.Add(item);
-
                 }
-
-
-
 
                 crm.ReqItem = new List<ReqFromCustItem>();
 
-                foreach (DataRow i in dtItem.Select(" TicketId='" + r["TicketId"].ToString() + "' and  CmpId='" + r["CmpId"].ToString() + "'"))
+                foreach (
+                    DataRow i in dtItem.Select(
+                        " TicketId='"
+                            + r["TicketId"].ToString()
+                            + "' and  CmpId='"
+                            + r["CmpId"].ToString()
+                            + "'"
+                    )
+                )
                 {
-
                     var item = new ReqFromCustItem();
                     item.CmpId = i["CmpId"].ToString();
                     item.TicketId = i["TicketId"].ToString();
@@ -174,12 +269,18 @@ namespace coreapi.Controllers
                     item.FileUrl = i["FIleUrl"].ToString();
                     item.Seq = int.Parse(i["Seq"].ToString());
                     crm.ReqItem.Add(item);
-
                 }
 
-
                 crm.ReqAssign = new List<ReqFromCustAssign>();
-                foreach (DataRow i in dtAssign.Select(" TicketId='" + r["TicketId"].ToString() + "' and  CmpId='" + r["CmpId"].ToString() + "'"))
+                foreach (
+                    DataRow i in dtAssign.Select(
+                        " TicketId='"
+                            + r["TicketId"].ToString()
+                            + "' and  CmpId='"
+                            + r["CmpId"].ToString()
+                            + "'"
+                    )
+                )
                 {
                     var item = new ReqFromCustAssign();
                     item.CmpId = i["CmpId"].ToString();
@@ -191,18 +292,19 @@ namespace coreapi.Controllers
                     item.RemindId = i["RemindId"].ToString();
                     item.RouteId = i["RouteId"].ToString();
 
-
-
-
-
-
                     crm.ReqAssign.Add(item);
-
                 }
 
-
                 crm.ReqComments = new List<ReqComment>();
-                foreach (DataRow i in dtComment.Select(" TicketId='" + r["TicketId"].ToString() + "' and  CmpId='" + r["CmpId"].ToString() + "'"))
+                foreach (
+                    DataRow i in dtComment.Select(
+                        " TicketId='"
+                            + r["TicketId"].ToString()
+                            + "' and  CmpId='"
+                            + r["CmpId"].ToString()
+                            + "'"
+                    )
+                )
                 {
                     var comment = new ReqComment();
 
@@ -215,7 +317,17 @@ namespace coreapi.Controllers
                     comment.Message = i["Message"].ToString();
                     comment.PostedAt = DateTime.Parse(i["PostedAt"].ToString());
                     comment.replyComment = new List<ReplyComment>();
-                    foreach (DataRow x in dtCommentReply.Select("TicketId='" + i["TicketId"].ToString() + "' and CmpId='" + i["CmpId"].ToString() + "' and CommentId='" + i["CommentId"].ToString() + "'"))
+                    foreach (
+                        DataRow x in dtCommentReply.Select(
+                            "TicketId='"
+                                + i["TicketId"].ToString()
+                                + "' and CmpId='"
+                                + i["CmpId"].ToString()
+                                + "' and CommentId='"
+                                + i["CommentId"].ToString()
+                                + "'"
+                        )
+                    )
                     {
                         var reply = new ReplyComment();
                         reply.CmpId = x["CmpId"].ToString();
@@ -229,36 +341,23 @@ namespace coreapi.Controllers
                         reply.PostedAt = DateTime.Parse(i["PostedAt"].ToString());
 
                         comment.replyComment.Add(reply);
-
                     }
 
                     crm.ReqComments.Add(comment);
-
-
                 }
 
-
                 crms.Add(crm);
-
-
             }
 
-
-
-
-
-
-
-             
             return Ok(new { tickets = crms });
         }
 
-
-
         [HttpGet("[action]")]
-        public IActionResult getreqfromcustkanban([FromQuery] string userlogin, [FromQuery] string cmpid)
+        public IActionResult getreqfromcustkanban(
+            [FromQuery] string userlogin,
+            [FromQuery] string cmpid
+        )
         {
-
             DataTable dt = new System.Data.DataTable();
             DataTable dtItem = new System.Data.DataTable();
             DataTable dtAssign = new System.Data.DataTable();
@@ -267,41 +366,71 @@ namespace coreapi.Controllers
             DataTable dtOwner = new DataTable();
             DataTable dtRoute = new DataTable();
             DataTable dtystemroute = new DataTable();
+            DataTable dtRouteReply = new DataTable();
 
-            System.Globalization.CultureInfo thaiCulture = new System.Globalization.CultureInfo("th-TH");
+            System.Globalization.CultureInfo thaiCulture = new System.Globalization.CultureInfo(
+                "th-TH"
+            );
             thaiCulture.DateTimeFormat.Calendar = new System.Globalization.GregorianCalendar();
-
 
             string _cmd;
 
             _cmd = "exec dbo.sp_getsystemroute @CmpId='" + cmpid + "', @System='Sales'";
             dtystemroute = DB.DBConn.GetDataTable(_cmd);
 
-            _cmd = "exec dbo.[getReqFromCustomer] @user='" + userlogin + "', @cmpid='" + cmpid + "'";
+            _cmd =
+                "exec dbo.[getReqFromCustomer] @user='" + userlogin + "', @cmpid='" + cmpid + "'";
             dt = DB.DBConn.GetDataTable(_cmd);
 
-            _cmd = "exec dbo.[getReqFromCustomerItem] @user='" + userlogin + "', @cmpid='" + cmpid + "'";
+            _cmd =
+                "exec dbo.[getReqFromCustomerItem] @user='"
+                + userlogin
+                + "', @cmpid='"
+                + cmpid
+                + "'";
             dtItem = DB.DBConn.GetDataTable(_cmd);
 
-
-            _cmd = "exec dbo.[getReqFromCustomerAssign] @user='" + userlogin + "', @cmpid='" + cmpid + "'";
+            _cmd =
+                "exec dbo.[getReqFromCustomerAssign] @user='"
+                + userlogin
+                + "', @cmpid='"
+                + cmpid
+                + "'";
             dtAssign = DB.DBConn.GetDataTable(_cmd);
 
-            _cmd = "exec dbo.[getReqFromCustomerOwner] @user='" + userlogin + "', @cmpid='" + cmpid + "'";
+            _cmd =
+                "exec dbo.[getReqFromCustomerOwner] @user='"
+                + userlogin
+                + "', @cmpid='"
+                + cmpid
+                + "'";
             dtOwner = DB.DBConn.GetDataTable(_cmd);
 
-            _cmd = "exec dbo.[getReqFromCustomerRoute] @user='" + userlogin + "', @cmpid='" + cmpid + "'";
+            _cmd =
+                "exec dbo.[getReqFromCustomerRoute] @user='"
+                + userlogin
+                + "', @cmpid='"
+                + cmpid
+                + "'";
             dtRoute = DB.DBConn.GetDataTable(_cmd);
 
 
+              _cmd =
+                "exec dbo.[getReqFromCustomerRoute_Reply] @user='"
+                + userlogin
+                + "', @cmpid='"
+                + cmpid
+                + "'";
+            dtRouteReply = DB.DBConn.GetDataTable(_cmd);
 
-            _cmd = "exec dbo.[sp_getManageReqComment] @Operation='COMMENT' ,   @cmpid='" + cmpid + "'";
+
+            _cmd =
+                "exec dbo.[sp_getManageReqComment] @Operation='COMMENT' ,   @cmpid='" + cmpid + "'";
             dtComment = DB.DBConn.GetDataTable(_cmd);
 
-
-            _cmd = "exec dbo.[sp_getManageReqComment] @Operation='REPLY' ,   @cmpid='" + cmpid + "'";
+            _cmd =
+                "exec dbo.[sp_getManageReqComment] @Operation='REPLY' ,   @cmpid='" + cmpid + "'";
             dtCommentReply = DB.DBConn.GetDataTable(_cmd);
-
 
             List<Models.Route> routes = new List<Models.Route>();
             var columns = new List<object>();
@@ -317,15 +446,11 @@ namespace coreapi.Controllers
                 route.Seq = int.Parse(rt["Seq"].ToString());
                 columns.Add(route);
 
-
                 tasks[route.RouteId] = new List<object>();
-
-
 
                 List<ReqFromCustList> crms = new List<ReqFromCustList>();
                 foreach (DataRow r in dt.Select("RouteId='" + route.RouteId + "'"))
                 {
-
                     var crm = new ReqFromCustList();
                     crm.CmpId = r["CmpId"].ToString();
                     crm.TicketId = r["TicketId"].ToString();
@@ -342,13 +467,19 @@ namespace coreapi.Controllers
                     crm.AdditionalDetail = r["AdditionalDetail"].ToString();
                     crm.todo = r["todo"].ToString();
                     crm.completepercent = decimal.Parse(r["completepercent"].ToString());
-                    crm.DueDate = DateTime.Parse(r["DueDate"].ToString()).ToString("yyyy-MM-dd HH:mm", thaiCulture);
+                    crm.DueDate = DateTime
+                        .Parse(r["DueDate"].ToString())
+                        .ToString("yyyy-MM-dd HH:mm", thaiCulture);
                     crm.UpdUser = r["updUser"].ToString();
                     crm.ticketIdRef = r["TicketIdRef"].ToString();
                     crm.Priority = r["Priority"].ToString();
 
                     crm.ReqRoute = new List<CustomerReqTicketRoute>();
-                    foreach (DataRow i in dtRoute.Select(" TicketId='" + r["TicketId"].ToString() + "'  "))
+                    foreach (
+                        DataRow i in dtRoute.Select(
+                            " TicketId='" + r["TicketId"].ToString() + "'  "
+                        )
+                    )
                     {
                         var item = new CustomerReqTicketRoute();
                         item.CmpId = i["CmpId"].ToString();
@@ -365,11 +496,68 @@ namespace coreapi.Controllers
                         item.DateFinish = "";
                         item.UserFinish = "";
 
+
+                    item.reqReply = new List<CustomerReqTicketRouteReply>();
+
+                    foreach (
+                        DataRow a in dtRouteReply.Select(
+                            "TicketId='"
+                                + item.TicketId
+                                + "' and RemindId='"
+                                + item.RemindId
+                                + "' and RouteId='"
+                                + item.RouteId
+                                + "'"
+                        )
+                    )
+                    {
+                        var itemr = new CustomerReqTicketRouteReply();
+                        itemr.CmpId = a["CmpId"].ToString();
+                        itemr.TicketId = a["TicketId"].ToString();
+                        itemr.UpdUser = a["updUser"].ToString();
+                        itemr.FileUrl = a["FileUrl"].ToString();
+                        itemr.Comment = a["Comment"].ToString();
+                        itemr.RouteId = item.RouteId.ToString();
+                        itemr.RemindId = item.RemindId.ToString();
+                        itemr.createAt = DateTime.Parse(a["createAt"].ToString());
+                        itemr.Seq = int.Parse(a["Seq"].ToString());
+                        itemr.ImgPath =  a["ImgPath"].ToString();
+
+                        item.reqReply.Add(itemr);
+                    }
+
+                    // new comment 
+                        var itemrb = new CustomerReqTicketRouteReply();
+                        itemrb.CmpId = item.CmpId;
+                        itemrb.TicketId = item.TicketId;
+                        itemrb.UpdUser = "";
+                        itemrb.FileUrl =  "";
+                        itemrb.Comment = "";
+                        itemrb.RouteId =  item.RouteId;
+                        itemrb.RemindId =  item.RemindId;
+                        itemrb.createAt =  DateTime.Now.AddMinutes(1);
+                        itemrb.Seq = 99999999;
+                        itemrb.ImgPath = "";
+
+                        item.reqReply.Add(itemrb);
+
+                    // end comment 
+
+
                         item.reqAssign = new List<ReqFromCustAssign>();
 
-                        foreach (DataRow a in dtAssign.Select("TicketId='" + item.TicketId + "' and RemindId='" + item.RemindId + "' and RouteId='" + item.RouteId + "'"))
+                        foreach (
+                            DataRow a in dtAssign.Select(
+                                "TicketId='"
+                                    + item.TicketId
+                                    + "' and RemindId='"
+                                    + item.RemindId
+                                    + "' and RouteId='"
+                                    + item.RouteId
+                                    + "'"
+                            )
+                        )
                         {
-
                             var itema = new ReqFromCustAssign();
                             itema.CmpId = a["CmpId"].ToString();
                             itema.TicketId = a["TicketId"].ToString();
@@ -383,14 +571,19 @@ namespace coreapi.Controllers
                             item.reqAssign.Add(itema);
                         }
 
-
                         crm.ReqRoute.Add(item);
-
                     }
 
-
                     crm.ReqOwner = new List<ReqFromCustOwner>();
-                    foreach (DataRow i in dtOwner.Select(" TicketId='" + r["TicketId"].ToString() + "' and  CmpId='" + r["CmpId"].ToString() + "'"))
+                    foreach (
+                        DataRow i in dtOwner.Select(
+                            " TicketId='"
+                                + r["TicketId"].ToString()
+                                + "' and  CmpId='"
+                                + r["CmpId"].ToString()
+                                + "'"
+                        )
+                    )
                     {
                         var item = new ReqFromCustOwner();
                         item.CmpId = i["CmpId"].ToString();
@@ -399,19 +592,21 @@ namespace coreapi.Controllers
                         item.ImgPath = i["ImgPath"].ToString();
                         item.UserId = i["UserId"].ToString();
 
-
                         crm.ReqOwner.Add(item);
-
                     }
-
-
-
 
                     crm.ReqItem = new List<ReqFromCustItem>();
 
-                    foreach (DataRow i in dtItem.Select(" TicketId='" + r["TicketId"].ToString() + "' and  CmpId='" + r["CmpId"].ToString() + "'"))
+                    foreach (
+                        DataRow i in dtItem.Select(
+                            " TicketId='"
+                                + r["TicketId"].ToString()
+                                + "' and  CmpId='"
+                                + r["CmpId"].ToString()
+                                + "'"
+                        )
+                    )
                     {
-
                         var item = new ReqFromCustItem();
                         item.CmpId = i["CmpId"].ToString();
                         item.TicketId = i["TicketId"].ToString();
@@ -431,12 +626,18 @@ namespace coreapi.Controllers
                         item.FileUrl = i["FIleUrl"].ToString();
                         item.Seq = int.Parse(i["Seq"].ToString());
                         crm.ReqItem.Add(item);
-
                     }
 
-
                     crm.ReqAssign = new List<ReqFromCustAssign>();
-                    foreach (DataRow i in dtAssign.Select(" TicketId='" + r["TicketId"].ToString() + "' and  CmpId='" + r["CmpId"].ToString() + "'"))
+                    foreach (
+                        DataRow i in dtAssign.Select(
+                            " TicketId='"
+                                + r["TicketId"].ToString()
+                                + "' and  CmpId='"
+                                + r["CmpId"].ToString()
+                                + "'"
+                        )
+                    )
                     {
                         var item = new ReqFromCustAssign();
                         item.CmpId = i["CmpId"].ToString();
@@ -448,18 +649,19 @@ namespace coreapi.Controllers
                         item.RemindId = i["RemindId"].ToString();
                         item.RouteId = i["RouteId"].ToString();
 
-
-
-
-
-
                         crm.ReqAssign.Add(item);
-
                     }
 
-
                     crm.ReqComments = new List<ReqComment>();
-                    foreach (DataRow i in dtComment.Select(" TicketId='" + r["TicketId"].ToString() + "' and  CmpId='" + r["CmpId"].ToString() + "'"))
+                    foreach (
+                        DataRow i in dtComment.Select(
+                            " TicketId='"
+                                + r["TicketId"].ToString()
+                                + "' and  CmpId='"
+                                + r["CmpId"].ToString()
+                                + "'"
+                        )
+                    )
                     {
                         var comment = new ReqComment();
 
@@ -472,7 +674,17 @@ namespace coreapi.Controllers
                         comment.Message = i["Message"].ToString();
                         comment.PostedAt = DateTime.Parse(i["PostedAt"].ToString());
                         comment.replyComment = new List<ReplyComment>();
-                        foreach (DataRow x in dtCommentReply.Select("TicketId='" + i["TicketId"].ToString() + "' and CmpId='" + i["CmpId"].ToString() + "' and CommentId='" + i["CommentId"].ToString() + "'"))
+                        foreach (
+                            DataRow x in dtCommentReply.Select(
+                                "TicketId='"
+                                    + i["TicketId"].ToString()
+                                    + "' and CmpId='"
+                                    + i["CmpId"].ToString()
+                                    + "' and CommentId='"
+                                    + i["CommentId"].ToString()
+                                    + "'"
+                            )
+                        )
                         {
                             var reply = new ReplyComment();
                             reply.CmpId = x["CmpId"].ToString();
@@ -486,56 +698,41 @@ namespace coreapi.Controllers
                             reply.PostedAt = DateTime.Parse(i["PostedAt"].ToString());
 
                             comment.replyComment.Add(reply);
-
                         }
 
                         crm.ReqComments.Add(comment);
-
-
                     }
-
 
                     crms.Add(crm);
                     tasks[route.RouteId].Add(crm);
-
                 }
-
-
-
-
-
-
-
-
             }
 
-            var response = new
-            {
-                board = new
-                {
-                    tasks,
-                    columns
-                }
-            };
+            var response = new { board = new { tasks, columns } };
 
             return Ok(response);
         }
 
-
-
-
-
         [HttpGet("[action]")]
-        public IActionResult getreqfromroutesaledefault([FromQuery] string userlogin, [FromQuery] string cmpid, [FromQuery] string ticketId)
+        public IActionResult getreqfromroutesaledefault(
+            [FromQuery] string userlogin,
+            [FromQuery] string cmpid,
+            [FromQuery] string ticketId
+        )
         {
-
             DataTable dtRoute = new DataTable();
 
             string _cmd;
 
-            _cmd = "exec dbo.[getReqFromCustomerRoute_Sale_Default] @user='" + userlogin + "', @cmpid='" + cmpid + "' , @ticketId = '" + ticketId + "'";
+            _cmd =
+                "exec dbo.[getReqFromCustomerRoute_Sale_Default] @user='"
+                + userlogin
+                + "', @cmpid='"
+                + cmpid
+                + "' , @ticketId = '"
+                + ticketId
+                + "'";
             dtRoute = DB.DBConn.GetDataTable(_cmd);
-
 
             List<CustomerReqTicketRoute> crms = new List<CustomerReqTicketRoute>();
             foreach (DataRow i in dtRoute.Rows)
@@ -555,20 +752,14 @@ namespace coreapi.Controllers
 
                 item.reqAssign = new List<ReqFromCustAssign>();
 
-
                 crms.Add(item);
-
             }
             return Ok(crms);
         }
 
-
-
-
         [HttpGet("[action]")]
         public IActionResult getCrmlist([FromQuery] string userlogin, [FromQuery] string cmpid)
         {
-
             DataTable dt = new System.Data.DataTable();
             DataTable dttask = new System.Data.DataTable();
             DataTable dttaskfile = new System.Data.DataTable();
@@ -578,19 +769,28 @@ namespace coreapi.Controllers
             _cmd = "exec dbo.[getCrmGrp] @userlogin='" + userlogin + "', @cmpid='" + cmpid + "'";
             dt = DB.DBConn.GetDataTable(_cmd);
 
-
             _cmd = "exec dbo.[getCrmTask] @userlogin='" + userlogin + "', @cmpid='" + cmpid + "'";
             dttask = DB.DBConn.GetDataTable(_cmd);
 
-            _cmd = "exec dbo.[getCrmTaskFile] @userlogin='" + userlogin + "', @cmpid='" + cmpid + "'";
+            _cmd =
+                "exec dbo.[getCrmTaskFile] @userlogin='" + userlogin + "', @cmpid='" + cmpid + "'";
             dttaskfile = DB.DBConn.GetDataTable(_cmd);
 
-            _cmd = "exec dbo.[getCrmTaskComment] @userlogin='" + userlogin + "', @cmpid='" + cmpid + "'";
+            _cmd =
+                "exec dbo.[getCrmTaskComment] @userlogin='"
+                + userlogin
+                + "', @cmpid='"
+                + cmpid
+                + "'";
             dttaskcomment = DB.DBConn.GetDataTable(_cmd);
 
-            _cmd = "exec dbo.[getCrmTaskAppointment] @userlogin='" + userlogin + "', @cmpid='" + cmpid + "'";
+            _cmd =
+                "exec dbo.[getCrmTaskAppointment] @userlogin='"
+                + userlogin
+                + "', @cmpid='"
+                + cmpid
+                + "'";
             dtappointment = DB.DBConn.GetDataTable(_cmd);
-
 
             List<getCrm> crm = new List<getCrm>();
 
@@ -599,8 +799,6 @@ namespace coreapi.Controllers
                 var crms = new getCrm();
 
                 crms.items = new List<getCrmTask>();
-
-
 
                 crms.grpid = r["grpid"].ToString();
                 crms.grpname = r["grpname"].ToString();
@@ -634,13 +832,11 @@ namespace coreapi.Controllers
                     ctask.note = ct["Note"].ToString();
                     ctask.Progress = Convert.ToInt32(0 + r["Progress"].ToString());
 
-
-
                     ctask.files = new List<getCrmFile>();
 
-
-
-                    foreach (DataRow cf in dttaskfile.Select("TaskId='" + ct["TaskId"].ToString() + "'"))
+                    foreach (
+                        DataRow cf in dttaskfile.Select("TaskId='" + ct["TaskId"].ToString() + "'")
+                    )
                     {
                         var crmf = new getCrmFile();
 
@@ -650,13 +846,13 @@ namespace coreapi.Controllers
                         ctask.files.Add(crmf);
                     }
 
-
                     ctask.comments = new List<getCRMComment>();
 
-
-
-
-                    foreach (DataRow cm in dttaskcomment.Select("TaskId='" + ct["TaskId"].ToString() + "'"))
+                    foreach (
+                        DataRow cm in dttaskcomment.Select(
+                            "TaskId='" + ct["TaskId"].ToString() + "'"
+                        )
+                    )
                     {
                         var crmcmm = new getCRMComment();
 
@@ -672,7 +868,11 @@ namespace coreapi.Controllers
 
                     ctask.appointment = new List<getCrmAppointment>();
 
-                    foreach (DataRow ap in dtappointment.Select("TaskId='" + ct["TaskId"].ToString() + "'"))
+                    foreach (
+                        DataRow ap in dtappointment.Select(
+                            "TaskId='" + ct["TaskId"].ToString() + "'"
+                        )
+                    )
                     {
                         var appoint = new getCrmAppointment();
                         appoint.Seq = Convert.ToInt32(ap["Seq"].ToString());
@@ -681,17 +881,12 @@ namespace coreapi.Controllers
                         appoint.appointmenttime = ap["AppointmentTime"].ToString();
                         appoint.appointmenttype = ap["AppointmentType"].ToString();
                         ctask.appointment.Add(appoint);
-
                     }
 
-
                     crms.items.Add(ctask);
-
                 }
 
                 crm.Add(crms);
-
-
             }
 
             string qdetail = string.Empty;
@@ -699,12 +894,13 @@ namespace coreapi.Controllers
             return Ok(qdetail);
         }
 
-
-
         [HttpGet("[action]")]
-        public IActionResult getCrmlistByCust([FromQuery] string userlogin, [FromQuery] string cmpid, [FromQuery] string customername)
+        public IActionResult getCrmlistByCust(
+            [FromQuery] string userlogin,
+            [FromQuery] string cmpid,
+            [FromQuery] string customername
+        )
         {
-
             DataTable dt = new System.Data.DataTable();
             DataTable dttask = new System.Data.DataTable();
             DataTable dttaskfile = new System.Data.DataTable();
@@ -714,19 +910,35 @@ namespace coreapi.Controllers
             _cmd = "exec dbo.[getCrmGrp] @userlogin='" + userlogin + "', @cmpid='" + cmpid + "' ";
             dt = DB.DBConn.GetDataTable(_cmd);
 
-
-            _cmd = "exec dbo.[getCrmTaskByCust] @userlogin='" + userlogin + "', @cmpid='" + cmpid + "' , @cust='" + customername + "'";
+            _cmd =
+                "exec dbo.[getCrmTaskByCust] @userlogin='"
+                + userlogin
+                + "', @cmpid='"
+                + cmpid
+                + "' , @cust='"
+                + customername
+                + "'";
             dttask = DB.DBConn.GetDataTable(_cmd);
 
-            _cmd = "exec dbo.[getCrmTaskFile] @userlogin='" + userlogin + "', @cmpid='" + cmpid + "' ";
+            _cmd =
+                "exec dbo.[getCrmTaskFile] @userlogin='" + userlogin + "', @cmpid='" + cmpid + "' ";
             dttaskfile = DB.DBConn.GetDataTable(_cmd);
 
-            _cmd = "exec dbo.[getCrmTaskComment] @userlogin='" + userlogin + "', @cmpid='" + cmpid + "'";
+            _cmd =
+                "exec dbo.[getCrmTaskComment] @userlogin='"
+                + userlogin
+                + "', @cmpid='"
+                + cmpid
+                + "'";
             dttaskcomment = DB.DBConn.GetDataTable(_cmd);
 
-            _cmd = "exec dbo.[getCrmTaskAppointment] @userlogin='" + userlogin + "', @cmpid='" + cmpid + "' ";
+            _cmd =
+                "exec dbo.[getCrmTaskAppointment] @userlogin='"
+                + userlogin
+                + "', @cmpid='"
+                + cmpid
+                + "' ";
             dtappointment = DB.DBConn.GetDataTable(_cmd);
-
 
             List<getCrm> crm = new List<getCrm>();
 
@@ -735,8 +947,6 @@ namespace coreapi.Controllers
                 var crms = new getCrm();
 
                 crms.items = new List<getCrmTask>();
-
-
 
                 crms.grpid = r["grpid"].ToString();
                 crms.grpname = r["grpname"].ToString();
@@ -770,13 +980,11 @@ namespace coreapi.Controllers
                     ctask.note = ct["Note"].ToString();
                     ctask.Progress = Convert.ToInt32(0 + r["Progress"].ToString());
 
-
-
                     ctask.files = new List<getCrmFile>();
 
-
-
-                    foreach (DataRow cf in dttaskfile.Select("TaskId='" + ct["TaskId"].ToString() + "'"))
+                    foreach (
+                        DataRow cf in dttaskfile.Select("TaskId='" + ct["TaskId"].ToString() + "'")
+                    )
                     {
                         var crmf = new getCrmFile();
 
@@ -786,13 +994,13 @@ namespace coreapi.Controllers
                         ctask.files.Add(crmf);
                     }
 
-
                     ctask.comments = new List<getCRMComment>();
 
-
-
-
-                    foreach (DataRow cm in dttaskcomment.Select("TaskId='" + ct["TaskId"].ToString() + "'"))
+                    foreach (
+                        DataRow cm in dttaskcomment.Select(
+                            "TaskId='" + ct["TaskId"].ToString() + "'"
+                        )
+                    )
                     {
                         var crmcmm = new getCRMComment();
 
@@ -808,7 +1016,11 @@ namespace coreapi.Controllers
 
                     ctask.appointment = new List<getCrmAppointment>();
 
-                    foreach (DataRow ap in dtappointment.Select("TaskId='" + ct["TaskId"].ToString() + "'"))
+                    foreach (
+                        DataRow ap in dtappointment.Select(
+                            "TaskId='" + ct["TaskId"].ToString() + "'"
+                        )
+                    )
                     {
                         var appoint = new getCrmAppointment();
                         appoint.Seq = Convert.ToInt32(ap["Seq"].ToString());
@@ -817,17 +1029,12 @@ namespace coreapi.Controllers
                         appoint.appointmenttime = ap["AppointmentTime"].ToString();
                         appoint.appointmenttype = ap["AppointmentType"].ToString();
                         ctask.appointment.Add(appoint);
-
                     }
 
-
                     crms.items.Add(ctask);
-
                 }
 
                 crm.Add(crms);
-
-
             }
 
             string qdetail = string.Empty;
@@ -835,47 +1042,40 @@ namespace coreapi.Controllers
             return Ok(qdetail);
         }
 
-
-
-
-
         [HttpGet("[action]")]
         public IActionResult getCrmlistTable([FromQuery] string userlogin, [FromQuery] string cmpid)
         {
-
             DataTable dt = new System.Data.DataTable();
             string _cmd;
-            _cmd = "exec dbo.[getCrmTaskTable] @userlogin='" + userlogin + "', @cmpid='" + cmpid + "'";
+            _cmd =
+                "exec dbo.[getCrmTaskTable] @userlogin='" + userlogin + "', @cmpid='" + cmpid + "'";
             dt = DB.DBConn.GetDataTable(_cmd);
-
-
 
             string qdetail = string.Empty;
             qdetail = JsonConvert.SerializeObject(dt);
             return Ok(qdetail);
         }
-
-
 
         [HttpGet("[action]")]
-        public IActionResult getCrmAppointment([FromQuery] string userlogin, [FromQuery] string cmpid)
+        public IActionResult getCrmAppointment(
+            [FromQuery] string userlogin,
+            [FromQuery] string cmpid
+        )
         {
-
             DataTable dt = new System.Data.DataTable();
             string _cmd;
-            _cmd = "exec dbo.[getCrmTaskAppointment] @userlogin='" + userlogin + "', @cmpid='" + cmpid + "'";
+            _cmd =
+                "exec dbo.[getCrmTaskAppointment] @userlogin='"
+                + userlogin
+                + "', @cmpid='"
+                + cmpid
+                + "'";
             dt = DB.DBConn.GetDataTable(_cmd);
-
-
 
             string qdetail = string.Empty;
             qdetail = JsonConvert.SerializeObject(dt);
             return Ok(qdetail);
         }
-
-
-
-
 
         [HttpPost("[action]")]
         public IActionResult setTaskMove(CrmTaskMoveModel mt)
@@ -903,11 +1103,9 @@ namespace coreapi.Controllers
                     msgretrun.Msg = "Error !!";
                     return NotFound(msgretrun);
                 }
-
             }
             catch
             {
-
                 msgretrun.ReturnCode = "400";
                 msgretrun.Msg = "Error !!";
                 return NotFound(msgretrun);
@@ -941,16 +1139,104 @@ namespace coreapi.Controllers
                     msgretrun.Msg = "Error !!";
                     return NotFound(msgretrun);
                 }
-
             }
             catch
             {
-
                 msgretrun.ReturnCode = "400";
                 msgretrun.Msg = "Error !!";
                 return NotFound(msgretrun);
             }
+        }
 
+        [HttpPost("[action]")]
+        public IActionResult setRouteReply(CustomerReqTicketRouteReply task)
+        {
+            MsgReturn msgretrun = new MsgReturn();
+
+            try
+            {
+                string _cmd = "";
+                _cmd = "exec  dbo.setReqRouteReply";
+                _cmd += " @TicketId  ='" + task.TicketId + "'";
+                _cmd += ",@CmpId ='" + task.CmpId + "'";
+                _cmd += ",@UpdUser ='" + task.UpdUser + "'";
+                _cmd += ",@Comment ='" + task.Comment + "'";
+                _cmd += ",@FileUrl ='" + task.FileUrl + "'";
+                _cmd += ",@RouteId  ='" + task.RouteId + "'";
+                _cmd += ",@RemindId  ='" + task.RemindId + "'";
+                _cmd += ",@Seq =" + task.Seq;
+
+                if (DB.DBConn.ExecuteOnly(_cmd))
+                {
+                    msgretrun.ReturnCode = "200";
+                    msgretrun.Msg = "Save Success !!";
+                    return Ok(msgretrun);
+                }
+                else
+                {
+                    msgretrun.ReturnCode = "400";
+                    msgretrun.Msg = "Error !!";
+                    return NotFound(msgretrun);
+                }
+            }
+            catch
+            {
+                msgretrun.ReturnCode = "400";
+                msgretrun.Msg = "Error !!";
+                return NotFound(msgretrun);
+            }
+        }
+
+
+        [HttpPost("[action]")]
+        public IActionResult delRouteReply(CustomerReqTicketRouteReply task)
+        {
+            MsgReturn msgretrun = new MsgReturn();
+
+            try
+            {
+                try
+                {
+                    if (task.FileUrl != "") {
+                    System.IO.File.Delete(task.FileUrl);
+                }
+                }
+                catch (System.Exception)
+                { 
+                }
+                
+                string _cmd = "";
+                _cmd = "exec  dbo.delReqRouteReply";
+                _cmd += " @TicketId  ='" + task.TicketId + "'";
+                _cmd += ",@CmpId ='" + task.CmpId + "'";
+                _cmd += ",@UpdUser ='" + task.UpdUser + "'";
+                _cmd += ",@Comment ='" + task.Comment + "'";
+                _cmd += ",@FileUrl ='" + task.FileUrl + "'";
+                _cmd += ",@RouteId  ='" + task.RouteId + "'";
+                _cmd += ",@RemindId  ='" + task.RemindId + "'";
+                _cmd += ",@Seq =" + task.Seq;
+
+                if (DB.DBConn.ExecuteOnly(_cmd))
+                {
+                    msgretrun.ReturnCode = "200";
+                    msgretrun.Msg = "Save Success !!";
+                    return Ok(msgretrun);
+                }
+                else
+                {
+                    msgretrun.ReturnCode = "400";
+                    msgretrun.Msg = "Error !!";
+                    return NotFound(msgretrun);
+                }
+
+
+            }
+            catch
+            {
+                msgretrun.ReturnCode = "400";
+                msgretrun.Msg = "Error !!";
+                return NotFound(msgretrun);
+            }
         }
 
 
@@ -1000,18 +1286,14 @@ namespace coreapi.Controllers
                     msgretrun.Msg = "Error !!";
                     return NotFound(msgretrun);
                 }
-
             }
             catch
             {
-
                 msgretrun.ReturnCode = "400";
                 msgretrun.Msg = "Error !!";
                 return NotFound(msgretrun);
             }
-
         }
-
 
         [HttpPost("[action]")]
         public IActionResult setCrmFiles(List<CRMFilesModel> f)
@@ -1022,13 +1304,17 @@ namespace coreapi.Controllers
             DB.DBConn.Cmd = DB.DBConn.Cnn.CreateCommand();
             DB.DBConn.Tran = DB.DBConn.Cnn.BeginTransaction();
 
-
             try
             {
                 string _cmd = "";
                 if (f.Count > 0)
                 {
-                    _cmd = "Delete From CRMFile where TaskId='" + f[0].TaskId + "' and CmpId='" + f[0].CmpId + "'";
+                    _cmd =
+                        "Delete From CRMFile where TaskId='"
+                        + f[0].TaskId
+                        + "' and CmpId='"
+                        + f[0].CmpId
+                        + "'";
 
                     DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran);
                 }
@@ -1050,12 +1336,9 @@ namespace coreapi.Controllers
                         msgretrun.ReturnCode = "400";
                         msgretrun.Msg = "Error !!";
                         return NotFound(msgretrun);
-                    };
-
+                    }
+                    ;
                 }
-
-
-
 
                 DB.DBConn.Tran.Commit();
                 DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
@@ -1064,40 +1347,39 @@ namespace coreapi.Controllers
                 msgretrun.ReturnCode = "200";
                 msgretrun.Msg = "Save Success !!";
                 return Ok(msgretrun);
-
             }
             catch
             {
-
                 DB.DBConn.Tran.Rollback();
                 DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
                 DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
-
 
                 msgretrun.ReturnCode = "400";
                 msgretrun.Msg = "Error !!";
                 return NotFound(msgretrun);
             }
-
         }
 
         [HttpPost("[action]")]
         public IActionResult setCrmAppointment(List<CRMAppointmentModel> appointment)
         {
-
             MsgReturn msgretrun = new MsgReturn();
 
             DB.DBConn.SqlConnectionOpen();
             DB.DBConn.Cmd = DB.DBConn.Cnn.CreateCommand();
             DB.DBConn.Tran = DB.DBConn.Cnn.BeginTransaction();
 
-
             try
             {
                 string _cmd = "";
                 if (appointment.Count > 0)
                 {
-                    _cmd = "Delete From CRMAppointment where TaskId='" + appointment[0].TaskId + "' and CmpId='" + appointment[0].CmpId + "'";
+                    _cmd =
+                        "Delete From CRMAppointment where TaskId='"
+                        + appointment[0].TaskId
+                        + "' and CmpId='"
+                        + appointment[0].CmpId
+                        + "'";
 
                     DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran);
                 }
@@ -1109,7 +1391,10 @@ namespace coreapi.Controllers
                     _cmd += ",@CmpId ='" + appointment[i].CmpId + "'";
                     _cmd += ",@TaskId ='" + appointment[i].TaskId + "'";
                     _cmd += ",@Seq =" + appointment[i].Seq;
-                    _cmd += ",@AppointmentDescription  ='" + appointment[i].AppointmentDescription + "'";
+                    _cmd +=
+                        ",@AppointmentDescription  ='"
+                        + appointment[i].AppointmentDescription
+                        + "'";
                     _cmd += ",@AppointmentType  ='" + appointment[i].AppointmentType + "'";
                     _cmd += ",@AppointmentDate  ='" + appointment[i].AppointmentDate + "'";
                     _cmd += ",@AppointmentTime  ='" + appointment[i].AppointmentTime + "'";
@@ -1121,12 +1406,9 @@ namespace coreapi.Controllers
                         msgretrun.ReturnCode = "400";
                         msgretrun.Msg = "Error !!";
                         return NotFound(msgretrun);
-                    };
-
+                    }
+                    ;
                 }
-
-
-
 
                 DB.DBConn.Tran.Commit();
                 DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
@@ -1135,26 +1417,18 @@ namespace coreapi.Controllers
                 msgretrun.ReturnCode = "200";
                 msgretrun.Msg = "Save Success !!";
                 return Ok(msgretrun);
-
             }
             catch
             {
-
                 DB.DBConn.Tran.Rollback();
                 DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
                 DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
-
 
                 msgretrun.ReturnCode = "400";
                 msgretrun.Msg = "Error !!";
                 return NotFound(msgretrun);
             }
-
-
-
-
         }
-
 
         [HttpPost("[action]")]
         public IActionResult setCrmComment(CRMCommentModel cmnt)
@@ -1188,20 +1462,14 @@ namespace coreapi.Controllers
                     msgretrun.Msg = "Error !!";
                     return NotFound(msgretrun);
                 }
-
             }
             catch
             {
-
                 msgretrun.ReturnCode = "400";
                 msgretrun.Msg = "Error !!";
                 return NotFound(msgretrun);
             }
-
         }
-
-
-
 
         [HttpPost("[action]")]
         public IActionResult setCrmCommentLikes(CRMComment_likesModel like)
@@ -1231,18 +1499,14 @@ namespace coreapi.Controllers
                     msgretrun.Msg = "Error !!";
                     return NotFound(msgretrun);
                 }
-
             }
             catch
             {
-
                 msgretrun.ReturnCode = "400";
                 msgretrun.Msg = "Error !!";
                 return NotFound(msgretrun);
             }
-
         }
-
 
         [HttpPost("[action]")]
         public IActionResult setCrmCommentDislikes(CRMComment_dislikesModel dis)
@@ -1272,19 +1536,14 @@ namespace coreapi.Controllers
                     msgretrun.Msg = "Error !!";
                     return NotFound(msgretrun);
                 }
-
             }
             catch
             {
-
                 msgretrun.ReturnCode = "400";
                 msgretrun.Msg = "Error !!";
                 return NotFound(msgretrun);
             }
-
         }
-
-
 
         [HttpPost("[action]")]
         public IActionResult setCrmCommentFile(CRMComment_filesModel cf)
@@ -1314,37 +1573,13 @@ namespace coreapi.Controllers
                     msgretrun.Msg = "Error !!";
                     return NotFound(msgretrun);
                 }
-
             }
             catch
             {
-
                 msgretrun.ReturnCode = "400";
                 msgretrun.Msg = "Error !!";
                 return NotFound(msgretrun);
             }
-
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     }
 }

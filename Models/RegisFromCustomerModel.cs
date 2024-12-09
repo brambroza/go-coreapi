@@ -46,8 +46,6 @@ namespace coreapi.Models
         public string docno { get; set; }
     }
 
-
-
     public class MAOther
     {
         public string cmpName { set; get; }
@@ -64,12 +62,8 @@ namespace coreapi.Models
         public string docno { get; set; }
     }
 
-
-
-
     public class ReqFromCustList
     {
-
         public string UpdUser { get; set; }
         public string CmpId { get; set; }
         public string TicketId { get; set; }
@@ -79,7 +73,7 @@ namespace coreapi.Models
         public string ContactPhone { get; set; }
         public string ContactEmail { get; set; }
         public string Address { get; set; }
-        public string AdditionalDetail { get;set;}
+        public string AdditionalDetail { get; set; }
         public DateTime CreateAt { get; set; }
         public string Status { get; set; }
         public string FromApp { get; set; }
@@ -95,8 +89,7 @@ namespace coreapi.Models
         public decimal completepercent { get; set; }
         public string ticketIdRef { get; set; }
         public string DueDate { get; set; }
-        public string Priority {get;set;}
-
+        public string Priority { get; set; }
     }
 
     public class ReqFromCustItem
@@ -116,14 +109,10 @@ namespace coreapi.Models
         public string DesiredService { get; set; }
         public string FileUrl { get; set; }
         public int Seq { get; set; }
-
-
     }
-
 
     public class ReqFromCustAssign
     {
-
         public string CmpId { get; set; }
         public string TicketId { get; set; }
         public string UserId { get; set; }
@@ -134,7 +123,6 @@ namespace coreapi.Models
         public string RemindId { get; set; }
 
         public string Permission { get; set; }
-
     }
 
     public class ReqFromCustOwner
@@ -144,9 +132,7 @@ namespace coreapi.Models
         public string UserId { get; set; }
         public string UserFullName { get; set; }
         public string ImgPath { get; set; }
-
     }
-
 
     public class ReqComment
     {
@@ -174,15 +160,12 @@ namespace coreapi.Models
         public DateTime PostedAt { get; set; }
     }
 
-
     public class ReqUpdateStatus
     {
         public string cmpid { get; set; }
         public string status { get; set; }
         public string ticketId { get; set; }
     }
-
-
 
     public class CustomerReqTicketRoute
     {
@@ -193,26 +176,36 @@ namespace coreapi.Models
         public string RouteIdBefore { get; set; }
         public DateTime? DueDate { get; set; }
         public int StatusFinish { get; set; }
-        public string RouteName { get; set; } = ""; 
-        public string Department { get; set; }  = "";
+        public string RouteName { get; set; } = "";
+        public string Department { get; set; } = "";
         public int Seq { get; set; }
         public string RemideDescription { get; set; }
         public string DateFinish { get; set; } = "";
         public string UserFinish { get; set; } = "";
 
         public List<ReqFromCustAssign>? reqAssign { get; set; }
-
+        public List<CustomerReqTicketRouteReply>? reqReply {get;set;}
     }
 
-
-    public class TaskUpdate {
-        public string updUser {get;set;}
-        public string TicketId {get;set;}
-        public string RouteId {get;set;}
-        public string CmpId {get;set;}
+    public class CustomerReqTicketRouteReply
+    {
+        public string TicketId { get; set; }
+        public string CmpId { get; set; }
+        public string RouteId { get; set; }
+        public string RemindId { get; set; }
+        public int Seq { get; set; }
+        public string Comment { get; set; }
+        public string FileUrl { get; set; }
+        public DateTime createAt { get; set; }
+        public string UpdUser { get; set; }
+        public string ImgPath {get;set;} = "";
     }
 
-
-
-
+    public class TaskUpdate
+    {
+        public string updUser { get; set; }
+        public string TicketId { get; set; }
+        public string RouteId { get; set; }
+        public string CmpId { get; set; }
+    }
 }

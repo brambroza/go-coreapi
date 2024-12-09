@@ -57,6 +57,11 @@ namespace coreapi.Controllers
             _cmd = "exec dbo.getCustomer @CmpId='" + CmpId + "' , @Type='0'";
             DataTable dtcust = DB.DBConn.GetDataTable(_cmd);
 
+            _cmd = "exec dbo.getContact @CmpId='" + CmpId + "'";
+            DataTable dtContact = DB.DBConn.GetDataTable(_cmd);
+
+            string _DocType = "customer";
+
             List<Project> projects = new List<Project>();
 
             foreach (DataRow r in dt.Rows)
@@ -71,7 +76,7 @@ namespace coreapi.Controllers
                 project.QuotationNo = r["QuotationNo"].ToString();
                 project.ReferCode = r["ReferCode"].ToString();
                 project.StateActive = r["StateActive"].ToString();
-                project.ProjectDueDate = DateTime.Parse(r["ProjectDueDate"].ToString())  ;
+                project.ProjectDueDate = DateTime.Parse(r["ProjectDueDate"].ToString());
                 project.ProjectDate = DateTime.Parse(r["ProjectDate"].ToString());
                 project.SaleOrderNo = r["SaleOrderNo"].ToString();
 
@@ -225,6 +230,7 @@ namespace coreapi.Controllers
                 }
 
                 project.customer = new CustomerList();
+
                 foreach (DataRow d in dtcust.Select("CustomerCode='" + project.CustCode + "'"))
                 {
                     var customer = new CustomerList();
@@ -267,33 +273,28 @@ namespace coreapi.Controllers
                     customer.StateCustomer = d["StateCustomer"].ToString();
                     customer.StateVendor = d["StateVendor"].ToString();
 
-                    if (d["ContactName"].ToString() != "")
-                    {
-                        customer.contacts = new List<Contact>();
+                    customer.contacts = new List<ContactList>();
 
-                        var item = new Contact();
-                        item.Name = d["ContactName"].ToString();
-                        item.Email = d["ContactEmail"].ToString();
-                        item.Phone = d["ContactPhone"].ToString();
-                        item.Position = d["ContactPosition"].ToString();
-                        customer.contacts.Add(item);
-                    }
-                    if (d["ContactName1"].ToString() != "")
+                    foreach (
+                        DataRow c in dtContact.Select(
+                            "DocType='" + _DocType + "' and DocNo='" + customer.CustomerCode + "'"
+                        )
+                    )
                     {
-                        var item = new Contact();
-                        item.Name = d["ContactName1"].ToString();
-                        item.Email = d["ContactEmail1"].ToString();
-                        item.Phone = d["ContactPhone1"].ToString();
-                        item.Position = d["ContactPosition1"].ToString();
-                        customer.contacts.Add(item);
-                    }
-                    if (d["ContactName2"].ToString() != "")
-                    {
-                        var item = new Contact();
-                        item.Name = d["ContactName2"].ToString();
-                        item.Email = d["ContactEmail2"].ToString();
-                        item.Phone = d["ContactPhone2"].ToString();
-                        item.Position = d["ContactPosition2"].ToString();
+                        var item = new ContactList();
+                        item.UpdUser = c["UpdUser"].ToString();
+                        item.ContactName = c["ContactName"].ToString();
+                        item.ContactPhone = c["ContactPhone"].ToString();
+                        item.ContactEmail = c["ContactEmail"].ToString();
+                        item.ContactPosition = c["ContactPosition"].ToString();
+                        item.ContactLineId = c["ContactLineId"].ToString();
+                        item.Remark = c["Remark"].ToString();
+                        item.CmpId = c["CmpId"].ToString();
+                        item.ContactId = c["ContactId"].ToString();
+                        item.ImgPath = c["ImgPath"].ToString();
+                        item.DocNo = c["DocNo"].ToString();
+                        item.DocType = c["DocType"].ToString();
+
                         customer.contacts.Add(item);
                     }
 
