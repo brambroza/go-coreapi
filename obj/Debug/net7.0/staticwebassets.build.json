@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "MvPlD4s+Wb5VidprSSbC3CR23wfPjPlHWhOK5EFyjwI=",
+  "Hash": "p149bIihC2L9t6QNR5oplklxoCtIMIkJmdB9vUCR+Wk=",
   "Source": "goalongapi",
   "BasePath": "_content/goalongapi",
   "Mode": "Default",
@@ -4777,6 +4777,23 @@
       "OriginalItemSpec": "wwwroot/reqfromcust/fileall/42fc00f5-7658-4402-bdfa-32b68d99c025.jpg"
     },
     {
+      "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/reqfromcust/fileall/4e760dd2-7fec-4c4b-90fc-50d367d092bb.jpg",
+      "SourceId": "goalongapi",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/",
+      "BasePath": "_content/goalongapi",
+      "RelativePath": "reqfromcust/fileall/4e760dd2-7fec-4c4b-90fc-50d367d092bb.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/reqfromcust/fileall/4e760dd2-7fec-4c4b-90fc-50d367d092bb.jpg"
+    },
+    {
       "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/reqfromcust/fileall/53d11b90-a190-46c7-91a6-ddf1d9e2965e.docx",
       "SourceId": "goalongapi",
       "SourceType": "Discovered",
@@ -5472,6 +5489,23 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot/reqfromcust/fileall/92a1a9fa-f423-4aa3-be06-36f546641836.jpg"
+    },
+    {
+      "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/reqfromcust/fileall/93faf7cd-9577-4974-bc5e-da73cc3c5f25.jpg",
+      "SourceId": "goalongapi",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/",
+      "BasePath": "_content/goalongapi",
+      "RelativePath": "reqfromcust/fileall/93faf7cd-9577-4974-bc5e-da73cc3c5f25.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/reqfromcust/fileall/93faf7cd-9577-4974-bc5e-da73cc3c5f25.jpg"
     },
     {
       "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/reqfromcust/fileall/940975c8-3cae-4548-a57a-08738fd55680.jpg",
