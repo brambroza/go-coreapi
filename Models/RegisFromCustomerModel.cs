@@ -167,8 +167,16 @@ namespace coreapi.Models
         public string ticketId { get; set; }
     }
 
+    public class ReqPriority
+    {
+        public string cmpid { get; set; }
+        public string priority { get; set; }
+        public string ticketId { get; set; }
+    }
+
     public class CustomerReqTicketRoute
     {
+        public string UpdUser { get; set; }
         public string TicketId { get; set; }
         public string CmpId { get; set; }
         public string RouteId { get; set; }
@@ -184,7 +192,7 @@ namespace coreapi.Models
         public string UserFinish { get; set; } = "";
 
         public List<ReqFromCustAssign>? reqAssign { get; set; }
-        public List<CustomerReqTicketRouteReply>? reqReply {get;set;}
+        public List<CustomerReqTicketRouteReply>? reqReply { get; set; }
     }
 
     public class CustomerReqTicketRouteReply
@@ -198,7 +206,7 @@ namespace coreapi.Models
         public string FileUrl { get; set; }
         public DateTime createAt { get; set; }
         public string UpdUser { get; set; }
-        public string ImgPath {get;set;} = "";
+        public string ImgPath { get; set; } = "";
     }
 
     public class TaskUpdate

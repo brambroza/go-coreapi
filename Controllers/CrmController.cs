@@ -138,6 +138,7 @@ namespace coreapi.Controllers
                     item.Seq = Int16.Parse(i["Seq"].ToString());
                     item.DateFinish = "";
                     item.UserFinish = "";
+                    item.UpdUser = i["UpdUser"].ToString();
 
                     item.reqReply = new List<CustomerReqTicketRouteReply>();
 
@@ -163,27 +164,27 @@ namespace coreapi.Controllers
                         itemr.RemindId = item.RemindId.ToString();
                         itemr.createAt = DateTime.Parse(a["createAt"].ToString());
                         itemr.Seq = int.Parse(a["Seq"].ToString());
-                        itemr.ImgPath =  a["ImgPath"].ToString();
+                        itemr.ImgPath = a["ImgPath"].ToString();
 
                         item.reqReply.Add(itemr);
                     }
 
-                    // new comment 
-                        var itemrb = new CustomerReqTicketRouteReply();
-                        itemrb.CmpId = item.CmpId;
-                        itemrb.TicketId = item.TicketId;
-                        itemrb.UpdUser = "";
-                        itemrb.FileUrl =  "";
-                        itemrb.Comment = "";
-                        itemrb.RouteId =  item.RouteId;
-                        itemrb.RemindId =  item.RemindId;
-                        itemrb.createAt =  DateTime.Now.AddMinutes(1);
-                        itemrb.Seq = 99999999;
-                        itemrb.ImgPath = "";
+                    // new comment
+                    var itemrb = new CustomerReqTicketRouteReply();
+                    itemrb.CmpId = item.CmpId;
+                    itemrb.TicketId = item.TicketId;
+                    itemrb.UpdUser = "";
+                    itemrb.FileUrl = "";
+                    itemrb.Comment = "";
+                    itemrb.RouteId = item.RouteId;
+                    itemrb.RemindId = item.RemindId;
+                    itemrb.createAt = DateTime.Now.AddMinutes(1);
+                    itemrb.Seq = 99999999;
+                    itemrb.ImgPath = "";
 
-                        item.reqReply.Add(itemrb);
+                    item.reqReply.Add(itemrb);
 
-                    // end comment 
+                    // end comment
 
 
 
@@ -414,15 +415,13 @@ namespace coreapi.Controllers
                 + "'";
             dtRoute = DB.DBConn.GetDataTable(_cmd);
 
-
-              _cmd =
+            _cmd =
                 "exec dbo.[getReqFromCustomerRoute_Reply] @user='"
                 + userlogin
                 + "', @cmpid='"
                 + cmpid
                 + "'";
             dtRouteReply = DB.DBConn.GetDataTable(_cmd);
-
 
             _cmd =
                 "exec dbo.[sp_getManageReqComment] @Operation='COMMENT' ,   @cmpid='" + cmpid + "'";
@@ -495,53 +494,53 @@ namespace coreapi.Controllers
                         item.Seq = Int16.Parse(i["Seq"].ToString());
                         item.DateFinish = "";
                         item.UserFinish = "";
+                        item.UpdUser = i["UpdUser"].ToString();
 
+                        item.reqReply = new List<CustomerReqTicketRouteReply>();
 
-                    item.reqReply = new List<CustomerReqTicketRouteReply>();
-
-                    foreach (
-                        DataRow a in dtRouteReply.Select(
-                            "TicketId='"
-                                + item.TicketId
-                                + "' and RemindId='"
-                                + item.RemindId
-                                + "' and RouteId='"
-                                + item.RouteId
-                                + "'"
+                        foreach (
+                            DataRow a in dtRouteReply.Select(
+                                "TicketId='"
+                                    + item.TicketId
+                                    + "' and RemindId='"
+                                    + item.RemindId
+                                    + "' and RouteId='"
+                                    + item.RouteId
+                                    + "'"
+                            )
                         )
-                    )
-                    {
-                        var itemr = new CustomerReqTicketRouteReply();
-                        itemr.CmpId = a["CmpId"].ToString();
-                        itemr.TicketId = a["TicketId"].ToString();
-                        itemr.UpdUser = a["updUser"].ToString();
-                        itemr.FileUrl = a["FileUrl"].ToString();
-                        itemr.Comment = a["Comment"].ToString();
-                        itemr.RouteId = item.RouteId.ToString();
-                        itemr.RemindId = item.RemindId.ToString();
-                        itemr.createAt = DateTime.Parse(a["createAt"].ToString());
-                        itemr.Seq = int.Parse(a["Seq"].ToString());
-                        itemr.ImgPath =  a["ImgPath"].ToString();
+                        {
+                            var itemr = new CustomerReqTicketRouteReply();
+                            itemr.CmpId = a["CmpId"].ToString();
+                            itemr.TicketId = a["TicketId"].ToString();
+                            itemr.UpdUser = a["updUser"].ToString();
+                            itemr.FileUrl = a["FileUrl"].ToString();
+                            itemr.Comment = a["Comment"].ToString();
+                            itemr.RouteId = item.RouteId.ToString();
+                            itemr.RemindId = item.RemindId.ToString();
+                            itemr.createAt = DateTime.Parse(a["createAt"].ToString());
+                            itemr.Seq = int.Parse(a["Seq"].ToString());
+                            itemr.ImgPath = a["ImgPath"].ToString();
 
-                        item.reqReply.Add(itemr);
-                    }
+                            item.reqReply.Add(itemr);
+                        }
 
-                    // new comment 
+                        // new comment
                         var itemrb = new CustomerReqTicketRouteReply();
                         itemrb.CmpId = item.CmpId;
                         itemrb.TicketId = item.TicketId;
                         itemrb.UpdUser = "";
-                        itemrb.FileUrl =  "";
+                        itemrb.FileUrl = "";
                         itemrb.Comment = "";
-                        itemrb.RouteId =  item.RouteId;
-                        itemrb.RemindId =  item.RemindId;
-                        itemrb.createAt =  DateTime.Now.AddMinutes(1);
+                        itemrb.RouteId = item.RouteId;
+                        itemrb.RemindId = item.RemindId;
+                        itemrb.createAt = DateTime.Now.AddMinutes(1);
                         itemrb.Seq = 99999999;
                         itemrb.ImgPath = "";
 
                         item.reqReply.Add(itemrb);
 
-                    // end comment 
+                        // end comment
 
 
                         item.reqAssign = new List<ReqFromCustAssign>();
@@ -1187,7 +1186,6 @@ namespace coreapi.Controllers
             }
         }
 
-
         [HttpPost("[action]")]
         public IActionResult delRouteReply(CustomerReqTicketRouteReply task)
         {
@@ -1197,14 +1195,13 @@ namespace coreapi.Controllers
             {
                 try
                 {
-                    if (task.FileUrl != "") {
-                    System.IO.File.Delete(task.FileUrl);
+                    if (task.FileUrl != "")
+                    {
+                        System.IO.File.Delete(task.FileUrl);
+                    }
                 }
-                }
-                catch (System.Exception)
-                { 
-                }
-                
+                catch (System.Exception) { }
+
                 string _cmd = "";
                 _cmd = "exec  dbo.delReqRouteReply";
                 _cmd += " @TicketId  ='" + task.TicketId + "'";
@@ -1228,8 +1225,6 @@ namespace coreapi.Controllers
                     msgretrun.Msg = "Error !!";
                     return NotFound(msgretrun);
                 }
-
-
             }
             catch
             {
@@ -1238,8 +1233,6 @@ namespace coreapi.Controllers
                 return NotFound(msgretrun);
             }
         }
-
-
 
         [HttpPost("[action]")]
         public IActionResult setCrmTask(CrmTaskModel task)

@@ -88,6 +88,32 @@ namespace goalongapi.Interfaces
         }
 
 
+           public async Task<Account?> LoginNewUser(string username,
+                                          string password)
+        {
+            /* var account = await databaseContext.Accounts.Include(a => a.Role)
+            .SingleOrDefaultAsync(a => a.Username == username); */
+
+
+
+
+            var account = await databaseContext.Accounts.Include(a => a.Role)
+            .SingleOrDefaultAsync(a => a.Username == username && a.CmpId != null && a.CmpId != "0" && a.stateEmailConfirm == 1); //
+
+            if (account != null && VerifyPassword(account.Password, password))
+            {
+                return account;
+            }
+
+
+
+            return null;
+        }
+
+
+
+
+
         public async Task<AccountGoogle?> LoginGoogle(long Id, string Email)
         {
             var account = await databaseContext.AccountsGoogle.Include(a => a.Role)
