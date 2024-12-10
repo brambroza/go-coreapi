@@ -1,9 +1,9 @@
+using System.Data;
+using System.Threading.Tasks;
 using coreapi.Models;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Data.SqlClient;
 using Newtonsoft.Json;
-using System.Data;
-using System.Threading.Tasks;
 
 namespace coreapi.Hubs
 {
@@ -16,17 +16,24 @@ namespace coreapi.Hubs
             await Clients.All.SendAsync($"ReceiveNotification{cmpid}{userlogin}", message);
         }
 
-        public async Task ReceiveMessage(string cmpid, string userlogin, string userFrom, string message)
+        public async Task ReceiveMessage(
+            string cmpid,
+            string userlogin,
+            string userFrom,
+            string message
+        )
         {
-           /*  await Clients.All.SendAsync($"ReceiveNotification{cmpid}{userlogin}", message); */
+            /*  await Clients.All.SendAsync($"ReceiveNotification{cmpid}{userlogin}", message); */
             await SetNotifications(cmpid, userlogin, message, userFrom);
-            await SendMessage(cmpid , userlogin);
-
+            await SendMessage(cmpid, userlogin);
         }
 
-
-
-        public async Task<string> SetNotifications(string cmpid, string userlogin, string message, string userfrom)
+        public async Task<string> SetNotifications(
+            string cmpid,
+            string userlogin,
+            string message,
+            string userfrom
+        )
         {
             try
             {
@@ -34,7 +41,8 @@ namespace coreapi.Hubs
 
                 DataTable dt = new System.Data.DataTable();
                 string _cmd;
-                if (data.Length <= 0) return "";
+                if (data.Length <= 0)
+                    return "";
                 _cmd = "exec dbo.[setNotification] @CmpId='" + cmpid + "'";
                 _cmd += " ,  @userTo='" + userlogin + "'";
                 _cmd += " ,  @userFrom='" + userfrom + "'";
@@ -42,11 +50,10 @@ namespace coreapi.Hubs
                 _cmd += " , @Title='" + data[0].Title.ToString() + "'";
                 _cmd += " , @Category='" + data[0].Category.ToString() + "'";
                 _cmd += " , @Type='" + data[0].Type.ToString() + "'";
-                _cmd +=" , @linkTo='" + data[0].urllink.ToString() + "'";
+                _cmd += " , @linkTo='" + data[0].urllink.ToString() + "'";
 
                 if (DB.DBConn.ExecuteOnly(_cmd))
                 {
-
                     return "200";
                 }
                 else
@@ -61,7 +68,6 @@ namespace coreapi.Hubs
             }
         }
 
-
         // ฟังก์ชันเรียก Stored Procedure อย่างปลอดภัย
         public async Task<string> SendNotifications(string cmpid, string userlogin)
         {
@@ -69,7 +75,12 @@ namespace coreapi.Hubs
             {
                 DataTable dt = new System.Data.DataTable();
                 string _cmd;
-                _cmd = "exec dbo.[getNoitfications] @CmpId=" + cmpid + " ,  @userlogin='" + userlogin + "'";
+                _cmd =
+                    "exec dbo.[getNoitfications] @CmpId="
+                    + cmpid
+                    + " ,  @userlogin='"
+                    + userlogin
+                    + "'";
                 dt = DB.DBConn.GetDataTable(_cmd);
                 string qdetail = string.Empty;
                 qdetail = JsonConvert.SerializeObject(dt);
@@ -82,8 +93,6 @@ namespace coreapi.Hubs
                 return "";
             }
         }
-
-        
 
         public override async Task OnConnectedAsync()
         {
@@ -101,9 +110,6 @@ namespace coreapi.Hubs
 
         public override async Task OnDisconnectedAsync(Exception exception)
         {
-
-
-
             await base.OnDisconnectedAsync(exception);
         }
     }
