@@ -1574,5 +1574,38 @@ namespace coreapi.Controllers
                 return NotFound(msgretrun);
             }
         }
+
+        [HttpDelete("[action]")]
+        public IActionResult delReqCrm([FromQuery] string TicketId, [FromQuery] string CmpId)
+        {
+            MsgReturn msgretrun = new MsgReturn();
+
+            try
+            {
+                string _cmd = "";
+                _cmd = "exec  dbo.setReqOtherFromGoAlong_Delete";
+                _cmd += " @CmpId ='" + CmpId + "'";
+                _cmd += ",@TicketId ='" + TicketId + "'";
+
+                if (DB.DBConn.ExecuteOnly(_cmd))
+                {
+                    msgretrun.ReturnCode = "200";
+                    msgretrun.Msg = "Save Success !!";
+                    return Ok(msgretrun);
+                }
+                else
+                {
+                    msgretrun.ReturnCode = "400";
+                    msgretrun.Msg = "Error !!";
+                    return NotFound(msgretrun);
+                }
+            }
+            catch
+            {
+                msgretrun.ReturnCode = "400";
+                msgretrun.Msg = "Error !!";
+                return NotFound(msgretrun);
+            }
+        }
     }
 }
