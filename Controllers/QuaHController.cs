@@ -95,7 +95,7 @@ namespace coreapi.Controllers
                 quotaion.ImgPath = r["ImgPath"].ToString();
                 quotaion.TicketId = r["TicketId"].ToString();
                 quotaion.PhoneNo = r["PhoneNo"].ToString();
-                quotaion.LineId = r["LineId"].ToString(); 
+                quotaion.LineId = r["LineId"].ToString();
 
                 if (
                     datatableDetail
@@ -173,10 +173,24 @@ namespace coreapi.Controllers
             string _cmd;
             List<QuotationList> quotationList = new List<QuotationList>();
 
-            _cmd = "exec dbo.getQuotationByDocNoAll @CmpId='" + id + "', @User='" + user + "' , @DocNo='" + docno + "'";
+            _cmd =
+                "exec dbo.getQuotationByDocNoAll @CmpId='"
+                + id
+                + "', @User='"
+                + user
+                + "' , @DocNo='"
+                + docno
+                + "'";
             DataTable datatable = DB.DBConn.GetDataTable(_cmd);
 
-            _cmd = "exec dbo.getQuotationItemByDocNoAll @CmpId='" + id + "', @User='" + user + "' , @DocNo='" + docno + "'";
+            _cmd =
+                "exec dbo.getQuotationItemByDocNoAll @CmpId='"
+                + id
+                + "', @User='"
+                + user
+                + "' , @DocNo='"
+                + docno
+                + "'";
             DataTable datatableDetail = DB.DBConn.GetDataTable(_cmd);
 
             foreach (DataRow r in datatable.Rows)
@@ -231,8 +245,8 @@ namespace coreapi.Controllers
                 quotaion.JobTypeFilter = r["JobTypeFilter"].ToString();
                 quotaion.ImgPath = r["ImgPath"].ToString();
                 quotaion.TicketId = r["TicketId"].ToString();
-                quotaion.PhoneNo = r["PhoneNo"].ToString(); 
-                quotaion.LineId = r["LineId"].ToString(); 
+                quotaion.PhoneNo = r["PhoneNo"].ToString();
+                quotaion.LineId = r["LineId"].ToString();
 
                 if (
                     datatableDetail
