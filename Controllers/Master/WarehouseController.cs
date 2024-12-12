@@ -1,23 +1,19 @@
-﻿
-using coreapi.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using coreapi.Models;
 using Microsoft.AspNetCore.Authorization;
-
-using System.IdentityModel.Tokens.Jwt;
-using Newtonsoft.Json;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace coreapi.Controllers.Master
 {
-
     [ApiController]
     [Authorize]
-
     public class WarehouseController : ControllerBase
     {
         // GET: api/Warehouse
@@ -26,7 +22,6 @@ namespace coreapi.Controllers.Master
         [HttpGet("[action]")]
         public IActionResult getWarehouse([FromQuery] string CmpId)
         {
-
             DataTable dt = new System.Data.DataTable();
             string _cmd;
             _cmd = "exec dbo.getWareHouseAll @CmpId='" + CmpId + "'";
@@ -35,7 +30,6 @@ namespace coreapi.Controllers.Master
             List<WareHouse> whs = new List<WareHouse>();
             foreach (DataRow r in dt.Rows)
             {
-
                 var wh = new WareHouse();
                 wh.CmpId = r["CmpId"].ToString();
                 wh.UpdUser = r["UpdUser"].ToString();
@@ -45,14 +39,10 @@ namespace coreapi.Controllers.Master
                 wh.WareHouseName = r["WareHouseName"].ToString();
 
                 whs.Add(wh);
-
             }
-
-
 
             return Ok(whs);
         }
-
 
         [HttpPost("[action]")]
         public IActionResult setWarehouse(WareHouse wh)
@@ -81,7 +71,6 @@ namespace coreapi.Controllers.Master
                     msgretrun.Msg = "Error !!";
                     return Ok(msgretrun);
                 }
-
             }
             catch
             {
@@ -89,25 +78,27 @@ namespace coreapi.Controllers.Master
                 msgretrun.Msg = "Error !!";
                 return Ok(msgretrun);
             }
-
-
         }
 
-
-
         [HttpGet("[action]")]
-        public IActionResult getLocationByWH([FromQuery] string CmpId, [FromQuery] string WareHouseId)
+        public IActionResult getLocationByWH(
+            [FromQuery] string CmpId,
+            [FromQuery] string WareHouseId
+        )
         {
-
             DataTable dt = new System.Data.DataTable();
             string _cmd;
-            _cmd = "exec dbo.getWareHouseLocationByWH @CmpId='" + CmpId + "' , @WH='" + WareHouseId + "'";
+            _cmd =
+                "exec dbo.getWareHouseLocationByWH @CmpId='"
+                + CmpId
+                + "' , @WH='"
+                + WareHouseId
+                + "'";
             dt = DB.DBConn.GetDataTable(_cmd);
 
             List<WareHouseLocation> whs = new List<WareHouseLocation>();
             foreach (DataRow r in dt.Rows)
             {
-
                 var wh = new WareHouseLocation();
                 wh.CmpId = r["CmpId"].ToString();
                 wh.UpdUser = r["UpdUser"].ToString();
@@ -118,34 +109,25 @@ namespace coreapi.Controllers.Master
                 wh.WareHouseLocName = r["WareHouseLocName"].ToString();
 
                 whs.Add(wh);
-
             }
-
-
 
             return Ok(whs);
         }
 
-
-
-
-
         /// api location
-        /// 
+        ///
 
 
         [HttpGet("[action]")]
         public IActionResult getLocation([FromQuery] string CmpId)
         {
-
             DataTable dt = new System.Data.DataTable();
             string _cmd;
             _cmd = "exec dbo.getWareHouseLocationAll @CmpId='" + CmpId + "'";
             dt = DB.DBConn.GetDataTable(_cmd);
-           List<WareHouseLocation> whs = new List<WareHouseLocation>();
+            List<WareHouseLocation> whs = new List<WareHouseLocation>();
             foreach (DataRow r in dt.Rows)
             {
-
                 var wh = new WareHouseLocation();
                 wh.CmpId = r["CmpId"].ToString();
                 wh.UpdUser = r["UpdUser"].ToString();
@@ -156,14 +138,10 @@ namespace coreapi.Controllers.Master
                 wh.WareHouseLocName = r["WareHouseLocName"].ToString();
 
                 whs.Add(wh);
-
             }
-
-
 
             return Ok(whs);
         }
-
 
         [HttpPost("[action]")]
         public IActionResult setLocation(WareHouseLocation loc)
@@ -193,7 +171,6 @@ namespace coreapi.Controllers.Master
                     msgretrun.Msg = "Error !!";
                     return Ok(msgretrun);
                 }
-
             }
             catch
             {
@@ -201,10 +178,34 @@ namespace coreapi.Controllers.Master
                 msgretrun.Msg = "Error !!";
                 return Ok(msgretrun);
             }
-
-
         }
 
+        [HttpDelete("[action]")]
+        public IActionResult delWarehouse([FromQuery] string CmpId, [FromQuery] int Id)
+        {
+            DataTable dt = new System.Data.DataTable();
+            string _cmd;
+            _cmd = " delete from dbo.mWareHouse where CmpId='" + CmpId + "' and WareHouseId=" + Id;
 
+            DB.DBConn.ExecuteOnly(_cmd);
+
+            return Ok();
+        }
+
+        [HttpDelete("[action]")]
+        public IActionResult delLocation([FromQuery] string CmpId, [FromQuery] int Id)
+        {
+            DataTable dt = new System.Data.DataTable();
+            string _cmd;
+            _cmd =
+                " delete from dbo.mWareHouseLocation where CmpId='"
+                + CmpId
+                + "' and WareHouseLocId="
+                + Id;
+
+            DB.DBConn.ExecuteOnly(_cmd);
+
+            return Ok();
+        }
     }
 }

@@ -170,7 +170,7 @@ namespace coreapi.Controllers
 
         public class calendarDel
         {
-            public int EventId { get; set; }
+            public string EventId { get; set; }
         }
     }
 }

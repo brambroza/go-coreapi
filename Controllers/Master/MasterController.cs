@@ -1,23 +1,20 @@
-﻿using coreapi.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using Microsoft.AspNetCore.Mvc;
+using coreapi.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
 namespace coreapi.Controllers.Master
 {
-
     [ApiController]
     [Authorize]
-
     public class MasterController : ControllerBase
     {
-
         [Route("province")]
         [HttpGet]
         public IActionResult getProvince()
@@ -29,7 +26,6 @@ namespace coreapi.Controllers.Master
             JSONString = JsonConvert.SerializeObject(datatable);
             return Ok(JSONString);
         }
-
 
         [Route("districts")]
         [HttpGet]
@@ -43,7 +39,6 @@ namespace coreapi.Controllers.Master
             return Ok(JSONString);
         }
 
-
         [Route("subdistricts")]
         [HttpGet]
         public IActionResult getSubDistricts()
@@ -55,7 +50,6 @@ namespace coreapi.Controllers.Master
             JSONString = JsonConvert.SerializeObject(datatable);
             return Ok(JSONString);
         }
-
 
         [Route("setCustomerDBD")]
         [HttpPost]
@@ -74,7 +68,10 @@ namespace coreapi.Controllers.Master
                 _cmd += " ,@juristicStatus='" + cusdb.juristicStatus + "'";
                 _cmd += " ,@registerCapital='" + cusdb.registerCapital + "'";
                 _cmd += " ,@standardObjective='" + cusdb.standardObjective + "'";
-                _cmd += " ,@objectiveDescription='" + cusdb.standardObjectiveDetail.objectiveDescription + "'";
+                _cmd +=
+                    " ,@objectiveDescription='"
+                    + cusdb.standardObjectiveDetail.objectiveDescription
+                    + "'";
                 _cmd += " ,@addressName='" + cusdb.addressDetail.addressName + "'";
                 _cmd += " ,@buildingName='" + cusdb.addressDetail.buildingName + "'";
                 _cmd += " ,@roomNo='" + cusdb.addressDetail.roomNo + "'";
@@ -97,20 +94,15 @@ namespace coreapi.Controllers.Master
                     msgretrun.ReturnCode = "400";
                     msgretrun.Msg = "Error !!";
                     return StatusCode(400, new { Message = msgretrun.Msg, Error = msgretrun.Msg });
-
                 }
-
             }
             catch
             {
                 msgretrun.ReturnCode = "400";
                 msgretrun.Msg = "Error !!";
                 return StatusCode(400, new { Message = msgretrun.Msg, Error = msgretrun.Msg });
-
             }
-
         }
-
 
         [HttpGet("[action]")]
         public IActionResult getBank([FromQuery] string cmpid)
@@ -136,10 +128,6 @@ namespace coreapi.Controllers.Master
             return Ok(JSONString);
         }
 
-
-
-
-
         [HttpGet("[action]")]
         public IActionResult getBankBranch([FromQuery] string cmpid)
         {
@@ -152,12 +140,9 @@ namespace coreapi.Controllers.Master
             return Ok(JSONString);
         }
 
-
-
         [HttpPost("[action]")]
         public IActionResult setBank(Bank bk)
         {
-
             MsgReturn msgretrun = new MsgReturn();
 
             try
@@ -182,26 +167,19 @@ namespace coreapi.Controllers.Master
                     msgretrun.ReturnCode = "400";
                     msgretrun.Msg = "Error !!";
                     return StatusCode(400, new { Message = msgretrun.Msg, Error = msgretrun.Msg });
-
                 }
-
             }
             catch
             {
                 msgretrun.ReturnCode = "400";
                 msgretrun.Msg = "Error !!";
                 return StatusCode(400, new { Message = msgretrun.Msg, Error = msgretrun.Msg });
-
             }
-
-
         }
-
 
         [HttpPost("[action]")]
         public IActionResult setBankBranch(BankBranch bk)
         {
-
             MsgReturn msgretrun = new MsgReturn();
 
             try
@@ -234,19 +212,14 @@ namespace coreapi.Controllers.Master
                     msgretrun.ReturnCode = "400";
                     msgretrun.Msg = "Error !!";
                     return StatusCode(400, new { Message = msgretrun.Msg, Error = msgretrun.Msg });
-
                 }
-
             }
             catch
             {
                 msgretrun.ReturnCode = "400";
                 msgretrun.Msg = "Error !!";
                 return StatusCode(400, new { Message = msgretrun.Msg, Error = msgretrun.Msg });
-
             }
-
-
         }
 
         [HttpDelete("[action]")]
@@ -261,12 +234,14 @@ namespace coreapi.Controllers.Master
         public void DeleteBankBranch([FromQuery] string key, [FromQuery] string cmpid)
         {
             string _cmd = "";
-            _cmd = "delete from dbo.mBankBranch where  BankBranchCode='" + key + "' and CmpId ='" + cmpid + "'";
+            _cmd =
+                "delete from dbo.mBankBranch where  BankBranchCode='"
+                + key
+                + "' and CmpId ='"
+                + cmpid
+                + "'";
             DB.DBConn.ExecuteOnly(_cmd);
         }
-
-
-
 
         [Route("bussinetGrp")]
         [HttpGet]
@@ -280,12 +255,25 @@ namespace coreapi.Controllers.Master
             return Ok(JSONString);
         }
 
+        [Route("delbusinessGrp")]
+        [HttpDelete]
+        public IActionResult delbusinessGrp([FromQuery] string CmpId, [FromQuery] string id)
+        {
+            string _cmd;
+            _cmd =
+                " delete from   msb.mBusinessGrp  where CmpId='"
+                + CmpId
+                + "' and BusinessGrpCode='"
+                + id
+                + "'";
 
+            DB.DBConn.ExecuteOnly(_cmd);
+            return Ok();
+        }
 
         [HttpPost("[action]")]
         public IActionResult setBussinetGrp(mBussinetGrp bk)
         {
-
             MsgReturn msgretrun = new MsgReturn();
 
             try
@@ -310,24 +298,14 @@ namespace coreapi.Controllers.Master
                     msgretrun.ReturnCode = "400";
                     msgretrun.Msg = "Error !!";
                     return StatusCode(400, new { Message = msgretrun.Msg, Error = msgretrun.Msg });
-
                 }
-
             }
             catch
             {
                 msgretrun.ReturnCode = "400";
                 msgretrun.Msg = "Error !!";
                 return StatusCode(400, new { Message = msgretrun.Msg, Error = msgretrun.Msg });
-
             }
-
-
         }
-
-
-
-
-
     }
 }

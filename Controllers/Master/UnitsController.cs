@@ -1,27 +1,26 @@
-﻿using coreapi.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using Newtonsoft.Json;
-using Microsoft.AspNetCore.Mvc;
+using coreapi.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+
 namespace coreapi.Controllers
 {
     [ApiController]
     [Authorize]
-
     public class UnitsController : ControllerBase
     {
         // GET: api/Units
 
         // GET: api/Units/5
         [HttpGet("[action]")]
-        public IActionResult GetUnitMaster( [FromQuery] string cmpid)
+        public IActionResult GetUnitMaster([FromQuery] string cmpid)
         {
-
             DataTable dt = new System.Data.DataTable();
             string _cmd;
             _cmd = "exec dbo.[getUnitMaster] @CmpId=" + cmpid + "";
@@ -34,34 +33,31 @@ namespace coreapi.Controllers
             return Ok(JSONString);
         }
 
-
-
         // POST: api/Units
         [HttpPost("[action]")]
         public void SetUnitMaster(Units units)
         {
-
             string _cmd = "";
             _cmd = "exec  dbo.mUnit_Trans";
             _cmd += " @UpdUser  ='" + units.UpdUser + "'";
             _cmd += ",@UnitCode =" + units.UnitCode;
             _cmd += ",@UnitDescription  ='" + units.UnitDescription + "'";
-             _cmd += ",@CmpId  ='" + units.CmpId + "'";
+            _cmd += ",@CmpId  ='" + units.CmpId + "'";
             DB.DBConn.ExecuteOnly(_cmd);
         }
-
-        
 
         // DELETE: api/Units/5
         [HttpDelete("[action]")]
-        public void DeleteUnitMaster( [FromQuery] string unitcode , [FromQuery] string cmpid)
+        public void DeleteUnitMaster([FromQuery] string unitcode, [FromQuery] string cmpid)
         {
             string _cmd = "";
-            _cmd = "delete from msb.mUnit where  UnitCode='" + unitcode + "' and CmpId ='" + cmpid + "'";
+            _cmd =
+                "delete from msb.mUnit where  UnitCode='"
+                + unitcode
+                + "' and CmpId ='"
+                + cmpid
+                + "'";
             DB.DBConn.ExecuteOnly(_cmd);
         }
-
-
-        
     }
 }
