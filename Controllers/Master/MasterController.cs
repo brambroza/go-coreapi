@@ -177,6 +177,15 @@ namespace coreapi.Controllers.Master
             }
         }
 
+        [HttpDelete("[action]")]
+        public IActionResult delBank([FromQuery] string cmpid, [FromQuery] string id)
+        {
+            string _cmd;
+            _cmd = " delete from dbo.mBank where  CmpId='" + cmpid + "' and BankCode='" + id + "'";
+            DB.DBConn.ExecuteOnly(_cmd);
+            return Ok();
+        }
+
         [HttpPost("[action]")]
         public IActionResult setBankBranch(BankBranch bk)
         {
@@ -223,24 +232,17 @@ namespace coreapi.Controllers.Master
         }
 
         [HttpDelete("[action]")]
-        public void DeleteBank([FromQuery] string key, [FromQuery] string cmpid)
+        public IActionResult delBankBranch([FromQuery] string cmpid, [FromQuery] string id)
         {
-            string _cmd = "";
-            _cmd = "delete from dbo.mBank where  BankCode='" + key + "' and CmpId ='" + cmpid + "'";
-            DB.DBConn.ExecuteOnly(_cmd);
-        }
-
-        [HttpDelete("[action]")]
-        public void DeleteBankBranch([FromQuery] string key, [FromQuery] string cmpid)
-        {
-            string _cmd = "";
+            string _cmd;
             _cmd =
-                "delete from dbo.mBankBranch where  BankBranchCode='"
-                + key
-                + "' and CmpId ='"
+                " delete from dbo.mBankBranch where  CmpId='"
                 + cmpid
+                + "' and BankBranchCode='"
+                + id
                 + "'";
             DB.DBConn.ExecuteOnly(_cmd);
+            return Ok();
         }
 
         [Route("bussinetGrp")]
