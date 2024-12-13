@@ -270,10 +270,8 @@ namespace coreapi.Controllers
                             _cmd += "  @CmpId='" + request.ReqRoute[r].reqAssign[a].CmpId + "'";
                             _cmd +=
                                 " , @TicketId='" + request.ReqRoute[r].reqAssign[a].TicketId + "'";
-                            _cmd +=
-                                " , @RouteId='" + request.ReqRoute[r].reqAssign[a].RouteId + "'";
-                            _cmd +=
-                                "  ,@RemindId='" + request.ReqRoute[r].reqAssign[a].RemindId + "'";
+                            _cmd += " , @RouteId='" + request.ReqRoute[r].RouteId + "'";
+                            _cmd += "  ,@RemindId='" + request.ReqRoute[r].RemindId + "'";
                             _cmd += "  ,@UserId='" + request.ReqRoute[r].reqAssign[a].UserId + "'";
                             _cmd +=
                                 "  ,@Permission='"
@@ -360,8 +358,8 @@ namespace coreapi.Controllers
                     _cmd = " exec dbo.[setReqOtherFromGoAlong_Route_Assign]";
                     _cmd += "  @CmpId='" + request.reqAssign[a].CmpId + "'";
                     _cmd += " , @TicketId='" + request.reqAssign[a].TicketId + "'";
-                    _cmd += " , @RouteId='" + request.reqAssign[a].RouteId + "'";
-                    _cmd += "  ,@RemindId='" + request.reqAssign[a].RemindId + "'";
+                    _cmd += " , @RouteId='" + request.RouteId + "'";
+                    _cmd += "  ,@RemindId='" + request.RemindId + "'";
                     _cmd += "  ,@UserId='" + request.reqAssign[a].UserId + "'";
                     _cmd += "  ,@Permission='" + request.reqAssign[a].Permission + "'";
                     if (DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran) <= 0)
