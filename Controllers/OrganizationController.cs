@@ -36,6 +36,8 @@ namespace coreapi.Controllers
                     JobDescription = int.Parse(row["JobDescription"].ToString()),
                     UpdUser = row["UpdUser"].ToString(),
                     TeamName = row["TeamName"].ToString(),
+                    Approvedocby = row["Approvedocby"].ToString(),
+                    TeamAll = row["TeamAll"].ToString(),
                 };
                 organizations.Add(organization);
             }
@@ -85,6 +87,31 @@ namespace coreapi.Controllers
                 org.Position = row["Position"].ToString();
             }
             return Ok(org);
+        }
+
+        [HttpGet("[action]")]
+        public IActionResult getOrganizationTable([FromQuery] string cmpid, [FromQuery] string Id)
+        {
+            DataTable dt = new System.Data.DataTable();
+            string _cmd;
+            _cmd = "exec dbo.[org_getOrganizationTable] @CmpId='" + cmpid + "' , @Id='" + Id + "'";
+            dt = DB.DBConn.GetDataTable(_cmd);
+
+            var orgs = new List<OrganizationTable>();
+            foreach (DataRow row in dt.Rows)
+            {
+                var org = new OrganizationTable();
+                org.AccountID = int.Parse(row["AccountID"].ToString());
+                org.CmpId = row["CmpId"].ToString();
+                org.Id = row["TeamId"].ToString();
+                org.ParrentID = int.Parse(row["ParrentID"].ToString());
+                org.StateApprove = int.Parse(row["StateApprove"].ToString());
+                org.FullName = row["FullName"].ToString();
+                org.Position = row["Position"].ToString();
+                org.ImgPath = row["ImgPath"].ToString();
+                orgs.Add(org);
+            }
+            return Ok(orgs);
         }
 
         [HttpGet("[action]")]
@@ -237,9 +264,25 @@ namespace coreapi.Controllers
 
                 if (DB.DBConn.ExecuteOnly(_cmd))
                 {
-                    msgretrun.ReturnCode = "200";
-                    msgretrun.Msg = "Save Success !!";
-                    return Ok(msgretrun);
+                    _cmd =
+                        " delete from dbo.Organization where TeamId ='"
+                        + id
+                        + "' and CmpId='"
+                        + cmpId
+                        + "'  ";
+
+                    if (DB.DBConn.ExecuteOnly(_cmd))
+                    {
+                        msgretrun.ReturnCode = "200";
+                        msgretrun.Msg = "Save Success !!";
+                        return Ok(msgretrun);
+                    }
+                    else
+                    {
+                        msgretrun.ReturnCode = "400";
+                        msgretrun.Msg = "Error !!";
+                        return NotFound(msgretrun);
+                    }
                 }
                 else
                 {

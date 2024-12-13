@@ -578,13 +578,15 @@ namespace coreapi.Controllers
                     + quoH.user
                     + "'";
 
-                if (DB.DBConn.ExecuteOnly(_cmd))
+                System.Data.DataTable dt = DB.DBConn.GetDataTable(_cmd);
+                if (dt.Rows.Count > 0)
                 {
                     /*  var x = linenotisendapp(quoH.docno); */
 
+
                     msgretrun.ReturnCode = "200";
                     msgretrun.Msg = "Save Success !!";
-                    return Ok(msgretrun);
+                    return Ok(new { approvedoc = dt.Rows[0][0] });
                 }
                 else
                 {
