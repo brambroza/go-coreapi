@@ -110,6 +110,7 @@ namespace coreapi.Controllers
                 _cmd += ",@customerName  ='" + mt.customerName + "'";
                 _cmd += ",@ticketId='" + mt.ticketId + "'";
                 _cmd += " ,@invite='" + userIds + "'";
+                _cmd += ",@ticketIdRef='" + mt.ticketIdRef + "'";
 
                 if (DB.DBConn.ExecuteOnly(_cmd))
                 {

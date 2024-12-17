@@ -28,6 +28,7 @@ namespace coreapi.Controllers
             DataTable dt = new System.Data.DataTable();
             DataTable dtItem = new System.Data.DataTable();
             DataTable dtAssign = new System.Data.DataTable();
+            DataTable dtAssignDisplay = new System.Data.DataTable();
             DataTable dtComment = new DataTable();
             DataTable dtCommentReply = new DataTable();
             DataTable dtOwner = new DataTable();
@@ -59,6 +60,14 @@ namespace coreapi.Controllers
                 + cmpid
                 + "'";
             dtAssign = DB.DBConn.GetDataTable(_cmd);
+
+            _cmd =
+                "exec dbo.[getReqFromCustomerAssignDisplay] @user='"
+                + userlogin
+                + "', @cmpid='"
+                + cmpid
+                + "'";
+            dtAssignDisplay = DB.DBConn.GetDataTable(_cmd);
 
             _cmd =
                 "exec dbo.[getReqFromCustomerOwner] @user='"
@@ -111,6 +120,7 @@ namespace coreapi.Controllers
                 crm.FromApp = r["FromApp"].ToString();
                 crm.todo = r["todo"].ToString();
                 crm.AdditionalDetail = r["AdditionalDetail"].ToString();
+                crm.AdditionalDetail2 = r["AdditionalDetail2"].ToString();
                 crm.completepercent = decimal.Parse(r["completepercent"].ToString());
                 crm.DueDate = DateTime
                     .Parse(r["DueDate"].ToString())
@@ -266,6 +276,7 @@ namespace coreapi.Controllers
 
                     item.SLA = i["SLA"].ToString();
                     item.AdditionalDetail = i["AdditionalDetail"].ToString();
+                    item.AdditionalDetail2 = i["AdditionalDetail2"].ToString();
                     item.DesiredService = i["DesiredService"].ToString();
                     item.FileUrl = i["FIleUrl"].ToString();
                     item.Seq = int.Parse(i["Seq"].ToString());
@@ -274,7 +285,7 @@ namespace coreapi.Controllers
 
                 crm.ReqAssign = new List<ReqFromCustAssign>();
                 foreach (
-                    DataRow i in dtAssign.Select(
+                    DataRow i in dtAssignDisplay.Select(
                         " TicketId='"
                             + r["TicketId"].ToString()
                             + "' and  CmpId='"
@@ -464,6 +475,7 @@ namespace coreapi.Controllers
                     crm.Status = r["Status"].ToString();
                     crm.FromApp = r["FromApp"].ToString();
                     crm.AdditionalDetail = r["AdditionalDetail"].ToString();
+                    crm.AdditionalDetail2 = r["AdditionalDetail2"].ToString();
                     crm.todo = r["todo"].ToString();
                     crm.completepercent = decimal.Parse(r["completepercent"].ToString());
                     crm.DueDate = DateTime

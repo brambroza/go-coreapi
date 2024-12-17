@@ -211,6 +211,7 @@ namespace coreapi.Controllers
                     _cmd += " , @updUser='" + request.UpdUser + "'";
 
                     _cmd += ", @AdditionalDetail  ='" + request.ReqItem[i].AdditionalDetail + "'";
+                    _cmd += ", @AdditionalDetail2  ='" + request.ReqItem[i].AdditionalDetail2 + "'";
                     if (request.ReqItem[i].FileUrl != null)
                     {
                         _cmd +=
@@ -376,7 +377,7 @@ namespace coreapi.Controllers
                 DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
                 DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
 
-                return Ok(JSONString);
+                return Ok();
             }
             catch
             {

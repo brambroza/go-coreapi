@@ -74,6 +74,7 @@ namespace coreapi.Models
         public string ContactEmail { get; set; }
         public string Address { get; set; }
         public string AdditionalDetail { get; set; }
+        public string AdditionalDetail2 { get; set; }
         public DateTime CreateAt { get; set; }
         public string Status { get; set; }
         public string FromApp { get; set; }
@@ -106,6 +107,7 @@ namespace coreapi.Models
         public string AdvanceReplacement { get; set; }
         public string SLA { get; set; }
         public string AdditionalDetail { get; set; }
+        public string AdditionalDetail2 { get; set; }
         public string DesiredService { get; set; }
         public string FileUrl { get; set; }
         public int Seq { get; set; }
