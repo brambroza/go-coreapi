@@ -438,11 +438,10 @@ namespace coreapi.Controllers
             }
         }
 
-
-         [HttpPost("[action]")]
+        [HttpPost("[action]")]
         public IActionResult setTicketPurchaseCloseItem(List<TicketPurchase_Item> po)
         {
-            MsgReturn msgretrun = new MsgReturn(); 
+            MsgReturn msgretrun = new MsgReturn();
             DB.DBConn.SqlConnectionOpen();
             DB.DBConn.Cmd = DB.DBConn.Cnn.CreateCommand();
             DB.DBConn.Tran = DB.DBConn.Cnn.BeginTransaction();
@@ -450,7 +449,7 @@ namespace coreapi.Controllers
             try
             {
                 string _cmd = "";
-               for (int i = 0; i < po.Count; i++)
+                for (int i = 0; i < po.Count; i++)
                 {
                     _cmd = "exec  dbo.[setTicketPurchase_Item_Close]";
                     _cmd += " @DocNo  ='" + po[i].DocNo + "'";
@@ -472,9 +471,7 @@ namespace coreapi.Controllers
                         return BadRequest(msgretrun);
                     }
                 }
-              
 
-                
                 DB.DBConn.Tran.Commit();
                 DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
                 DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
@@ -489,9 +486,6 @@ namespace coreapi.Controllers
                 return BadRequest(msgretrun);
             }
         }
-
-
-
 
         [HttpPost("[action]")]
         public IActionResult setTicketPurchase(TicketPurchase po)
@@ -689,8 +683,7 @@ namespace coreapi.Controllers
                 purchases.Add(purchase);
             }
 
-         
-               return Ok(new { tickets = purchases });
+            return Ok(new { tickets = purchases });
         }
 
         [HttpGet("[action]")]

@@ -39,6 +39,7 @@ namespace coreapi.Models
 
         public string Jobtype { get; set; }
         public string TicketId { get; set; }
+        public string BomNo { get; set; }
     }
 
     public class QuotationCopy
@@ -212,6 +213,7 @@ namespace coreapi.Models
         public string ContactMail { get; set; }
         public string CmpId { get; set; }
         public string QuotationNo { get; set; }
+        public int QuoRevNo { get; set; }
 
         public List<SalesBom_Detail> items { get; set; }
     }
@@ -383,7 +385,8 @@ namespace coreapi.Models
         public string TicketId { get; set; }
 
         public List<QuotationListItem> Items { get; set; }
-        public string PhoneNo {get;set;} = "";
-        public string LineId  {get;set;} = ""; 
+        public string PhoneNo { get; set; } = "";
+        public string LineId { get; set; } = "";
+        public string BomNo { get; set; }
     }
 }

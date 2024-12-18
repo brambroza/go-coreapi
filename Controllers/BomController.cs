@@ -526,7 +526,6 @@ namespace coreapi.Controllers
                         DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
                         return BadRequest();
                     }
-                    
                 }
 
                 DB.DBConn.Tran.Commit();
@@ -873,6 +872,7 @@ namespace coreapi.Controllers
                 _cmd += ",@ContactMail='" + item.ContactMail + "'";
                 _cmd += ",@ContactPhone='" + item.ContactPhone + "'";
                 _cmd += ",@QuotationNo='" + item.QuotationNo + "'";
+                _cmd += " , @QuoRevNo=" + item.QuoRevNo + "";
 
                 if (DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran) <= 0)
                 {
@@ -895,6 +895,7 @@ namespace coreapi.Controllers
                     _cmd += ",@CmpId  ='" + item.CmpId + "'";
                     _cmd += " ,@Seq=" + item.items[i].Seq;
                     _cmd += ", @ProdCode='" + item.items[i].ProdCode + "'";
+                    _cmd += " ,@QuoRevNo=" + item.QuoRevNo + "";
 
                     if (DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran) <= 0)
                     {

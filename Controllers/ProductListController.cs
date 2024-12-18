@@ -33,7 +33,23 @@ namespace coreapi.Controllers
             string JSONString = string.Empty;
             JSONString = JsonConvert.SerializeObject(dt);
 
-            return Ok(JSONString);
+            var prodlist = new List<Dictionary<string, object>>();
+            foreach (DataRow row in dt.Rows)
+            {
+                var eventObj = new Dictionary<string, object>();
+                foreach (DataColumn column in dt.Columns)
+                {
+                    string lowercaseColumnName =
+                        char.ToLowerInvariant(column.ColumnName[0])
+                        + column.ColumnName.Substring(1);
+
+                    eventObj[lowercaseColumnName] = row[column];
+                }
+
+                prodlist.Add(eventObj);
+            }
+
+            return Ok(prodlist);
         }
 
         [HttpGet("[action]")]
@@ -75,7 +91,7 @@ namespace coreapi.Controllers
                     ProductTypeSubName = r["ProductTypeSubName"]?.ToString(),
                     ShowReport = r["ShowReport"]?.ToString(),
                     ImgPath = r["imgpath"]?.ToString(),
-                    UpdDate = DateTime.Parse(r["UpdDate"]?.ToString()) ,
+                    UpdDate = DateTime.Parse(r["UpdDate"]?.ToString()),
                     CmpId = r["CmpId"]?.ToString(),
                     StateActive =
                         r["ProductStateActive"] != DBNull.Value

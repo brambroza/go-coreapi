@@ -146,7 +146,15 @@ namespace coreapi.Controllers
             try
             {
                 string _cmd = "";
-                _cmd = " delete from CalendarEvent where CalendarId ='" + model.EventId + "'";
+
+                _cmd = "  delete r from  CalendarEvent  a  ";
+                _cmd +=
+                    "  inner join CustomerReqTicketRoute  r on a.TicketId = r.TicketId  and a.CalendarId = r.RemindId ";
+                _cmd +=
+                    "  and a.CmpId = r.CmpId where  r.RouteId = '240002' and a.CalendarId ='"
+                    + model.EventId
+                    + "'";
+                _cmd += " delete from CalendarEvent where CalendarId ='" + model.EventId + "'";
 
                 if (DB.DBConn.ExecuteOnly(_cmd))
                 {

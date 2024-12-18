@@ -96,6 +96,7 @@ namespace coreapi.Controllers
                 quotaion.TicketId = r["TicketId"].ToString();
                 quotaion.PhoneNo = r["PhoneNo"].ToString();
                 quotaion.LineId = r["LineId"].ToString();
+                quotaion.BomNo = r["BomNo"].ToString();
 
                 if (
                     datatableDetail
@@ -247,6 +248,7 @@ namespace coreapi.Controllers
                 quotaion.TicketId = r["TicketId"].ToString();
                 quotaion.PhoneNo = r["PhoneNo"].ToString();
                 quotaion.LineId = r["LineId"].ToString();
+                quotaion.BomNo = r["BomNo"].ToString();
 
                 if (
                     datatableDetail
@@ -382,6 +384,7 @@ namespace coreapi.Controllers
                     " ,@CustContact='" + Tool.Tool.validateStr(Quotation.CustomerContactName) + "'";
                 _cmd += ", @Jobtype='" + Quotation.Jobtype + "'";
                 _cmd += ", @TicketId ='" + Quotation.TicketId + "'";
+                _cmd += ", @BomNo ='" + Quotation.BomNo + "'";
 
                 if (DB.DBConn.ExecuteOnly(_cmd))
                 {
@@ -720,6 +723,7 @@ namespace coreapi.Controllers
                 quotaion.FullName = r["FullName"].ToString();
                 quotaion.JobTypeFilter = r["JobTypeFilter"].ToString();
                 quotaion.ImgPath = r["ImgPath"].ToString();
+                quotaion.BomNo = r["BomNo"].ToString();
 
                 if (
                     datatableDetail
