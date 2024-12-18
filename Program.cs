@@ -24,11 +24,7 @@ builder.Services.AddCors(p =>
         {
             /*  builder.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();  */
             builder
-                .WithOrigins(
-                    "http://nisolution.fortiddns.com:8284",
-                    "http://localhost:8080",
-                    "http://192.168.55.219:8285"
-                )
+                .WithOrigins("http://nisolution.fortiddns.com:8284", "http://localhost:8080")
                 .AllowAnyMethod()
                 .AllowAnyHeader()
                 .AllowCredentials();
