@@ -290,18 +290,13 @@ namespace coreapi.Controllers
             return Ok(roleList);
         }
 
-
-          [HttpGet("[action]")]
+        [HttpGet("[action]")]
         public IActionResult getUserMapRole([FromQuery] string cmpid, [FromQuery] string User)
         {
             DataTable dt = new System.Data.DataTable();
             string _cmd;
             _cmd =
-                "exec dbo.[security_getUserMapRole] @CmpId="
-                + cmpid
-                + " , @user ='"
-                + User
-                + "'";
+                "exec dbo.[security_getUserMapRole] @CmpId=" + cmpid + " , @user ='" + User + "'";
             dt = DB.DBConn.GetDataTable(_cmd);
 
             List<UserMapRole> roleList = new List<UserMapRole>();
@@ -310,9 +305,9 @@ namespace coreapi.Controllers
             {
                 var role = new UserMapRole()
                 {
-                    RoleID = Convert.ToInt32(r["RoleId"]), 
+                    RoleID = Convert.ToInt32(r["RoleId"]),
                     CmpId = r["CmpId"].ToString(),
-                    AccountID = Convert.ToInt32(r["AccountID"]), 
+                    AccountID = Convert.ToInt32(r["AccountID"]),
                 };
 
                 roleList.Add(role);
@@ -320,8 +315,6 @@ namespace coreapi.Controllers
 
             return Ok(roleList);
         }
-
-
 
         [HttpPost("[action]")]
         public IActionResult setUserMapRole(List<UserMapRole> roldmap)
