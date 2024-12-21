@@ -66,7 +66,7 @@ namespace coreapi.Controllers
                             + bom.RevNo
                             + " and CmpId='"
                             + bom.CmpId
-                            + "'"
+                            + "'  "
                     )
                 )
                 {
@@ -131,6 +131,85 @@ namespace coreapi.Controllers
 
                         item.bomitemPrice.Add(itemprice);
                     }
+
+                    /* item.bomitemReplace = new List<SalesBom_Detail>();
+
+                    foreach (
+                        DataRow xr in dtItem.Select(
+                            "BomNo='"
+                                + bom.BomNo
+                                + "' and RevNo="
+                                + bom.RevNo
+                                + " and CmpId='"
+                                + bom.CmpId
+                                + "' and ReplaceProdCode<>''"
+                        )
+                    )
+                    {
+                        var itemxr = new SalesBom_Detail();
+                        itemxr.BomNo = bom.BomNo;
+                        itemxr.UpdUser = xr["UpdUser"].ToString();
+                        itemxr.RevNo = bom.RevNo;
+                        itemxr.Seq = Convert.ToInt32(xr["Seq"]);
+                        itemxr.ProdCode = xr["ProdCode"].ToString();
+                        itemxr.ProdDescription = xr["ProdDescription"].ToString();
+                        itemxr.Qty = Convert.ToDecimal(xr["Qty"]);
+                        itemxr.UnitPrice = Convert.ToDecimal(xr["UnitPrice"]);
+                        itemxr.UnitCode = xr["UnitCode"].ToString();
+                        itemxr.Amt = Convert.ToDecimal(xr["Amt"]);
+                        itemxr.CmpId = xr["CmpId"].ToString();
+                        itemxr.ReplaceStatus = Convert.ToInt32(xr["ReplaceStatus"]);
+                        itemxr.Vendor = "";
+                        itemxr.VendorName = "";
+                        itemxr.Remark = xr["Remark"].ToString();
+                        itemxr.OutofstockStatus = Convert.ToInt32(xr["OutofstockStatus"]);
+                        itemxr.ReplaceProdCode = xr["ReplaceProdCode"].ToString();
+                        itemxr.StatePriceReq = Convert.ToInt32(xr["StatePriceReq"]);
+                        itemxr.StateUpdatePrice = Convert.ToInt32(xr["StateUpdatePrice"]);
+
+                        itemxr.bomitemPrice = new List<SalesBom_Price_Item>();
+
+                        foreach (
+                            DataRow ixr in dtItemPrice.Select(
+                                "BomNo='"
+                                    + bom.BomNo
+                                    + "' and RevNo="
+                                    + bom.RevNo
+                                    + " and CmpId='"
+                                    + bom.CmpId
+                                    + "' and ProdCode='"
+                                    + itemxr.ProdCode
+                                    + "' and Seq="
+                                    + itemxr.Seq
+                            )
+                        )
+                        {
+                            var itemprice = new SalesBom_Price_Item();
+
+                            itemprice.BomNo = bom.BomNo;
+                            itemprice.UpdUser = ixr["UpdUser"].ToString();
+                            itemprice.RevNo = bom.RevNo;
+                            itemprice.Seq = Convert.ToInt32(ixr["Seq"]);
+                            itemprice.ProdCode = ixr["ProdCode"].ToString();
+                            itemprice.SupplierCode = ixr["SupplierCode"].ToString();
+                            itemprice.SupplierName = ixr["SupplierName"].ToString();
+                            itemprice.DeliveryDate = DateTime.Parse(ixr["DeliveryDate"].ToString());
+                            itemprice.Qty = Convert.ToDecimal(ixr["Qty"]);
+                            itemprice.QtyBal = Convert.ToDecimal(ixr["QtyBal"]);
+                            itemprice.UnitPrice = Convert.ToDecimal(ixr["UnitPrice"]);
+                            itemprice.UnitCode = ixr["UnitCode"].ToString();
+                            itemprice.Amt = Convert.ToDecimal(ixr["Amt"]);
+                            itemprice.CmpId = ixr["CmpId"].ToString();
+                            itemprice.Remark = ixr["Remark"].ToString();
+                            itemprice.PriceSeq = Convert.ToInt32(ixr["PriceSeq"]);
+                            itemprice.StateDelete = Convert.ToInt32(ixr["StateDelete"]);
+                            itemprice.StateSelect = Convert.ToInt32(ixr["StateSelect"]);
+
+                            itemxr.bomitemPrice.Add(itemprice);
+                        }
+
+                        item.bomitemReplace.Add(itemxr);
+                    } */
 
                     bom.items.Add(item);
                 }
@@ -695,6 +774,7 @@ namespace coreapi.Controllers
                 _cmd += ",@PriceSeq =" + item.PriceSeq;
                 _cmd += ",@CmpId  ='" + item.CmpId + "'";
                 _cmd += ",@VenderCode='" + item.SupplierCode + "'";
+                _cmd += ",@StateSelect=" + item.StateSelect;
 
                 if (DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran) <= 0)
                 {

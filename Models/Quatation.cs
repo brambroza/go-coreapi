@@ -330,6 +330,7 @@ namespace coreapi.Models
         public decimal GrossProfitPer { get; set; }
         public string MainProdCode { get; set; }
         public int MainSeq { get; set; }
+        public int SeqSort { get; set; }
     }
 
     public class QuotationList

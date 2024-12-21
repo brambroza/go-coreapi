@@ -67,7 +67,7 @@ namespace coreapi.Controllers
                     il++;
                     _cmd =
                         "Exec setQuotationDetail @QuotationNo='" + Quotation[i].QuotationNo + "'";
-                    _cmd += ",@Seq=" + il;
+                    _cmd += ",@Seq=" + Quotation[i].Seq;
                     _cmd += ",@ProdCode='" + Quotation[i].ProdCode + "'";
                     _cmd +=
                         ",@ProdDesc='" + Tool.Tool.validateStr(Quotation[i].ProdDescription) + "'";
@@ -96,6 +96,7 @@ namespace coreapi.Controllers
                     _cmd += ",@UpdUser='" + Quotation[i].UpdUser + "'";
                     _cmd += ",@MainProdCode='" + Quotation[i].MainProdCode + "'";
                     _cmd += ",@MainSeq=" + Quotation[i].MainSeq;
+                    _cmd += ",@SeqSort=" + il;
 
                     if (DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran) <= 0)
                     {

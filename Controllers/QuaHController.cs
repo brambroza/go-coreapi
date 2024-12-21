@@ -154,7 +154,7 @@ namespace coreapi.Controllers
 
                     item.MainProdCode = d["MainProdCode"].ToString();
                     item.MainSeq = Convert.ToInt32(d["MainSeq"]);
-
+                    item.SeqSort = Convert.ToInt32(d["SeqSort"]);
                     quotaion.Items.Add(item);
                 }
 
@@ -306,7 +306,7 @@ namespace coreapi.Controllers
 
                     item.MainProdCode = d["MainProdCode"].ToString();
                     item.MainSeq = Convert.ToInt32(d["MainSeq"]);
-
+                    item.SeqSort = Convert.ToInt32(d["SeqSort"]);
                     quotaion.Items.Add(item);
                 }
 
@@ -778,7 +778,8 @@ namespace coreapi.Controllers
                     item.GroupCaption3 = d["GroupCaption3"].ToString();
                     item.CmpId = d["CmpId"].ToString();
                     item.GrossProfitPer = Convert.ToDecimal(d["GrossProfitPer"]);
-
+                    item.MainSeq = Convert.ToInt32(d["MainSeq"]);
+                    item.SeqSort = int.Parse(d["SeqSort"].ToString());
                     quotaion.Items.Add(item);
                 }
             }

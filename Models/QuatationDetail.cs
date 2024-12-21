@@ -31,13 +31,10 @@ namespace coreapi.Models
         public string UpdUser { get; set; }
         public string CmpId { get; set; }
 
-        public string MainProdCode {get;set;}
-        public int MainSeq {get;set;}
-
-        
-
+        public string MainProdCode { get; set; }
+        public int MainSeq { get; set; }
+        public int SeqSort { get; set; }
     }
-
 
     public class saleorderDetail
     {
@@ -65,7 +62,5 @@ namespace coreapi.Models
         public string UpdUser { get; set; }
 
         public string CmpId { get; set; }
-
     }
-
 }
