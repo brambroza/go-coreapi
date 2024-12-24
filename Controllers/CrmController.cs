@@ -633,6 +633,7 @@ namespace coreapi.Controllers
 
                         item.SLA = i["SLA"].ToString();
                         item.AdditionalDetail = i["AdditionalDetail"].ToString();
+                        item.AdditionalDetail2 = i["AdditionalDetail2"].ToString();
                         item.DesiredService = i["DesiredService"].ToString();
                         item.FileUrl = i["FIleUrl"].ToString();
                         item.Seq = int.Parse(i["Seq"].ToString());
