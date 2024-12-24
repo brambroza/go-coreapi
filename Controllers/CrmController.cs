@@ -128,6 +128,7 @@ namespace coreapi.Controllers
                 crm.UpdUser = r["updUser"].ToString();
                 crm.ticketIdRef = r["TicketIdRef"].ToString();
                 crm.Priority = r["Priority"].ToString();
+                crm.CustomerImgPath = r["CustomerImgPath"].ToString();
 
                 crm.ReqRoute = new List<CustomerReqTicketRoute>();
                 foreach (
@@ -484,6 +485,7 @@ namespace coreapi.Controllers
                     crm.UpdUser = r["updUser"].ToString();
                     crm.ticketIdRef = r["TicketIdRef"].ToString();
                     crm.Priority = r["Priority"].ToString();
+                    crm.CustomerImgPath = r["CustomerImgPath"].ToString();
 
                     crm.ReqRoute = new List<CustomerReqTicketRoute>();
                     foreach (

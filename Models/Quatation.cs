@@ -378,6 +378,7 @@ namespace coreapi.Models
         public string SendApproveBy { get; set; } // Nullable
 
         public string SignaturePath { get; set; }
+        public string? LineQRCodePath { get; set; }
         public string FullName { get; set; }
 
         public string JobTypeFilter { get; set; }

@@ -85,6 +85,14 @@
       "PackagePath": "staticwebassets/230015/2/attachfilecrm/80a64996-70b8-4f54-8a87-5f9901e85c4e.pdf"
     },
     {
+      "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/4bd09e65-b9be-47a9-8c74-c3d6a9d94810/comment/attachment/61b08ff5-3a14-4287-bef1-5c1f95143dd1.pdf",
+      "PackagePath": "staticwebassets/230015/4bd09e65-b9be-47a9-8c74-c3d6a9d94810/comment/attachment/61b08ff5-3a14-4287-bef1-5c1f95143dd1.pdf"
+    },
+    {
+      "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/4bd09e65-b9be-47a9-8c74-c3d6a9d94810/comment/attachment/8f5dadfa-6593-49d9-88c0-87b3e45d234f.jpg",
+      "PackagePath": "staticwebassets/230015/4bd09e65-b9be-47a9-8c74-c3d6a9d94810/comment/attachment/8f5dadfa-6593-49d9-88c0-87b3e45d234f.jpg"
+    },
+    {
       "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/NIS-2200153/attachfileProjectCost/089391c2-1383-482e-b06c-783378d8f055.pdf",
       "PackagePath": "staticwebassets/230015/NIS-2200153/attachfileProjectCost/089391c2-1383-482e-b06c-783378d8f055.pdf"
     },
@@ -713,6 +721,10 @@
       "PackagePath": "staticwebassets/images/613e13f1-5a0d-485c-88be-d36770ffa708.jpg"
     },
     {
+      "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/658017.jpg",
+      "PackagePath": "staticwebassets/images/658017.jpg"
+    },
+    {
       "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/65cb1dfb-eb45-42a6-a89c-56d6cbc6c4a8.png",
       "PackagePath": "staticwebassets/images/65cb1dfb-eb45-42a6-a89c-56d6cbc6c4a8.png"
     },
@@ -843,6 +855,10 @@
     {
       "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/9face500-9e62-428e-b0e3-2f3f5aca0ea8.png",
       "PackagePath": "staticwebassets/images/9face500-9e62-428e-b0e3-2f3f5aca0ea8.png"
+    },
+    {
+      "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/Logo KANDA 2021-02.jpg",
+      "PackagePath": "staticwebassets/images/Logo KANDA 2021-02.jpg"
     },
     {
       "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/a252b223-f621-4bea-ad28-e2721520d1fc.jpg",
@@ -1051,6 +1067,10 @@
     {
       "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/reqfromcust/fileall/04ecd3d6-a559-4c65-817c-9a51e24e1862.jpg",
       "PackagePath": "staticwebassets/reqfromcust/fileall/04ecd3d6-a559-4c65-817c-9a51e24e1862.jpg"
+    },
+    {
+      "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/reqfromcust/fileall/052a591a-88c4-4344-9f22-2a4537769c10.webp",
+      "PackagePath": "staticwebassets/reqfromcust/fileall/052a591a-88c4-4344-9f22-2a4537769c10.webp"
     },
     {
       "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/reqfromcust/fileall/068bc96e-15b2-4034-af66-240d8a24891a.jpg",
@@ -1417,6 +1437,14 @@
       "PackagePath": "staticwebassets/reqfromcust/fileall/9ddeee7b-2b1b-4ce9-8f47-9fd8f1abc89a.pdf"
     },
     {
+      "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/reqfromcust/fileall/DELL EMC PowerEdge T350.jpg",
+      "PackagePath": "staticwebassets/reqfromcust/fileall/DELL EMC PowerEdge T350.jpg"
+    },
+    {
+      "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/reqfromcust/fileall/Test file.docx",
+      "PackagePath": "staticwebassets/reqfromcust/fileall/Test file.docx"
+    },
+    {
       "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/reqfromcust/fileall/a06f5ab0-391f-4d2c-941d-4068629b57c6.jpg",
       "PackagePath": "staticwebassets/reqfromcust/fileall/a06f5ab0-391f-4d2c-941d-4068629b57c6.jpg"
     },
@@ -1447,6 +1475,10 @@
     {
       "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/reqfromcust/fileall/aa25e982-c802-4857-ace2-635ef7d7a37a.jpg",
       "PackagePath": "staticwebassets/reqfromcust/fileall/aa25e982-c802-4857-ace2-635ef7d7a37a.jpg"
+    },
+    {
+      "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/reqfromcust/fileall/ac6f5617-7931-4113-9bc2-f47235592fc3.xlsx",
+      "PackagePath": "staticwebassets/reqfromcust/fileall/ac6f5617-7931-4113-9bc2-f47235592fc3.xlsx"
     },
     {
       "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/reqfromcust/fileall/acbbfa7d-87af-42c8-8079-b847b8b26559.docx",

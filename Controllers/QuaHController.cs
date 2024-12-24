@@ -97,6 +97,7 @@ namespace coreapi.Controllers
                 quotaion.PhoneNo = r["PhoneNo"].ToString();
                 quotaion.LineId = r["LineId"].ToString();
                 quotaion.BomNo = r["BomNo"].ToString();
+                quotaion.LineQRCodePath = r["LineQRCodePath"].ToString();
 
                 if (
                     datatableDetail
@@ -249,7 +250,7 @@ namespace coreapi.Controllers
                 quotaion.PhoneNo = r["PhoneNo"].ToString();
                 quotaion.LineId = r["LineId"].ToString();
                 quotaion.BomNo = r["BomNo"].ToString();
-
+                quotaion.LineQRCodePath = r["LineQRCodePath"].ToString();
                 if (
                     datatableDetail
                         .Select(

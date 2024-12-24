@@ -91,6 +91,7 @@ namespace coreapi.Models
         public string ticketIdRef { get; set; }
         public string DueDate { get; set; }
         public string Priority { get; set; }
+        public string? CustomerImgPath { get; set; }
     }
 
     public class ReqFromCustItem

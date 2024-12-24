@@ -28,7 +28,8 @@ namespace goalongapi.Services
 
             foreach (var formFile in formFiles)
             {
-                string fileName = Guid.NewGuid().ToString() + Path.GetExtension(formFile.FileName);
+                /*  string fileName = Guid.NewGuid().ToString() + Path.GetExtension(formFile.FileName); */
+                string fileName = formFile.FileName;
                 string fullPath = uploadPath + fileName;
                 using (var stream = File.Create(fullPath))
                 {
@@ -53,7 +54,8 @@ namespace goalongapi.Services
 
             foreach (var formFile in formFiles)
             {
-                string fileName = Guid.NewGuid().ToString() + Path.GetExtension(formFile.FileName);
+                /*   string fileName = Guid.NewGuid().ToString() + Path.GetExtension(formFile.FileName); */
+                string fileName = formFile.FileName;
                 string fullPath = uploadPath + fileName;
                 using (var stream = File.Create(fullPath))
                 {
@@ -79,8 +81,8 @@ namespace goalongapi.Services
 
             foreach (var formFile in formFiles)
             {
-                string fileName = Guid.NewGuid().ToString() + Path.GetExtension(formFile.FileName);
-
+                /* string fileName = Guid.NewGuid().ToString() + Path.GetExtension(formFile.FileName); */
+                string fileName = formFile.FileName;
                 string fullPath = uploadPath + fileName;
                 using (var stream = File.Create(fullPath))
                 {
@@ -123,6 +125,7 @@ namespace goalongapi.Services
                 ".doc",
                 ".docx",
                 ".jpeg",
+                ".webp",
             };
             var ext = Path.GetExtension(fileName).ToLowerInvariant();
             if (String.IsNullOrEmpty(ext) || !permittedExtensions.Contains(ext))
