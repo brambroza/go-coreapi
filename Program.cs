@@ -96,6 +96,7 @@ app.UseEndpoints(endpoints =>
 
     // SignalR
     endpoints.MapHub<NotificationHub>("/notificationhub");
+    endpoints.MapHub<TicketCommentHub>("/ticketcommenthub");
 });
 
 app.Run();

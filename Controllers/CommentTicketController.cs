@@ -3,6 +3,7 @@ using System.Net;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using coreapi.Hubs;
 using coreapi.Models;
 using goalongapi.Models;
 using Google;
@@ -12,6 +13,7 @@ using Google.Apis.Sheets.v4;
 using Google.Apis.Sheets.v4.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 
 namespace coreapi.Controllers
 {
@@ -20,6 +22,13 @@ namespace coreapi.Controllers
     [Authorize]
     public class CommentTicketController : ControllerBase
     {
+        private readonly IHubContext<TicketCommentHub> _hubContext;
+
+        public CommentTicketController(IHubContext<TicketCommentHub> hubContext)
+        {
+            _hubContext = hubContext;
+        }
+
         [HttpGet]
         public async Task<IActionResult> getChatConvertsations(
             [FromQuery] string cmpid,
@@ -79,7 +88,7 @@ namespace coreapi.Controllers
                             size = int.Parse(x["size"].ToString()),
                             type = x["type"].ToString(),
                             path = x["path"].ToString(),
-                            ticketId = x["ticketId"].ToString(), 
+                            ticketId = x["ticketId"].ToString(),
                             cmpId = x["cmpId"].ToString(),
                             createdAt = Convert.ToDateTime(x["createdAt"].ToString()),
                             modifiedAt = Convert.ToDateTime(x["modifiedAt"].ToString()),
@@ -180,7 +189,7 @@ namespace coreapi.Controllers
                             type = x["type"].ToString(),
                             path = x["path"].ToString(),
                             ticketId = x["ticketId"].ToString(),
-                             
+
                             cmpId = x["cmpId"].ToString(),
                             createdAt = Convert.ToDateTime(x["createdAt"].ToString()),
                             modifiedAt = Convert.ToDateTime(x["modifiedAt"].ToString()),
@@ -219,7 +228,7 @@ namespace coreapi.Controllers
         }
 
         [HttpPut("conversation")]
-        public IActionResult setMessageComment(TicketCommentMessage mt)
+        public async Task<IActionResult> setMessageComment(TicketCommentMessage mt)
         {
             MsgReturn msgretrun = new MsgReturn();
 
@@ -290,6 +299,7 @@ namespace coreapi.Controllers
                 DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
                 msgretrun.ReturnCode = "200";
                 msgretrun.Msg = "Save Success !!";
+
                 return Ok(msgretrun);
             }
             catch (Exception ex)
