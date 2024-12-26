@@ -41,6 +41,7 @@ namespace coreapi.Controllers
                     RecurringEvery = Convert.ToInt32(r["RecurringEvery"]),
                     IntervalType = Convert.ToInt32(r["IntervalType"]),
                     ExpiresCount = Convert.ToInt32(r["ExpiresCount"]),
+                    RevNo = Convert.ToInt32(r["RevNo"]),
                 };
 
                 repeats.Add(repeat);
@@ -74,7 +75,7 @@ namespace coreapi.Controllers
                 _cmd += " ,@RecurringEvery =" + po.RecurringEvery;
                 _cmd += " ,@ExpiresType  ='" + po.ExpiresType + "'";
                 _cmd += " , @CmpId='" + po.CmpId + "'";
-
+                _cmd += " ,@RevNo =" + po.RevNo;
                 if (DB.DBConn.ExecuteOnly(_cmd))
                 {
                     msgretrun.ReturnCode = "200";

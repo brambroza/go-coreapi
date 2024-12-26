@@ -1,4 +1,3 @@
-
 namespace coreapi.Models
 {
     public class RepeatEvery
@@ -14,5 +13,7 @@ namespace coreapi.Models
         public DateTime ExpiresDate { get; set; }
         public int ExpiresCount { get; set; }
         public string CmpId { get; set; }
+
+        public int RevNo { get; set; }
     }
 }
