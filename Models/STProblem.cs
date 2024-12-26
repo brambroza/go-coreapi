@@ -23,7 +23,6 @@ namespace coreapi.Models
         public string ProvinceId { get; set; }
 
         public string GrpId { get; set; } = "2300005";
-
     }
 
     public class MAGrp
@@ -32,11 +31,7 @@ namespace coreapi.Models
         public string grpname { get; set; }
         public string grpdesciption { get; set; }
         public List<STProblemTask> items { get; set; }
-
-
     }
-
-
 
     public class STProblemTask
     {
@@ -67,26 +62,13 @@ namespace coreapi.Models
         public string ActionDetails { get; set; }
         public string FinishDate { get; set; }
         public string FinishTime { get; set; }
-
-
-
     }
 
-
-    public class MaTaskMoveModel 
+    public class MaTaskMoveModel
     {
-      public string CreateUser { get; set; }
+        public string CreateUser { get; set; }
         public string CmpId { get; set; }
         public string GrpId { get; set; }
         public int ProblemId { get; set; }
-
     }
-
-
-
-
-
-
-
-
 }

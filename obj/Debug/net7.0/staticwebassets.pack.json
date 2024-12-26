@@ -1441,6 +1441,10 @@
       "PackagePath": "staticwebassets/reqfromcust/fileall/DELL EMC PowerEdge T350.jpg"
     },
     {
+      "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/reqfromcust/fileall/Pdffile.pdf",
+      "PackagePath": "staticwebassets/reqfromcust/fileall/Pdffile.pdf"
+    },
+    {
       "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/reqfromcust/fileall/Test file.docx",
       "PackagePath": "staticwebassets/reqfromcust/fileall/Test file.docx"
     },
