@@ -97,6 +97,11 @@ namespace NohWebApi.Controllers
                     }
                 }
 
+                if (System.IO.File.Exists(tofilepath))
+                {
+                    System.IO.File.Delete(tofilepath);
+                }
+
                 System.IO.File.Move(formfilepath, tofilepath);
 
                 return Ok(fileinfos.pathto + fileinfos.filename);
@@ -124,6 +129,11 @@ namespace NohWebApi.Controllers
                         }
                     }
 
+                    if (System.IO.File.Exists(tofilepath))
+                    {
+                        System.IO.File.Delete(tofilepath);
+                    }
+
                     System.IO.File.Move(formfilepath, tofilepath);
 
                     return Ok(fileinfos.pathto + fileinfos.filename);
@@ -132,6 +142,25 @@ namespace NohWebApi.Controllers
                 {
                     return NotFound();
                 }
+            }
+        }
+
+        [HttpDelete("[action]")]
+        public IActionResult removefile([FromQuery] string filepath)
+        {
+            try
+            {
+                string fullpath = $"{webHostEnvironment.WebRootPath}/{filepath}";
+                if (System.IO.File.Exists(fullpath))
+                {
+                    System.IO.File.Delete(fullpath);
+                }
+
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return NotFound();
             }
         }
 

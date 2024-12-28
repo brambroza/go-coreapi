@@ -1,4 +1,3 @@
-using coreapi.Models;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -7,33 +6,26 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
-using Microsoft.AspNetCore.Mvc;
+using coreapi.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-
-
 
 namespace coreapi.Controllers
 {
-
     [ApiController]
     [Authorize]
     [Route("[controller]")]
-
-
-
     public class SaleOrderController : ControllerBase
     {
-
-
-        // GET: api/QuaH/5 
+        // GET: api/QuaH/5
         [HttpGet("[action]")]
-
         public IActionResult getSaleOrder([FromQuery] string cmpid, [FromQuery] string user)
         {
             string _cmd;
             DataTable dt = new System.Data.DataTable();
             DataTable dtItem = new System.Data.DataTable();
+            DataTable dtFiles = new System.Data.DataTable();
             _cmd = "exec dbo.getSaleOrderAll @CmpId='" + cmpid + "', @User='" + user + "'";
             DataTable datatable = DB.DBConn.GetDataTable(_cmd);
             dt = DB.DBConn.GetDataTable(_cmd);
@@ -41,7 +33,8 @@ namespace coreapi.Controllers
             _cmd = "exec dbo.getSaleOrderItem_All @CmpId='" + cmpid + "' , @user='" + user + "'";
             dtItem = DB.DBConn.GetDataTable(_cmd);
 
-
+            _cmd = "exec dbo.getSaleOrderFiles_All @CmpId='" + cmpid + "' , @user='" + user + "'";
+            dtFiles = DB.DBConn.GetDataTable(_cmd);
 
             List<saleorder> saleorderlist = new List<saleorder>();
 
@@ -50,6 +43,7 @@ namespace coreapi.Controllers
             {
                 var saleorder = new saleorder
                 {
+                    UpdUser = r["UpdUser"].ToString(),
                     SaleOrderNo = r["SaleOrderNo"].ToString(),
                     SaleOrderDate = DateTime.Parse(r["SaleOrderDate"].ToString()),
                     SaleOrderBy = r["SaleOrderBy"].ToString(),
@@ -82,17 +76,22 @@ namespace coreapi.Controllers
                     QuotationNo = r["QuotationNo"].ToString(),
                     CustomerPONo = r["CustomerPONo"].ToString(),
                     TicketId = r["TicketId"].ToString(),
-                    items = new List<SaleOrderItem>()
+                    items = new List<SaleOrderItem>(),
+                    files = new List<SaleOrderFiles>(),
                 };
 
                 // Find the corresponding SaleOrderItems for each SaleOrder
-                foreach (DataRow itemRow in dtItem.Select("SaleOrderNo = '" + saleorder.SaleOrderNo + "'"))
+                foreach (
+                    DataRow itemRow in dtItem.Select(
+                        "SaleOrderNo = '" + saleorder.SaleOrderNo + "' and RevNo=" + saleorder.RevNo
+                    )
+                )
                 {
                     var saleOrderItem = new SaleOrderItem
                     {
                         SaleOrderNo = itemRow["SaleOrderNo"].ToString(),
                         Seq = Convert.ToInt32(itemRow["Seq"]),
-                        RevNo = Convert.ToInt32(itemRow["Seq"]),
+                        RevNo = Convert.ToInt32(itemRow["RevNo"]),
                         ProdCode = itemRow["ProdCode"].ToString(),
                         ProdDescription = itemRow["ProdDescription"].ToString(),
                         Qty = Convert.ToDecimal(itemRow["Qty"]),
@@ -109,20 +108,34 @@ namespace coreapi.Controllers
                         GroupCaption1 = itemRow["GroupCaption1"].ToString(),
                         GroupCaption2 = itemRow["GroupCaption2"].ToString(),
                         GroupCaption3 = itemRow["GroupCaption3"].ToString(),
-                        CmpId = itemRow["CmpId"].ToString()
-
+                        CmpId = itemRow["CmpId"].ToString(),
                     };
                     saleorder.items.Add(saleOrderItem);
+                }
+
+                foreach (
+                    DataRow itemRow in dtFiles.Select(
+                        "SaleOrderNo = '" + saleorder.SaleOrderNo + "' and RevNo=" + saleorder.RevNo
+                    )
+                )
+                {
+                    var saleOrderFiles = new SaleOrderFiles
+                    {
+                        SaleOrderNo = itemRow["SaleOrderNo"].ToString(),
+                        Seq = Convert.ToInt32(itemRow["Seq"]),
+                        RevNo = Convert.ToInt32(itemRow["RevNo"]),
+                        UpdUser = itemRow["UpdUser"].ToString(),
+                        FileName = itemRow["FileName"].ToString(),
+                        CmpId = itemRow["CmpId"].ToString(),
+                    };
+                    saleorder.files.Add(saleOrderFiles);
                 }
 
                 saleorderlist.Add(saleorder);
             }
 
             return Ok(saleorderlist);
-
         }
-
-
 
         // POST: api/QuaH
 
@@ -131,28 +144,26 @@ namespace coreapi.Controllers
         {
             MsgReturn msgretrun = new MsgReturn();
 
-            System.Globalization.CultureInfo thaiCulture = new System.Globalization.CultureInfo("th-TH");
+            System.Globalization.CultureInfo thaiCulture = new System.Globalization.CultureInfo(
+                "th-TH"
+            );
             thaiCulture.DateTimeFormat.Calendar = new System.Globalization.GregorianCalendar();
 
             DB.DBConn.SqlConnectionOpen();
             DB.DBConn.Cmd = DB.DBConn.Cnn.CreateCommand();
             DB.DBConn.Tran = DB.DBConn.Cnn.BeginTransaction();
 
-
             try
             {
                 string _cmd = "";
 
-                if (Quotation.items.Count > 0)
-                {
-                    _cmd = "Delete From mdb.SaleOrder_Detail where SaleOrderNo='" + Quotation.items[0].SaleOrderNo + "'";
-                    _cmd += " and  RevNo=" + Quotation.items[0].RevNo;
-                    DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran);
-                }
-
-
                 _cmd = "exec  dbo.setSaleOrder @SaleOrderNo='" + Quotation.SaleOrderNo + "' ";
-                _cmd += " ,@SaleOrderDate='" + Quotation.SaleOrderDate.ToString("yyyy-MM-dd HH:mm", thaiCulture) + "' ,@SaleOrderBy='" + Quotation.SaleOrderBy + "'";
+                _cmd +=
+                    " ,@SaleOrderDate='"
+                    + Quotation.SaleOrderDate.ToString("yyyy-MM-dd HH:mm", thaiCulture)
+                    + "' ,@SaleOrderBy='"
+                    + Quotation.SaleOrderBy
+                    + "'";
                 _cmd += " ,@SaleOrderState='" + Quotation.SaleOrderState + "'";
                 _cmd += " ,@CustomerCode='" + Quotation.CustomerCode + "'";
                 _cmd += " ,@CreditType=" + Quotation.CreditType;
@@ -175,7 +186,8 @@ namespace coreapi.Controllers
                 _cmd += " ,@PaymentDue='" + Quotation.PaymentDue + "'";
                 _cmd += " ,@Shipping='" + Quotation.Shipping + "'";
                 _cmd += " ,@RevNo=" + Quotation.RevNo;
-                _cmd += " ,@CustContact='" + Tool.Tool.validateStr(Quotation.CustomerContactName) + "'";
+                _cmd +=
+                    " ,@CustContact='" + Tool.Tool.validateStr(Quotation.CustomerContactName) + "'";
                 _cmd += ", @Jobtype=" + Quotation.JobType;
                 _cmd += " ,@QuotationNo='" + Quotation.QuotationNo + "'";
                 _cmd += " ,@CustomerPONo='" + Quotation.CustomerPONo + "'";
@@ -189,18 +201,21 @@ namespace coreapi.Controllers
                     msgretrun.ReturnCode = "400";
                     msgretrun.Msg = "Error !!";
                     return Ok(msgretrun);
-                };
+                }
+                ;
 
-
-
-                int il = 0;
                 for (int i = 0; i < Quotation.items.Count; i++)
                 {
-                    il++;
-                    _cmd = "Exec setSaleOrderDetail @SaleOrderNo='" + Quotation.items[i].SaleOrderNo + "'";
-                    _cmd += ",@Seq=" + il;
+                    _cmd =
+                        "Exec setSaleOrderDetail @SaleOrderNo='"
+                        + Quotation.items[i].SaleOrderNo
+                        + "'";
+                    _cmd += ",@Seq=" + Quotation.items[i].Seq;
                     _cmd += ",@ProdCode='" + Quotation.items[i].ProdCode + "'";
-                    _cmd += ",@ProdDesc='" + Tool.Tool.validateStr(Quotation.items[i].ProdDescription) + "'";
+                    _cmd +=
+                        ",@ProdDesc='"
+                        + Tool.Tool.validateStr(Quotation.items[i].ProdDescription)
+                        + "'";
                     _cmd += ",@UnitPrice=" + Quotation.items[i].UnitPrice;
                     _cmd += ",@UnitCode='" + Quotation.items[i].UnitCode + "'";
                     _cmd += ",@Qty=" + Quotation.items[i].Qty;
@@ -209,10 +224,20 @@ namespace coreapi.Controllers
                     _cmd += ",@CostAmt=" + Quotation.items[i].CostAmt;
                     _cmd += ",@ProfitAmt=" + Quotation.items[i].ProfitAmt;
                     _cmd += ",@RevNo=" + Quotation.items[i].RevNo;
-                    _cmd += " ,@GroupCaption1='" + Tool.Tool.validateStr(Quotation.items[i].GroupCaption1) + "'";
-                    _cmd += " ,@GroupCaption2='" + Tool.Tool.validateStr(Quotation.items[i].GroupCaption2) + "'";
-                    _cmd += " ,@GroupCaption3='" + Tool.Tool.validateStr(Quotation.items[i].GroupCaption3) + "'";
+                    _cmd +=
+                        " ,@GroupCaption1='"
+                        + Tool.Tool.validateStr(Quotation.items[i].GroupCaption1)
+                        + "'";
+                    _cmd +=
+                        " ,@GroupCaption2='"
+                        + Tool.Tool.validateStr(Quotation.items[i].GroupCaption2)
+                        + "'";
+                    _cmd +=
+                        " ,@GroupCaption3='"
+                        + Tool.Tool.validateStr(Quotation.items[i].GroupCaption3)
+                        + "'";
                     _cmd += ",@CmpId='" + Quotation.items[i].CmpId + "'";
+                    _cmd += ",@UpdUser='" + Quotation.UpdUser + "'";
 
                     if (DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran) <= 0)
                     {
@@ -222,26 +247,42 @@ namespace coreapi.Controllers
                         msgretrun.ReturnCode = "400";
                         msgretrun.Msg = "Error !!";
                         return Ok(msgretrun);
-                    };
-
+                    }
                 }
 
+                for (int i = 0; i < Quotation.files.Count; i++)
+                {
+                    _cmd =
+                        "Exec dbo.setSaleOrderFiles @SaleOrderNo='"
+                        + Quotation.files[i].SaleOrderNo
+                        + "'";
+                    _cmd += " ,@Seq=" + Quotation.files[i].Seq;
+                    _cmd += " , @CmpId='" + Quotation.files[i].CmpId + "'";
+                    _cmd += " , @RevNo=" + Quotation.files[i].RevNo;
+                    _cmd += " , @FileName='" + Quotation.files[i].FileName + "'";
+                    _cmd += " , @User='" + Quotation.files[i].UpdUser + "'";
 
+                    if (DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran) <= 0)
+                    {
+                        DB.DBConn.Tran.Rollback();
+                        DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
+                        DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
+                        msgretrun.ReturnCode = "400";
+                        msgretrun.Msg = "Error !!";
+                        return Ok(msgretrun);
+                    }
+                }
 
                 DB.DBConn.Tran.Commit();
                 DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
                 DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
 
-
                 msgretrun.ReturnCode = "200";
                 msgretrun.Msg = "Save Success !!";
                 return Ok(msgretrun);
-
-
             }
             catch
             {
-
                 DB.DBConn.Tran.Rollback();
                 DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
                 DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
@@ -250,10 +291,68 @@ namespace coreapi.Controllers
                 msgretrun.Msg = "Error !!";
                 return Ok(msgretrun);
             }
-
         }
 
+        [HttpPost("[action]")]
+        public IActionResult setSaleOrderFile([FromBody] List<SaleOrderFiles> Quotation)
+        {
+            MsgReturn msgretrun = new MsgReturn();
 
+            System.Globalization.CultureInfo thaiCulture = new System.Globalization.CultureInfo(
+                "th-TH"
+            );
+            thaiCulture.DateTimeFormat.Calendar = new System.Globalization.GregorianCalendar();
+
+            DB.DBConn.SqlConnectionOpen();
+            DB.DBConn.Cmd = DB.DBConn.Cnn.CreateCommand();
+            DB.DBConn.Tran = DB.DBConn.Cnn.BeginTransaction();
+
+            try
+            {
+                string _cmd = "";
+
+                for (int i = 0; i < Quotation.Count; i++)
+                {
+                    _cmd =
+                        "Exec dbo.setSaleOrderFiles @SaleOrderNo='"
+                        + Quotation[i].SaleOrderNo
+                        + "'";
+                    _cmd += " ,@Seq=" + Quotation[i].Seq;
+                    _cmd += " , @CmpId='" + Quotation[i].CmpId + "'";
+                    _cmd += " , @RevNo=" + Quotation[i].RevNo;
+                    _cmd += " , @FileName='" + Quotation[i].FileName + "'";
+                    _cmd += " , @User='" + Quotation[i].UpdUser + "'";
+
+                    if (DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran) <= 0)
+                    {
+                        DB.DBConn.Tran.Rollback();
+                        DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
+                        DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
+                        msgretrun.ReturnCode = "400";
+                        msgretrun.Msg = "Error !!";
+                        return Ok(msgretrun);
+                    }
+                }
+
+                DB.DBConn.Tran.Commit();
+                DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
+                DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
+
+                msgretrun.ReturnCode = "200";
+                msgretrun.Msg = "Save Success !!";
+                return Ok(msgretrun);
+            }
+            catch
+            {
+                DB.DBConn.Tran.Rollback();
+                DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
+                DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
+
+                msgretrun.ReturnCode = "400";
+                msgretrun.Msg = "Error !!";
+                return Ok(msgretrun);
+            }
+        }
 
         [HttpPost("[action]")]
         public IActionResult setsaleordercopy(SaleOrderCopy Quotation)
@@ -269,8 +368,6 @@ namespace coreapi.Controllers
                 _cmd += ", @CmpId ='" + Quotation.CmpId + "'";
                 _cmd += ", @userlogin ='" + Quotation.userlogin + "'";
 
-
-
                 if (DB.DBConn.ExecuteOnly(_cmd))
                 {
                     msgretrun.ReturnCode = "200";
@@ -283,7 +380,6 @@ namespace coreapi.Controllers
                     msgretrun.Msg = "Error !!";
                     return Ok(msgretrun);
                 }
-
             }
             catch
             {
@@ -291,11 +387,7 @@ namespace coreapi.Controllers
                 msgretrun.Msg = "Error !!";
                 return Ok(msgretrun);
             }
-
         }
-
-
-
 
         [HttpPost("[action]")]
         public IActionResult setSaleOrderApp(QuoHApprove quoHApprove)
@@ -305,7 +397,16 @@ namespace coreapi.Controllers
             try
             {
                 string _cmd = "";
-                _cmd = "exec dbo.setSaleOrderApp @CmpId=" + quoHApprove.cmpid + " , @DocNo='" + quoHApprove.docno + "' , @RevNo =" + quoHApprove.revno + ",@User='" + quoHApprove.user + "'";
+                _cmd =
+                    "exec dbo.setSaleOrderApp @CmpId="
+                    + quoHApprove.cmpid
+                    + " , @DocNo='"
+                    + quoHApprove.docno
+                    + "' , @RevNo ="
+                    + quoHApprove.revno
+                    + ",@User='"
+                    + quoHApprove.user
+                    + "'";
 
                 if (DB.DBConn.ExecuteOnly(_cmd))
                 {
@@ -320,7 +421,6 @@ namespace coreapi.Controllers
                     msgretrun.Msg = "Error !!";
                     return Ok(msgretrun);
                 }
-
             }
             catch
             {
@@ -328,29 +428,51 @@ namespace coreapi.Controllers
                 msgretrun.Msg = "Error !!";
                 return Ok(msgretrun);
             }
-
-
-
         }
-
-
-
-
 
         // DELETE: api/QuaH/5
 
         [HttpDelete("[action]")]
-        public IActionResult deletesaleorder([FromQuery] string id, [FromQuery] int RevNo, [FromQuery] string cmpid)
+        public IActionResult deletesaleorder(
+            [FromQuery] string id,
+            [FromQuery] int RevNo,
+            [FromQuery] string cmpid
+        )
         {
             MsgReturn msgretrun = new MsgReturn();
             try
             {
-
                 string _cmd = "";
-                _cmd = "delete from mdb.SaleOrder where  SaleOrderNo='" + id + "' and RevNo=" + RevNo + " and Cmpid='" + cmpid + "'";
+                _cmd =
+                    "delete from mdb.SaleOrder where  SaleOrderNo='"
+                    + id
+                    + "' and RevNo="
+                    + RevNo
+                    + " and Cmpid='"
+                    + cmpid
+                    + "'";
 
                 DB.DBConn.ExecuteOnly(_cmd);
-                _cmd = "delete from mdb.SaleOrder_Detail where  SaleOrderNo='" + id + "'  and RevNo=" + RevNo + " and Cmpid='" + cmpid + "'";
+
+                _cmd =
+                    "delete from mdb.SaleOrder_Files where  SaleOrderNo='"
+                    + id
+                    + "' and RevNo="
+                    + RevNo
+                    + " and Cmpid='"
+                    + cmpid
+                    + "'";
+
+                DB.DBConn.ExecuteOnly(_cmd);
+
+                _cmd =
+                    "delete from mdb.SaleOrder_Detail where  SaleOrderNo='"
+                    + id
+                    + "'  and RevNo="
+                    + RevNo
+                    + " and Cmpid='"
+                    + cmpid
+                    + "'";
 
                 if (DB.DBConn.ExecuteOnly(_cmd))
                 {
@@ -364,7 +486,6 @@ namespace coreapi.Controllers
                     msgretrun.Msg = "Error !!";
                     return Ok(msgretrun);
                 }
-
             }
             catch
             {
@@ -372,20 +493,74 @@ namespace coreapi.Controllers
                 msgretrun.Msg = "Error !!";
                 return Ok(msgretrun);
             }
-
-
         }
 
+        [HttpDelete("[action]")]
+        public IActionResult deletesaleorderfile(
+            [FromQuery] string saleorderno,
+            [FromQuery] int revno,
+            [FromQuery] string cmpid,
+            [FromQuery] string filename
+        )
+        {
+            MsgReturn msgretrun = new MsgReturn();
+            try
+            {
+                string _cmd = "";
+                _cmd =
+                    "delete from mdb.SaleOrder_Files where  SaleOrderNo='"
+                    + saleorderno
+                    + "' and RevNo="
+                    + revno
+                    + " and Cmpid='"
+                    + cmpid
+                    + "'"
+                    + " and FileName='"
+                    + filename
+                    + "'";
+                ;
 
+                if (DB.DBConn.ExecuteOnly(_cmd))
+                {
+                    msgretrun.ReturnCode = "200";
+                    msgretrun.Msg = "Delete Success !!";
+                    return Ok(msgretrun);
+                }
+                else
+                {
+                    msgretrun.ReturnCode = "400";
+                    msgretrun.Msg = "Error !!";
+                    return Ok(msgretrun);
+                }
+            }
+            catch
+            {
+                msgretrun.ReturnCode = "400";
+                msgretrun.Msg = "Error !!";
+                return Ok(msgretrun);
+            }
+        }
 
         [HttpGet("[action]")]
-
-        public IActionResult getsaleorderdetail([FromQuery] string sono, [FromQuery] int RevNo, [FromQuery] string cmpid, [FromQuery] string username)
+        public IActionResult getsaleorderdetail(
+            [FromQuery] string sono,
+            [FromQuery] int RevNo,
+            [FromQuery] string cmpid,
+            [FromQuery] string username
+        )
         {
-
             DataTable dt = new System.Data.DataTable();
             string _cmd;
-            _cmd = "exec dbo.getSaleOrderDetail @SaleOrderNo='" + sono + "' , @RevNo=" + RevNo + ", @CmpId='" + cmpid + "', @userlogin='" + username + "'";
+            _cmd =
+                "exec dbo.getSaleOrderDetail @SaleOrderNo='"
+                + sono
+                + "' , @RevNo="
+                + RevNo
+                + ", @CmpId='"
+                + cmpid
+                + "', @userlogin='"
+                + username
+                + "'";
             dt = DB.DBConn.GetDataTable(_cmd);
             //string qdetail = string.Empty;
             //qdetail = JsonConvert.SerializeObject(dt);
@@ -396,22 +571,21 @@ namespace coreapi.Controllers
 
         // POST: api/Qua
         [HttpPost("[action]")]
-
         public void setsaleorderdetail([FromBody] List<saleorderDetail> saleorderD)
         {
-
-
             DB.DBConn.SqlConnectionOpen();
             DB.DBConn.Cmd = DB.DBConn.Cnn.CreateCommand();
             DB.DBConn.Tran = DB.DBConn.Cnn.BeginTransaction();
 
             try
             {
-
                 string _cmd;
                 if (saleorderD.Count > 0)
                 {
-                    _cmd = "Delete From mdb.SaleOrder_Detail where SaleOrderNo='" + saleorderD[0].SaleOrderNo + "'";
+                    _cmd =
+                        "Delete From mdb.SaleOrder_Detail where SaleOrderNo='"
+                        + saleorderD[0].SaleOrderNo
+                        + "'";
                     _cmd += " and  RevNo=" + saleorderD[0].RevNo;
                     DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran);
                 }
@@ -419,10 +593,12 @@ namespace coreapi.Controllers
                 for (int i = 0; i < saleorderD.Count; i++)
                 {
                     il++;
-                    _cmd = "Exec setSaleOrderDetail @SaleOrderNo='" + saleorderD[i].SaleOrderNo + "'";
+                    _cmd =
+                        "Exec setSaleOrderDetail @SaleOrderNo='" + saleorderD[i].SaleOrderNo + "'";
                     _cmd += ",@Seq=" + il;
                     _cmd += ",@ProdCode='" + saleorderD[i].ProdCode + "'";
-                    _cmd += ",@ProdDesc='" + Tool.Tool.validateStr(saleorderD[i].ProdDescription) + "'";
+                    _cmd +=
+                        ",@ProdDesc='" + Tool.Tool.validateStr(saleorderD[i].ProdDescription) + "'";
                     _cmd += ",@UnitPrice=" + saleorderD[i].UnitPrice;
                     _cmd += ",@UnitCode='" + saleorderD[i].UnitCode + "'";
                     _cmd += ",@Qty=" + saleorderD[i].Qty;
@@ -431,9 +607,18 @@ namespace coreapi.Controllers
                     _cmd += ",@CostAmt=" + saleorderD[i].CostAmt;
                     _cmd += ",@ProfitAmt=" + saleorderD[i].ProfitAmt;
                     _cmd += ",@RevNo=" + saleorderD[i].RevNo;
-                    _cmd += " ,@GroupCaption1='" + Tool.Tool.validateStr(saleorderD[i].GroupCaption1) + "'";
-                    _cmd += " ,@GroupCaption2='" + Tool.Tool.validateStr(saleorderD[i].GroupCaption2) + "'";
-                    _cmd += " ,@GroupCaption3='" + Tool.Tool.validateStr(saleorderD[i].GroupCaption3) + "'";
+                    _cmd +=
+                        " ,@GroupCaption1='"
+                        + Tool.Tool.validateStr(saleorderD[i].GroupCaption1)
+                        + "'";
+                    _cmd +=
+                        " ,@GroupCaption2='"
+                        + Tool.Tool.validateStr(saleorderD[i].GroupCaption2)
+                        + "'";
+                    _cmd +=
+                        " ,@GroupCaption3='"
+                        + Tool.Tool.validateStr(saleorderD[i].GroupCaption3)
+                        + "'";
                     _cmd += ",@CmpId='" + saleorderD[i].CmpId + "'";
 
                     if (DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran) <= 0)
@@ -442,34 +627,20 @@ namespace coreapi.Controllers
                         DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
                         DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
                         return;
-                    };
-
+                    }
+                    ;
                 }
 
                 DB.DBConn.Tran.Commit();
                 DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
                 DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
-
             }
             catch (Exception ex)
             {
                 DB.DBConn.Tran.Rollback();
                 DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
                 DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
-
             }
-
-
-
-
         }
-
-
-
-
-
-
-
-
     }
 }

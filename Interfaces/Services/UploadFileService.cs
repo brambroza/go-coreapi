@@ -57,6 +57,11 @@ namespace goalongapi.Services
                 /*   string fileName = Guid.NewGuid().ToString() + Path.GetExtension(formFile.FileName); */
                 string fileName = formFile.FileName;
                 string fullPath = uploadPath + fileName;
+                if (System.IO.File.Exists(fullPath))
+                {
+                    System.IO.File.Delete(fullPath);
+                }
+
                 using (var stream = File.Create(fullPath))
                 {
                     await formFile.CopyToAsync(stream);
@@ -82,8 +87,15 @@ namespace goalongapi.Services
             foreach (var formFile in formFiles)
             {
                 /* string fileName = Guid.NewGuid().ToString() + Path.GetExtension(formFile.FileName); */
+
+
                 string fileName = formFile.FileName;
                 string fullPath = uploadPath + fileName;
+                if (System.IO.File.Exists(fullPath))
+                {
+                    System.IO.File.Delete(fullPath);
+                }
+
                 using (var stream = File.Create(fullPath))
                 {
                     await formFile.CopyToAsync(stream);

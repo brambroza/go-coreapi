@@ -78,6 +78,10 @@ namespace coreapi.Models
         public int revno { get; set; }
         public string state { get; set; }
         public string user { get; set; }
+
+        public string remark { get; set; }
+
+        public string saleorderno { get; set; }
     }
 
     public class SalesBomApprove
@@ -242,6 +246,8 @@ namespace coreapi.Models
 
     public class saleorder
     {
+        public string UpdUser { get; set; }
+
         public string SaleOrderNo { get; set; }
         public DateTime SaleOrderDate { get; set; }
         public string SaleOrderBy { get; set; }
@@ -276,8 +282,19 @@ namespace coreapi.Models
         public string CustomerPONo { get; set; }
 
         public List<SaleOrderItem> items { get; set; }
+        public List<SaleOrderFiles>? files { get; set; }
 
         public string TicketId { get; set; }
+    }
+
+    public class SaleOrderFiles
+    {
+        public string UpdUser { get; set; }
+        public string SaleOrderNo { get; set; }
+        public int Seq { get; set; }
+        public string CmpId { get; set; }
+        public int RevNo { get; set; }
+        public string FileName { get; set; }
     }
 
     public class SaleOrderItem

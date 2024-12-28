@@ -400,7 +400,7 @@ namespace coreapi.Controllers
         // POST: api/Project
 
         [HttpPost("[action]")]
-        public IActionResult QuaHApptoPo(QuoHApprovetoPo apppo)
+        public IActionResult QuoAppToSaleOrder(QuoHApprovetoPo apppo)
         {
             MsgReturn msgretrun = new MsgReturn();
 
@@ -418,6 +418,11 @@ namespace coreapi.Controllers
                     + apppo.user
                     + "',@state='"
                     + apppo.state
+                    + "' , @SaleOrderNo='"
+                    + apppo.saleorderno
+                    + "'"
+                    + " , @Remark='"
+                    + apppo.remark
                     + "'";
 
                 if (DB.DBConn.ExecuteOnly(_cmd))
