@@ -1,4 +1,4 @@
-using System.Text;
+/* using System.Text;
 using coreapi.Controllers;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
@@ -38,3 +38,4 @@ public class RabbitMQService
         );
     }
 }
+ */
