@@ -18,7 +18,8 @@ namespace coreapi.Controllers
     [Route("api/[controller]")]
     public class SystemLogController : ControllerBase
     {
-        private readonly RabbitMQService _rabbitMQService;
+
+        /* private readonly RabbitMQService _rabbitMQService;
 
         public SystemLogController(RabbitMQService rabbitMQService)
         {
@@ -30,6 +31,6 @@ namespace coreapi.Controllers
         {
             _rabbitMQService.SendLog(log: log);
             return Ok();
-        }
+        } */
     }
 }
