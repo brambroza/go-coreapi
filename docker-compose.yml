@@ -2,18 +2,12 @@
 
 version: '3.4'
 
-networks:
-  goalong_network:
-    driver: bridge
-
 services:
   
   goalongdb:
     image: goalongdb
     ports:
       - 1433:1433
-    networks:
-      - goalong_network
 
   goalongapp:
     image: goalongwebapi
@@ -24,5 +18,3 @@ services:
       - 7046:6600
     depends_on:
       - goalongdb
-    networks:
-      - goalong_network
