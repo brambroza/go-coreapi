@@ -1,9 +1,9 @@
-﻿using System.ComponentModel;
-using System.Numerics;
-using System.Data.SqlTypes;
-using System.Security.AccessControl;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data.SqlTypes;
+using System.Numerics;
+using System.Security.AccessControl;
 
 namespace goalongapi.Entities
 {
@@ -22,7 +22,6 @@ namespace goalongapi.Entities
         public virtual Role Role { get; set; } = null!;
         public string imgPath { get; set; }
     }
-
 
     public partial class AccountGoogle
     {

@@ -1537,6 +1537,23 @@
           }
         }
       },
+      "RabbitMQ.Client/6.2.1": {
+        "type": "package",
+        "dependencies": {
+          "System.Memory": "4.5.4",
+          "System.Threading.Channels": "4.7.1"
+        },
+        "compile": {
+          "lib/netstandard2.0/RabbitMQ.Client.dll": {
+            "related": ".pdb;.xml"
+          }
+        },
+        "runtime": {
+          "lib/netstandard2.0/RabbitMQ.Client.dll": {
+            "related": ".pdb;.xml"
+          }
+        }
+      },
       "runtime.debian.8-x64.runtime.native.System.Security.Cryptography.OpenSsl/4.3.0": {
         "type": "package",
         "runtimeTargets": {
@@ -3087,15 +3104,15 @@
           "lib/netstandard1.3/System.Threading.dll": {}
         }
       },
-      "System.Threading.Channels/4.5.0": {
+      "System.Threading.Channels/4.7.1": {
         "type": "package",
         "compile": {
-          "lib/netcoreapp2.1/System.Threading.Channels.dll": {
+          "lib/netcoreapp3.0/System.Threading.Channels.dll": {
             "related": ".xml"
           }
         },
         "runtime": {
-          "lib/netcoreapp2.1/System.Threading.Channels.dll": {
+          "lib/netcoreapp3.0/System.Threading.Channels.dll": {
             "related": ".xml"
           }
         }
@@ -5210,6 +5227,25 @@
         "lib/netstandard2.0/Newtonsoft.Json.Bson.xml",
         "newtonsoft.json.bson.1.0.2.nupkg.sha512",
         "newtonsoft.json.bson.nuspec"
+      ]
+    },
+    "RabbitMQ.Client/6.2.1": {
+      "sha512": "kdcin0uz1b9xQPvlLOoa8Y2zQsfu7nRuTrcX02dCLVzwGVlsPp9AFgu1L3kRh4wSFEOGE03OVqpWKxaDlhuowQ==",
+      "type": "package",
+      "path": "rabbitmq.client/6.2.1",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE",
+        "icon.png",
+        "lib/net461/RabbitMQ.Client.dll",
+        "lib/net461/RabbitMQ.Client.pdb",
+        "lib/net461/RabbitMQ.Client.xml",
+        "lib/netstandard2.0/RabbitMQ.Client.dll",
+        "lib/netstandard2.0/RabbitMQ.Client.pdb",
+        "lib/netstandard2.0/RabbitMQ.Client.xml",
+        "rabbitmq.client.6.2.1.nupkg.sha512",
+        "rabbitmq.client.nuspec"
       ]
     },
     "runtime.debian.8-x64.runtime.native.System.Security.Cryptography.OpenSsl/4.3.0": {
@@ -8991,22 +9027,25 @@
         "system.threading.nuspec"
       ]
     },
-    "System.Threading.Channels/4.5.0": {
-      "sha512": "MEH06N0rIGmRT4LOKQ2BmUO0IxfvmIY/PaouSq+DFQku72OL8cxfw8W99uGpTCFf2vx2QHLRSh374iSM3asdTA==",
+    "System.Threading.Channels/4.7.1": {
+      "sha512": "6akRtHK/wab3246t4p5v3HQrtQk8LboOt5T4dtpNgsp3zvDeM4/Gx8V12t0h+c/W9/enUrilk8n6EQqdQorZAA==",
       "type": "package",
-      "path": "system.threading.channels/4.5.0",
+      "path": "system.threading.channels/4.7.1",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
+        "Icon.png",
         "LICENSE.TXT",
         "THIRD-PARTY-NOTICES.TXT",
-        "lib/netcoreapp2.1/System.Threading.Channels.dll",
-        "lib/netcoreapp2.1/System.Threading.Channels.xml",
+        "lib/net461/System.Threading.Channels.dll",
+        "lib/net461/System.Threading.Channels.xml",
+        "lib/netcoreapp3.0/System.Threading.Channels.dll",
+        "lib/netcoreapp3.0/System.Threading.Channels.xml",
         "lib/netstandard1.3/System.Threading.Channels.dll",
         "lib/netstandard1.3/System.Threading.Channels.xml",
         "lib/netstandard2.0/System.Threading.Channels.dll",
         "lib/netstandard2.0/System.Threading.Channels.xml",
-        "system.threading.channels.4.5.0.nupkg.sha512",
+        "system.threading.channels.4.7.1.nupkg.sha512",
         "system.threading.channels.nuspec",
         "useSharedDesignerContext.txt",
         "version.txt"
@@ -9359,6 +9398,7 @@
       "Microsoft.EntityFrameworkCore.SqlServer >= 7.0.5",
       "MimeKit >= 4.8.0",
       "Net.Json.Serializer >= 5.6.0",
+      "RabbitMQ.Client >= 6.2.1",
       "Swashbuckle.AspNetCore >= 6.4.0"
     ]
   },
@@ -9476,6 +9516,10 @@
           "Net.Json.Serializer": {
             "target": "Package",
             "version": "[5.6.0, )"
+          },
+          "RabbitMQ.Client": {
+            "target": "Package",
+            "version": "[6.2.1, )"
           },
           "Swashbuckle.AspNetCore": {
             "target": "Package",

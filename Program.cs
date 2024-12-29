@@ -38,6 +38,8 @@ builder.Services.AddCors(p =>
 
 // Add services to the container.
 builder.Services.InstallServiceInAssembly(builder.Configuration);
+builder.Services.AddSingleton<RabbitMQService>();
+builder.Services.AddHostedService<LogProcessorService>();
 
 /// google auth
 ///

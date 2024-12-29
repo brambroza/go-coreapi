@@ -1,14 +1,14 @@
-using System.Text;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
+using System.Text;
 using goalongapi.Data;
 using goalongapi.Entities;
+using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.EntityFrameworkCore;
-using static goalongapi.Installers.JwtInstaller;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.AspNetCore.CookiePolicy;
+using static goalongapi.Installers.JwtInstaller;
 
 namespace goalongapi.Interfaces
 {
@@ -16,6 +16,7 @@ namespace goalongapi.Interfaces
     {
         private readonly DatabaseContext databaseContext;
         private readonly JwtSettings jwtSettings;
+
         public AccountService(DatabaseContext databaseContext, JwtSettings jwtSettings)
         {
             this.jwtSettings = jwtSettings;
@@ -24,7 +25,9 @@ namespace goalongapi.Interfaces
 
         public async Task Register(Account account)
         {
-            var existingAccount = await databaseContext.Accounts.SingleOrDefaultAsync(a => a.Username == account.Username);
+            var existingAccount = await databaseContext.Accounts.SingleOrDefaultAsync(a =>
+                a.Username == account.Username
+            );
             if (existingAccount != null)
             {
                 throw new Exception("Existing Account");
@@ -35,10 +38,11 @@ namespace goalongapi.Interfaces
             await databaseContext.SaveChangesAsync();
         }
 
-        public async Task ChangePassword(string username,  string newPassword)
+        public async Task ChangePassword(string username, string newPassword)
         {
-            var account = await databaseContext.Accounts
-                .SingleOrDefaultAsync(a => a.Username == username);
+            var account = await databaseContext.Accounts.SingleOrDefaultAsync(a =>
+                a.Username == username
+            );
 
             if (account == null)
             {
@@ -50,23 +54,21 @@ namespace goalongapi.Interfaces
             await databaseContext.SaveChangesAsync();
         }
 
-
         public async Task RegisterGoogle(AccountGoogle account)
         {
-            var existingAccount = await databaseContext.AccountsGoogle.SingleOrDefaultAsync(a => a.Email == account.Email);
+            var existingAccount = await databaseContext.AccountsGoogle.SingleOrDefaultAsync(a =>
+                a.Email == account.Email
+            );
             if (existingAccount != null)
             {
                 throw new Exception("Existing Account");
             }
 
-
             databaseContext.AccountsGoogle.Add(account);
             await databaseContext.SaveChangesAsync();
         }
 
-
-        public async Task<Account?> Login(string username,
-                                          string password)
+        public async Task<Account?> Login(string username, string password)
         {
             /* var account = await databaseContext.Accounts.Include(a => a.Role)
             .SingleOrDefaultAsync(a => a.Username == username); */
@@ -74,22 +76,24 @@ namespace goalongapi.Interfaces
 
 
 
-            var account = await databaseContext.Accounts.Include(a => a.Role)
-            .SingleOrDefaultAsync(a => a.Username == username && a.CmpId != null && a.CmpId != "0" && a.stateEmailConfirm == 1); //
+            var account = await databaseContext
+                .Accounts.Include(a => a.Role)
+                .SingleOrDefaultAsync(a =>
+                    a.Username == username
+                    && a.CmpId != null
+                    && a.CmpId != "0"
+                    && a.stateEmailConfirm == 1
+                ); //
 
             if (account != null && VerifyPassword(account.Password, password))
             {
                 return account;
             }
 
-
-
             return null;
         }
 
-
-           public async Task<Account?> LoginNewUser(string username,
-                                          string password)
+        public async Task<Account?> LoginNewUser(string username, string password)
         {
             /* var account = await databaseContext.Accounts.Include(a => a.Role)
             .SingleOrDefaultAsync(a => a.Username == username); */
@@ -97,36 +101,33 @@ namespace goalongapi.Interfaces
 
 
 
-            var account = await databaseContext.Accounts.Include(a => a.Role)
-            .SingleOrDefaultAsync(a => a.Username == username && a.CmpId != null && a.CmpId != "0" && a.stateEmailConfirm == 1); //
+            var account = await databaseContext
+                .Accounts.Include(a => a.Role)
+                .SingleOrDefaultAsync(a =>
+                    a.Username == username
+                    && a.CmpId != null
+                    && a.CmpId != "0"
+                    && a.stateEmailConfirm == 1
+                ); //
 
             if (account != null && VerifyPassword(account.Password, password))
             {
                 return account;
             }
 
-
-
             return null;
         }
-
-
-
-
 
         public async Task<AccountGoogle?> LoginGoogle(long Id, string Email)
         {
-            var account = await databaseContext.AccountsGoogle.Include(a => a.Role)
-            .SingleOrDefaultAsync(a => a.Id == Id && a.Email == Email && a.CmpId != null && a.CmpId != "0");
-
-
+            var account = await databaseContext
+                .AccountsGoogle.Include(a => a.Role)
+                .SingleOrDefaultAsync(a =>
+                    a.Id == Id && a.Email == Email && a.CmpId != null && a.CmpId != "0"
+                );
 
             return account;
-
-
-
         }
-
 
         private string CreatePasswordHash(string password)
         {
@@ -136,13 +137,15 @@ namespace goalongapi.Interfaces
                 rng.GetBytes(salt);
             }
 
-            string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
-                password: password,
-                salt: salt,
-                prf: KeyDerivationPrf.HMACSHA512,
-                iterationCount: 10000,
-                numBytesRequested: 258 / 8
-            ));
+            string hashed = Convert.ToBase64String(
+                KeyDerivation.Pbkdf2(
+                    password: password,
+                    salt: salt,
+                    prf: KeyDerivationPrf.HMACSHA512,
+                    iterationCount: 10000,
+                    numBytesRequested: 258 / 8
+                )
+            );
 
             return $"{Convert.ToBase64String(salt)}.{hashed}";
         }
@@ -158,20 +161,23 @@ namespace goalongapi.Interfaces
             var salt = Convert.FromBase64String(parts[0]);
             var passwordHashed = parts[1];
 
-            string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
-                password: password,
-                salt: salt,
-                prf: KeyDerivationPrf.HMACSHA512,
-                iterationCount: 10000,
-                numBytesRequested: 258 / 8
-            ));
+            string hashed = Convert.ToBase64String(
+                KeyDerivation.Pbkdf2(
+                    password: password,
+                    salt: salt,
+                    prf: KeyDerivationPrf.HMACSHA512,
+                    iterationCount: 10000,
+                    numBytesRequested: 258 / 8
+                )
+            );
 
             return passwordHashed == hashed;
         }
 
         public string GenerateToken(Account account)
         {
-            var claims = new[]{
+            var claims = new[]
+            {
                 new Claim(JwtRegisteredClaimNames.Sub, account.Username),
                 new Claim("role", account.Role.Name),
                 new Claim("additional", "todo"),
@@ -182,20 +188,22 @@ namespace goalongapi.Interfaces
 
         public string GenerateTokenGoogle(AccountGoogle account)
         {
-            var claims = new[]{
+            var claims = new[]
+            {
                 new Claim(JwtRegisteredClaimNames.Sub, account.Email),
-                new Claim("role" , account.Role.Name),
-                new Claim("additional" , "todo"),
+                new Claim("role", account.Role.Name),
+                new Claim("additional", "todo"),
             };
             return BuildToken(claims);
         }
 
         public string GenerateTokenRegister(string Username)
         {
-            var claims = new[] {
-              new Claim(JwtRegisteredClaimNames.Sub , Username),
-              new Claim("role" , "admin"),
-              new Claim("additional" , "todo"),
+            var claims = new[]
+            {
+                new Claim(JwtRegisteredClaimNames.Sub, Username),
+                new Claim("role", "admin"),
+                new Claim("additional", "todo"),
             };
             return BuildToken(claims);
         }
@@ -215,23 +223,20 @@ namespace goalongapi.Interfaces
             {
                 return false;
             }
-
         }
-
 
         public Account GetInfo(string accessToken)
         {
             var token = new JwtSecurityTokenHandler().ReadJwtToken(accessToken);
-            var username = token.Claims.First(claim => claim.Type == JwtRegisteredClaimNames.Sub).Value;
+            var username = token
+                .Claims.First(claim => claim.Type == JwtRegisteredClaimNames.Sub)
+                .Value;
             var role = token.Claims.First(claim => claim.Type == "role").Value;
 
             var account = new Account
             {
                 Username = username,
-                Role = new Role
-                {
-                    Name = role
-                }
+                Role = new Role { Name = role },
             };
 
             return account;
@@ -260,10 +265,7 @@ namespace goalongapi.Interfaces
             {
                 return false;
             }
-
         }
-
-
 
         private string BuildToken(Claim[] claims)
         {

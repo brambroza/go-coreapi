@@ -1,8 +1,8 @@
-﻿using goalongapi.Installers;
-using Microsoft.Data.SqlClient;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Data; 
+using System.Data;
+using goalongapi.Installers;
+using Microsoft.Data.SqlClient;
 
 namespace coreapi.DB
 {
@@ -15,42 +15,53 @@ namespace coreapi.DB
         public static SqlConnection Cnn2;
         public static SqlTransaction Tran2;
 
- 
-
-
         #region " CONNECTTION "
 
         public static void SqlConnectionOpen()
         {
-            if (DBConn.Cnn == null) { DBConn.Cnn = new SqlConnection(); };
+            if (DBConn.Cnn == null)
+            {
+                DBConn.Cnn = new SqlConnection();
+            }
+            ;
             if (DBConn.Cnn.State == ConnectionState.Open)
             {
                 DBConn.Cnn.Close();
-            };
-            DBConn.Cnn.ConnectionString =  SystemConfig._ConnectionString;
+            }
+            ;
+            DBConn.Cnn.ConnectionString = SystemConfig._ConnectionString;
             DBConn.Cnn.Open();
         }
 
         public static void SqlBeginTransaction()
         {
-            if (DBConn.Cnn == null) { DBConn.Cnn = new SqlConnection(); }
+            if (DBConn.Cnn == null)
+            {
+                DBConn.Cnn = new SqlConnection();
+            }
 
             if (DBConn.Cnn.State == ConnectionState.Open)
             {
                 DBConn.Cnn.Close();
-            };
-            DBConn.Cnn.ConnectionString =  SystemConfig._ConnectionString;
+            }
+            ;
+            DBConn.Cnn.ConnectionString = SystemConfig._ConnectionString;
             DBConn.Cnn.Open();
             DBConn.Tran = DBConn.Cnn.BeginTransaction();
         }
 
         public static SqlConnection SqlConnectionOpen(SqlConnection _cnn)
         {
-            if (_cnn == null) { _cnn = new SqlConnection(); };
+            if (_cnn == null)
+            {
+                _cnn = new SqlConnection();
+            }
+            ;
             if (_cnn.State == ConnectionState.Open)
             {
                 _cnn.Close();
-            };
+            }
+            ;
             _cnn.ConnectionString = "";
             _cnn.Open();
             return _cnn;
@@ -58,12 +69,16 @@ namespace coreapi.DB
 
         public static SqlConnection SqlBeginTransaction(SqlConnection _cnn)
         {
-            if (_cnn == null) { _cnn = new SqlConnection(); }
+            if (_cnn == null)
+            {
+                _cnn = new SqlConnection();
+            }
 
             if (_cnn.State == ConnectionState.Open)
             {
                 _cnn.Close();
-            };
+            }
+            ;
             _cnn.ConnectionString = "";
             _cnn.Open();
             DBConn.Tran = _cnn.BeginTransaction();
@@ -72,12 +87,17 @@ namespace coreapi.DB
 
         public static SqlConnection SqlBeginTransaction(SqlConnection _cnn, SqlTransaction _tran)
         {
-            if (_cnn == null) { _cnn = new SqlConnection(); };
+            if (_cnn == null)
+            {
+                _cnn = new SqlConnection();
+            }
+            ;
 
             if (_cnn.State == ConnectionState.Open)
             {
                 _cnn.Close();
-            };
+            }
+            ;
             _cnn.ConnectionString = "";
             _cnn.Open();
             _tran = _cnn.BeginTransaction();
@@ -164,15 +184,12 @@ namespace coreapi.DB
             {
                 int Complete = 0;
 
-
-
                 DBConn.SqlConnectionOpen();
                 DBConn.Cmd = DBConn.Cnn.CreateCommand();
                 DBConn.Tran = DBConn.Cnn.BeginTransaction();
 
                 foreach (string Str in QryStr)
                 {
-
                     DBConn.Cmd.CommandType = CommandType.Text;
                     DBConn.Cmd.CommandText = Str;
                     DBConn.Cmd.Transaction = DBConn.Tran;
@@ -186,14 +203,12 @@ namespace coreapi.DB
                         DBConn.DisposeSqlConnection(DBConn.Cmd);
                         return false;
                     }
-
                 }
 
                 DBConn.Tran.Commit();
                 DBConn.DisposeSqlTransaction(DBConn.Tran);
                 DBConn.DisposeSqlConnection(DBConn.Cmd);
                 return true;
-
             }
             catch (Exception ex)
             {
@@ -218,32 +233,25 @@ namespace coreapi.DB
                 sqlcmd.Parameters.Clear();
 
                 return Complete;
-
             }
-
             catch (Exception ex)
             {
-
                 return -1;
             }
-
         }
-
 
         public static int ExecuteTranParam(string sqlStr, SqlCommand sqlcmd, SqlTransaction Tr)
         {
             int Complete = 0;
             try
             {
-
                 sqlcmd.CommandType = CommandType.Text;
-               
-               sqlcmd.Transaction = Tr;
+
+                sqlcmd.Transaction = Tr;
                 Complete = sqlcmd.ExecuteNonQuery();
                 sqlcmd.Parameters.Clear();
 
                 return Complete;
-
             }
             catch (Exception ex)
             {
@@ -251,13 +259,11 @@ namespace coreapi.DB
             }
         }
 
-
         public static int ExecuteTran(string sqlStr, SqlCommand sqlcmd, SqlTransaction Tr)
         {
             int Complete = 0;
             try
             {
-
                 sqlcmd.CommandType = CommandType.Text;
                 sqlcmd.CommandText = sqlStr;
                 sqlcmd.Transaction = Tr;
@@ -265,30 +271,28 @@ namespace coreapi.DB
                 sqlcmd.Parameters.Clear();
 
                 return Complete;
-
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return Complete;
             }
         }
 
-
-
         #region "NonTransection"
 
         public static bool ExecuteOnly(string QryStr)
         {
-
             SqlConnection _Cnn = new SqlConnection();
             SqlCommand _Cmd = new SqlCommand();
 
             try
             {
-
-
-                if (_Cnn.State == ConnectionState.Open) { _Cnn.Close(); };
-                _Cnn.ConnectionString =  SystemConfig._ConnectionString;
+                if (_Cnn.State == ConnectionState.Open)
+                {
+                    _Cnn.Close();
+                }
+                ;
+                _Cnn.ConnectionString = SystemConfig._ConnectionString;
                 _Cnn.Open();
                 _Cmd = _Cnn.CreateCommand();
                 _Cmd.CommandTimeout = 0;
@@ -308,22 +312,21 @@ namespace coreapi.DB
                 //Interaction.MsgBox(ex.Message);
                 return false;
             }
-
         }
-
 
         public static bool ExecuteOnlySystem(string QryStr)
         {
-
             SqlConnection _Cnn = new SqlConnection();
             SqlCommand _Cmd = new SqlCommand();
 
             try
             {
-
-
-                if (_Cnn.State == ConnectionState.Open) { _Cnn.Close(); };
-                _Cnn.ConnectionString =  SystemConfig._ConnectionString;
+                if (_Cnn.State == ConnectionState.Open)
+                {
+                    _Cnn.Close();
+                }
+                ;
+                _Cnn.ConnectionString = SystemConfig._ConnectionString;
                 _Cnn.Open();
                 _Cmd = _Cnn.CreateCommand();
                 _Cmd.CommandTimeout = 0;
@@ -343,25 +346,28 @@ namespace coreapi.DB
                 //Interaction.MsgBox(ex.Message);
                 return false;
             }
-
         }
 
-        public static DataTable GetDataTableSystem(string QryStr, string TableName = "DataTalble1", bool useapi = true)
+        public static DataTable GetDataTableSystem(
+            string QryStr,
+            string TableName = "DataTalble1",
+            bool useapi = true
+        )
         {
             DataTable objDT = new DataTable(TableName);
 
             try
             {
-
-
                 SqlConnection _Cnn = new SqlConnection();
                 SqlCommand _Cmd = new SqlCommand();
                 try
                 {
-
-
-                    if (_Cnn.State == ConnectionState.Open) { _Cnn.Close(); };
-                    _Cnn.ConnectionString =  SystemConfig._ConnectionString;
+                    if (_Cnn.State == ConnectionState.Open)
+                    {
+                        _Cnn.Close();
+                    }
+                    ;
+                    _Cnn.ConnectionString = SystemConfig._ConnectionString;
                     _Cnn.Open();
                     _Cmd = _Cnn.CreateCommand();
 
@@ -380,25 +386,17 @@ namespace coreapi.DB
                     DisposeSqlConnection(_Cmd);
                     DisposeSqlConnection(_Cnn);
                 }
-
-
             }
             catch { }
 
-
-
-
             return objDT;
         }
-
-
 
         public static bool ExecuteNonQuery(string QryStr)
         {
             try
             {
                 int Complete = 0;
-
 
                 DBConn.SqlConnectionOpen();
                 DBConn.Cmd = DBConn.Cnn.CreateCommand();
@@ -422,9 +420,7 @@ namespace coreapi.DB
                 DBConn.DisposeSqlTransaction(DBConn.Tran);
                 DBConn.DisposeSqlConnection(DBConn.Cmd);
                 return true;
-
             }
-
             catch (Exception ex)
             {
                 DBConn.Tran.Rollback();
@@ -433,12 +429,12 @@ namespace coreapi.DB
                 return false;
             }
         }
+
         public static bool ExecuteNonQuery(ref SqlCommand _Cmd)
         {
             try
             {
                 int Complete = 0;
-
 
                 DBConn.SqlConnectionOpen();
                 Tran = Cnn.BeginTransaction();
@@ -461,7 +457,6 @@ namespace coreapi.DB
                 DBConn.DisposeSqlTransaction(DBConn.Tran);
                 DBConn.DisposeSqlConnection(_Cmd);
                 return true;
-
             }
             catch (Exception ex)
             {
@@ -475,16 +470,13 @@ namespace coreapi.DB
 
         public static object ExecuteScalar(string QryStr)
         {
-
             try
             {
-
                 DBConn.SqlConnectionOpen();
                 DBConn.Cmd = DBConn.Cnn.CreateCommand();
                 DBConn.Cmd.CommandType = CommandType.Text;
                 DBConn.Cmd.CommandText = QryStr;
                 return DBConn.Cmd.ExecuteScalar();
-
             }
             catch (SqlException ex)
             {
@@ -494,20 +486,16 @@ namespace coreapi.DB
             {
                 DBConn.DisposeSqlConnection(DBConn.Cmd);
             }
-
         }
 
         public static object ExecuteScalar(ref SqlCommand _Cmd)
         {
-
             try
             {
-
                 DBConn.SqlConnectionOpen();
 
                 _Cmd.Connection = DBConn.Cnn;
                 return _Cmd.ExecuteScalar();
-
             }
             catch (SqlException ex)
             {
@@ -517,28 +505,31 @@ namespace coreapi.DB
             {
                 DBConn.DisposeSqlConnection(_Cmd);
             }
-
         }
         #endregion
 
 
 
-        public static DataTable GetDataTable(string QryStr, string TableName = "DataTalble1", bool useapi = true)
+        public static DataTable GetDataTable(
+            string QryStr,
+            string TableName = "DataTalble1",
+            bool useapi = true
+        )
         {
             DataTable objDT = new DataTable(TableName);
 
             try
             {
-
-
                 SqlConnection _Cnn = new SqlConnection();
                 SqlCommand _Cmd = new SqlCommand();
                 try
                 {
-
-
-                    if (_Cnn.State == ConnectionState.Open) { _Cnn.Close(); };
-                    _Cnn.ConnectionString =  SystemConfig._ConnectionString;
+                    if (_Cnn.State == ConnectionState.Open)
+                    {
+                        _Cnn.Close();
+                    }
+                    ;
+                    _Cnn.ConnectionString = SystemConfig._ConnectionString;
                     _Cnn.Open();
                     _Cmd = _Cnn.CreateCommand();
 
@@ -557,28 +548,28 @@ namespace coreapi.DB
                     DisposeSqlConnection(_Cmd);
                     DisposeSqlConnection(_Cnn);
                 }
-
-
             }
             catch { }
-
-
-
 
             return objDT;
         }
 
-        public static void GetDataSet(string QryStr, ref DataSet objDataSet, string DefaultTableName = null)
+        public static void GetDataSet(
+            string QryStr,
+            ref DataSet objDataSet,
+            string DefaultTableName = null
+        )
         {
-             
             SqlConnection _Cnn = new SqlConnection();
             SqlCommand _Cmd = new SqlCommand();
             try
             {
-
-
-                if (_Cnn.State == ConnectionState.Open) { _Cnn.Close(); };
-                _Cnn.ConnectionString =  SystemConfig._ConnectionString;
+                if (_Cnn.State == ConnectionState.Open)
+                {
+                    _Cnn.Close();
+                }
+                ;
+                _Cnn.ConnectionString = SystemConfig._ConnectionString;
                 _Cnn.Open();
                 _Cmd = _Cnn.CreateCommand();
 
@@ -601,7 +592,11 @@ namespace coreapi.DB
             //return objDataSet;
         }
 
-        public static DataTable GetDataTableConectstring(string QryStr, string _ConnectionString, string TableName = "DataTalble1")
+        public static DataTable GetDataTableConectstring(
+            string QryStr,
+            string _ConnectionString,
+            string TableName = "DataTalble1"
+        )
         {
             DataTable objDT = new DataTable(TableName);
 
@@ -609,10 +604,12 @@ namespace coreapi.DB
             SqlCommand _Cmd = new SqlCommand();
             try
             {
-
-
-                if (_Cnn.State == ConnectionState.Open) { _Cnn.Close(); };
-                _Cnn.ConnectionString =  SystemConfig._ConnectionString;
+                if (_Cnn.State == ConnectionState.Open)
+                {
+                    _Cnn.Close();
+                }
+                ;
+                _Cnn.ConnectionString = SystemConfig._ConnectionString;
                 _Cnn.Open();
                 _Cmd = _Cnn.CreateCommand();
 
@@ -635,14 +632,16 @@ namespace coreapi.DB
             return objDT;
         }
 
-        public static DataTable GetDataTableOnbeginTrans(string QryStr, string DefaultTableName = "DataTalble1")
+        public static DataTable GetDataTableOnbeginTrans(
+            string QryStr,
+            string DefaultTableName = "DataTalble1"
+        )
         {
             DataTable objDT = new DataTable(DefaultTableName);
             SqlCommand _cmd = null;
 
             try
             {
-
                 if (Tran != null)
                 {
                     _cmd = new SqlCommand(QryStr, DBConn.Cnn, Tran);
@@ -658,7 +657,6 @@ namespace coreapi.DB
                 _Adepter.Dispose();
 
                 _cmd.Dispose();
-
             }
             catch (Exception ex)
             {
@@ -666,10 +664,13 @@ namespace coreapi.DB
             }
 
             return objDT;
-
         }
 
-        public static string GetFieldConectstring(string strSql, string _ConnecttionString, object defaultValue = null)
+        public static string GetFieldConectstring(
+            string strSql,
+            string _ConnecttionString,
+            object defaultValue = null
+        )
         {
             DataTable dt = new DataTable();
             string _Value = Convert.ToString(defaultValue);
@@ -678,28 +679,34 @@ namespace coreapi.DB
             {
                 dt = GetDataTableConectstring(strSql, _ConnecttionString);
 
-
                 if (dt.Rows.Count != 0)
                 {
                     foreach (DataRow R in dt.Rows)
                     {
                         if (R[0] == DBNull.Value) { }
-                        else { _Value = R[0].ToString(); };
+                        else
+                        {
+                            _Value = R[0].ToString();
+                        }
+                        ;
                         break;
-                    };
+                    }
+                    ;
                 }
 
                 dt.Dispose();
             }
-            catch (Exception ex)
-            {
-            }
-
+            catch (Exception ex) { }
 
             return _Value;
         }
 
-        public static string GetFieldByName(string strSql, string FieldName, object defaultValue = null, bool useapi = true)
+        public static string GetFieldByName(
+            string strSql,
+            string FieldName,
+            object defaultValue = null,
+            bool useapi = true
+        )
         {
             DataTable dt = new DataTable();
             string _Value = Convert.ToString(defaultValue);
@@ -714,12 +721,20 @@ namespace coreapi.DB
                         if (!string.IsNullOrEmpty(FieldName) & dt.Columns.IndexOf(FieldName) >= 0)
                         {
                             if (R[FieldName] == DBNull.Value) { }
-                            else { _Value = R[FieldName].ToString(); };
+                            else
+                            {
+                                _Value = R[FieldName].ToString();
+                            }
+                            ;
                         }
                         else
                         {
                             if (R[0] == DBNull.Value) { }
-                            else { _Value = R[0].ToString(); };
+                            else
+                            {
+                                _Value = R[0].ToString();
+                            }
+                            ;
                         }
                         break;
                     }
@@ -728,11 +743,8 @@ namespace coreapi.DB
                 {
                     _Value = defaultValue.ToString();
                 }
-
             }
-            catch (Exception ex)
-            {
-            }
+            catch (Exception ex) { }
 
             dt.Dispose();
             return _Value;
@@ -751,25 +763,28 @@ namespace coreapi.DB
                 {
                     foreach (DataRow R in dt.Rows)
                     {
-
                         if (R[0] == DBNull.Value) { }
-                        else { _Value = R[0].ToString(); };
+                        else
+                        {
+                            _Value = R[0].ToString();
+                        }
+                        ;
                         break;
                     }
-                };
-
-
+                }
+                ;
             }
-            catch (Exception ex)
-            {
-            }
+            catch (Exception ex) { }
 
             dt.Dispose();
             return _Value;
-
         }
 
-        public static string GetFieldByNameOnBeginTrans(string strSql, string FieldName, object defaultValue = null)
+        public static string GetFieldByNameOnBeginTrans(
+            string strSql,
+            string FieldName,
+            object defaultValue = null
+        )
         {
             DataTable dt = new DataTable();
             string _Value = Convert.ToString(defaultValue);
@@ -780,35 +795,35 @@ namespace coreapi.DB
 
                 if (dt.Rows.Count != 0)
                 {
-
                     foreach (DataRow R in dt.Rows)
                     {
                         if (!string.IsNullOrEmpty(FieldName) & dt.Columns.IndexOf(FieldName) >= 0)
                         {
                             if (R[FieldName] == DBNull.Value) { }
-                            else { _Value = R[FieldName].ToString(); };
+                            else
+                            {
+                                _Value = R[FieldName].ToString();
+                            }
+                            ;
                         }
                         else
                         {
                             if (R[0] == DBNull.Value) { }
-                            else { _Value = R[0].ToString(); };
+                            else
+                            {
+                                _Value = R[0].ToString();
+                            }
+                            ;
                         }
                         break;
                     }
-
-                };
-
+                }
+                ;
             }
-            catch (Exception ex)
-            {
-            }
+            catch (Exception ex) { }
 
             dt.Dispose();
             return _Value;
-
         }
-
     }
-
-
 }

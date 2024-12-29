@@ -119,6 +119,19 @@ namespace goalongapi.Controllers
             );
         }
 
+        [HttpPost("[action]")]
+        public async Task<ActionResult> LoginState(LoginState loginRequest)
+        {
+            var _cmd = "";
+            _cmd = " Exec dbo.setLoginState @username='" + loginRequest.Username + "'";
+            _cmd += " , @devicename='" + loginRequest.DeviceName + "'";
+            _cmd += " , @ip ='" + loginRequest.Ip + "'";
+            _cmd += " , @os ='" + loginRequest.OS + "'";
+
+            coreapi.DB.DBConn.ExecuteOnly(_cmd);
+            return Ok();
+        }
+
         [HttpGet("[action]")]
         public async Task<ActionResult> TestConnect()
         {

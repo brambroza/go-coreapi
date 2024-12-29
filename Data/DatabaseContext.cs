@@ -1,36 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
+using goalongapi.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
-
-
-
-using goalongapi.Entities;
 
 namespace goalongapi.Data
 {
     public partial class DatabaseContext : DbContext
     {
-        public DatabaseContext()
-        {
-        }
+        public DatabaseContext() { }
 
         public DatabaseContext(DbContextOptions<DatabaseContext> options)
-            : base(options)
-        {
-        }
+            : base(options) { }
 
         public virtual DbSet<Account> Accounts { get; set; } = null!;
         public virtual DbSet<AccountGoogle> AccountsGoogle { get; set; } = null!;
         public virtual DbSet<Category> Categories { get; set; } = null!;
         public virtual DbSet<Product> Products { get; set; } = null!;
         public virtual DbSet<Role> Roles { get; set; } = null!;
+        public virtual DbSet<LogSystemClick> LogSystemClick { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
-          optionsBuilder.UseSqlServer("Server=localhost,1433;user id=sa; password=dr0wss@p; Database=GoAlongDatabase; TrustServerCertificate=true;");
+                optionsBuilder.UseSqlServer(
+                    "Server=localhost,1433;user id=sa; password=dr0wss@p; Database=GoAlongDatabase; TrustServerCertificate=true;"
+                );
             }
         }
 
@@ -44,16 +40,14 @@ namespace goalongapi.Data
 
                 entity.Property(e => e.RoleId).HasColumnName("RoleID");
 
-                entity.HasOne(d => d.Role)
+                entity
+                    .HasOne(d => d.Role)
                     .WithMany(p => p.Accounts)
                     .HasForeignKey(d => d.RoleId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Accounts_Roles"); 
+                    .HasConstraintName("FK_Accounts_Roles");
             });
 
-
-
- 
             modelBuilder.Entity<Category>(entity =>
             {
                 entity.Property(e => e.CategoryId).HasColumnName("CategoryID");
@@ -73,12 +67,13 @@ namespace goalongapi.Data
 
                 entity.Property(e => e.Price).HasColumnType("decimal(18, 0)");
 
-                entity.HasOne(d => d.Category)
+                entity
+                    .HasOne(d => d.Category)
                     .WithMany(p => p.Products)
                     .HasForeignKey(d => d.CategoryId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Products_Categories");
-            });  
+            });
 
             modelBuilder.Entity<Role>(entity =>
             {

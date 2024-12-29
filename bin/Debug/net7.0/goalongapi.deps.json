@@ -27,6 +27,7 @@
           "Microsoft.EntityFrameworkCore.SqlServer": "7.0.5",
           "MimeKit": "4.8.0",
           "Net.Json.Serializer": "5.6.0",
+          "RabbitMQ.Client": "6.2.1",
           "Swashbuckle.AspNetCore": "6.4.0"
         },
         "runtime": {
@@ -413,7 +414,7 @@
           "Microsoft.Extensions.DependencyInjection.Abstractions": "7.0.0",
           "Microsoft.Extensions.Logging.Abstractions": "7.0.0",
           "System.Reflection.Emit": "4.7.0",
-          "System.Threading.Channels": "4.5.0"
+          "System.Threading.Channels": "4.7.1"
         }
       },
       "Microsoft.AspNetCore.SignalR.Protocols.Json/1.1.0": {
@@ -896,6 +897,18 @@
           "lib/netstandard2.0/Newtonsoft.Json.Bson.dll": {
             "assemblyVersion": "1.0.0.0",
             "fileVersion": "1.0.2.22727"
+          }
+        }
+      },
+      "RabbitMQ.Client/6.2.1": {
+        "dependencies": {
+          "System.Memory": "4.5.4",
+          "System.Threading.Channels": "4.7.1"
+        },
+        "runtime": {
+          "lib/netstandard2.0/RabbitMQ.Client.dll": {
+            "assemblyVersion": "6.0.0.0",
+            "fileVersion": "6.2.1.0"
           }
         }
       },
@@ -1655,7 +1668,7 @@
           "System.Threading.Tasks": "4.3.0"
         }
       },
-      "System.Threading.Channels/4.5.0": {},
+      "System.Threading.Channels/4.7.1": {},
       "System.Threading.Tasks/4.3.0": {
         "dependencies": {
           "Microsoft.NETCore.Platforms": "1.1.0",
@@ -2363,6 +2376,13 @@
       "path": "newtonsoft.json.bson/1.0.2",
       "hashPath": "newtonsoft.json.bson.1.0.2.nupkg.sha512"
     },
+    "RabbitMQ.Client/6.2.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-kdcin0uz1b9xQPvlLOoa8Y2zQsfu7nRuTrcX02dCLVzwGVlsPp9AFgu1L3kRh4wSFEOGE03OVqpWKxaDlhuowQ==",
+      "path": "rabbitmq.client/6.2.1",
+      "hashPath": "rabbitmq.client.6.2.1.nupkg.sha512"
+    },
     "runtime.debian.8-x64.runtime.native.System.Security.Cryptography.OpenSsl/4.3.0": {
       "type": "package",
       "serviceable": true,
@@ -2993,12 +3013,12 @@
       "path": "system.threading/4.3.0",
       "hashPath": "system.threading.4.3.0.nupkg.sha512"
     },
-    "System.Threading.Channels/4.5.0": {
+    "System.Threading.Channels/4.7.1": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-MEH06N0rIGmRT4LOKQ2BmUO0IxfvmIY/PaouSq+DFQku72OL8cxfw8W99uGpTCFf2vx2QHLRSh374iSM3asdTA==",
-      "path": "system.threading.channels/4.5.0",
-      "hashPath": "system.threading.channels.4.5.0.nupkg.sha512"
+      "sha512": "sha512-6akRtHK/wab3246t4p5v3HQrtQk8LboOt5T4dtpNgsp3zvDeM4/Gx8V12t0h+c/W9/enUrilk8n6EQqdQorZAA==",
+      "path": "system.threading.channels/4.7.1",
+      "hashPath": "system.threading.channels.4.7.1.nupkg.sha512"
     },
     "System.Threading.Tasks/4.3.0": {
       "type": "package",

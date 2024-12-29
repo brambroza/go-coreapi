@@ -11,17 +11,23 @@ namespace goalongapi.Datatools.Account
         [Required]
         [MinLength(4)]
         public string Password { get; set; }
-
-
     }
-
 
     public class LoginRequestGoogle
     {
         [Required]
         public long Id { get; set; }
+
         [Required]
         [EmailAddress]
         public string Email { get; set; }
+    }
+
+    public class LoginState
+    {
+        public string Username { get; set; }
+        public string DeviceName { get; set; }
+        public string Ip { get; set; }
+        public string OS { get; set; }
     }
 }
