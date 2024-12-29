@@ -9,6 +9,11 @@ services:
     ports:
       - 1433:1433
 
+  rabbitmq:
+    image: rabbitmq
+    ports:
+      - "5672:5672"
+
   goalongapp:
     image: goalongwebapi
     build:
@@ -19,3 +24,4 @@ services:
 
     depends_on:
       - goalongdb
+      - rabbitmq
