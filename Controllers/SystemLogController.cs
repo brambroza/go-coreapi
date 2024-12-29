@@ -1,4 +1,4 @@
-using System;
+/* using System;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
@@ -19,7 +19,7 @@ namespace coreapi.Controllers
     public class SystemLogController : ControllerBase
     {
 
-        /* private readonly RabbitMQService _rabbitMQService;
+      private readonly RabbitMQService _rabbitMQService;
 
         public SystemLogController(RabbitMQService rabbitMQService)
         {
@@ -31,6 +31,7 @@ namespace coreapi.Controllers
         {
             _rabbitMQService.SendLog(log: log);
             return Ok();
-        } */
+        }
     }
 }
+ */
