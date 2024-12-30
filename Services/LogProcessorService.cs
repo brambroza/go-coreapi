@@ -1,4 +1,4 @@
-/* using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 using goalongapi.Data;
 using goalongapi.Entities;
@@ -85,4 +85,3 @@ public class LogRequest
     public string CmpId { get; set; }
     public DateTime TimeStamp { get; set; }
 }
- */
