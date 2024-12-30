@@ -85,3 +85,11 @@ public class LogRequest
     public string CmpId { get; set; }
     public DateTime TimeStamp { get; set; }
 }
+
+public class GetLogRequest
+{
+    public string Username { get; set; }
+    public string MenuName { get; set; }
+    public string ObjectName { get; set; }
+    public string CmpId { get; set; }
+}

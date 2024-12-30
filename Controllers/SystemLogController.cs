@@ -31,5 +31,30 @@ namespace coreapi.Controllers
             _rabbitMQService.SendLog(log: log);
             return Ok();
         }
+
+        [HttpGet("[action]")]
+        public IActionResult getLogClick([FromQuery] string cmpid, [FromQuery] string user)
+        {
+            string _cmd;
+            DataTable dt = new System.Data.DataTable();
+            _cmd = "exec dbo.getLogSystemClick @CmpId='" + cmpid + "', @UserName='" + user + "'";
+
+            var logclicklists = new List<GetLogRequest>();
+
+            dt = DB.DBConn.GetDataTable(_cmd);
+            foreach (DataRow r in dt.Rows)
+            {
+                var logclicklist = new GetLogRequest()
+                {
+                    Username = r["UserName"].ToString(),
+                    CmpId = r["CmpId"].ToString(),
+                    MenuName = r["MenuName"].ToString(),
+                    ObjectName = r["ObjectName"].ToString(),
+                };
+                logclicklists.Add(logclicklist);
+            }
+
+            return Ok(logclicklists);
+        }
     }
 }
