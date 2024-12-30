@@ -2,27 +2,17 @@
 
 version: '3.4'
 
-networks:
-  goalong_network:
-    driver: bridge
-
-
 services:
   
   goalongdb:
     image: goalongdb
     ports:
       - 1433:1433
-    networks:
-      - goalong_network
-
 
   rabbitmq:
     image: rabbitmq
     ports:
       - "5672:5672"
-    networks:
-      - goalong_network
 
   goalongapp:
     image: goalongwebapi
@@ -39,5 +29,3 @@ services:
       - RabbitMQ__Port=5672
       - RabbitMQ__UserName=guest
       - RabbitMQ__Password=guest
-    networks:
-      - goalong_network
