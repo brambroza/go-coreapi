@@ -36,5 +36,8 @@ services:
       - rabbitmq
     environment:
       - RabbitMQ__HostName=rabbitmq
+      - RabbitMQ__Port=5672
+      - RabbitMQ__UserName=guest
+      - RabbitMQ__Password=guest
     networks:
       - goalong_network
