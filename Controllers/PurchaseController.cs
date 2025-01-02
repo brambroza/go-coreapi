@@ -59,12 +59,14 @@ namespace coreapi.Controllers
                 purchase.CmpId = r["CmpId"].ToString();
                 purchase.DocState = Convert.ToInt32(r["DocState"]);
                 purchase.PriceStand = r["PriceStand"].ToString();
-                purchase.PaymentDue = DateTime.Parse(r["PaymentDue"].ToString());
-                purchase.Shipping = DateTime.Parse(r["Shipping"].ToString());
+                purchase.PaymentDue = r["PaymentDue"].ToString();
+                purchase.Shipping = r["Shipping"].ToString();
                 purchase.RevNo = Convert.ToInt32(r["RevNo"]);
                 purchase.ProjectNo = r["ProjectNo"].ToString();
                 purchase.SupplierName = r["SupplierName"].ToString();
                 purchase.ContactName = r["ContactName"].ToString();
+                purchase.SignaturePath = r["SignaturePath"].ToString();
+                purchase.FullName = r["FullName"].ToString();
 
                 purchase.items = new List<Purchase_Detail>();
                 foreach (
@@ -273,9 +275,8 @@ namespace coreapi.Controllers
                 _cmd += "  ,@CmpId ='" + po.CmpId + "'";
                 _cmd += " ,@DocState =" + po.DocState;
                 _cmd += " ,@PriceStand  ='" + po.PriceStand + "'";
-                _cmd +=
-                    " ,@PaymentDue  ='" + po.PaymentDue.ToString("yyyy-MM-dd", thaiCulture) + "'";
-                _cmd += " ,@Shipping  ='" + po.Shipping.ToString("yyyy-MM-dd", thaiCulture) + "'";
+                _cmd += " ,@PaymentDue  ='" + po.PaymentDue.ToString() + "'";
+                _cmd += " ,@Shipping  ='" + po.Shipping.ToString() + "'";
                 _cmd += " ,@RevNo =" + po.RevNo;
                 _cmd += " ,@ProjectNo  ='" + po.ProjectNo + "'";
                 _cmd += " , @ContactName='" + po.ContactName + "'";
@@ -397,6 +398,50 @@ namespace coreapi.Controllers
                 msgretrun.ReturnCode = "400";
                 msgretrun.Msg = "Error !!";
                 return BadRequest(msgretrun);
+            }
+        }
+
+        [HttpPost("[action]")]
+        public IActionResult setPurchaseSendApp(QuoHApprove quoH)
+        {
+            MsgReturn msgretrun = new MsgReturn();
+
+            try
+            {
+                string _cmd = "";
+                _cmd =
+                    "exec dbo.setPurchaseSendApp @CmpId='"
+                    + quoH.cmpid
+                    + "' , @DocNo='"
+                    + quoH.docno
+                    + "' , @RevNo ="
+                    + quoH.revno
+                    + ",@User='"
+                    + quoH.user
+                    + "'";
+
+                System.Data.DataTable dt = DB.DBConn.GetDataTable(_cmd);
+                if (dt.Rows.Count > 0)
+                {
+                    /*  var x = linenotisendapp(quoH.docno); */
+
+
+                    msgretrun.ReturnCode = "200";
+                    msgretrun.Msg = "Save Success !!";
+                    return Ok(new { approvedoc = dt.Rows[0][0] });
+                }
+                else
+                {
+                    msgretrun.ReturnCode = "400";
+                    msgretrun.Msg = "Error !!";
+                    return Ok(msgretrun);
+                }
+            }
+            catch
+            {
+                msgretrun.ReturnCode = "400";
+                msgretrun.Msg = "Error !!";
+                return Ok(msgretrun);
             }
         }
 

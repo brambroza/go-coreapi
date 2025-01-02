@@ -34,13 +34,15 @@ namespace coreapi.Models
         public string CmpId { get; set; }
         public int DocState { get; set; }
         public string PriceStand { get; set; }
-        public DateTime PaymentDue { get; set; }
-        public DateTime Shipping { get; set; }
+        public string PaymentDue { get; set; }
+        public string Shipping { get; set; }
         public int RevNo { get; set; }
         public string ProjectNo { get; set; }
 
         public string SupplierName { get; set; }
         public string ContactName { get; set; }
+        public string? SignaturePath { get; set; }
+        public string? FullName { get; set; }
 
         public List<Purchase_Detail> items { get; set; }
     }
@@ -115,7 +117,6 @@ namespace coreapi.Models
         public int Seq { get; set; }
         public int StateClose { get; set; }
         public List<TicketPurchaseItemList> items { get; set; }
-        
     }
 
     public class TicketPurchaseItemList
