@@ -28,7 +28,7 @@ namespace coreapi.Controllers
         [HttpPost("[action]")]
         public IActionResult setLogClick([FromBody] LogRequest log)
         {
-            _rabbitMQService.SendLog(log: log);
+            _rabbitMQService.SendLog(log);
             return Ok();
         }
 
