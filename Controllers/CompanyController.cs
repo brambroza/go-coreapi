@@ -34,10 +34,10 @@ namespace coreapi.Controllers
             string _cmd;
             _cmd = "exec dbo.getPaymentmethod @CmpId='" + cmpid + "' , @userlogin='" + user + "'";
             DataTable dt = DB.DBConn.GetDataTable(_cmd);
-          /*   string JSONString = string.Empty;
-            JSONString = JsonConvert.SerializeObject(dt);
-
-            return Ok(new { payments = JSONString}); */
+            /*   string JSONString = string.Empty;
+              JSONString = JsonConvert.SerializeObject(dt);
+  
+              return Ok(new { payments = JSONString}); */
 
             List<paymentmethod> paymentmethods = new List<paymentmethod>();
 
@@ -59,7 +59,7 @@ namespace coreapi.Controllers
                 paymentmethods.Add(paymentmethod);
             }
 
-            return Ok(new { payments = paymentmethods });  
+            return Ok(new { payments = paymentmethods });
         }
 
         [HttpGet("[action]")]
@@ -68,10 +68,105 @@ namespace coreapi.Controllers
             string _cmd;
             _cmd = "exec dbo.getCompanySocailChannel @CmpId='" + cmpid + "' , @User='" + user + "'";
             DataTable dt = DB.DBConn.GetDataTable(_cmd);
-            string JSONString = string.Empty;
-            JSONString = JsonConvert.SerializeObject(dt);
 
-            return Ok(JSONString);
+            List<cmpSocialChannel> cmpSocialChannels = new List<cmpSocialChannel>();
+
+            foreach (DataRow r in dt.Rows)
+            {
+                var cmpSocialChannel = new cmpSocialChannel()
+                {
+                    UpdUser = r["UpdUser"].ToString(),
+                    CmpId = r["CmpId"].ToString(),
+                    Seq = int.Parse(r["Seq"].ToString()),
+                    Platform = r["Platform"].ToString(),
+                    ChannelId = r["ChannelId"].ToString(),
+                    ApiKey = r["ApiKey"].ToString(),
+                    WebhookUrl = r["WebhookUrl"].ToString(),
+                    AccessToken = r["AccessToken"].ToString(),
+                    PageId = r["PageId"].ToString(),
+                    PhoneNumber = r["PhoneNumber"].ToString(),
+                };
+
+                cmpSocialChannels.Add(cmpSocialChannel);
+            }
+
+            return Ok(cmpSocialChannels);
+        }
+
+        [HttpPost("[action]")]
+        public IActionResult setSocialChannel([FromBody] cmpSocialChannel cmp)
+        {
+            MsgReturn msgretrun = new MsgReturn();
+
+            try
+            {
+                string _cmd = "";
+
+                _cmd = "exec  dbo.setCompanySocialChannel";
+                _cmd += " @UpdUser  ='" + cmp.UpdUser + "'";
+                _cmd += ",@CmpId  ='" + cmp.CmpId + "'";
+                _cmd += ",@Seq =" + cmp.Seq;
+                _cmd += ",@Platform  ='" + cmp.Platform + "'";
+                _cmd += ",@ChannelId  ='" + cmp.ChannelId + "'";
+                _cmd += ",@ApiKey  ='" + cmp.ApiKey + "'";
+                _cmd += ",@WebhookUrl  ='" + cmp.WebhookUrl + "'";
+                _cmd += ",@AccessToken  ='" + cmp.AccessToken + "'";
+                _cmd += ",@PageId  ='" + cmp.PageId + "'";
+                _cmd += ",@PhoneNumber  ='" + cmp.PhoneNumber + "'";
+
+                if (DB.DBConn.ExecuteOnly(_cmd))
+                {
+                    msgretrun.ReturnCode = "200";
+                    msgretrun.Msg = "Save Success !!";
+                    return Ok(msgretrun);
+                }
+                else
+                {
+                    msgretrun.ReturnCode = "400";
+                    msgretrun.Msg = "Error !!";
+                    return StatusCode(400, new { Message = msgretrun.Msg, Error = msgretrun.Msg });
+                }
+            }
+            catch
+            {
+                msgretrun.ReturnCode = "400";
+                msgretrun.Msg = "Error !!";
+                return StatusCode(400, new { Message = msgretrun.Msg, Error = msgretrun.Msg });
+            }
+        }
+
+        [HttpDelete("[action]")]
+        public IActionResult delSocialChannel([FromQuery] string cmpid, [FromQuery] int id)
+        {
+            MsgReturn msgretrun = new MsgReturn();
+
+            try
+            {
+                string _cmd = "";
+
+                _cmd = "exec  dbo.delCompanySocialChannel";
+                _cmd += " @CmpId  ='" + cmpid + "'";
+                _cmd += ",@Seq =" + id;
+
+                if (DB.DBConn.ExecuteOnly(_cmd))
+                {
+                    msgretrun.ReturnCode = "200";
+                    msgretrun.Msg = "Delete Success !!";
+                    return Ok(msgretrun);
+                }
+                else
+                {
+                    msgretrun.ReturnCode = "400";
+                    msgretrun.Msg = "Error !!";
+                    return StatusCode(400, new { Message = msgretrun.Msg, Error = msgretrun.Msg });
+                }
+            }
+            catch
+            {
+                msgretrun.ReturnCode = "400";
+                msgretrun.Msg = "Error !!";
+                return StatusCode(400, new { Message = msgretrun.Msg, Error = msgretrun.Msg });
+            }
         }
 
         [HttpGet("images/{fileName}")]
@@ -173,45 +268,6 @@ namespace coreapi.Controllers
                 _cmd += " @UpdUser  ='" + pm.UpdUser + "'";
                 _cmd += ",@CmpId  ='" + pm.CmpId + "'";
                 _cmd += ",@PaymentMethodId  =" + pm.PaymentMethodId + "";
-               
-
-                if (DB.DBConn.ExecuteOnly(_cmd))
-                {
-                    msgretrun.ReturnCode = "200";
-                    msgretrun.Msg = "Save Success !!";
-                    return Ok(msgretrun);
-                }
-                else
-                {
-                    msgretrun.ReturnCode = "400";
-                    msgretrun.Msg = "Error !!";
-                    return StatusCode(400, new { Message = msgretrun.Msg, Error = msgretrun.Msg });
-                }
-            }
-            catch
-            {
-                msgretrun.ReturnCode = "400";
-                msgretrun.Msg = "Error !!";
-                return StatusCode(400, new { Message = msgretrun.Msg, Error = msgretrun.Msg });
-            }
-        }
-
-        [HttpPost("[action]")]
-        public IActionResult setSocialChannel(cmpSocialChannel cmp)
-        {
-            MsgReturn msgretrun = new MsgReturn();
-
-            try
-            {
-                string _cmd = "";
-
-                _cmd = "exec  dbo.set_company";
-                _cmd += " @UpdUser  ='" + cmp.UpdUser + "'";
-                _cmd += ",@CmpId  ='" + cmp.CmpId + "'";
-                _cmd += ",@AccountHook  ='" + cmp.AccountHook + "'";
-                _cmd += ",@SocialType  ='" + cmp.SocialType + "'";
-                _cmd += ",@Seq =" + cmp.Seq;
-                _cmd += ",@AccountName='" + cmp.AccountName + "'";
 
                 if (DB.DBConn.ExecuteOnly(_cmd))
                 {

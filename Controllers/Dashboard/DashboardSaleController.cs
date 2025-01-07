@@ -121,8 +121,6 @@ namespace coreapi.Controllers
             return Ok(JSONString);
         }
 
-
-
         [HttpGet]
         [Route("getSaleOverviewMonthly")]
         public IActionResult saleOverviewMonthly([FromQuery] string cmpid, [FromQuery] string user)
@@ -130,18 +128,14 @@ namespace coreapi.Controllers
             DataTable dt = new System.Data.DataTable();
             string _cmd;
             _cmd =
-                "exec dbo.DashboardSale_SaleOverView @User='"
-                + user
-                + "'  ,@CmpId='"
-                + cmpid
-                + "'";
+                "exec dbo.DashboardSale_SaleOverView @User='" + user + "'  ,@CmpId='" + cmpid + "'";
             dt = DB.DBConn.GetDataTable(_cmd);
             string JSONString = string.Empty;
             JSONString = JsonConvert.SerializeObject(dt);
             return Ok(JSONString);
         }
 
-         [HttpGet]
+        [HttpGet]
         [Route("getSaleLastCustomer")]
         public IActionResult saleLastCustomer([FromQuery] string cmpid, [FromQuery] string user)
         {
@@ -158,8 +152,6 @@ namespace coreapi.Controllers
             JSONString = JsonConvert.SerializeObject(dt);
             return Ok(JSONString);
         }
-
-
 
         [HttpGet]
         [Route("getSaleYear")]

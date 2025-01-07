@@ -53,9 +53,13 @@ namespace coreapi.Models
         public string CmpId { get; set; }
         public string UpdUser { get; set; }
         public int Seq { get; set; }
-        public string SocialType { get; set; }
-        public string AccountHook { get; set; }
-        public string AccountName { get; set; }
+        public string Platform { get; set; }
+        public string ApiKey { get; set; }
+        public string WebhookUrl { get; set; }
+        public string AccessToken { get; set; }
+        public string PageId { get; set; }
+        public string PhoneNumber { get; set; }
+        public string ChannelId { get; set; }
     }
 
     public class cmpinfo
