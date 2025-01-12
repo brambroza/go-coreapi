@@ -310,9 +310,9 @@ namespace coreapi.Controllers
             {
                 string _cmd;
                 _cmd =
-                    "exec dbo.removePurchase @CmpId="
-                    + Convert.ToInt16(id)
-                    + " , @DocNo='"
+                    "exec dbo.removePurchase @CmpId='"
+                    + id
+                    + "' , @DocNo='"
                     + DocNo
                     + "' , @RevNo ="
                     + RevNo;

@@ -19,9 +19,9 @@ namespace coreapi.Models
         public DateTime ProjectDueDate { get; set; }
         public DateTime ProjectDate { get; set; }
         public string SaleOrderNo { get; set; }
-        public int TotalQty {get;set;}
+        public int TotalQty { get; set; }
 
-        public  CustomerList  customer {get;set;}
+        public CustomerList? customer { get; set; } = null;
 
         public List<Project_Detail> items { get; set; }
         public List<Project_Task> tasks { get; set; }
@@ -29,7 +29,19 @@ namespace coreapi.Models
         public List<Project_File> attachfile { get; set; }
         public List<ProjectCost> costs { get; set; }
 
-        public  ProjectHistory history {get;set;}
+        public ProjectHistory history { get; set; }
+
+        public string Title { get; set; }
+        public string Priority { get; set; }
+        public string RouteId { get; set; }
+        public string RouteName { get; set; }
+        public string Labels { get; set; }
+    }
+
+    public enum MessageType
+    {
+        Image,
+        Text,
     }
 
     public class Apppo
@@ -144,12 +156,12 @@ namespace coreapi.Models
     public class ProjectHistory
     {
         public string ProjectNo { get; set; }
-        public DateTime ProjectTime { get; set; }
-        public DateTime PaymentTime { get; set; }
-        public DateTime DeliveryTime { get; set; }
-        public DateTime CompletionTime { get; set; }
+        public DateTime? ProjectTime { get; set; }
+        public DateTime? PaymentTime { get; set; }
+        public DateTime? DeliveryTime { get; set; }
+        public DateTime? CompletionTime { get; set; }
         public string CmpId { get; set; }
-        public List<ProjectTimeline> timeline {get;set;}
+        public List<ProjectTimeline> timeline { get; set; }
     }
 
     public class ProjectTimeline

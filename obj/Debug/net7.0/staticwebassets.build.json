@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "K3Evz8+DO3qpORITKFAQBWYjHoW7Tnp10rUXeOxoUCw=",
+  "Hash": "WqKSfmTEqURZQxAmd86Rb07Zyvt4BN5re5NJrJFtO60=",
   "Source": "goalongapi",
   "BasePath": "_content/goalongapi",
   "Mode": "Default",
@@ -729,6 +729,23 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot/230015/NIS-2200153/attachfileProjectCost/f930c9ab-565c-4c2e-8a52-91619bc05715.pdf"
+    },
+    {
+      "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/NIS-2500009/comment/attachment/DELL EMC PowerEdge T350.jpg",
+      "SourceId": "goalongapi",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/",
+      "BasePath": "_content/goalongapi",
+      "RelativePath": "230015/NIS-2500009/comment/attachment/DELL EMC PowerEdge T350.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/230015/NIS-2500009/comment/attachment/DELL EMC PowerEdge T350.jpg"
     },
     {
       "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/product/images/00dd0718-6c76-4072-a181-3237435654b5.png",

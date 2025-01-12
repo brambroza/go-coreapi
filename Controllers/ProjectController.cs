@@ -308,6 +308,330 @@ namespace coreapi.Controllers
         }
 
         [HttpGet("[action]")]
+        public IActionResult getProjectKanban([FromQuery] string CmpId, [FromQuery] string user)
+        {
+            string _cmd;
+            DataTable dtystemroute = new DataTable();
+            _cmd = "exec dbo.sp_getsystemroute @CmpId='" + CmpId + "', @System='Project'";
+            dtystemroute = DB.DBConn.GetDataTable(_cmd);
+
+            _cmd = "exec dbo.GetProjectAll @CmpId='" + CmpId + "' , @User='" + user + "'";
+            DataTable dt = DB.DBConn.GetDataTable(_cmd);
+
+            _cmd = "exec dbo.GetProjectItemAll @CmpId='" + CmpId + "' ";
+            DataTable dtItem = DB.DBConn.GetDataTable(_cmd);
+
+            _cmd = "exec dbo.GetProjecttaskAll @CmpId='" + CmpId + "' ";
+            DataTable dtTask = DB.DBConn.GetDataTable(_cmd);
+
+            _cmd = "exec dbo.GetProjectInstalltaskAll @CmpId='" + CmpId + "'  ";
+            DataTable dtInstall = DB.DBConn.GetDataTable(_cmd);
+
+            _cmd = "exec dbo.getProjectCostAll @CmpId='" + CmpId + "'";
+            DataTable dtCost = DB.DBConn.GetDataTable(_cmd);
+
+            _cmd = "exec dbo.GetProjecttask_resourceAll @CmpId='" + CmpId + "'";
+            DataTable dtResource = DB.DBConn.GetDataTable(_cmd);
+
+            _cmd = "exec dbo.GetProjectFileAll @CmpId='" + CmpId + "'";
+            DataTable dtfiles = DB.DBConn.GetDataTable(_cmd);
+
+            _cmd = "exec dbo.GetProjectHistoryAll @CmpId='" + CmpId + "'";
+            DataTable dtHis = DB.DBConn.GetDataTable(_cmd);
+
+            _cmd = "exec dbo.GetProjectTimelineAll @CmpId='" + CmpId + "'";
+            DataTable dtTime = DB.DBConn.GetDataTable(_cmd);
+
+            _cmd = "exec dbo.getCustomer @CmpId='" + CmpId + "' , @Type='0'";
+            DataTable dtcust = DB.DBConn.GetDataTable(_cmd);
+
+            _cmd = "exec dbo.getContact @CmpId='" + CmpId + "'";
+            DataTable dtContact = DB.DBConn.GetDataTable(_cmd);
+
+            string _DocType = "customer";
+
+            List<Project> projects = new List<Project>();
+
+            List<Models.Route> routes = new List<Models.Route>();
+            var columns = new List<object>();
+            var tasks = new Dictionary<string, List<object>>();
+            foreach (DataRow rt in dtystemroute.Rows)
+            {
+                var route = new Models.Route();
+                route.CmpId = rt["CmpId"].ToString();
+                route.RouteId = rt["RouteId"].ToString();
+                route.RouteName = rt["RouteName"].ToString();
+                route.Department = rt["Department"].ToString();
+                route.completepercent = double.Parse(rt["completepercent"].ToString());
+                route.Seq = int.Parse(rt["Seq"].ToString());
+                columns.Add(route);
+
+                tasks[route.RouteId] = new List<object>();
+
+                foreach (DataRow r in dt.Select("RouteId='" + route.RouteId + "'"))
+                {
+                    var project = new Project();
+                    project.UpdUser = r["UpdUser"].ToString();
+                    project.ProjectNo = r["ProjectNo"].ToString();
+                    project.CustCode = r["CustCode"].ToString();
+                    project.Description = r["Description"].ToString();
+                    project.CmpId = r["CmpId"].ToString();
+                    project.PurchaseNo = r["PurchaseNo"].ToString();
+                    project.QuotationNo = r["QuotationNo"].ToString();
+                    project.ReferCode = r["ReferCode"].ToString();
+                    project.StateActive = r["StateActive"].ToString();
+                    project.ProjectDueDate = DateTime.Parse(r["ProjectDueDate"].ToString());
+                    project.ProjectDate = DateTime.Parse(r["ProjectDate"].ToString());
+                    project.SaleOrderNo = r["SaleOrderNo"].ToString();
+                    project.Title = r["Title"].ToString();
+                    project.Priority = r["Priority"].ToString();
+                    project.RouteId = r["RouteId"].ToString();
+                    project.Labels = r["Labels"].ToString();
+                    project.RouteName = r["RouteName"].ToString();
+
+                    project.items = new List<Project_Detail>();
+                    project.TotalQty = dtItem
+                        .Select("ProjectNo='" + project.ProjectNo + "'")
+                        .Length;
+                    foreach (DataRow d in dtItem.Select("ProjectNo='" + project.ProjectNo + "'"))
+                    {
+                        project.items.Add(
+                            new Project_Detail
+                            {
+                                UpdUser = d["UpdUser"].ToString(),
+                                ProjectNo = d["ProjectNo"].ToString(),
+                                Seq = Convert.ToInt32(d["Seq"]),
+                                ProdCode = d["ProdCode"].ToString(),
+                                ProdDescription = d["ProdDescription"].ToString(),
+                                Qty = Convert.ToDecimal(d["Qty"]),
+                                UnitCode = d["UnitCode"].ToString(),
+                                UnitPrice = Convert.ToDecimal(d["UnitPrice"]),
+                                Amt = Convert.ToDecimal(d["Amt"]),
+                                DisPer = Convert.ToDecimal(d["DisPer"]),
+                                DisAmt = Convert.ToDecimal(d["DisAmt"]),
+                                NetAmt = Convert.ToDecimal(d["NetAmt"]),
+                                PricePur = Convert.ToDecimal(d["PricePur"]),
+                                CostAmt = Convert.ToDecimal(d["CostAmt"]),
+                                ProfitAmt = Convert.ToDecimal(d["ProfitAmt"]),
+                                GroupCaption1 = d["GroupCaption1"].ToString(),
+                                GroupCaption2 = d["GroupCaption2"].ToString(),
+                                GroupCaption3 = d["GroupCaption3"].ToString(),
+                                PurchaseNo = d["PurchaseNo"].ToString(),
+                                DeliveryDate = d["DeliveryDate"].ToString(),
+                                RevNo = Convert.ToInt32(d["RevNo"]),
+                                imgpath = d["imgpath"].ToString(),
+                            }
+                        );
+                    }
+
+                    project.tasks = new List<Project_Task>();
+                    foreach (DataRow d in dtTask.Select("ProjectNo='" + project.ProjectNo + "'"))
+                    {
+                        project.tasks.Add(
+                            new Project_Task
+                            {
+                                UpdUser = d["UpdUser"].ToString(),
+                                ProjectNo = d["ProjectNo"].ToString(),
+                                Seq = Convert.ToInt32(d["Seq"]),
+                                Description = d["Description"].ToString(),
+                                Qty = Convert.ToDecimal(d["Qty"]),
+                                UnitCode = d["UnitCode"].ToString(),
+                                UnitPrice = Convert.ToDecimal(d["UnitPrice"]),
+                                Amt = Convert.ToDecimal(d["Amt"]),
+                                DayQty = Convert.ToDecimal(d["DayQty"]),
+                                Time = Convert.ToDecimal(d["Time"]),
+                                StartDate = d["StartDate"].ToString(),
+                                StartTime = d["StartTime"].ToString(),
+                                EndDate = d["EndDate"].ToString(),
+                                EndTime = d["EndTime"].ToString(),
+                                InstallDescription = d["InstallDescription"].ToString(),
+                                CmpId = d["CmpId"].ToString(),
+                                Resource = d["Resource"]
+                                    .ToString()
+                                    .Split(',')
+                                    .ToList() // Assuming resources are comma-separated
+                                ,
+                            }
+                        );
+                    }
+
+                    project.installs = new List<Project_TaskInstall>();
+                    foreach (DataRow d in dtInstall.Select("ProjectNo='" + project.ProjectNo + "'"))
+                    {
+                        project.installs.Add(
+                            new Project_TaskInstall
+                            {
+                                UpdUser = d["UpdUser"].ToString(),
+                                ProjectNo = d["ProjectNo"].ToString(),
+                                Seq = Convert.ToInt32(d["Seq"]),
+                                InstallResource = d["InstallResource"]
+                                    .ToString()
+                                    .Split(',')
+                                    .ToList(), // Assuming resources are comma-separated
+                                InstallQty = Convert.ToDecimal(d["InstallQty"]),
+                                InstallStartDate = d["InstallStartDate"].ToString(),
+                                InstallStartTime = d["InstallStartTime"].ToString(),
+                                InstallEndDate = d["InstallEndDate"].ToString(),
+                                InstallEndTime = d["InstallEndTime"].ToString(),
+                                InstallDescription = d["InstallDescription"].ToString(),
+                                CmpId = d["CmpId"].ToString(),
+                            }
+                        );
+                    }
+
+                    project.attachfile = new List<Project_File>();
+                    foreach (DataRow d in dtfiles.Select("ProjectNo='" + project.ProjectNo + "'"))
+                    {
+                        project.attachfile.Add(
+                            new Project_File
+                            {
+                                UpdUser = d["UpdUser"].ToString(),
+                                ProjectNo = d["ProjectNo"].ToString(),
+                                Seq = Convert.ToInt32(d["Seq"]),
+                                FileName = d["FileName"].ToString(),
+                                FilePath = d["FilePath"].ToString(),
+                                Files =
+                                    d["Files"]
+                                    as byte[] // Assuming this is binary data
+                                ,
+                            }
+                        );
+                    }
+
+                    project.costs = new List<ProjectCost>();
+                    foreach (DataRow d in dtCost.Select("ProjectNo='" + project.ProjectNo + "'"))
+                    {
+                        project.costs.Add(
+                            new ProjectCost
+                            {
+                                UpdUser = d["UpdUser"].ToString(),
+                                ProjectNo = d["ProjectNo"].ToString(),
+                                Seq = Convert.ToInt32(d["Seq"]),
+                                CostDescription = d["CostDescription"].ToString(),
+                                CostAmt = Convert.ToDecimal(d["CostAmt"]),
+                                AttachFile = d["AttachFile"].ToString(),
+                                CmpId = d["CmpId"].ToString(),
+                            }
+                        );
+                    }
+
+                    project.history = new ProjectHistory();
+                    foreach (DataRow d in dtHis.Select("ProjectNo='" + project.ProjectNo + "'"))
+                    {
+                        var hist = new ProjectHistory();
+                        hist.ProjectNo = d["ProjectNo"].ToString();
+                        hist.ProjectTime = DateTime.Parse(d["ProjectTime"].ToString());
+                        hist.PaymentTime = DateTime.Parse(d["PaymentTime"].ToString());
+                        hist.DeliveryTime = DateTime.Parse(d["DeliveryTime"].ToString());
+                        hist.CompletionTime = DateTime.Parse(d["CompletionTime"].ToString());
+                        hist.CmpId = d["CmpId"].ToString();
+
+                        hist.timeline = new List<ProjectTimeline>();
+                        foreach (
+                            DataRow x in dtTime.Select("ProjectNo='" + project.ProjectNo + "'")
+                        )
+                        {
+                            hist.timeline.Add(
+                                new ProjectTimeline
+                                {
+                                    ProjectNo = x["ProjectNo"].ToString(),
+                                    Title = x["Title"].ToString(),
+                                    Time = DateTime.Parse(x["Time"].ToString()),
+                                    CmpId = x["CmpId"].ToString(),
+                                }
+                            );
+                        }
+
+                        project.history = hist;
+                    }
+
+                    project.customer = new CustomerList();
+
+                    foreach (DataRow d in dtcust.Select("CustomerCode='" + project.CustCode + "'"))
+                    {
+                        var customer = new CustomerList();
+
+                        customer.UpdUser = d["UpdUser"].ToString();
+                        customer.CustomerCode = d["CustomerCode"].ToString();
+                        customer.CustomerName = d["CustomerName"].ToString();
+                        customer.CustomerAddress = d["CustomerAddress"].ToString();
+                        customer.CustomerTaxNo = d["CustomerTaxNo"].ToString();
+                        customer.CustomerBranch = d["CustomerBranch"].ToString();
+                        customer.CustomerBranchCode = d["CustomerBranchCode"].ToString();
+                        customer.CustomerBranchName = d["CustomerBranchName"].ToString();
+                        customer.ContactName = d["ContactName"].ToString();
+                        customer.ContactEmail = d["ContactEmail"].ToString();
+                        customer.ContactPhone = d["ContactPhone"].ToString();
+                        customer.ContactName1 = d["ContactName1"].ToString();
+                        customer.ContactEmail1 = d["ContactEmail1"].ToString();
+                        customer.ContactPhone1 = d["ContactPhone1"].ToString();
+                        customer.CreditDay = Convert.ToInt32(d["CreditDay"]);
+                        customer.PhoneOffice = d["PhoneOffice"].ToString();
+                        customer.FaxOffice = d["FaxOffice"].ToString();
+                        customer.Website = d["Website"].ToString();
+                        customer.AddressShip = d["AddressShip"].ToString();
+                        customer.Remark = d["Remark"].ToString();
+                        customer.CmpId = d["CmpId"].ToString();
+                        customer.ContactName2 = d["ContactName2"].ToString();
+                        customer.ContactEmail2 = d["ContactEmail2"].ToString();
+                        customer.ContactPhone2 = d["ContactPhone2"].ToString();
+                        customer.ContactPosition2 = d["ContactPosition2"].ToString();
+                        customer.ContactPosition1 = d["ContactPosition1"].ToString();
+                        customer.ContactPosition = d["ContactPosition"].ToString();
+                        customer.AddrSubDistrict = d["AddrSubDistrict"].ToString();
+                        customer.AddrDistrict = d["AddrDistrict"].ToString();
+                        customer.AddrProvince = d["AddrProvince"].ToString();
+                        customer.AddrPostCode = d["AddrPostCode"].ToString();
+                        customer.ImgPath = d["ImgPath"].ToString();
+                        customer.CreditAccId = Convert.ToInt32(d["CreditAccId"]);
+                        customer.DebitAccId = Convert.ToInt32(d["DebitAccId"]);
+                        customer.BusinessGrpCode = d["BusinessGrpCode"].ToString();
+                        customer.StateCustomer = d["StateCustomer"].ToString();
+                        customer.StateVendor = d["StateVendor"].ToString();
+
+                        customer.contacts = new List<ContactList>();
+
+                        foreach (
+                            DataRow c in dtContact.Select(
+                                "DocType='"
+                                    + _DocType
+                                    + "' and DocNo='"
+                                    + customer.CustomerCode
+                                    + "'"
+                            )
+                        )
+                        {
+                            var item = new ContactList();
+                            item.UpdUser = c["UpdUser"].ToString();
+                            item.ContactName = c["ContactName"].ToString();
+                            item.ContactPhone = c["ContactPhone"].ToString();
+                            item.ContactEmail = c["ContactEmail"].ToString();
+                            item.ContactPosition = c["ContactPosition"].ToString();
+                            item.ContactLineId = c["ContactLineId"].ToString();
+                            item.Remark = c["Remark"].ToString();
+                            item.CmpId = c["CmpId"].ToString();
+                            item.ContactId = c["ContactId"].ToString();
+                            item.ImgPath = c["ImgPath"].ToString();
+                            item.DocNo = c["DocNo"].ToString();
+                            item.DocType = c["DocType"].ToString();
+
+                            customer.contacts.Add(item);
+                        }
+
+                        project.customer = customer;
+                    }
+
+                    projects.Add(project);
+
+                    tasks[route.RouteId].Add(project);
+                }
+            }
+
+            var response = new { board = new { tasks, columns } };
+            return Ok(response);
+        }
+
+        [HttpGet("[action]")]
         public IActionResult getProjectView(
             [FromQuery] string CmpId,
             [FromQuery] string user,
@@ -526,6 +850,11 @@ namespace coreapi.Controllers
         [HttpPost("[action]")]
         public IActionResult setProject(Project project)
         {
+            System.Globalization.CultureInfo thaiCulture = new System.Globalization.CultureInfo(
+                "th-TH"
+            );
+            thaiCulture.DateTimeFormat.Calendar = new System.Globalization.GregorianCalendar();
+
             MsgReturn msgretrun = new MsgReturn();
 
             try
@@ -541,9 +870,24 @@ namespace coreapi.Controllers
                 _cmd += ",@QuotationNo  ='" + project.QuotationNo + "'";
                 _cmd += ",@ReferCode  ='" + project.ReferCode + "'";
                 _cmd += ",@StateActive ='" + project.StateActive + "'";
-                _cmd += ",@ProjectDueDate  ='" + project.ProjectDueDate + "'";
-                _cmd += " , @ProjectDate='" + project.ProjectDate + "'";
+                _cmd +=
+                    ",@ProjectDueDate  ='"
+                    + DateTime
+                        .Parse(project.ProjectDueDate.ToString())
+                        .ToString("yyyy-MM-dd HH:mm", thaiCulture)
+                    + "'";
+
+                _cmd +=
+                    ",@ProjectDate  ='"
+                    + DateTime
+                        .Parse(project.ProjectDate.ToString())
+                        .ToString("yyyy-MM-dd HH:mm", thaiCulture)
+                    + "'";
+
                 _cmd += " , @SaleOrderNo='" + project.SaleOrderNo + "'";
+                _cmd += " , @Title='" + project.Title + "'";
+                _cmd += " , @Priority='" + project.Priority + "'";
+                _cmd += " , @RouteId='" + project.RouteId + "'";
                 if (DB.DBConn.ExecuteOnly(_cmd))
                 {
                     msgretrun.ReturnCode = "200";
@@ -647,6 +991,59 @@ namespace coreapi.Controllers
                 msgretrun.ReturnCode = "400";
                 msgretrun.Msg = "Error !!";
                 return Ok(msgretrun);
+            }
+        }
+
+        [HttpPost("[action]")]
+        public IActionResult setProjectMoveRoute(TaskUpdate comment)
+        {
+            System.Globalization.CultureInfo thaiCulture = new System.Globalization.CultureInfo(
+                "th-TH"
+            );
+            thaiCulture.DateTimeFormat.Calendar = new System.Globalization.GregorianCalendar();
+            /*    var url = await UploadFilesAsyn(formFiles); */
+            MsgReturn msgretrun = new MsgReturn();
+            DB.DBConn.SqlConnectionOpen();
+            DB.DBConn.Cmd = DB.DBConn.Cnn.CreateCommand();
+            DB.DBConn.Tran = DB.DBConn.Cnn.BeginTransaction();
+
+            try
+            {
+                string _cmd;
+
+                _cmd = "exec  dbo.SetProjectUpdateColumn";
+                _cmd += " @CmpId  ='" + comment.CmpId + "'";
+                _cmd += ", @ProjectNo  ='" + comment.TicketId + "'";
+                _cmd += ", @RouteId  ='" + comment.RouteId + "'";
+                _cmd += ", @updUser  ='" + comment.updUser + "'";
+
+                if (DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran) <= 0)
+                {
+                    DB.DBConn.Tran.Rollback();
+                    DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
+                    DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
+                    msgretrun.ReturnCode = "400";
+                    msgretrun.Msg = "Error !!";
+                    return NotFound(msgretrun);
+                }
+                ;
+
+                DB.DBConn.Tran.Commit();
+                DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
+                DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
+                msgretrun.ReturnCode = "200";
+                msgretrun.Msg = "Save Success !!";
+                return Ok(msgretrun);
+            }
+            catch (Exception ex)
+            {
+                DB.DBConn.Tran.Rollback();
+                DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
+                DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
+
+                msgretrun.ReturnCode = "400";
+                msgretrun.Msg = "Error !!";
+                return NotFound(msgretrun);
             }
         }
 
