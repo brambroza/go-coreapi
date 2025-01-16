@@ -111,6 +111,8 @@ namespace coreapi.Models
         public string AdditionalDetail2 { get; set; }
         public string DesiredService { get; set; }
         public string FileUrl { get; set; }
+
+        public string FileUrl1 { get; set; }
         public int Seq { get; set; }
     }
 

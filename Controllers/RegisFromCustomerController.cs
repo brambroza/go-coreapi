@@ -221,6 +221,17 @@ namespace coreapi.Controllers
                     {
                         _cmd += ", @FileUrl  =''";
                     }
+
+                      if (request.ReqItem[i].FileUrl1 != null)
+                    {
+                        _cmd +=
+                            ", @FileUrl1  ='" + string.Join(",", request.ReqItem[i].FileUrl1) + "'";
+                    }
+                    else
+                    {
+                        _cmd += ", @FileUrl1  =''";
+                    }
+
                     DataTable dt = DB.DBConn.GetDataTable(_cmd);
                     JSONString = JsonConvert.SerializeObject(dt);
                     if (dt.Rows.Count > 0)

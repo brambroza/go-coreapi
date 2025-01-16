@@ -19,7 +19,11 @@ namespace coreapi.Controllers
     {
         [HttpGet]
         [Route("getCongratulations")]
-        public IActionResult Congratulations([FromQuery] string cmpid, [FromQuery] string user)
+        public IActionResult Congratulations(
+            [FromQuery] string cmpid,
+            [FromQuery] string user,
+            [FromQuery] string year
+        )
         {
             DataTable dt = new System.Data.DataTable();
             string _cmd;
@@ -28,6 +32,8 @@ namespace coreapi.Controllers
                 + user
                 + "'  ,@CmpId='"
                 + cmpid
+                + "' , @Year='"
+                + year
                 + "'";
             dt = DB.DBConn.GetDataTable(_cmd);
             string JSONString = string.Empty;

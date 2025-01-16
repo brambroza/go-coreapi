@@ -1481,6 +1481,26 @@
       "PackagePath": "staticwebassets/reqfromcust/fileall/9ddeee7b-2b1b-4ce9-8f47-9fd8f1abc89a.pdf"
     },
     {
+      "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/reqfromcust/fileall/DELL EMC PowerEdge T350.jpg",
+      "PackagePath": "staticwebassets/reqfromcust/fileall/DELL EMC PowerEdge T350.jpg"
+    },
+    {
+      "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/reqfromcust/fileall/Lenovo-00WG691-1.jpg",
+      "PackagePath": "staticwebassets/reqfromcust/fileall/Lenovo-00WG691-1.jpg"
+    },
+    {
+      "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/reqfromcust/fileall/Logo KANDA 2021-02.jpg",
+      "PackagePath": "staticwebassets/reqfromcust/fileall/Logo KANDA 2021-02.jpg"
+    },
+    {
+      "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/reqfromcust/fileall/QT-240066840e6efda-f0d9-4a39-9707-39754c3f4e7e.pdf",
+      "PackagePath": "staticwebassets/reqfromcust/fileall/QT-240066840e6efda-f0d9-4a39-9707-39754c3f4e7e.pdf"
+    },
+    {
+      "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/reqfromcust/fileall/Test file.docx",
+      "PackagePath": "staticwebassets/reqfromcust/fileall/Test file.docx"
+    },
+    {
       "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/reqfromcust/fileall/a06f5ab0-391f-4d2c-941d-4068629b57c6.jpg",
       "PackagePath": "staticwebassets/reqfromcust/fileall/a06f5ab0-391f-4d2c-941d-4068629b57c6.jpg"
     },
@@ -1735,6 +1755,10 @@
     {
       "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/reqfromcust/fileall/feb184c6-b3de-4358-9362-2c77f5fb95e9.png",
       "PackagePath": "staticwebassets/reqfromcust/fileall/feb184c6-b3de-4358-9362-2c77f5fb95e9.png"
+    },
+    {
+      "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/reqfromcust/fileall/—Pngtree—scan me qr code label_6532380.png",
+      "PackagePath": "staticwebassets/reqfromcust/fileall/—Pngtree—scan me qr code label_6532380.png"
     },
     {
       "Id": "obj/Debug/net7.0/staticwebassets/msbuild.build.goalongapi.props",

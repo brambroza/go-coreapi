@@ -281,6 +281,7 @@ namespace coreapi.Controllers
                     item.DesiredService = i["DesiredService"].ToString();
                     item.FileUrl = i["FIleUrl"].ToString();
                     item.Seq = int.Parse(i["Seq"].ToString());
+                    item.FileUrl1 = i["FIleUrl1"].ToString();
                     crm.ReqItem.Add(item);
                 }
 
@@ -639,6 +640,7 @@ namespace coreapi.Controllers
                         item.DesiredService = i["DesiredService"].ToString();
                         item.FileUrl = i["FIleUrl"].ToString();
                         item.Seq = int.Parse(i["Seq"].ToString());
+                        item.FileUrl1 = i["FIleUrl1"].ToString();
                         crm.ReqItem.Add(item);
                     }
 
