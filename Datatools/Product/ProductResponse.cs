@@ -9,7 +9,7 @@ namespace goalongapi.Datatools.Product
         public int Stock { get; set; }
         public decimal Price { get; set; }
         public string? CategoryName {get; set;}        
-
+ 
 
         public static ProductResponse FromProduct(goalongapi.Entities.Product product){
 

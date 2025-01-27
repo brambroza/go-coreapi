@@ -1,148 +1,150 @@
-﻿using coreapi.Models;
+﻿using goalongapi.Models;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Web.Http;
- 
 
-namespace coreapi.Controllers
+namespace goalongapi.Controllers
 {
-    
-    public class MADetailController : ApiController
+    [ApiController]
+    [Route("api/[controller]")]
+    public class MADetailController : ControllerBase
     {
-        // GET: api/MADetail
-        public IEnumerable<string> Get()
+        [HttpGet]
+        public ActionResult<IEnumerable<string>> Get()
         {
-            return new string[] { "value1", "value2" };
+            return Ok(new string[] { "value1", "value2" });
         }
 
-        // GET: api/MADetail/5
-        public IHttpActionResult Get(string id)
+        [HttpGet("{id}")]
+        public ActionResult<DataTable> Get(string id)
         {
-            //int[] values = new[] { 1, 2, 3, 4, 5, 4, 4, 3 };
-
-            //var groups = values.GroupBy(v => v);
-            //foreach (var group in groups )
-            //    Console.WriteLine("Value {0} has {1} items", group.Key, group.Count());
-            //int s = int.Parse(id);
-
-            string _QuotationNo = id;
-            DataTable dt = new System.Data.DataTable();
-            string _cmd;
-            _cmd = "exec dbo.[getMADetail] @MANo='" + _QuotationNo + "'";
-            dt = DB.DBConn.GetDataTable(_cmd);
-            //string qdetail = string.Empty;
-            //qdetail = JsonConvert.SerializeObject(dt);
-            return Ok(dt);
-        }
-        public IHttpActionResult Get(string DocNo , int CmpId)
-        {
-            string _QuotationNo = DocNo;
-            DataTable dt = new System.Data.DataTable();
-            string _cmd;
-            _cmd = "exec dbo.[getMADetail_PODetail] @MANo='" + _QuotationNo + "'";
-            dt = DB.DBConn.GetDataTable(_cmd);
-            //string qdetail = string.Empty;
-            //qdetail = JsonConvert.SerializeObject(dt);
-            return Ok(dt);
-        }
-        // POST: api/MADetail
-        public void Post(List<MaDetail> maDetail)
-        {
-
-            
-
-            DB.DBConn.SqlConnectionOpen();
-            DB.DBConn.Cmd = DB.DBConn.Cnn.CreateCommand();
-            DB.DBConn.Tran = DB.DBConn.Cnn.BeginTransaction();
-
             try
             {
+                string _cmd = $"exec dbo.[getMADetail] @MANo='{id}'";
+                DataTable dt = DB.DBConn.GetDataTable(_cmd);
 
-                string _cmd;
-                if (maDetail.Count > 0)
+                if (dt.Rows.Count == 0)
                 {
-                    _cmd = "Delete From dbo.MAService_Detail where MANo='" + maDetail[0].MANo + "'";
-                    DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran);
+                    return NotFound(new { Message = "No data found for the given ID." });
                 }
 
-                for (int i = 0; i < maDetail.Count; i++)
+                return Ok(dt);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = "An error occurred.", Details = ex.Message });
+            }
+        }
+
+        [HttpGet("Detail/{docNo}/{cmpId}")]
+        public ActionResult<DataTable> Get(string docNo, int cmpId)
+        {
+            try
+            {
+                string _cmd = $"exec dbo.[getMADetail_PODetail] @MANo='{docNo}'";
+                DataTable dt = DB.DBConn.GetDataTable(_cmd);
+
+                if (dt.Rows.Count == 0)
                 {
+                    return NotFound(new { Message = "No data found for the given document number." });
+                }
 
-                  
+                return Ok(dt);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = "An error occurred.", Details = ex.Message });
+            }
+        }
 
-                    _cmd = "exec  dbo.MAService_DetailTrans";
-                    _cmd += " @UpdUser  ='" + maDetail[i].UpdUser + "'";
-                    _cmd += ",@MANo  ='" + maDetail[i].MANo + "'";
-                    _cmd += ",@Description  ='" + Tool.Tool.validateStr(maDetail[i].Description ) + "'";
-                    _cmd += ",@ServiceType =1";// + maDetail[i].ServiceType;
-                    _cmd += ",@ProductCode  ='" + maDetail[i].ProductCode + "'";
-                    _cmd += ",@SerialNumber  ='" + maDetail[i].SerialNumber + "'";
-                    _cmd += ",@Model  ='" + maDetail[i].Model + "'";
-                    _cmd += ",@Seq =" + maDetail[i].Seq;
-                    _cmd += ",@StartDate ='" + maDetail[i].StartDate + "'";
-                    _cmd += ",@ExpireDate ='" + maDetail[i].ExpireDate + "'";
-                    _cmd += ",@WarningTime ='" + maDetail[i].WarningTime + "'";
-                    _cmd += ",@WarningBeforExpireDay =" + maDetail[i].WarningBeforExpireDay;
-                    _cmd += ",@NotificationQtySet =" + maDetail[i].NotificationQtySet;
-                    _cmd += ",@NotificationPeriodDay =" + maDetail[i].NotificationPeriodDay;
-                    _cmd += ",@NotificationQty =" + maDetail[i].NotificationQty;
-                    _cmd += ",@ServiceGrp =" + maDetail[i].ServiceGrp;
-                    _cmd += ",@ProjectName  ='" + maDetail[i].ProjectName + "'";
-                    _cmd += ",@QuotationNo  ='" + maDetail[i].QuotationNo + "'";
-                    _cmd += ",@PurchaseNo  ='" + maDetail[i].PurchaseNo + "'";
-                    _cmd += ",@ReferNo  ='" + maDetail[i].ReferNo + "'";
-                    _cmd += ",@ProductType =" + maDetail[i].ProductType;
-                    _cmd += ",@SerialNo ='" + maDetail[i].SerialNo + "'";
-                    _cmd += ",@LicensNo ='" + maDetail[i].LicensNo + "'";
-                    _cmd += ",@SuplName  ='" + maDetail[i].SuplName + "'";
-                    _cmd += ",@InvoiceNo ='" + maDetail[i].InvoiceNo + "'";
-                    _cmd += ",@InvoiceDate ='" + maDetail[i].InvoiceDate + "'";
-                    _cmd += ",@BrandName ='" + maDetail[i].BrandName + "'";
-                    _cmd += ",@PriceSale =" + maDetail[i].PriceSale;
-                    _cmd += ",@PricePur =" + maDetail[i].PricePur;
+        [HttpPost]
+        public ActionResult Post([FromBody] List<MaDetail> maDetail)
+        {
+            try
+            {
+                if (maDetail == null || maDetail.Count == 0)
+                {
+                    return BadRequest(new { Message = "Invalid data provided." });
+                }
 
-                    if (DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran) <= 0)
+                DB.DBConn.SqlConnectionOpen();
+                DB.DBConn.Cmd = DB.DBConn.Cnn.CreateCommand();
+                DB.DBConn.Tran = DB.DBConn.Cnn.BeginTransaction();
+
+                // Delete existing records
+                string deleteCmd = $"Delete From dbo.MAService_Detail where MANo='{maDetail[0].MANo}'";
+                DB.DBConn.ExecuteTran(deleteCmd, DB.DBConn.Cmd, DB.DBConn.Tran);
+
+                // Insert new records
+                foreach (var detail in maDetail)
+                {
+                    string insertCmd = "exec dbo.MAService_DetailTrans";
+                    insertCmd += $" @UpdUser='{detail.UpdUser}',";
+                    insertCmd += $"@MANo='{detail.MANo}',";
+                    insertCmd += $"@Description='{Tool.Tool.validateStr(detail.Description)}',";
+                    insertCmd += $"@ServiceType=1,";
+                    insertCmd += $"@ProductCode='{detail.ProductCode}',";
+                    insertCmd += $"@SerialNumber='{detail.SerialNumber}',";
+                    insertCmd += $"@Model='{detail.Model}',";
+                    insertCmd += $"@Seq={detail.Seq},";
+                    insertCmd += $"@StartDate='{detail.StartDate}',";
+                    insertCmd += $"@ExpireDate='{detail.ExpireDate}',";
+                    insertCmd += $"@WarningTime='{detail.WarningTime}',";
+                    insertCmd += $"@WarningBeforExpireDay={detail.WarningBeforExpireDay},";
+                    insertCmd += $"@NotificationQtySet={detail.NotificationQtySet},";
+                    insertCmd += $"@NotificationPeriodDay={detail.NotificationPeriodDay},";
+                    insertCmd += $"@NotificationQty={detail.NotificationQty},";
+                    insertCmd += $"@ServiceGrp={detail.ServiceGrp},";
+                    insertCmd += $"@ProjectName='{detail.ProjectName}',";
+                    insertCmd += $"@QuotationNo='{detail.QuotationNo}',";
+                    insertCmd += $"@PurchaseNo='{detail.PurchaseNo}',";
+                    insertCmd += $"@ReferNo='{detail.ReferNo}',";
+                    insertCmd += $"@ProductType={detail.ProductType},";
+                    insertCmd += $"@SerialNo='{detail.SerialNo}',";
+                    insertCmd += $"@LicensNo='{detail.LicensNo}',";
+                    insertCmd += $"@SuplName='{detail.SuplName}',";
+                    insertCmd += $"@InvoiceNo='{detail.InvoiceNo}',";
+                    insertCmd += $"@InvoiceDate='{detail.InvoiceDate}',";
+                    insertCmd += $"@BrandName='{detail.BrandName}',";
+                    insertCmd += $"@PriceSale={detail.PriceSale},";
+                    insertCmd += $"@PricePur={detail.PricePur}";
+
+                    if (DB.DBConn.ExecuteTran(insertCmd, DB.DBConn.Cmd, DB.DBConn.Tran) <= 0)
                     {
-                        DB.DBConn.Tran.Rollback();
-                        DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
-                        DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
-                        return ;
-
-                    };
+                        throw new Exception("Failed to insert MA detail.");
+                    }
                 }
 
                 DB.DBConn.Tran.Commit();
-                DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
-                DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
-
+                return Ok(new { Message = "MA details saved successfully." });
             }
             catch (Exception ex)
             {
                 DB.DBConn.Tran.Rollback();
+                return StatusCode(500, new { Message = "An error occurred.", Details = ex.Message });
+            }
+            finally
+            {
                 DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
                 DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
-
             }
-
-
-
         }
 
-        // PUT: api/MADetail/5
-        public void Put(int id, [FromBody]string value)
+        [HttpDelete("{id}/{seq}")]
+        public ActionResult Delete(string id, int seq)
         {
-        }
+            try
+            {
+                string _cmd = $"delete from dbo.MAService_Detail where MANo='{id}' and Seq={seq}";
+                DB.DBConn.ExecuteOnly(_cmd);
 
-        // DELETE: api/MADetail/5
-        public void Delete(string id  , int seq)
-        {
-            string _cmd = "";
-            _cmd = "delete from dbo.MAService_Detail where  MANo='" + id + "' and Seq=" + seq;
-            DB.DBConn.ExecuteOnly(_cmd);
+                return Ok(new { Message = "MA detail deleted successfully." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = "An error occurred.", Details = ex.Message });
+            }
         }
     }
 }

@@ -6,13 +6,13 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using coreapi.Models;
-using coreapi.Models.Trial;
+using goalongapi.Models;
+using goalongapi.Models.Trial;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
-namespace coreapi.Controllers
+namespace goalongapi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -24,7 +24,7 @@ namespace coreapi.Controllers
             [FromQuery] string userlogin,
             [FromQuery] string cmpid
         )
-        {
+        { 
             DataTable dt = new System.Data.DataTable();
             DataTable dtItem = new System.Data.DataTable();
             DataTable dtAssign = new System.Data.DataTable();
@@ -246,11 +246,13 @@ namespace coreapi.Controllers
                     item.UserFullName = i["FullName"].ToString();
                     item.ImgPath = i["ImgPath"].ToString();
                     item.UserId = i["UserId"].ToString();
+                    
 
                     crm.ReqOwner.Add(item);
                 }
 
                 crm.ReqItem = new List<ReqFromCustItem>();
+            
 
                 foreach (
                     DataRow i in dtItem.Select(
@@ -273,7 +275,7 @@ namespace coreapi.Controllers
                     item.Forticloud = i["Forticloud"].ToString();
                     item.MABy = i["MABy"].ToString();
                     item.MADuration = i["MADuration"].ToString();
-                    item.AdvanceReplacement = i["AdvanceReplacement"].ToString();
+                    item.AdvanceReplacement = i["AdvanceReplacement"].ToString() ?? string.Empty;
 
                     item.SLA = i["SLA"].ToString();
                     item.AdditionalDetail = i["AdditionalDetail"].ToString();

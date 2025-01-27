@@ -9,7 +9,7 @@ namespace goalongapi.Datatools.Account
         public string Username { get; set; }
 
         [Required]
-        [MinLength(4)]
+        [MinLength(4)] 
         public string Password { get; set; }
     }
 

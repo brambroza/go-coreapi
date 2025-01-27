@@ -4,15 +4,15 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Threading.Tasks;
-using coreapi.Hubs;
-using coreapi.Models;
+using goalongapi.Hubs;
+using goalongapi.Models;
 using goalongapi.Installers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Newtonsoft.Json;
 
-namespace coreapi.Controllers
-{
+namespace goalongapi.Controllers
+{ 
     [Route("api/[controller]")]
     [ApiController]
     public class OrganizationController : ControllerBase

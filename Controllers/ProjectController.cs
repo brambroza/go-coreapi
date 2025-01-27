@@ -8,20 +8,19 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
-using coreapi.Models;
+using goalongapi.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
-namespace coreapi.Controllers
+namespace goalongapi.Controllers
 {
     [ApiController]
     [Authorize]
     public class ProjectController : ControllerBase
-    {
-        public DataSet _ds { get; set; }
+    { 
 
         [HttpGet("[action]")]
         public IActionResult getProject([FromQuery] string CmpId, [FromQuery] string user)
@@ -469,7 +468,7 @@ namespace coreapi.Controllers
                                     .Split(',')
                                     .ToList(), // Assuming resources are comma-separated
                                 InstallQty = Convert.ToDecimal(d["InstallQty"]),
-                                InstallStartDate = d["InstallStartDate"].ToString(),
+                                InstallStartDate = d["InstallStartDate"].ToString() ,
                                 InstallStartTime = d["InstallStartTime"].ToString(),
                                 InstallEndDate = d["InstallEndDate"].ToString(),
                                 InstallEndTime = d["InstallEndTime"].ToString(),
@@ -551,43 +550,43 @@ namespace coreapi.Controllers
                     {
                         var customer = new CustomerList();
 
-                        customer.UpdUser = d["UpdUser"].ToString();
-                        customer.CustomerCode = d["CustomerCode"].ToString();
-                        customer.CustomerName = d["CustomerName"].ToString();
-                        customer.CustomerAddress = d["CustomerAddress"].ToString();
-                        customer.CustomerTaxNo = d["CustomerTaxNo"].ToString();
-                        customer.CustomerBranch = d["CustomerBranch"].ToString();
-                        customer.CustomerBranchCode = d["CustomerBranchCode"].ToString();
-                        customer.CustomerBranchName = d["CustomerBranchName"].ToString();
-                        customer.ContactName = d["ContactName"].ToString();
-                        customer.ContactEmail = d["ContactEmail"].ToString();
-                        customer.ContactPhone = d["ContactPhone"].ToString();
-                        customer.ContactName1 = d["ContactName1"].ToString();
-                        customer.ContactEmail1 = d["ContactEmail1"].ToString();
-                        customer.ContactPhone1 = d["ContactPhone1"].ToString();
+                        customer.UpdUser = d["UpdUser"].ToString() ?? string.Empty;
+                        customer.CustomerCode = d["CustomerCode"].ToString() ?? string.Empty;
+                        customer.CustomerName = d["CustomerName"].ToString() ?? string.Empty;
+                        customer.CustomerAddress = d["CustomerAddress"].ToString() ?? string.Empty;
+                        customer.CustomerTaxNo = d["CustomerTaxNo"].ToString() ?? string.Empty;
+                        customer.CustomerBranch = d["CustomerBranch"].ToString() ?? string.Empty;
+                        customer.CustomerBranchCode = d["CustomerBranchCode"].ToString() ?? string.Empty;
+                        customer.CustomerBranchName = d["CustomerBranchName"].ToString() ?? string.Empty;
+                        customer.ContactName = d["ContactName"].ToString() ?? string.Empty;
+                        customer.ContactEmail = d["ContactEmail"].ToString() ?? string.Empty;
+                        customer.ContactPhone = d["ContactPhone"].ToString() ?? string.Empty;
+                        customer.ContactName1 = d["ContactName1"].ToString() ?? string.Empty;
+                        customer.ContactEmail1 = d["ContactEmail1"].ToString() ?? string.Empty;
+                        customer.ContactPhone1 = d["ContactPhone1"].ToString() ?? string.Empty;
                         customer.CreditDay = Convert.ToInt32(d["CreditDay"]);
-                        customer.PhoneOffice = d["PhoneOffice"].ToString();
-                        customer.FaxOffice = d["FaxOffice"].ToString();
-                        customer.Website = d["Website"].ToString();
-                        customer.AddressShip = d["AddressShip"].ToString();
-                        customer.Remark = d["Remark"].ToString();
-                        customer.CmpId = d["CmpId"].ToString();
-                        customer.ContactName2 = d["ContactName2"].ToString();
-                        customer.ContactEmail2 = d["ContactEmail2"].ToString();
-                        customer.ContactPhone2 = d["ContactPhone2"].ToString();
-                        customer.ContactPosition2 = d["ContactPosition2"].ToString();
-                        customer.ContactPosition1 = d["ContactPosition1"].ToString();
-                        customer.ContactPosition = d["ContactPosition"].ToString();
-                        customer.AddrSubDistrict = d["AddrSubDistrict"].ToString();
-                        customer.AddrDistrict = d["AddrDistrict"].ToString();
-                        customer.AddrProvince = d["AddrProvince"].ToString();
-                        customer.AddrPostCode = d["AddrPostCode"].ToString();
-                        customer.ImgPath = d["ImgPath"].ToString();
+                        customer.PhoneOffice = d["PhoneOffice"].ToString() ?? string.Empty;
+                        customer.FaxOffice = d["FaxOffice"].ToString() ?? string.Empty;
+                        customer.Website = d["Website"].ToString() ?? string.Empty;
+                        customer.AddressShip = d["AddressShip"].ToString() ?? string.Empty;
+                        customer.Remark = d["Remark"].ToString() ?? string.Empty;
+                        customer.CmpId = d["CmpId"].ToString() ?? string.Empty;
+                        customer.ContactName2 = d["ContactName2"].ToString() ?? string.Empty;
+                        customer.ContactEmail2 = d["ContactEmail2"].ToString() ?? string.Empty;
+                        customer.ContactPhone2 = d["ContactPhone2"].ToString() ?? string.Empty;
+                        customer.ContactPosition2 = d["ContactPosition2"].ToString() ?? string.Empty;
+                        customer.ContactPosition1 = d["ContactPosition1"].ToString() ?? string.Empty;
+                        customer.ContactPosition = d["ContactPosition"].ToString() ?? string.Empty;
+                        customer.AddrSubDistrict = d["AddrSubDistrict"].ToString() ?? string.Empty;
+                        customer.AddrDistrict = d["AddrDistrict"].ToString() ?? string.Empty;
+                        customer.AddrProvince = d["AddrProvince"].ToString() ?? string.Empty;
+                        customer.AddrPostCode = d["AddrPostCode"].ToString() ?? string.Empty;
+                        customer.ImgPath = d["ImgPath"].ToString() ?? string.Empty;
                         customer.CreditAccId = Convert.ToInt32(d["CreditAccId"]);
                         customer.DebitAccId = Convert.ToInt32(d["DebitAccId"]);
-                        customer.BusinessGrpCode = d["BusinessGrpCode"].ToString();
-                        customer.StateCustomer = d["StateCustomer"].ToString();
-                        customer.StateVendor = d["StateVendor"].ToString();
+                        customer.BusinessGrpCode = d["BusinessGrpCode"].ToString() ?? string.Empty;
+                        customer.StateCustomer = d["StateCustomer"].ToString() ?? string.Empty;
+                        customer.StateVendor = d["StateVendor"].ToString() ?? string.Empty;
 
                         customer.contacts = new List<ContactList>();
 
@@ -609,7 +608,7 @@ namespace coreapi.Controllers
                             item.ContactPosition = c["ContactPosition"].ToString();
                             item.ContactLineId = c["ContactLineId"].ToString();
                             item.Remark = c["Remark"].ToString();
-                            item.CmpId = c["CmpId"].ToString();
+                            item.CmpId = c["CmpId"].ToString() ?? string.Empty;
                             item.ContactId = c["ContactId"].ToString();
                             item.ImgPath = c["ImgPath"].ToString();
                             item.DocNo = c["DocNo"].ToString();
@@ -976,7 +975,7 @@ namespace coreapi.Controllers
                     msgretrun.Msg = "Save Success !!";
                     return Ok(msgretrun);
                 }
-                catch (Exception ex)
+                catch 
                 {
                     DB.DBConn.Tran.Rollback();
                     DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
@@ -1035,7 +1034,7 @@ namespace coreapi.Controllers
                 msgretrun.Msg = "Save Success !!";
                 return Ok(msgretrun);
             }
-            catch (Exception ex)
+            catch  
             {
                 DB.DBConn.Tran.Rollback();
                 DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
@@ -1135,7 +1134,7 @@ namespace coreapi.Controllers
                     msgretrun.Msg = "Save Success !!";
                     return Ok(msgretrun);
                 }
-                catch (Exception ex)
+                catch  
                 {
                     DB.DBConn.Tran.Rollback();
                     DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
@@ -1232,7 +1231,7 @@ namespace coreapi.Controllers
                     msgretrun.Msg = "Save Success !!";
                     return Ok(msgretrun);
                 }
-                catch (Exception ex)
+                catch  
                 {
                     DB.DBConn.Tran.Rollback();
                     DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
@@ -1326,7 +1325,7 @@ namespace coreapi.Controllers
                     msgretrun.Msg = "Save Success !!";
                     return Ok(msgretrun);
                 }
-                catch (Exception ex)
+                catch  
                 {
                     DB.DBConn.Tran.Rollback();
                     DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
@@ -1370,7 +1369,7 @@ namespace coreapi.Controllers
                     msgretrun.Msg = "Del Success !!";
                     return Ok(msgretrun);
                 }
-                catch (Exception ex)
+                catch  
                 {
                     DB.DBConn.Tran.Rollback();
                     DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);

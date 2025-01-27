@@ -16,7 +16,7 @@ namespace goalongapi.Interfaces
     {
         private readonly DatabaseContext databaseContext;
         private readonly JwtSettings jwtSettings;
-
+ 
         public AccountService(DatabaseContext databaseContext, JwtSettings jwtSettings)
         {
             this.jwtSettings = jwtSettings;

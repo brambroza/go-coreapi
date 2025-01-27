@@ -1,4 +1,4 @@
-using coreapi.Models;
+using goalongapi.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -14,7 +14,7 @@ using Google;
 using System.Text.Json;
 
 
-namespace coreapi.Controllers
+namespace goalongapi.Controllers
 {
 
     [ApiController]
@@ -23,7 +23,6 @@ namespace coreapi.Controllers
     {
 
         private readonly IWebHostEnvironment webHostEnvironment;
-
         static readonly string[] Scopes = { SheetsService.Scope.SpreadsheetsReadonly };
         static readonly string ApplicationName = "GoogleSheetsWeb";
         static readonly string SpreadsheetId = "1wWXago6DcibLIzVwpRQhboyD6mVIuKnK5Ox6gJU0Hf0";  // Replace with your Google Sheet ID
@@ -186,7 +185,7 @@ namespace coreapi.Controllers
                     msg.text = d["text"].ToString();
                     msg.type = d["type"].ToString();
                     msg.timestamp = Convert.ToDateTime(d["TimeStamp"]);
-
+  
                     if (msg.type == "image")
                     {
                         var imagePath = await DownloadImageAsync(msg.id, "zHOdhlkJkcfWa4Hzm4nFQORzqCogEKj9PDUttOurALA2KjMdl0l9cwhRVRdXhYSFlIVOmrP1vP7DCA3aIt5u4B6CtsrNSW3Gj1Ud8BX5BWKiq1MbJS9GpadBBFBjImJOslCyMGHihEcgq0deVVXmHQdB04t89/1O/w1cDnyilFU=");
@@ -314,9 +313,9 @@ namespace coreapi.Controllers
                 var lineMessage = new LinePushMessage
                 {
                     to = userid,
-                    messages = new List<LineMessage>
+                    messages = new List<LineMessageModel>
                         {
-                            new LineMessage { text = msg }
+                            new LineMessageModel { text = msg }
                         }
                 };
 
@@ -346,7 +345,15 @@ namespace coreapi.Controllers
 
             var response = await _httpClient.GetAsync($"https://api-data.line.me/v2/bot/message/{messageId}/content");
 
-            response.EnsureSuccessStatusCode();
+            try
+            {
+                response.EnsureSuccessStatusCode();
+            }
+             catch (Exception)
+            {
+                return "" ;
+            }
+           
 
             // Save the image to a local path
             var pathto = $"{webHostEnvironment.WebRootPath}/images/chat";
@@ -467,13 +474,7 @@ namespace coreapi.Controllers
                 var request = service.Spreadsheets.Values.Get(SpreadsheetId, SheetRange);
                 var response = request.Execute();
 
-
-                // Define the table headers
-                /*    Console.WriteLine("| {0,-35} | {1,-10} | {2,-10} | {3,-20} | {4,-10} | {5,-20} | {6,-20} | {7,-40} |",
-                       "User ID", "Type", "Message Type", "Quote Token", "Text", "Message ID", "Reply Token", "Timestamp");
-                   Console.WriteLine(new string('-', 200)); */
-
-                // Iterate through the events and display the data
+ 
                 string _cmd;
 
                 DB.DBConn.SqlConnectionOpen();
@@ -490,19 +491,7 @@ namespace coreapi.Controllers
 
 
                     EventData eventData = Newtonsoft.Json.JsonConvert.DeserializeObject<EventData>(jsond);
-
-                    /* 
-
-                                        Console.WriteLine("| {0,-35} | {1,-10} | {2,-12} | {3,-20} | {4,-10} | {5,-20} | {6,-20} | {7,-40} |",
-                                            eventData.Source.UserId,
-                                            eventData.Type,
-                                            eventData.Message.Type,
-                                            Truncate(eventData.Message.QuoteToken, 18),
-                                            Truncate(eventData.Message.Text, 8),
-                                            eventData.Message.Id,
-                                            eventData.ReplyToken,
-                                            ConvertTimestampToDateTime(eventData.Timestamp)); */
-
+ 
 
                     _cmd = "exec  dbo.setLineChatMessage";
                     _cmd += " @CmpId  ='230015'";

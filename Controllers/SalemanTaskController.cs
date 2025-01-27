@@ -1,46 +1,32 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Data;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Web.Http;
 
-namespace coreapi.Controllers
+namespace goalongapi.Controllers
 {
-    public class SalemanTaskController : ApiController
+    [ApiController]
+    [Route("api/[controller]")]
+    public class SalemanTaskController : ControllerBase
     {
-        // GET: api/SalemanTask
-        public IEnumerable<string> Get()
+        [HttpGet] 
+        public ActionResult<DataTable> Get(int CmpId, string user)
         {
-            return new string[] { "value1", "value2" };
-        }
+            try
+            {
+                string _cmd = $"exec dbo.[getSalemantrackTaskAll] @User='{user}', @CmpId={CmpId}";
+                DataTable dt = DB.DBConn.GetDataTable(_cmd);
 
-        // GET: api/SalemanTask/5
-        public IHttpActionResult Get(int CmpId, string user)
-        {
+                if (dt.Rows.Count == 0)
+                {
+                    return NotFound(new { Message = "No tasks found for the given user and company ID." });
+                }
 
-            DataTable dt = new System.Data.DataTable();
-            string _cmd;
-            _cmd = "exec dbo.[getSalemantrackTaskAll]  @User='" + user + "',@CmpId =" + CmpId;
-            dt = DB.DBConn.GetDataTable(_cmd);
-            return Ok(dt);
-        }
-
-        // POST: api/SalemanTask
-        public void Post([FromBody]string value)
-        {
-
-        }
-
-        // PUT: api/SalemanTask/5
-        public void Put(int id, [FromBody]string value)
-        {
-        }
-
-        // DELETE: api/SalemanTask/5
-        public void Delete(int id)
-        {
+                return Ok(dt);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = "An error occurred while fetching data.", Details = ex.Message });
+            }
         }
     }
 }

@@ -4,12 +4,12 @@ using System.Data;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using coreapi.Models;
+using goalongapi.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
-namespace coreapi.Controllers
+namespace goalongapi.Controllers
 {
     [ApiController]
     [Authorize]
@@ -20,7 +20,7 @@ namespace coreapi.Controllers
         // GET: api/Units/5
         [HttpGet("[action]")]
         public IActionResult GetUnitMaster([FromQuery] string cmpid)
-        {
+        { 
             DataTable dt = new System.Data.DataTable();
             string _cmd;
             _cmd = "exec dbo.[getUnitMaster] @CmpId=" + cmpid + "";

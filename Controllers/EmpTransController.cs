@@ -1,52 +1,47 @@
-﻿using coreapi.Models;
+﻿using goalongapi.Models;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Web.Http; 
 
-
-namespace coreapi.Controllers
-{ 
-    public class EmpTransController : ApiController
+namespace goalongapi.Controllers
+{
+    [ApiController]
+    [Route("api/[controller]")]
+    public class EmpTransController : ControllerBase
     {
-        // GET: api/EmpTrans
-        [Route("api/TimeCard")]
-        [HttpGet]
-        public IHttpActionResult Get(string id)
+        [HttpGet("TimeCard")]
+        public ActionResult<string> Get(string id)
         {
-            string _cmd = "";
-            _cmd = "exec dbo.get_TimeCard  @UserName='" + id + "'";
-            DataTable dt;
-            dt = DB.DBConn.GetDataTable(_cmd);
-           
+            try
+            {
+                string _cmd = $"exec dbo.get_TimeCard @UserName='{id}'";
+                DataTable dt = DB.DBConn.GetDataTable(_cmd);
 
-            string JSONString = string.Empty;
-            JSONString = JsonConvert.SerializeObject(dt);
-         
-            return Ok(JSONString);
-        }
+                string jsonString = JsonConvert.SerializeObject(dt);
+                return Ok(jsonString);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = "An error occurred.", Details = ex.Message });
+            }
+        } 
 
-        [Route("api/TimeCard")]
-        [HttpPost]
-        public IHttpActionResult postTimeCard(timecard _timecard)
+        [HttpPost("TimeCard")]
+        public ActionResult<string> PostTimeCard([FromBody] TimeCard _timecard)
         {
-            string _cmd = "";
-            _cmd = "exec dbo.set_TimeCard  @UserName='" + _timecard.UserName + "', @TransDate='" + _timecard.TransDate + "',@TransTime='" + _timecard. TransTime + "',@latitude='" + _timecard.latitude + "',@longitude='" + _timecard.longitude + "' , @Status='" + _timecard.status + "'";
-            DataTable dt;
-            dt = DB.DBConn.GetDataTable(_cmd);
+            try
+            {
+                string _cmd = $"exec dbo.set_TimeCard @UserName='{_timecard.UserName}', @TransDate='{_timecard.TransDate}', @TransTime='{_timecard.TransTime}', @latitude='{_timecard.latitude}', @longitude='{_timecard.longitude}', @Status='{_timecard.status}'";
+                DataTable dt = DB.DBConn.GetDataTable(_cmd);
 
-            string JSONString = string.Empty;
-            JSONString = JsonConvert.SerializeObject(dt);
-         
-            return Ok(JSONString);
+                string jsonString = JsonConvert.SerializeObject(dt);
+                return Ok(jsonString);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = "An error occurred.", Details = ex.Message });
+            }
         }
-
-
-     
-
     }
 }

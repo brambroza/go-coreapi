@@ -4,7 +4,7 @@ using System.Data;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using coreapi.Models;
+using goalongapi.Models;
 using goalongapi.Datatools.Product;
 using goalongapi.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -12,8 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace NohWebApi.Controllers
 {
-    [ApiController]
-    //[Authorize]
+    [ApiController] 
 
     public class UploadProfileController : ControllerBase
     {
@@ -76,7 +75,7 @@ namespace NohWebApi.Controllers
         }
 
         [HttpPost("[action]")]
-        public IActionResult movefile(fileinfo fileinfos)
+        public IActionResult movefile(goalongapi.Models.FileInfo fileinfos)
         {
             try
             {

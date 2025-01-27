@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Data;
-using coreapi.Models;
+using goalongapi.Models;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Authorization;
 
-namespace coreapi.Controllers
+namespace goalongapi.Controllers
 {
-
+ 
     [ApiController]
     [Authorize]
 

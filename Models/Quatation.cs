@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Web;
 
-namespace coreapi.Models
+namespace goalongapi.Models
 {
     public class Quotation
     {
@@ -244,7 +244,7 @@ namespace coreapi.Models
         public string Remark { get; set; }
     }
 
-    public class saleorder
+    public class SaleOrder
     {
         public string UpdUser { get; set; }
 

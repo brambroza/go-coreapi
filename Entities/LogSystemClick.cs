@@ -10,7 +10,7 @@ namespace goalongapi.Entities
 {
     public partial class LogSystemClick
     {
-        [Key]
+        [Key] 
         public long Seq { get; set; }
         public string UserName { get; set; }
         public string MenuName { get; set; }

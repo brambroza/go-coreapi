@@ -17,6 +17,5 @@ namespace goalongapi.Interfaces
         bool validateEmails(string Username);
         bool removeUser(string Username);
 
-
     }
 }

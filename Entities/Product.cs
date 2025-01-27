@@ -8,7 +8,7 @@ namespace goalongapi.Entities
         public int ProductId { get; set; }
         public string Name { get; set; } = null!;
         public string? Image { get; set; }
-        public int Stock { get; set; }
+        public int Stock { get; set; } 
         public decimal Price { get; set; }
         public DateTime Created { get; set; }
         public int CategoryId { get; set; }

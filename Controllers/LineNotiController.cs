@@ -1,31 +1,22 @@
-﻿using System;
+﻿ using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Web.Http;
-using System.Timers;
-using System.Threading;
-using System.Text;
+using System.Data;
 using System.IO;
-using System.Data; 
+using System.Net;
+using System.Text;
 
-namespace coreapi.Controllers
+namespace goalongapi.Controllers
 {
-    
-    public class LineNotiController : ApiController
-    {
-         
+    [ApiController]
+    [Route("api/[controller]")]
+    public class LineNotiController : ControllerBase
+    { 
         
-      
-        // GET: api/LineNoti
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
 
-        // GET: api/LineNoti/5
-        public string Get(string id)
+       
+       [HttpGet("[action]")]
+        public string getLineNoti(string id)
         {
             string _cmd = "";
             _cmd = "exec  dbo.sp_getNotima ";
@@ -162,28 +153,8 @@ namespace coreapi.Controllers
             }
         }
 
-
-
-
-        // POST: api/LineNoti
-        public void Post(DateTime Sdate , DateTime EDate)
-        {
-         
-           
-
-        }
-
-        // PUT: api/LineNoti/5
-        public void Put(int id, [FromBody]string value)
-        {
-        }
-
-        // DELETE: api/LineNoti/5
-        public void Delete(int id)
-        {
-        }
-        bool ranDailyToday = false;
-        // Run every hour i.e.
+ 
+        
     
 
 

@@ -3,8 +3,8 @@ using System.Net;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
-using coreapi.Hubs;
-using coreapi.Models;
+using goalongapi.Hubs;
+using goalongapi.Models;
 using goalongapi.Models;
 using Google;
 using Google.Apis.Auth.OAuth2;
@@ -15,7 +15,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 
-namespace coreapi.Controllers
+namespace goalongapi.Controllers
 {
     [Route("[controller]")]
     [ApiController]
@@ -23,7 +23,7 @@ namespace coreapi.Controllers
     public class CommentTicketController : ControllerBase
     {
         private readonly IHubContext<TicketCommentHub> _hubContext;
-
+ 
         public CommentTicketController(IHubContext<TicketCommentHub> hubContext)
         {
             _hubContext = hubContext;

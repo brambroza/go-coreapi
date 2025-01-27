@@ -12,7 +12,7 @@ namespace goalongapi.Installers
             );
 
             SystemConfig._ConnectionString = configuration.GetConnectionString(
-                "ConnectionSQLServer"
+                "ConnectionSQLServer" 
             );
         }
     }

@@ -1,19 +1,19 @@
 using System.Data;
 using System.Threading.Tasks;
-using coreapi.Models;
+using goalongapi.Models;
 using goalongapi.Models;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Data.SqlClient;
 using Newtonsoft.Json;
 
-namespace coreapi.Hubs
+namespace goalongapi.Hubs
 {
     public class TicketCommentHub : Hub
     {
         public async Task SendMessage(TicketCommentMessage mt)
         {
             await Clients.All.SendAsync($"ReceiveCommentTicket{mt.cmpId}{mt.ticketId}", mt);
-        }
+        } 
 
         public async Task JoinTicketGroup(string ticketId)
         {

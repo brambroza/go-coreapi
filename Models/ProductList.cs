@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace coreapi.Models
+namespace goalongapi.Models
 {
-    public class fileinfo
+    public class FileInfo
     {
         public string filename { get; set; }
         public string pathto { get; set; }

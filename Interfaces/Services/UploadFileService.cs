@@ -14,7 +14,7 @@ namespace goalongapi.Services
         {
             this.webHostEnvironment = webHostEnvironment;
             this.configuration = configuration;
-        }
+        } 
 
         public bool IsUpload(List<IFormFile> formFiles)
         {

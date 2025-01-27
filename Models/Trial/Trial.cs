@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace coreapi.Models.Trial
+namespace goalongapi.Models.Trial
 {
     public class Trial
     {

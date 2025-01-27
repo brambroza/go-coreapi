@@ -6,7 +6,7 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/bin/Debug/net7.0/goalongapi.dll",
+            "program": "${workspaceFolder}/bin/Debug/net9.0/goalongapi.dll",
             "args": [],
             "cwd": "${workspaceFolder}",
             "stopAtEntry": false,

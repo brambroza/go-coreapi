@@ -1,93 +1,94 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Web.Http;
+﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System;
+using System.Data;
 
-namespace coreapi.Controllers
+namespace goalongapi.Controllers
 {
-    public class DataForDashServiceController : ApiController
+    [ApiController]
+    [Route("api/[controller]")]
+    public class DataForDashServiceController : ControllerBase
     {
-        // GET: api/DataForDashService
-        
-
-        // GET: api/DataForDashService/5
-        [Route("api/DashService")]
-        [HttpGet]
-        public IHttpActionResult Get(string CmpId, string OfDate)
+        [HttpGet("DashService")]
+        public ActionResult<string> Get(string CmpId, string OfDate)
         {
-            string _cmd;
-            _cmd = "exec dbo.getTop5Problem @CmpId=" + Convert.ToInt16(CmpId) + " , @DateOfMonth='" + OfDate +"'";
-            DataTable datatable = DB.DBConn.GetDataTable(_cmd);
-            string JSONString = string.Empty;
-            JSONString = JsonConvert.SerializeObject(datatable);
-         
-            return Ok(JSONString);
+            try
+            {
+                string _cmd = $"exec dbo.getTop5Problem @CmpId={Convert.ToInt16(CmpId)}, @DateOfMonth='{OfDate}'";
+                DataTable datatable = DB.DBConn.GetDataTable(_cmd);
+                string jsonString = JsonConvert.SerializeObject(datatable);
+                return Ok(jsonString);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = "An error occurred.", Details = ex.Message });
+            }
+        } 
+
+        [HttpGet("DashServiceActionPopular")]
+        public ActionResult<string> GetActionPop(string CmpId, string OfDate)
+        {
+            try
+            {
+                string _cmd = $"exec dbo.getTop5ProblemActions @CmpId={Convert.ToInt16(CmpId)}, @DateOfMonth='{OfDate}'";
+                DataTable datatable = DB.DBConn.GetDataTable(_cmd);
+                string jsonString = JsonConvert.SerializeObject(datatable);
+                return Ok(jsonString);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = "An error occurred.", Details = ex.Message });
+            }
         }
 
-        [Route("api/DashServiceActionPopular")]
-        [HttpGet]
-        public IHttpActionResult GetActionPop(string CmpId, string OfDate)
+        [HttpGet("DashProblemChartPieSeries")]
+        public ActionResult<string> DashProblemChartPie(string CmpId, string OfDate)
         {
-            string _cmd;
-            _cmd = "exec dbo.getTop5ProblemActions @CmpId=" + Convert.ToInt16(CmpId) + " , @DateOfMonth='" + OfDate + "'";
-            DataTable datatable = DB.DBConn.GetDataTable(_cmd);
-            string JSONString = string.Empty;
-            JSONString = JsonConvert.SerializeObject(datatable);
-         
-            return Ok(JSONString);
+            try
+            {
+                string _cmd = $"exec dbo.dashboardProblemSeries @CmpId={Convert.ToInt16(CmpId)}, @DateOfMonth='{OfDate}'";
+                DataTable datatable = DB.DBConn.GetDataTable(_cmd);
+                string jsonString = JsonConvert.SerializeObject(datatable);
+                return Ok(jsonString);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = "An error occurred.", Details = ex.Message });
+            }
         }
 
-
-        [Route("api/DashProblemChartPieSeries")]
-        [HttpGet]
-        public IHttpActionResult DashProblemChartPie(string CmpId, string OfDate)
+        [HttpGet("DashProblemChartPielabels")]
+        public ActionResult<string> DashProblemChartPielabels(string CmpId, string OfDate)
         {
-            string _cmd;
-            _cmd = "exec dbo.dashboardProblemSeries @CmpId=" + Convert.ToInt16(CmpId) + " , @DateOfMonth='" + OfDate + "'";
-            DataTable datatable = DB.DBConn.GetDataTable(_cmd);
-            string JSONString = string.Empty;
-            JSONString = JsonConvert.SerializeObject(datatable);
-         
-            return Ok(JSONString);
+            try
+            {
+                string _cmd = $"exec dbo.dashboardProblemlabels @CmpId={Convert.ToInt16(CmpId)}, @DateOfMonth='{OfDate}'";
+                DataTable datatable = DB.DBConn.GetDataTable(_cmd);
+                string jsonString = JsonConvert.SerializeObject(datatable);
+                return Ok(jsonString);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = "An error occurred.", Details = ex.Message });
+            }
         }
 
-        [Route("api/DashProblemChartPielabels")]
-        [HttpGet]
-        public IHttpActionResult DashProblemChartPielabels(string CmpId, string OfDate)
+        [HttpPost("DashService")]
+        public ActionResult Post([FromBody] string value)
         {
-            string _cmd;
-            _cmd = "exec dbo.dashboardProblemlabels @CmpId=" + Convert.ToInt16(CmpId) + " , @DateOfMonth='" + OfDate + "'";
-            DataTable datatable = DB.DBConn.GetDataTable(_cmd);
-            string JSONString = string.Empty;
-            JSONString = JsonConvert.SerializeObject(datatable);
-         
-            return Ok(JSONString);
+            return Ok(new { Message = "Post method called.", Value = value });
         }
 
-         
-        // POST: api/DataForDashService
-        [Route("api/DashService")]
-        [HttpPost]
-        public void Post([FromBody]string value)
+        [HttpPut("DashService/{id}")]
+        public ActionResult Put(int id, [FromBody] string value)
         {
+            return Ok(new { Message = $"Put method called for ID {id}.", Value = value });
         }
 
-        // PUT: api/DataForDashService/5
-        [Route("api/DashService")]
-        [HttpPut]
-        public void Put(int id, [FromBody]string value)
+        [HttpDelete("DashService/{id}")]
+        public ActionResult Delete(int id)
         {
-        }
-
-        // DELETE: api/DataForDashService/5
-        [Route("api/DashService")]
-        [HttpDelete]
-        public void Delete(int id)
-        {
+            return Ok(new { Message = $"Delete method called for ID {id}." });
         }
     }
 }

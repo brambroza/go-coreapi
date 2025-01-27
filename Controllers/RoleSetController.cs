@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Net;
-using coreapi.Models;
+using goalongapi.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
-namespace coreapi.Controllers
-{
+namespace goalongapi.Controllers
+{ 
     [ApiController]
     [Authorize]
     public class RoleSetController : ControllerBase
@@ -234,7 +234,7 @@ namespace coreapi.Controllers
                 DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
                 DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
             }
-            catch (Exception ex)
+            catch 
             {
                 DB.DBConn.Tran.Rollback();
                 DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
@@ -287,7 +287,7 @@ namespace coreapi.Controllers
                 DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
                 DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
             }
-            catch (Exception ex)
+            catch  
             {
                 DB.DBConn.Tran.Rollback();
                 DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
@@ -340,7 +340,7 @@ namespace coreapi.Controllers
                 DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
                 DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
             }
-            catch (Exception ex)
+            catch 
             {
                 DB.DBConn.Tran.Rollback();
                 DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);

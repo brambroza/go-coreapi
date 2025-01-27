@@ -20,7 +20,7 @@ services:
       context: .
       dockerfile: ./Dockerfile
     ports:
-      - 7046:6600
+      - 7046:6600 
     depends_on:
       - goalongdb
       - rabbitmq

@@ -1,4 +1,4 @@
-﻿using coreapi.Models;
+﻿using goalongapi.Models;
 using System.Net;
 using System;
 using goalongapi.Data;
@@ -13,17 +13,14 @@ using System.Data;
 using System.IdentityModel.Tokens.Jwt; 
 using Newtonsoft.Json;
 
-namespace coreapi.Controllers
+namespace goalongapi.Controllers
 {
  
     [ApiController]
     [Route("[controller]")]
     [Authorize]
     public class CheckLoginController : ControllerBase
-    {
-        // GET: api/CheckLogin
-
-         
+    { 
 
         [Route("api/CheckLogin")]
         [HttpGet]

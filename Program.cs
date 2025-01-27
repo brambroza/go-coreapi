@@ -1,15 +1,9 @@
 using System.Reflection;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
-using coreapi.Hubs;
+using goalongapi.Hubs;
 using goalongapi.Data;
 using goalongapi.Installers;
-
-// using goalongapi.Interfaces;
-// using goalongapi.Services;
-// using Microsoft.EntityFrameworkCore;
-
-
 
 System.Net.ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolType.Tls12;
 
@@ -24,7 +18,7 @@ builder.Services.AddCors(p =>
         {
             /*  builder.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();  */
             builder
-                .WithOrigins(
+                 .WithOrigins(
                     "http://nisolution.fortiddns.com:8284",
                     "http://localhost:8080",
                     "http://192.168.55.219:8285"
@@ -76,7 +70,8 @@ builder.Host.ConfigureContainer<ContainerBuilder>(builder =>
 });
 
 var app = builder.Build();
-
+/* 
+app.UseMiddleware<DuplicateRouteNameMiddleware>(); */
 //if (app.Environment.IsDevelopment())
 //{
 app.UseSwagger();
@@ -97,10 +92,10 @@ app.UseAuthorization();
 app.UseEndpoints(endpoints =>
 {
     endpoints.MapControllers();
-
     // SignalR
     endpoints.MapHub<NotificationHub>("/notificationhub");
     endpoints.MapHub<TicketCommentHub>("/ticketcommenthub");
+    endpoints.MapHub<ChatHub>("/chathub");
 });
 
 app.Run();

@@ -6,12 +6,12 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
-using coreapi.Models;
+using goalongapi.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
-namespace coreapi.Controllers
+namespace goalongapi.Controllers
 {
     [ApiController]
     [Authorize]
@@ -619,7 +619,7 @@ namespace coreapi.Controllers
 
             MsgReturn msgretrun = new MsgReturn();
 
-            try
+            try 
             {
                 string _cmd = "";
                 _cmd = "exec  dbo.sp_SetSalesBomCopy";
@@ -767,7 +767,7 @@ namespace coreapi.Controllers
                 msgretrun.Msg = "Save Success !!";
                 return Ok(msgretrun);
             }
-            catch (Exception ex)
+            catch  
             {
                 DB.DBConn.Tran.Rollback();
                 DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
@@ -825,7 +825,7 @@ namespace coreapi.Controllers
                 msgretrun.Msg = "Save Success !!";
                 return Ok(msgretrun);
             }
-            catch (Exception ex)
+            catch  
             {
                 DB.DBConn.Tran.Rollback();
                 DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
@@ -884,7 +884,7 @@ namespace coreapi.Controllers
                 msgretrun.Msg = "Save Success !!";
                 return Ok(msgretrun);
             }
-            catch (Exception ex)
+            catch  
             {
                 DB.DBConn.Tran.Rollback();
                 DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);

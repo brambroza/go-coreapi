@@ -1,4 +1,4 @@
-﻿using coreapi.Models;
+﻿using goalongapi.Models;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -9,13 +9,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Newtonsoft.Json;
 
-namespace coreapi.Controllers
+namespace goalongapi.Controllers
 {
     [ApiController]
     [Authorize]
     public class ListDataController : ControllerBase
-    {
-
+    { 
         [HttpGet("[action]/{listid}/{cmpid}")]
         public IActionResult getlistdata( string listid , string cmpid)
         {

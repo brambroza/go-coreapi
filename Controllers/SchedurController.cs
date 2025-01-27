@@ -1,46 +1,57 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Globalization;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Web.Http; 
 
-namespace coreapi.Controllers
+namespace goalongapi.Controllers
 {
-    
-    public class SchedurController : ApiController
+    [ApiController]
+    [Route("api/[controller]")]
+    public class SchedurController : ControllerBase
     {
-        // GET: api/Schedur
-        public IEnumerable<string> Get()
+        [HttpGet]
+        public ActionResult<IEnumerable<string>> Get()
         {
-            return new string[] { "value1", "value2" };
+            return Ok(new string[] { "value1", "value2" });
         }
 
-        // GET: api/Schedur/5
-        public IHttpActionResult Get(DateTime SDate , DateTime EDate)
+        [HttpGet("Calendar")]
+        public ActionResult<DataTable> GetCalendar(DateTime SDate, DateTime EDate)
         {
-            string _cmd = "";
-            _cmd = "exec  dbo.sp_getCalendar '" + SDate.Year.ToString() +"-"+ SDate.Month.ToString() + "-" + SDate.Day.ToString() + "','"+ EDate.Year.ToString() + "-" + EDate.Month.ToString() + "-" + EDate.Day.ToString() + "'";
-            DataTable dt = DB.DBConn.GetDataTable(_cmd);
-            return Ok(dt);
+            try
+            {
+                string _cmd = $"exec dbo.sp_getCalendar '{SDate:yyyy-MM-dd}', '{EDate:yyyy-MM-dd}'";
+                DataTable dt = DB.DBConn.GetDataTable(_cmd);
+
+                if (dt.Rows.Count == 0)
+                {
+                    return NotFound(new { Message = "No data found for the specified date range." });
+                }
+
+                return Ok(dt);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = "An error occurred while fetching the data.", Details = ex.Message });
+            }
         }
 
-
-        // POST: api/Schedur
-        public void Post([FromBody]string value)
+        [HttpPost]
+        public ActionResult Post([FromBody] string value)
         {
+            return Ok(new { Message = "POST method called.", Value = value });
         }
 
-        // PUT: api/Schedur/5
-        public void Put(int id, [FromBody]string value)
+        [HttpPut("{id}")]
+        public ActionResult Put(int id, [FromBody] string value)
         {
+            return Ok(new { Message = $"PUT method called for ID {id}.", Value = value });
         }
 
-        // DELETE: api/Schedur/5
-        public void Delete(int id)
+        [HttpDelete("{id}")]
+        public ActionResult Delete(int id)
         {
+            return Ok(new { Message = $"DELETE method called for ID {id}." });
         }
     }
 }

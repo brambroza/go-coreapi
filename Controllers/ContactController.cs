@@ -1,10 +1,10 @@
 using System;
 using System.Data;
-using coreapi.Models;
+using goalongapi.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace coreapi.Controllers
+namespace goalongapi.Controllers
 {
     [ApiController]
     [Authorize]
@@ -24,7 +24,7 @@ namespace coreapi.Controllers
             foreach (DataRow r in dt.Rows)
             {
                 var contactList = new ContactList();
-
+ 
                 contactList.UpdUser = r["UpdUser"].ToString();
                 contactList.ContactName = r["ContactName"].ToString();
                 contactList.ContactPhone = r["ContactPhone"].ToString();

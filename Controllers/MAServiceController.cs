@@ -1,120 +1,120 @@
-﻿using coreapi.Models;
+﻿using goalongapi.Models;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Web.Http; 
- 
 
-namespace coreapi.Controllers
+namespace goalongapi.Controllers
 {
-   
-    public class MAServiceController : ApiController
+    [ApiController]
+    [Route("api/[controller]")]
+    public class MAServiceController : ControllerBase
     {
-        // GET: api/MAService
-        public IEnumerable<string> Get()
+        [HttpGet]
+        public ActionResult<IEnumerable<string>> Get()
         {
-            return new string[] { "value1", "value2" };
+            return Ok(new string[] { "value1", "value2" });
         }
 
-        // GET: api/MAService/5
-        public IHttpActionResult Get(string id)
+        [HttpGet("{id}")]
+        public ActionResult<DataTable> Get(string id)
         {
-            string _QuotationNo = id;
-            DataTable dt = new System.Data.DataTable();
-            string _cmd;
-            _cmd = "exec dbo.[getMAService] @MANo='" + _QuotationNo + "'";
-            dt = DB.DBConn.GetDataTable(_cmd);
-            //string qdetail = string.Empty;
-            //qdetail = JsonConvert.SerializeObject(dt);
-            return Ok(dt);
+            try
+            {
+                string _cmd = $"exec dbo.[getMAService] @MANo='{id}'";
+                DataTable dt = DB.DBConn.GetDataTable(_cmd);
+
+                if (dt.Rows.Count == 0)
+                {
+                    return NotFound(new { Message = "No data found for the given ID." });
+                }
+
+                return Ok(dt);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = "An error occurred.", Details = ex.Message });
+            }
         }
 
-
-        // POST: api/MAService
-        public void Post(List<MaService> maServices)
+        [HttpPost]
+        public ActionResult Post([FromBody] List<MaService> maServices)
         {
-
-
-            DB.DBConn.SqlConnectionOpen();
-            DB.DBConn.Cmd = DB.DBConn.Cnn.CreateCommand();
-            DB.DBConn.Tran = DB.DBConn.Cnn.BeginTransaction();
+            if (maServices == null || maServices.Count == 0)
+            {
+                return BadRequest(new { Message = "Invalid data provided." });
+            }
 
             try
             {
+                DB.DBConn.SqlConnectionOpen();
+                DB.DBConn.Cmd = DB.DBConn.Cnn.CreateCommand();
+                DB.DBConn.Tran = DB.DBConn.Cnn.BeginTransaction();
 
-                string _cmd;
-                if (maServices.Count > 0)
+                // Delete existing records
+                string deleteCmd = $"Delete From dbo.MAService_Service where MANo='{maServices[0].MANo}'";
+                DB.DBConn.ExecuteTran(deleteCmd, DB.DBConn.Cmd, DB.DBConn.Tran);
+
+                // Insert new records
+                foreach (var service in maServices)
                 {
-                    _cmd = "Delete From dbo.MAService_Service where MANo='" + maServices[0].MANo + "'";
-                    DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran);
-                }
+                    string insertCmd = "exec dbo.MAService_ServiceTrans";
+                    insertCmd += $" @UpdUser='{service.UpdUser}',";
+                    insertCmd += $"@MANo='{service.MANo}',";
+                    insertCmd += $"@ServiceType={service.ServiceType},";
+                    insertCmd += $"@Description='{service.Description}',";
+                    insertCmd += $"@Model='{service.Model}',";
+                    insertCmd += $"@Seq={service.Seq},";
+                    insertCmd += $"@StartDate='{service.StartDate}',";
+                    insertCmd += $"@ExpireDate='{service.ExpireDate}',";
+                    insertCmd += $"@WarningTime='{service.WarningTime}',";
+                    insertCmd += $"@WarningBeforExpireDay={service.WarningBeforExpireDay},";
+                    insertCmd += $"@NotificationQtySet={service.NotificationQtySet},";
+                    insertCmd += $"@NotificationPeriodDay={service.NotificationPeriodDay},";
+                    insertCmd += $"@NotificationQty={service.NotificationQty},";
+                    insertCmd += $"@ServiceGrp={service.ServiceGrp},";
+                    insertCmd += $"@PurchaseNo='{service.PurchaseNo}',";
+                    insertCmd += $"@ReferNo='{service.ReferNo}',";
+                    insertCmd += $"@ProjectName='{service.ProjectName}',";
+                    insertCmd += $"@QuotationNo='{service.QuotationNo}',";
+                    insertCmd += $"@PricePur={service.PricePur},";
+                    insertCmd += $"@PriceSale={service.PriceSale}";
 
-                for (int i = 0; i < maServices.Count; i++)
-                {                    
-                    _cmd = "exec  dbo.MAService_ServiceTrans";
-                    _cmd += "  @UpdUser  ='" + maServices[i].UpdUser + "'";
-                    _cmd += ",@MANo  ='" + maServices[i].MANo + "'";
-                    _cmd += ",@ServiceType =" + maServices[i].ServiceType;
-                    _cmd += ",@Description  ='" + maServices[i].Description + "'";
-                    _cmd += ",@Model  ='" + maServices[i].Model + "'";
-                    _cmd += ",@Seq =" + maServices[i].Seq;
-                    _cmd += ",@StartDate  ='" + maServices[i].StartDate + "'";
-                    _cmd += ",@ExpireDate  ='" + maServices[i].ExpireDate + "'";
-                    _cmd += ",@WarningTime  ='" + maServices[i].WarningTime + "'";
-                    _cmd += ",@WarningBeforExpireDay =" + maServices[i].WarningBeforExpireDay;
-                    _cmd += ",@NotificationQtySet =" + maServices[i].NotificationQtySet;
-                    _cmd += ",@NotificationPeriodDay =" + maServices[i].NotificationPeriodDay;
-                    _cmd += ",@NotificationQty =" + maServices[i].NotificationQty;
-                    _cmd += ",@ServiceGrp =" + maServices[i].ServiceGrp;
-                    _cmd += ",@PurchaseNo  ='" + maServices[i].PurchaseNo + "'";
-                    _cmd += ",@ReferNo  ='" + maServices[i].ReferNo + "'";
-                    _cmd += ",@ProjectName  ='" + maServices[i].ProjectName + "'";
-                    _cmd += ",@QuotationNo  ='" + maServices[i].QuotationNo + "'";
-                    _cmd += ",@PricePur  ='" + maServices[i].PricePur + "'";
-                    _cmd += ",@PriceSale  ='" + maServices[i].PriceSale + "'";
-
-                    if (DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran) <= 0)
+                    if (DB.DBConn.ExecuteTran(insertCmd, DB.DBConn.Cmd, DB.DBConn.Tran) <= 0)
                     {
-                        DB.DBConn.Tran.Rollback();
-                        DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
-                        DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
-                        return;
-
-                    };
+                        throw new Exception("Failed to insert MAService record.");
+                    }
                 }
 
                 DB.DBConn.Tran.Commit();
-                DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
-                DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
-
+                return Ok(new { Message = "MAService records saved successfully." });
             }
             catch (Exception ex)
             {
                 DB.DBConn.Tran.Rollback();
+                return StatusCode(500, new { Message = "An error occurred.", Details = ex.Message });
+            }
+            finally
+            {
                 DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
                 DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
-
             }
-
-
-
         }
 
-
-        // PUT: api/MAService/5
-        public void Put(int id, [FromBody]string value)
+        [HttpDelete("{id}/{seq}")]
+        public ActionResult Delete(string id, int seq)
         {
-        }
+            try
+            {
+                string _cmd = $"delete from dbo.MAService_Service where MANo='{id}' and Seq={seq}";
+                DB.DBConn.ExecuteOnly(_cmd);
 
-        // DELETE: api/MAService/5
-        public void Delete(string id, int seq)
-        {
-            string _cmd = "";
-            _cmd = "delete from dbo.MAService_Service where  MANo='" + id + "' and Seq=" + seq;
-            DB.DBConn.ExecuteOnly(_cmd);
+                return Ok(new { Message = "MAService record deleted successfully." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = "An error occurred.", Details = ex.Message });
+            }
         }
     }
 }

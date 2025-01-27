@@ -3,19 +3,18 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Net;
-using coreapi.Models;
+using goalongapi.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
-namespace coreapi.Controllers
+namespace goalongapi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
     public class RoleController : ControllerBase
-    {
-        // GET: api/RoleSet
+    { 
 
         [HttpGet("[action]")]
         public IActionResult getRole([FromQuery] string cmpid, [FromQuery] string User)

@@ -11,7 +11,7 @@ namespace goalongapi.Installers
                 {
                     builder.WithOrigins(
                         "https://www.w3schools.com",
-                        "http://www.localhost:7000"
+                        "http://www.localhost:7000" 
                     ).AllowAnyHeader().AllowAnyMethod();
                 });
 

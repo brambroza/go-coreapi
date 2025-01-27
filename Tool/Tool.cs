@@ -5,7 +5,7 @@ using System.Linq;
 using System.Web;
 using Microsoft.VisualBasic;
 
-namespace coreapi.Tool
+namespace goalongapi.Tool
 {
     public class Tool
     {

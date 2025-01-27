@@ -3,13 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace coreapi.Models
+namespace goalongapi.Models
 {
-    public class employee
-    {
-    }
 
-    public class timecard
+    public class TimeCard
     {
         public string UserName { get; set; }
         public string TransDate { get; set; }

@@ -14,7 +14,7 @@ namespace goalongapi.Services
         {
             this.uploadFileService = uploadFileService;
             this.databaseContext = databaseContext;
-        }
+        } 
 
         public async Task Create(Product product)
         {

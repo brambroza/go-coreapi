@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
-namespace coreapi.Controllers
+namespace goalongapi.Controllers
 {
     [ApiController]
     [Authorize]
@@ -24,7 +24,7 @@ namespace coreapi.Controllers
             DataTable dt = new System.Data.DataTable();
             string _docnew = "";
             string _cmd;
-
+ 
             if (cmpid == "230015")
             {
                 switch (type)

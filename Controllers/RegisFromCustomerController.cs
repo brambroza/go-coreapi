@@ -3,7 +3,7 @@ using System.Net;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
-using coreapi.Models;
+using goalongapi.Models;
 using goalongapi.Interfaces;
 using Google;
 using Google.Apis.Auth.OAuth2;
@@ -13,8 +13,8 @@ using Google.Apis.Sheets.v4.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-
-namespace coreapi.Controllers
+ 
+namespace goalongapi.Controllers
 {
     [ApiController]
     public class RegisFromCustomerController : ControllerBase
@@ -190,7 +190,9 @@ namespace coreapi.Controllers
                     _cmd += ", @ContactPhone  ='" + request.ContactPhone + "'";
                     _cmd += ", @ContactEmail  ='" + request.ContactEmail + "'";
                     _cmd += ", @Address  ='" + request.Address + "'";
-                    _cmd += ", @ServiceType  ='" + request.ServiceType + "'";
+
+
+                    _cmd += ", @ServiceType  ='" + request.ReqItem[i].ServiceType + "'";
                     _cmd += ", @FromApp  ='" + request.FromApp + "'";
                     _cmd += ", @CmpId='" + request.CmpId + "'";
                     _cmd += ", @TicketId='" + request.TicketId + "'";

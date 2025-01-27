@@ -5,7 +5,7 @@ using System.Web;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
-namespace coreapi.Models
+namespace goalongapi.Models
 {
     public class RoleSet
     {
@@ -48,11 +48,6 @@ namespace coreapi.Models
         public int StateActive {get;set;}
         public string ObjectName  {get;set;}
     }
-
-
-
-
-
 
     public class Menulist {
         public int MenuId {get;set;}

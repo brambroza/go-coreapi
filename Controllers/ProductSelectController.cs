@@ -1,50 +1,57 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Web.Http;
 
- 
-
-namespace coreapi.Controllers
+namespace goalongapi.Controllers
 {
- 
-    public class ProductSelectController : ApiController
+    [ApiController]
+    [Route("api/[controller]")]
+    public class ProductSelectController : ControllerBase
     {
-        // GET: api/ProductSelect
-        public IEnumerable<string> Get()
+        [HttpGet]
+        public ActionResult<IEnumerable<string>> Get()
         {
-            return new string[] { "value1", "value2" };
+            return Ok(new string[] { "value1", "value2" });
         }
 
-        // GET: api/ProductSelect/5
-        public IHttpActionResult Get(int id)
+        [HttpGet("{id}")]
+        public ActionResult<DataTable> GetProduct(int id)
         {
-            DataTable dt = new System.Data.DataTable();
-            string _cmd;
-            _cmd = "exec dbo.getProdMaster  ";
-            dt = DB.DBConn.GetDataTable(_cmd);
-            //string qdetail = string.Empty;
-            //qdetail = JsonConvert.SerializeObject(dt);
-            return Ok(dt);
+            try
+            {
+                string _cmd = "exec dbo.getProdMaster";
+                DataTable dt = DB.DBConn.GetDataTable(_cmd);
+
+                if (dt.Rows.Count == 0)
+                {
+                    return NotFound(new { Message = "No products found." });
+                }
+
+                return Ok(dt);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = "An error occurred while fetching products.", Details = ex.Message });
+            }
         }
 
-
-        // POST: api/ProductSelect
-        public void Post([FromBody]string value)
+        [HttpPost]
+        public ActionResult Post([FromBody] string value)
         {
+            return Ok(new { Message = "POST method called.", Value = value });
         }
 
-        // PUT: api/ProductSelect/5
-        public void Put(int id, [FromBody]string value)
+        [HttpPut("{id}")]
+        public ActionResult Put(int id, [FromBody] string value)
         {
+            return Ok(new { Message = $"PUT method called for ID {id}.", Value = value });
         }
 
-        // DELETE: api/ProductSelect/5
-        public void Delete(int id)
+        [HttpDelete("{id}")]
+        public ActionResult Delete(int id)
         {
+            return Ok(new { Message = $"DELETE method called for ID {id}." });
         }
     }
 }

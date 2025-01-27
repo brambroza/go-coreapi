@@ -1,4 +1,4 @@
-using coreapi.Models;
+using goalongapi.Models;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -9,7 +9,7 @@ using Newtonsoft.Json;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 
-namespace coreapi.Controllers.Master
+namespace goalongapi.Controllers.Master
 {
 
     [ApiController]
@@ -29,7 +29,7 @@ namespace coreapi.Controllers.Master
             JSONString = JsonConvert.SerializeObject(dt);
 
             return Ok(JSONString);
-        }
+        } 
 
 
         // POST: api/Jobtype

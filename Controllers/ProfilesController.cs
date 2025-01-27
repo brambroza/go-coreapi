@@ -1,4 +1,4 @@
-﻿using coreapi.Models;
+﻿using goalongapi.Models;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -8,8 +8,8 @@ using System.Net.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
  
-
-namespace coreapi.Controllers
+ 
+namespace goalongapi.Controllers
 {
     [ApiController] 
     [Authorize]

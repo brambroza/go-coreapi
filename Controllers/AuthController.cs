@@ -1,4 +1,4 @@
-﻿using coreapi.Models;
+﻿using goalongapi.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +8,7 @@ using Newtonsoft.Json;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 
-namespace coreapi.Controllers
+namespace goalongapi.Controllers
 {
     [ApiController]
     [Authorize]
@@ -18,13 +18,7 @@ namespace coreapi.Controllers
         [HttpPost("[action]")]
         
         public IActionResult systemlog(UserActionLog actionLog)
-        {
-            //if (Request.Headers.Contains("authToken")){
-            //    if (Request.Headers.GetValues("authToken").First() != "XXX")
-            //        return   Ok(HttpStatusCode.Unauthorized); 
-            //}
-
-
+        { 
 
             MsgReturn msgretrun = new MsgReturn();
             try

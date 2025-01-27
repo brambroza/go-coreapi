@@ -1,4 +1,4 @@
-using coreapi.Models;
+using goalongapi.Models;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -10,16 +10,14 @@ using System.IdentityModel.Tokens.Jwt;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Mvc;
 
-namespace coreapi.Controllers
+namespace goalongapi.Controllers
 {
     [ApiController]
     [Authorize]
 
 
     public class LineChatController : ControllerBase
-    {
-
-
+    { 
 
         [HttpGet("[action]")]
         public IActionResult getchatmsg([FromQuery] string cmpid)

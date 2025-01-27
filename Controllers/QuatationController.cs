@@ -1,38 +1,55 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Web.Http;
-using coreapi.Models;
+using goalongapi.Models;
 
-namespace coreapi.Controllers
+namespace goalongapi.Controllers
 {
-    public class QuotationController : ApiController
+    [ApiController]
+    [Route("api/[controller]")]
+    public class QuotationController : ControllerBase
     {
-        QuotationDetail[] Quotations;
-
-        public void getall()
+        [HttpGet("all")]
+        public ActionResult<DataTable> GetAllQuotations()
         {
-            string _cmd;
-            _cmd = "exec dbo.getQuotationDetail @QuotationNo=''";
-            DB.DBConn.GetDataTable(_cmd);
+            try
+            {
+                string _cmd = "exec dbo.getQuotationDetail @QuotationNo=''";
+                DataTable datatable = DB.DBConn.GetDataTable(_cmd);
+
+                if (datatable.Rows.Count == 0)
+                {
+                    return NotFound(new { Message = "No quotations found." });
+                }
+
+                return Ok(datatable);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = "An error occurred.", Details = ex.Message });
+            }
         }
 
-        public IEnumerable<QuotationDetail> GetAllQuotationDetail()
+        [HttpGet("{id}")]
+        public ActionResult<DataTable> GetQuotation(string id)
         {
-            return Quotations;
-        }
+            try
+            {
+                string _cmd = $"exec dbo.getQuotationDetail @QuotationNo='{id}'";
+                DataTable datatable = DB.DBConn.GetDataTable(_cmd);
 
-        public IHttpActionResult GetQuotation(string id)
-        {
-            string _cmd;
-            _cmd = "exec dbo.getQuotationDetail @QuotationNo=''";
-            DataTable datatable = DB.DBConn.GetDataTable(_cmd);
-            return Ok(datatable);
+                if (datatable.Rows.Count == 0)
+                {
+                    return NotFound(new { Message = $"No quotation found for ID {id}." });
+                }
+
+                return Ok(datatable);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = "An error occurred.", Details = ex.Message });
+            }
         }
     }
 }

@@ -22,7 +22,7 @@ namespace goalongapi.Entities
         public virtual Role Role { get; set; } = null!;
         public string imgPath { get; set; }
     }
-
+ 
     public partial class AccountGoogle
     {
         public long Id { get; set; }

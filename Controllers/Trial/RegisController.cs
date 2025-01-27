@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 using System;
 using System.Net.Mail;
-using coreapi.Models;
+using goalongapi.Models;
 using System.Data;
 
 namespace goalongapi.Controllers
@@ -17,7 +17,7 @@ namespace goalongapi.Controllers
     [ApiController] 
 
     public class RegisController : ControllerBase
-    { 
+    {  
 
         [HttpPost("[action]")]
         public IActionResult setup(Company cmp)
@@ -36,7 +36,7 @@ namespace goalongapi.Controllers
                 _cmd += " ,@teloffice  ='" + cmp.teloffice + "'";
 
 
-                DataTable dt = coreapi.DB.DBConn.GetDataTable(_cmd);
+                DataTable dt = goalongapi.DB.DBConn.GetDataTable(_cmd);
 
                 return Ok(dt.Rows[0][0]);
 
@@ -56,7 +56,7 @@ namespace goalongapi.Controllers
 
 
         [HttpPost("[action]")]
-        public IActionResult setUpMapUser(mapuser cmp)
+        public IActionResult setUpMapUser(MapUser cmp)
         {
             MsgReturn msgretrun = new MsgReturn();
             try
@@ -69,7 +69,7 @@ namespace goalongapi.Controllers
 
 
 
-                if (coreapi.DB.DBConn.ExecuteOnly(_cmd))
+                if (goalongapi.DB.DBConn.ExecuteOnly(_cmd))
                 {
                     msgretrun.ReturnCode = "200";
                     msgretrun.Msg = "Save Success !!";

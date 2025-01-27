@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using coreapi.Models;
+using goalongapi.Models;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -16,12 +16,12 @@ using Microsoft.AspNetCore.Authorization;
 using Newtonsoft.Json;
 
 
-namespace coreapi.Controllers
+namespace goalongapi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     public class InvoiceController : ControllerBase
-    {
+    { 
         [HttpGet("[action]")]
         public IActionResult getInvoice([FromQuery] string CmpId, [FromQuery] string User)
         {
@@ -130,7 +130,7 @@ namespace coreapi.Controllers
                     _cmd += " and  CmpId='" + inv[0].CmpId + "'";
                     DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran);
                 }
-                int il = 0;
+               
                 for (int i = 0; i < inv.Count; i++)
                 {
 

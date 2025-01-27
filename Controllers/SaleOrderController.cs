@@ -6,12 +6,12 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
-using coreapi.Models;
+using goalongapi.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
-namespace coreapi.Controllers
+namespace goalongapi.Controllers
 {
     [ApiController]
     [Authorize]
@@ -36,12 +36,12 @@ namespace coreapi.Controllers
             _cmd = "exec dbo.getSaleOrderFiles_All @CmpId='" + cmpid + "' , @user='" + user + "'";
             dtFiles = DB.DBConn.GetDataTable(_cmd);
 
-            List<saleorder> saleorderlist = new List<saleorder>();
+            List<SaleOrder> saleorderlist = new List<SaleOrder>();
 
             // Loop through SaleOrder DataTable and map to SaleOrder object
             foreach (DataRow r in dt.Rows)
             {
-                var saleorder = new saleorder
+                var saleorder = new SaleOrder
                 {
                     UpdUser = r["UpdUser"].ToString(),
                     SaleOrderNo = r["SaleOrderNo"].ToString(),
@@ -140,7 +140,7 @@ namespace coreapi.Controllers
         // POST: api/QuaH
 
         [HttpPost("[action]")]
-        public IActionResult setSaleOrder([FromBody] saleorder Quotation)
+        public IActionResult setSaleOrder([FromBody] SaleOrder Quotation)
         {
             MsgReturn msgretrun = new MsgReturn();
 

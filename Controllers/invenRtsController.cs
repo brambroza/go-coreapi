@@ -1,4 +1,4 @@
-﻿using coreapi.Models;
+﻿using goalongapi.Models;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -9,16 +9,14 @@ using Microsoft.AspNetCore.Authorization;
 using System.IdentityModel.Tokens.Jwt;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Mvc;
-namespace coreapi.Controllers
+namespace goalongapi.Controllers
 { 
     
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
     public class invenRtsController : ControllerBase
-    {
-        // GET: api/invenRts
-        // GET: api/InvenRcv/5
+    { 
         [HttpGet("[action]")]
         public IActionResult getInventReturnSupl( [FromQuery] string CmpId, [FromQuery] string userlogin)
         {

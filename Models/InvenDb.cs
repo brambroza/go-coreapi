@@ -3,11 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace coreapi.Models
+namespace goalongapi.Models
 {
-    public class InvenDb
-    {
-    }
+    
     public class ReceiveModel
     {
         public string UpdUser { get; set; }
@@ -145,12 +143,7 @@ namespace coreapi.Models
         public string Remark { get; set; }
         public int SysWHId { get; set; }
         public int SysWHLocId { get; set; }
-    }
-
-
-
-
-
+    } 
 
     public class invenAppModel
     {
@@ -173,10 +166,7 @@ namespace coreapi.Models
         public int WHLocId { get; set; }
         public int WHToId { get; set; }
         public int WHLocToId { get; set; }
-    }
-
-
-
+    } 
     public class TransferWHRcvModel
     {
         public string UpdUser { get; set; }

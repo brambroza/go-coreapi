@@ -1,11 +1,11 @@
 using System.Data;
 using System.Threading.Tasks;
-using coreapi.Models;
+using goalongapi.Models;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Data.SqlClient;
 using Newtonsoft.Json;
 
-namespace coreapi.Hubs
+namespace goalongapi.Hubs
 {
     public class NotificationHub : Hub
     {
@@ -105,7 +105,7 @@ namespace coreapi.Hubs
             // เรียก SendMessage ทันทีเมื่อไคลเอนต์เชื่อมต่อ
             await SendMessage(cmpid, userlogin);
 
-            await base.OnConnectedAsync();
+            await base.OnConnectedAsync(); 
         }
 
         public override async Task OnDisconnectedAsync(Exception exception)

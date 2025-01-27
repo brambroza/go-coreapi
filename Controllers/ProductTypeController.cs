@@ -1,5 +1,5 @@
 ﻿using Newtonsoft.Json;
-using coreapi.Models;
+using goalongapi.Models;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 
 
 
-namespace coreapi.Controllers
+namespace goalongapi.Controllers
 {
 
     [ApiController]
@@ -33,7 +33,7 @@ namespace coreapi.Controllers
             qdetail = JsonConvert.SerializeObject(dt);
             return Ok(qdetail);
         }
-
+ 
 
         [HttpGet("[action]")]
         public IActionResult getProductTypeSub([FromQuery] string cmpid)

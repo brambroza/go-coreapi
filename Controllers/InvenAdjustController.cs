@@ -1,4 +1,4 @@
-﻿using coreapi.Models;
+﻿using goalongapi.Models;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -10,7 +10,7 @@ using System.IdentityModel.Tokens.Jwt;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Mvc;
 
-namespace coreapi.Controllers
+namespace goalongapi.Controllers
 {
 
      [Route("api/[controller]")]
@@ -18,7 +18,7 @@ namespace coreapi.Controllers
     [Authorize]
     
     public class InvenAdjustController : ControllerBase
-    { 
+    {  
 
         [HttpGet("[action]")]
         public IActionResult getInvenAdjustList( [FromQuery] string CmpId,  [FromQuery]  string userlogin)

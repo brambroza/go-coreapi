@@ -1,69 +1,82 @@
-﻿using coreapi.Models;
+﻿using goalongapi.Models;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Web.Http;
 
-namespace coreapi.Controllers
+namespace goalongapi.Controllers
 {
-    public class SecurityRoleSettingController : ApiController
+    [ApiController]
+    [Route("api/[controller]")]
+    public class SecurityRoleSettingController : ControllerBase
     {
         // GET: api/SecurityRoleSetting
-        public IEnumerable<string> Get()
+        [HttpGet]
+        public ActionResult<IEnumerable<string>> Get()
         {
-            return new string[] { "value1", "value2" };
+            return Ok(new string[] { "value1", "value2" });
         }
 
         // GET: api/SecurityRoleSetting/5
-        public IHttpActionResult Get(string id)
+        [HttpGet("{id}")]
+        public ActionResult<List<Rolegroup>> Get(string id)
         {
             DataTable dt;
             DataTable sdt;
             string _cmd = "";
-            _cmd = "exec dbo.getMenuRule '" + id + "' ";
+
+            _cmd = $"exec dbo.getMenuRule '{id}'";
             dt = DB.DBConn.GetDataTable(_cmd);
 
-
-            _cmd = "exec dbo.getMenuChidrenRule '" + id + "' ";
+            _cmd = $"exec dbo.getMenuChidrenRule '{id}'";
             sdt = DB.DBConn.GetDataTable(_cmd);
 
             List<Rolegroup> listmenu = new List<Rolegroup>();
             foreach (DataRow r in dt.Rows)
             {
-                var menus = new Rolegroup();
-                menus.children = new List<RoleMenu>();
-                menus.id = Convert.ToInt32(r["MenuId"]);
-                menus.name = r["title"].ToString(); 
-                foreach (DataRow xr in sdt.Select("MenuMainId=" + Convert.ToInt32(r["MenuId"])))
+                var menus = new Rolegroup
                 {
-                    var sub = new RoleMenu();
-                    sub.name = xr["title"].ToString(); 
-                    sub.id = Convert.ToInt32(xr["MenuId"]);
-                    menus.children.Add(sub);
+                    children = new List<RoleMenu>(),
+                    id = Convert.ToInt32(r["MenuId"]),
+                    name = r["title"].ToString()
+                };
+
+                foreach (DataRow xr in sdt.Select($"MenuMainId={Convert.ToInt32(r["MenuId"])}"))
+                {
+                    menus.children.Add(new RoleMenu
+                    {
+                        name = xr["title"].ToString(),
+                        id = Convert.ToInt32(xr["MenuId"])
+                    });
                 }
                 listmenu.Add(menus);
             }
 
             return Ok(listmenu);
-
         }
 
         // POST: api/SecurityRoleSetting
-        public void Post([FromBody]string value)
+        [HttpPost]
+        public ActionResult Post([FromBody] string value)
         {
+            // Implement logic here
+            return Ok();
         }
 
         // PUT: api/SecurityRoleSetting/5
-        public void Put(int id, [FromBody]string value)
+        [HttpPut("{id}")]
+        public ActionResult Put(int id, [FromBody] string value)
         {
+            // Implement logic here
+            return Ok();
         }
 
         // DELETE: api/SecurityRoleSetting/5
-        public void Delete(int id)
+        [HttpDelete("{id}")]
+        public ActionResult Delete(int id)
         {
+            // Implement delete logic here
+            return Ok();
         }
     }
 }

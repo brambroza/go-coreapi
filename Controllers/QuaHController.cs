@@ -6,19 +6,19 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
-using coreapi.Models;
+using goalongapi.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
-namespace coreapi.Controllers
-{
+namespace goalongapi.Controllers
+{ 
     [ApiController]
     [Authorize]
     public class QuaHController : ControllerBase
     {
         [HttpGet("[action]")]
-        public IActionResult getQuaH([FromQuery] string id, [FromQuery] string user)
+        public ActionResult getQuaH([FromQuery] string id, [FromQuery] string user)
         {
             string _cmd;
             DataTable dt = new System.Data.DataTable();
@@ -31,7 +31,7 @@ namespace coreapi.Controllers
         }
 
         [HttpGet("[action]")]
-        public IActionResult getQuaHList([FromQuery] string id, [FromQuery] string user)
+        public ActionResult getQuaHList([FromQuery] string id, [FromQuery] string user)
         {
             string _cmd;
             List<QuotationList> quotationList = new List<QuotationList>();
@@ -166,7 +166,7 @@ namespace coreapi.Controllers
         }
 
         [HttpGet("[action]")]
-        public IActionResult getQuaHByDocno(
+        public ActionResult getQuaHByDocno(
             [FromQuery] string id,
             [FromQuery] string user,
             [FromQuery] string docno
@@ -318,7 +318,7 @@ namespace coreapi.Controllers
         }
 
         [HttpGet("[action]")]
-        public IActionResult getQuaHAccept([FromQuery] string id, [FromQuery] string user)
+        public ActionResult getQuaHAccept([FromQuery] string id, [FromQuery] string user)
         {
             string _cmd;
             DataTable dt = new System.Data.DataTable();
@@ -331,7 +331,7 @@ namespace coreapi.Controllers
         }
 
         [HttpGet("[action]")]
-        public IActionResult getQuaHState([FromQuery] string cmpid, [FromQuery] string state)
+        public ActionResult getQuaHState([FromQuery] string cmpid, [FromQuery] string state)
         {
             string _cmd;
             _cmd = "exec dbo.getQuotationapprove @CmpId='" + (cmpid) + "' ";
@@ -344,7 +344,7 @@ namespace coreapi.Controllers
         // POST: api/QuaH
 
         [HttpPost("[action]")]
-        public IActionResult setQuoH([FromBody] Quotation Quotation)
+        public ActionResult setQuoH([FromBody] Quotation Quotation)
         {
             MsgReturn msgretrun = new MsgReturn();
 
@@ -409,7 +409,7 @@ namespace coreapi.Controllers
         }
 
         [HttpPost("[action]")]
-        public IActionResult setTicketFromQuo(TicketFromQuo Quotation)
+        public ActionResult setTicketFromQuo(TicketFromQuo Quotation)
         {
             MsgReturn msgretrun = new MsgReturn();
 
@@ -448,7 +448,7 @@ namespace coreapi.Controllers
         }
 
         [HttpPost("[action]")]
-        public IActionResult setTicketFromBom(TicketFromQuo Quotation)
+        public ActionResult setTicketFromBom(TicketFromQuo Quotation)
         {
             MsgReturn msgretrun = new MsgReturn();
 
@@ -487,7 +487,7 @@ namespace coreapi.Controllers
         }
 
         [HttpPost("[action]")]
-        public IActionResult QuaHCopy(QuotationCopy Quotation)
+        public ActionResult QuaHCopy(QuotationCopy Quotation)
         {
             MsgReturn msgretrun = new MsgReturn();
 
@@ -523,7 +523,7 @@ namespace coreapi.Controllers
         }
 
         [HttpPost("[action]")]
-        public IActionResult QuaHApp(QuoHApprove quoHApprove)
+        public ActionResult QuaHApp(QuoHApprove quoHApprove)
         {
             MsgReturn msgretrun = new MsgReturn();
 
@@ -564,7 +564,7 @@ namespace coreapi.Controllers
         }
 
         [HttpPost("[action]")]
-        public IActionResult QuaHSendApp(QuoHApprove quoH)
+        public ActionResult QuaHSendApp(QuoHApprove quoH)
         {
             MsgReturn msgretrun = new MsgReturn();
 
@@ -610,7 +610,7 @@ namespace coreapi.Controllers
         // DELETE: api/QuaH/5
 
         [HttpDelete("[action]")]
-        public IActionResult DeleteQuoH(string id, int RevNo)
+        public ActionResult DeleteQuoH(string id, int RevNo)
         {
             MsgReturn msgretrun = new MsgReturn();
             try
@@ -648,7 +648,7 @@ namespace coreapi.Controllers
         }
 
         [HttpGet("[action]")]
-        public IActionResult GetQuaHRev(string cmpid, string DocNo, int RevNo)
+        public ActionResult GetQuaHRev(string cmpid, string DocNo, int RevNo)
         {
             string _cmd;
 

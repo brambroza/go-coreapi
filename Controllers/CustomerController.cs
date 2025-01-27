@@ -2,7 +2,7 @@
 using System.Data;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net;
-using coreapi.Models;
+using goalongapi.Models;
 using goalongapi.Data;
 using goalongapi.Datatools.Product;
 using goalongapi.Entities;
@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 
-namespace coreapi.Controllers
+namespace goalongapi.Controllers
 {
     [ApiController]
     [Authorize]
@@ -28,7 +28,7 @@ namespace coreapi.Controllers
             string _cmd;
             _cmd = "exec dbo.getCustomer @CmpId='" + cmpid + "' , @Type='" + type + "'";
             dt = DB.DBConn.GetDataTable(_cmd);
-
+ 
             _cmd = "exec dbo.getContact @CmpId='" + cmpid + "'";
             dtContact = DB.DBConn.GetDataTable(_cmd);
 

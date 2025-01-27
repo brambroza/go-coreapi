@@ -3,7 +3,7 @@ using System.Net;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
-using coreapi.Models;
+using goalongapi.Models;
 using Google;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
@@ -12,7 +12,7 @@ using Google.Apis.Sheets.v4.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace coreapi.Controllers
+namespace goalongapi.Controllers
 {
     [ApiController]
     [Authorize]
@@ -20,7 +20,7 @@ namespace coreapi.Controllers
     {
         [HttpGet("[action]")]
         public IActionResult getCalendarEvent([FromQuery] string cmpid, [FromQuery] string user)
-        {
+        { 
             string _cmd;
             _cmd = "exec dbo.getCalendarEvent @CmpId='" + cmpid + "' , @user='" + user + "'";
             DataTable dt = DB.DBConn.GetDataTable(_cmd);
@@ -82,7 +82,7 @@ namespace coreapi.Controllers
         }
 
         [HttpPost("[action]")]
-        public IActionResult setCalendarEvent(Calendar mt)
+        public IActionResult setCalendarEvent(CalendarModel mt)
         {
             MsgReturn msgretrun = new MsgReturn();
 

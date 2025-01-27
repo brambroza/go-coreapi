@@ -7,12 +7,12 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Security.AccessControl;
-using coreapi.Models;
+using goalongapi.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
-namespace coreapi.Controllers
+namespace goalongapi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -24,7 +24,7 @@ namespace coreapi.Controllers
         {
             DataTable dt = new System.Data.DataTable();
             string _cmd;
-
+ 
             _cmd =
                 "exec dbo.[CRM_KANBAN_GET_Columns]  @userlogin='"
                 + userlogin

@@ -1,4 +1,4 @@
-namespace coreapi.Models
+namespace goalongapi.Models
 {
     public class Notification
     {

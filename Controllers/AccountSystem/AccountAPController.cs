@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using coreapi.Models;
+using goalongapi.Models;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -14,12 +14,12 @@ using System.Text;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Newtonsoft.Json;
-namespace coreapi.Controllers
+namespace goalongapi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
-
+ 
     public class AccountAPController : ControllerBase
     {
 

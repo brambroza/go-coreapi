@@ -5,7 +5,7 @@ using System.Web;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
-namespace coreapi.Models
+namespace goalongapi.Models
 {
     public class Remind
     {

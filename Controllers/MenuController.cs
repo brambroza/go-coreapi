@@ -1,4 +1,4 @@
-﻿using coreapi.Models;
+﻿using goalongapi.Models;
 using System.Net;
 using System;
 using goalongapi.Data;
@@ -14,8 +14,8 @@ using System.IdentityModel.Tokens.Jwt;
 using Newtonsoft.Json;
 using System.Reflection;
 
-namespace coreapi.Controllers
-{
+namespace goalongapi.Controllers
+{ 
     [ApiController] 
     [Authorize]
     public class MenuController : ControllerBase

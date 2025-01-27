@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace coreapi.Models
+namespace goalongapi.Models
 {
     public class Customer
     {
@@ -103,7 +103,7 @@ namespace coreapi.Models
         public string CustomerCode { get; set; }
     }
 
-    public class datefill
+    public class DateFill
     {
         string sdate { get; set; }
     }
@@ -121,7 +121,7 @@ namespace coreapi.Models
         public string registerCapital { get; set; }
         public string standardObjective { get; set; }
         public standardObjectiveDetail standardObjectiveDetail { get; set; }
-        public addressDetail addressDetail { get; set; }
+        public AddressDetail addressDetail { get; set; }
     }
 
     public class standardObjectiveDetail
@@ -129,7 +129,7 @@ namespace coreapi.Models
         public string objectiveDescription { get; set; }
     }
 
-    public class addressDetail
+    public class AddressDetail
     {
         public string addressName { get; set; }
         public string buildingName { get; set; }

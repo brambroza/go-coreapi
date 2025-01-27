@@ -5,13 +5,13 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using coreapi.Models;
+using goalongapi.Models;
 using goalongapi.Controllers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-
-namespace coreapi.Controllers
+ 
+namespace goalongapi.Controllers
 {
     [ApiController]
     [Authorize]

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Web;
 using Microsoft.AspNetCore.SignalR.Protocol;
 
-namespace coreapi.Models
+namespace goalongapi.Models
 {
     public class Company
     {
@@ -36,7 +36,7 @@ namespace coreapi.Models
         public int RoleID { get; set; }
     }
 
-    public class mapuser
+    public class MapUser
     {
         public string email { get; set; }
         public string cmpid { get; set; }

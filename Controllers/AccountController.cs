@@ -2,7 +2,7 @@ using System;
 using System.Data;
 using System.Net;
 using System.Net.Mail;
-using coreapi.Models;
+using goalongapi.Models;
 using goalongapi.Datatools.Account;
 using goalongapi.Entities;
 using goalongapi.Interfaces;
@@ -19,8 +19,7 @@ namespace goalongapi.Controllers
     [ApiController]
     [Route("[controller]")]
     public class AccountController : ControllerBase
-    {
-        static bool mailSent = false;
+    {  
 
         private readonly IAccountService accountService;
 
@@ -44,7 +43,7 @@ namespace goalongapi.Controllers
                 + "' , @User='"
                 + registerRequest.Username
                 + "'";
-            dt = coreapi.DB.DBConn.GetDataTable(_cmd);
+            dt = goalongapi.DB.DBConn.GetDataTable(_cmd);
             string JSONString = string.Empty;
             JSONString = JsonConvert.SerializeObject(dt);
 
@@ -128,7 +127,7 @@ namespace goalongapi.Controllers
             _cmd += " , @ip ='" + loginRequest.Ip + "'";
             _cmd += " , @os ='" + loginRequest.OS + "'";
 
-            coreapi.DB.DBConn.ExecuteOnly(_cmd);
+            goalongapi.DB.DBConn.ExecuteOnly(_cmd);
             return Ok();
         }
 
@@ -195,7 +194,7 @@ namespace goalongapi.Controllers
             {
                 var _cmd = "";
                 _cmd = "exec dbo.sp_getUserInfo @Username ='" + account.Username + "'";
-                var dt = coreapi.DB.DBConn.GetDataTable(_cmd);
+                var dt = goalongapi.DB.DBConn.GetDataTable(_cmd);
                 if (dt.Rows.Count <= 0)
                 {
                     return BadRequest("Invalid token or email already confirmed.");
@@ -240,7 +239,7 @@ namespace goalongapi.Controllers
                 _cmd += " ,@email  ='" + cmp.Email + "'";
                 _cmd += " ,@teloffice  ='" + cmp.teloffice + "'";
 
-                DataTable dt = coreapi.DB.DBConn.GetDataTable(_cmd);
+                DataTable dt = goalongapi.DB.DBConn.GetDataTable(_cmd);
 
                 return Ok(dt.Rows[0][0]);
             }
@@ -258,7 +257,7 @@ namespace goalongapi.Controllers
             DataTable dt = new System.Data.DataTable();
             string _cmd;
             _cmd = "exec dbo.[getAccountInfo] @CmpId='" + cmpid + "' , @User='" + user + "'";
-            dt = coreapi.DB.DBConn.GetDataTable(_cmd);
+            dt = goalongapi.DB.DBConn.GetDataTable(_cmd);
             string JSONString = string.Empty;
             JSONString = JsonConvert.SerializeObject(dt);
 
@@ -271,7 +270,7 @@ namespace goalongapi.Controllers
             DataTable dt = new System.Data.DataTable();
             string _cmd;
             _cmd = "exec dbo.[getAccountInfoList] @CmpId='" + cmpid + "' , @User='" + user + "'";
-            dt = coreapi.DB.DBConn.GetDataTable(_cmd);
+            dt = goalongapi.DB.DBConn.GetDataTable(_cmd);
             string JSONString = string.Empty;
             JSONString = JsonConvert.SerializeObject(dt);
 
@@ -302,7 +301,7 @@ namespace goalongapi.Controllers
                 _cmd += " ,@AddrPostCode  ='" + user.AddrPostCode + "'";
                 _cmd += " ,@RoleID  =" + user.RoleID + "";
 
-                if (coreapi.DB.DBConn.ExecuteOnly(_cmd))
+                if (goalongapi.DB.DBConn.ExecuteOnly(_cmd))
                 {
                     msgretrun.ReturnCode = "200";
                     msgretrun.Msg = "Save Success !!";
@@ -334,7 +333,7 @@ namespace goalongapi.Controllers
                 _cmd += " @AccountID  =" + user.AccountID + "";
                 _cmd += " ,@CmpId  ='" + user.CmpId + "'";
 
-                if (coreapi.DB.DBConn.ExecuteOnly(_cmd))
+                if (goalongapi.DB.DBConn.ExecuteOnly(_cmd))
                 {
                     msgretrun.ReturnCode = "200";
                     msgretrun.Msg = "Save Success !!";
@@ -356,7 +355,7 @@ namespace goalongapi.Controllers
         }
 
         [HttpPost("[action]")]
-        public IActionResult setUpMapUser(mapuser cmp)
+        public IActionResult setUpMapUser(MapUser cmp)
         {
             MsgReturn msgretrun = new MsgReturn();
             try
@@ -366,7 +365,7 @@ namespace goalongapi.Controllers
                 _cmd += " @cmpid  ='" + cmp.cmpid + "'";
                 _cmd += " ,@email  ='" + cmp.email + "'";
 
-                if (coreapi.DB.DBConn.ExecuteOnly(_cmd))
+                if (goalongapi.DB.DBConn.ExecuteOnly(_cmd))
                 {
                     msgretrun.ReturnCode = "200";
                     msgretrun.Msg = "Save Success !!";

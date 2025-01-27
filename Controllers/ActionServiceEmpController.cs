@@ -1,36 +1,35 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Data;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Web.Http;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using coreapi.Models;
+using goalongapi.Models;
 
-
-namespace coreapi.Controllers
+namespace goalongapi.Controllers
 {
-     
-    
-    public class ActionServiceEmpController : ApiController
+    [ApiController]
+    [Route("api/[controller]")]
+    public class ActionServiceEmpController : ControllerBase
     {
-
-
-        // GET: api/ActionServiceEmp/5
-       
-        
-        public IHttpActionResult Get(int cmpid, string username )
+        [HttpGet("{cmpid}/{username}")]
+        public ActionResult<DataTable> Get(int cmpid, string username)
         {
-            DataTable dt = new System.Data.DataTable();
-            string _cmd;
-            _cmd = "exec dbo.[getProblemActions_emp] @CmpId=" + cmpid + " ,  @User='" + username + "'";
-            dt = DB.DBConn.GetDataTable(_cmd);
-            return Ok(dt);
-        }
+            try
+            {
+                string _cmd = $"exec dbo.[getProblemActions_emp] @CmpId={cmpid}, @User='{username}'";
+                DataTable dt = DB.DBConn.GetDataTable(_cmd);
 
- 
- 
+                if (dt.Rows.Count > 0)
+                {
+                    return Ok(dt);
+                }
+                else
+                {
+                    return NotFound(new { Message = "No records found." });
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = "An error occurred.", Details = ex.Message });
+            }
+        }
     }
 }
+ 

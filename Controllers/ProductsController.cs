@@ -10,7 +10,7 @@ using goalongapi.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 
 namespace goalongapi.Controllers;
-
+ 
 [ApiController]
 [Route("[controller]")]
 [Authorize]

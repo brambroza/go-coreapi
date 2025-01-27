@@ -9,20 +9,19 @@ using Microsoft.AspNetCore.Mvc;
 
 using System;
 using System.Net.Mail;
-using coreapi.Models;
+using goalongapi.Models;
 using System.Data;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.JSInterop.Infrastructure;
 
  
-namespace coreapi.Controllers
+namespace goalongapi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     public class AccountExternalController : ControllerBase
-    {
-
+    { 
         private readonly SignInManager<IdentityUser> signInManager;
         
            [HttpPost("[action]")]

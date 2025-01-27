@@ -4,9 +4,9 @@ using System.Linq;
 using System.Reflection.PortableExecutable;
 using System.Web;
 
-namespace coreapi.Models
+namespace goalongapi.Models
 {
-    public class Calendar
+    public class CalendarModel
     {
         public string username { get; set; }
         public string calendarId { get; set; }

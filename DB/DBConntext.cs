@@ -6,10 +6,10 @@ using System.Web;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 
-namespace coreapi.DB
+namespace goalongapi.DB
 {
     public class DBConntext
-    {
+    { 
         public string getConnectionString()
         {
             string appset = "appsettings.json";

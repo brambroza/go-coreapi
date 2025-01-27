@@ -46,11 +46,6 @@ public class GmailServiceHelper
         }
     }
 
-
-
-
-
-
     private async Task InitializeGmailService()
     {
         UserCredential credential;
@@ -173,11 +168,7 @@ public class GmailServiceHelper
         throw;
     }
 }
-
-
-
-
-
+ 
     private static string EncodeMessageToBase64(string message)
     {
         return Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(message))

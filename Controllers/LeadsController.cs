@@ -1,4 +1,4 @@
-﻿using coreapi.Models;
+﻿using goalongapi.Models;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -11,16 +11,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Newtonsoft.Json;
 
-namespace coreapi.Controllers
+namespace goalongapi.Controllers
 {
 
     [ApiController]
     [Authorize]
     public class LeadsController : ControllerBase
-    {
-
-
-        // GET: api/Leads/5
+    { 
         [HttpGet]
         [Route("api/Leads")]
         public IActionResult Get([FromQuery] int cmpid, [FromQuery] string user)

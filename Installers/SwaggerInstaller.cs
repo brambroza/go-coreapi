@@ -10,7 +10,7 @@ namespace goalongapi.Installers
             {
                 c.SwaggerDoc("v1", new OpenApiInfo{ Title = "goalongapi", Version = "v1" });
                 c.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
-                {
+                { 
                     Description = "JWT Authorization",
                     Name = "Authorization",
                     In = Microsoft.OpenApi.Models.ParameterLocation.Header,

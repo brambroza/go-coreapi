@@ -1,6 +1,6 @@
 using Microsoft.Identity.Client;
 
-namespace coreapi.Models
+namespace goalongapi.Models
 {
     public class OrganizationTeam
     {

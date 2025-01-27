@@ -1,47 +1,52 @@
-﻿using coreapi.Models;
+﻿using goalongapi.Models;
+using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Web.Http;
 
-namespace coreapi.Controllers
+namespace goalongapi.Controllers
 {
-    public class InvenRetruntostockController : ApiController
+    [ApiController]
+    [Route("api/[controller]")]
+    public class InvenRetruntostockController : ControllerBase
     {
-        [Route("api/InvenRtc")]
-        [HttpGet]
-        public IHttpActionResult Get(string CmpId, string user)
+        [HttpGet("InvenRtc")]
+        public ActionResult<DataTable> Get(string CmpId, string user)
         {
-            string _cmd;
-             _cmd = "exec dbo.Inven_getRctAll @CmpId=" + Convert.ToInt16(CmpId) + " , @User='" + user + "'";
-            DataTable datatable = DB.DBConn.GetDataTable(_cmd);
-            return Ok(datatable);
+            try 
+            {
+                string _cmd = $"exec dbo.Inven_getRctAll @CmpId={Convert.ToInt16(CmpId)}, @User='{user}'";
+                DataTable datatable = DB.DBConn.GetDataTable(_cmd);
+
+                if (datatable.Rows.Count == 0)
+                {
+                    return NotFound(new { Message = "No records found." });
+                }
+
+                return Ok(datatable);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = "An error occurred.", Details = ex.Message });
+            }
         }
 
-        // POST: api/InvenRcv
-        [Route("api/InvenRtc")]
-        [HttpPost]
-        public IHttpActionResult Post(ReturnToStock rc)
+        [HttpPost("InvenRtc")]
+        public ActionResult<MsgReturn> Post([FromBody] ReturnToStock rc)
         {
-            MsgReturn msgretrun = new MsgReturn();
+            var msgretrun = new MsgReturn();
 
             try
             {
-                string _cmd = "";
-
-                _cmd = "exec  dbo.Inven_setReturnToStockTrans"; 
-                _cmd += " @UpdUser  ='" + rc.UpdUser + "'"; 
-                _cmd += ",@ReturnToStockNo  ='" + rc.ReturnToStockNo + "'"; 
-                _cmd += ",@ReturnToStockDate ='" + rc.ReturnToStockDate + "'";
-                _cmd += ",@ReturnToStockBy ='" + rc.ReturnToStockBy + "'";
-                _cmd += ",@IssueNo  ='" + rc.IssueNo + "'";
-                _cmd += ",@CmpId =" + rc.CmpId; 
-                _cmd += ",@Remark  ='" + rc.Remark + "'"; 
-                _cmd += ",@SysWHId =" + rc.SysWHId; 
-                _cmd += ",@SysWHLocId =" + rc.SysWHLocId;
+                string _cmd = "exec dbo.Inven_setReturnToStockTrans";
+                _cmd += $" @UpdUser='{rc.UpdUser}',";
+                _cmd += $"@ReturnToStockNo='{rc.ReturnToStockNo}',";
+                _cmd += $"@ReturnToStockDate='{rc.ReturnToStockDate}',";
+                _cmd += $"@ReturnToStockBy='{rc.ReturnToStockBy}',";
+                _cmd += $"@IssueNo='{rc.IssueNo}',";
+                _cmd += $"@CmpId={rc.CmpId},";
+                _cmd += $"@Remark='{rc.Remark}',";
+                _cmd += $"@SysWHId={rc.SysWHId},";
+                _cmd += $"@SysWHLocId={rc.SysWHLocId}";
 
                 if (DB.DBConn.ExecuteOnly(_cmd))
                 {
@@ -53,42 +58,29 @@ namespace coreapi.Controllers
                 {
                     msgretrun.ReturnCode = "400";
                     msgretrun.Msg = "Error !!";
-                    return Ok(msgretrun);
+                    return BadRequest(msgretrun);
                 }
-
             }
-            catch
+            catch (Exception ex)
             {
-                msgretrun.ReturnCode = "400";
-                msgretrun.Msg = "Error !!";
-                return Ok(msgretrun);
+                msgretrun.ReturnCode = "500";
+                msgretrun.Msg = "An error occurred.";
+                return StatusCode(500, new { Message = "An error occurred.", Details = ex.Message });
             }
-
-
         }
 
-        // PUT: api/InvenRcv/5
-        [Route("api/InvenRtc")]
-        [HttpPut]
-        public void Put(int id, [FromBody] string value)
-        {
-
-        }
-
-        // DELETE: api/InvenRcv/5
-        [Route("api/InvenRtc")]
-        [HttpDelete]
-        public void Delete(string id)
+        [HttpDelete("InvenRtc/{id}")]
+        public ActionResult Delete(string id)
         {
             try
             {
-                string _cmd = "";
-                _cmd = "Delete from Inven.ReturnToStock where [ReturnToStockNo]='" + id + "'";
+                string _cmd = $"Delete from Inven.ReturnToStock where [ReturnToStockNo]='{id}'";
                 DB.DBConn.ExecuteOnly(_cmd);
+                return Ok(new { Message = "Delete successful." });
             }
-            catch
+            catch (Exception ex)
             {
-
+                return StatusCode(500, new { Message = "An error occurred.", Details = ex.Message });
             }
         }
     }

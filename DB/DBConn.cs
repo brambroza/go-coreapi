@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using goalongapi.Installers;
+using goalongapi.Installers; 
 using Microsoft.Data.SqlClient;
 
-namespace coreapi.DB
+namespace goalongapi.DB
 {
     public static class DBConn
     {
@@ -16,7 +16,7 @@ namespace coreapi.DB
         public static SqlTransaction Tran2;
 
         #region " CONNECTTION "
-
+ 
         public static void SqlConnectionOpen()
         {
             if (DBConn.Cnn == null)

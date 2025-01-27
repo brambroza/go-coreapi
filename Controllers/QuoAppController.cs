@@ -1,63 +1,78 @@
-﻿using coreapi.Models;
+﻿using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Web.Http; 
+using goalongapi.Models;
 
-namespace coreapi.Controllers
+namespace goalongapi.Controllers
 {
-  
-    public class QuoAppController : ApiController
+    [ApiController]
+    [Route("api/[controller]")]
+    public class QuoAppController : ControllerBase
     {
-        // GET: api/QuoApp
-        public IEnumerable<string> Get()
+        [HttpGet]
+        public ActionResult<IEnumerable<string>> Get()
         {
-            return new string[] { "value1", "value2" };
+            return Ok(new string[] { "value1", "value2" });
         }
 
-        // GET: api/QuoApp/5
-        public IHttpActionResult Get(int id)
+        [HttpGet("{id}")]
+        public ActionResult<DataTable> Get(int id)
         {
+            try
+            {
+                string _cmd = $"exec dbo.getMA_All @CmpId={id}";
+                DataTable dt = DB.DBConn.GetDataTable(_cmd);
 
-            DataTable dt = new System.Data.DataTable();
-            string _cmd;
-            _cmd = "exec dbo.getMA_All @CmpId=" + id + "";
-            dt = DB.DBConn.GetDataTable(_cmd);
-            return Ok(dt);
+                if (dt.Rows.Count == 0)
+                {
+                    return NotFound(new { Message = "No records found for the provided ID." });
+                }
+
+                return Ok(dt);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = "An error occurred.", Details = ex.Message });
+            }
         }
 
-        // POST: api/QuoApp
-        public void Post(Ma ma)
+        [HttpPost]
+        public ActionResult Post([FromBody] Ma ma)
         {
+            try
+            {
+                string _cmd = "exec dbo.MAServiceTrans";
+                _cmd += $" @UpdUser='{ma.UpdUser}',";
+                _cmd += $"@MANo='{ma.MANo}',";
+                _cmd += $"@CustCode='{ma.CustCode}',";
+                _cmd += $"@Description='{ma.Description}',";
+                _cmd += $"@PurchaseNo='{ma.PurchaseNo}',";
+                _cmd += $"@ReferCode='{ma.ReferCode}',";
+                _cmd += $"@QuotationNo='{ma.QuotationNo}',";
+                _cmd += $"@StateActive='{ma.StateActive}',";
+                _cmd += $"@CmpId={ma.CmpId}";
 
-            string _cmd = "";
-            _cmd = "exec  dbo.MAServiceTrans";
-            _cmd += " @UpdUser  ='" + ma.UpdUser + "'";
-            _cmd += ",@MANo  ='" + ma.MANo + "'";
-            _cmd += ",@CustCode  ='" + ma.CustCode + "'";
-            _cmd += ",@Description  ='" + ma.Description + "'";
-            _cmd += ",@PurchaseNo  ='" + ma.PurchaseNo + "'";
-            _cmd += ",@ReferCode  ='" + ma.ReferCode + "'";
-            _cmd += ",@QuotationNo  ='" + ma.QuotationNo + "'";
-            _cmd += ",@StateActive  ='" + ma.StateActive + "'";
-            _cmd += ",@CmpId =" + ma.CmpId;
+                DB.DBConn.ExecuteOnly(_cmd);
 
-            DB.DBConn.ExecuteOnly(_cmd);
-
-
+                return Ok(new { Message = "Data saved successfully." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = "An error occurred while saving data.", Details = ex.Message });
+            }
         }
 
-        // PUT: api/QuoApp/5
-        public void Put(int id, [FromBody]string value)
+        [HttpPut("{id}")]
+        public ActionResult Put(int id, [FromBody] string value)
         {
+            return Ok(new { Message = $"PUT method called for ID {id}.", Value = value });
         }
 
-        // DELETE: api/QuoApp/5
-        public void Delete(int id)
+        [HttpDelete("{id}")]
+        public ActionResult Delete(int id)
         {
+            return Ok(new { Message = $"DELETE method called for ID {id}." });
         }
     }
 }

@@ -6,12 +6,12 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using coreapi.Models;
+using goalongapi.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-
-namespace coreapi.Controllers
+ 
+namespace goalongapi.Controllers
 {
     [ApiController]
     [Authorize]
@@ -784,21 +784,21 @@ namespace coreapi.Controllers
             foreach (DataRow r in dt.Rows)
             {
                 var bom = new SalesBom();
-                bom.BomNo = r["BomNo"].ToString();
-                bom.BomBy = r["BomBy"].ToString();
+                bom.BomNo = r["BomNo"].ToString() ?? string.Empty;
+                bom.BomBy = r["BomBy"].ToString() ?? string.Empty;
                 bom.BomDate = DateTime.Parse(r["BomDate"].ToString());
-                bom.SaleName = r["SaleName"].ToString();
-                bom.CustomerName = r["CustomerName"].ToString();
-                bom.CustomerContactName = r["CustomerContactName"].ToString();
-                bom.CustomerContactEmail = r["CustomerContactEmail"].ToString();
-                bom.CustomerContactPhone = r["CustomerContactPhone"].ToString();
-                bom.ProjectName = r["ProjectName"].ToString();
+                bom.SaleName = r["SaleName"].ToString() ?? string.Empty;
+                bom.CustomerName = r["CustomerName"].ToString() ?? string.Empty;
+                bom.CustomerContactName = r["CustomerContactName"].ToString() ?? string.Empty;
+                bom.CustomerContactEmail = r["CustomerContactEmail"].ToString() ?? string.Empty;
+                bom.CustomerContactPhone = r["CustomerContactPhone"].ToString() ?? string.Empty;
+                bom.ProjectName = r["ProjectName"].ToString() ?? string.Empty;
                 bom.ProjectStatus = Convert.ToInt32(r["ProjectStatus"]);
-                bom.Remark = r["Remark"].ToString();
-                bom.CmpId = r["CmpId"].ToString();
-                bom.UpdUser = r["UpdUser"].ToString();
-                bom.BomState = r["BomState"].ToString();
-                bom.TicketId = r["TicketId"].ToString();
+                bom.Remark = r["Remark"].ToString() ?? string.Empty;
+                bom.CmpId = r["CmpId"].ToString() ?? string.Empty;
+                bom.UpdUser = r["UpdUser"].ToString() ?? string.Empty;
+                bom.BomState = r["BomState"].ToString() ?? string.Empty;
+                bom.TicketId = r["TicketId"].ToString() ?? string.Empty;
                 bom.StateApp = Convert.ToInt32(r["StateApp"]);
                 bom.RevNoMax = Convert.ToInt32(r["RevNoMax"]);
                 bom.RevNo = Convert.ToInt32(r["RevNo"]);
@@ -856,20 +856,20 @@ namespace coreapi.Controllers
                         var itemprice = new SalesBom_Price_Item();
 
                         itemprice.BomNo = bom.BomNo;
-                        itemprice.UpdUser = i["UpdUser"].ToString();
+                        itemprice.UpdUser = i["UpdUser"].ToString() ?? string.Empty;
                         itemprice.RevNo = bom.RevNo;
                         itemprice.Seq = Convert.ToInt32(i["Seq"]);
-                        itemprice.ProdCode = i["ProdCode"].ToString();
-                        itemprice.SupplierCode = i["SupplierCode"].ToString();
-                        itemprice.SupplierName = i["SupplierName"].ToString();
-                        itemprice.DeliveryDate = DateTime.Parse(i["DeliveryDate"].ToString());
+                        itemprice.ProdCode = i["ProdCode"].ToString() ?? string.Empty;
+                        itemprice.SupplierCode = i["SupplierCode"].ToString() ?? string.Empty;
+                        itemprice.SupplierName = i["SupplierName"].ToString() ?? string.Empty;
+                        itemprice.DeliveryDate = DateTime.Parse(i["DeliveryDate"].ToString()) ;
                         itemprice.Qty = Convert.ToDecimal(i["Qty"]);
                         itemprice.QtyBal = Convert.ToDecimal(i["QtyBal"]);
                         itemprice.UnitPrice = Convert.ToDecimal(i["UnitPrice"]);
-                        itemprice.UnitCode = i["UnitCode"].ToString();
+                        itemprice.UnitCode = i["UnitCode"].ToString() ?? string.Empty;
                         itemprice.Amt = Convert.ToDecimal(i["Amt"]);
-                        itemprice.CmpId = i["CmpId"].ToString();
-                        itemprice.Remark = i["Remark"].ToString();
+                        itemprice.CmpId = i["CmpId"].ToString() ?? string.Empty;
+                        itemprice.Remark = i["Remark"].ToString() ?? string.Empty;
                         itemprice.PriceSeq = Convert.ToInt32(i["PriceSeq"]);
                         itemprice.StateDelete = Convert.ToInt32(i["StateDelete"]);
                         itemprice.StateSelect = Convert.ToInt32(i["StateSelect"]);

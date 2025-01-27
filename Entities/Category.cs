@@ -9,7 +9,7 @@ namespace goalongapi.Entities
         {
             Products = new HashSet<Product>();
         }
-
+ 
         public int CategoryId { get; set; }
         public string Name { get; set; } = null!;
         public DateTime Created { get; set; }

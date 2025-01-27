@@ -5,19 +5,17 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using coreapi.Models;
+using goalongapi.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
-namespace coreapi.Controllers.Master
+namespace goalongapi.Controllers.Master
 {
     [ApiController]
     [Authorize]
     public class WarehouseController : ControllerBase
-    {
-        // GET: api/Warehouse
-
+    { 
 
         [HttpGet("[action]")]
         public IActionResult getWarehouse([FromQuery] string CmpId)

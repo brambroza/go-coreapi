@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 namespace goalongapi.Data
 {
     public partial class DatabaseContext : DbContext
-    {
+    { 
         public DatabaseContext() { }
 
         public DatabaseContext(DbContextOptions<DatabaseContext> options)
