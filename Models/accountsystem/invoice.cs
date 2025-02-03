@@ -13,8 +13,11 @@ namespace goalongapi.Models
         public string InvoiceNo { get; set; }
         public string InvoiceDate { get; set; }
         public string InvoiceBy { get; set; }
-        public int InvoiceState { get; set; }
+        public string InvoiceState { get; set; }
         public string CustomerCode { get; set; }
+
+        public string CustomerName { get; set; }
+
         public int CreditType { get; set; }
         public int CreditDate { get; set; }
         public string ProjectName { get; set; }
@@ -27,6 +30,7 @@ namespace goalongapi.Models
         public decimal InvoiceDisAmt { get; set; }
         public decimal InvoiceNetAmt { get; set; }
         public decimal InvoiceVatAmt { get; set; }
+        public decimal InvoiceVatPer { get; set; }
         public decimal InvoiceGrandAmt { get; set; }
         public string InvoiceGrandAmtTHB { get; set; }
         public string InvoiceGrandAmtENB { get; set; }
@@ -38,21 +42,22 @@ namespace goalongapi.Models
         public string PaymentDue { get; set; }
         public string Shipping { get; set; }
         public int StateApprove { get; set; }
-      
-        
         public string CustomerContactName { get; set; }
         public int JobType { get; set; }
         public int StateSendApprove { get; set; }
-     
-        
         public string QuotationNo { get; set; }
         public string CustomerPONo { get; set; }
         public string SaleOrderNo { get; set; }
+        public string TicketId { get; set; }
+        public int RevNo { get; set; }
+
+
+        public List<Invoice_detail> items { get; set; }
     }
 
     public class Invoice_detail
     {
-        public string UpdUser { get; set; } 
+        public string UpdUser { get; set; }
         public string InvoiceNo { get; set; }
         public int Seq { get; set; }
         public string ProdCode { get; set; }
@@ -71,6 +76,20 @@ namespace goalongapi.Models
         public string GroupCaption2 { get; set; }
         public string GroupCaption3 { get; set; }
         public string CmpId { get; set; }
+        public int RevNo { get; set; }
     }
+
+    public class InvoiceCopy
+    {
+        public string InvoiceNo { get; set; }
+        public string InvoiceNoNew { get; set; }
+        public int RevNo { get; set; }
+        public string CmpId { get; set; }
+
+        public string CustomerCode { get; set; }
+        public string TicketId { get; set; }
+    }
+
+
 
 }

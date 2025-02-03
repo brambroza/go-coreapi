@@ -613,7 +613,7 @@ namespace goalongapi.Controllers
                         if ((_docnew.ToString() == "") || (_docnew.ToLower() == "null"))
                         {
                             _cmd =
-                                "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo.invoicerun   set @Runno  =  @Runno  select @Runno   "; // + cmpid  ;
+                                "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo.invoicerun   set @Runno  = 'IV-'+@Runno  select @Runno    "; // + cmpid  ;
                             dt = DB.DBConn.GetDataTable(_cmd);
                         }
 

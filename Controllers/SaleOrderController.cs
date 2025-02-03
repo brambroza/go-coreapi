@@ -642,5 +642,32 @@ namespace goalongapi.Controllers
                 DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
             }
         }
+
+
+        [HttpPost("[action]")]
+        public ActionResult deleteitem([FromQuery] string cmpid, [FromQuery] string docno, [FromQuery] string prodcode, [FromQuery] int seq, [FromQuery] int revno)
+        {
+
+            try
+            {
+                string _cmd;
+
+                _cmd =
+                    "Delete From mdb.SaleOrder_Detail where SaleOrderNo='"
+                    + docno
+                    + "'";
+                _cmd += " and  RevNo=" + revno;
+                _cmd += " and  Seq=" + seq;
+                _cmd += " and CmpId='" + cmpid + "'";
+                DB.DBConn.ExecuteOnly(_cmd);
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
     }
 }
