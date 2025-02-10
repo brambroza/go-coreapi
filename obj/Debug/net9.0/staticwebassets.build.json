@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "FiAcvJ5S8y+ZyCH1d7BSvrZghL2P3Erh3ekBpNtsnQA=",
+  "Hash": "K0ARIFIOGaHE9vkxcPlH1+ajWLMbwq9gIX9K+tq73iQ=",
   "Source": "goalongapi",
   "BasePath": "_content/goalongapi",
   "Mode": "Default",
@@ -9257,6 +9257,48 @@
       "OriginalItemSpec": "wwwroot/reqfromcust/fileall/feb184c6-b3de-4358-9362-2c77f5fb95e9.png"
     },
     {
+      "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/reqfromcust/fileall/icon-facebook.png",
+      "SourceId": "goalongapi",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/",
+      "BasePath": "_content/goalongapi",
+      "RelativePath": "reqfromcust/fileall/icon-facebook#[.{fingerprint}]?.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "ptkd5md0na",
+      "Integrity": "U0iZ/8kEvGbKG3ZTx+XJaVCl8Woy4TDOKLzEfd87ycg=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/reqfromcust/fileall/icon-facebook.png"
+    },
+    {
+      "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/reqfromcust/fileall/icon-line.png",
+      "SourceId": "goalongapi",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/",
+      "BasePath": "_content/goalongapi",
+      "RelativePath": "reqfromcust/fileall/icon-line#[.{fingerprint}]?.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "ho0rf167z3",
+      "Integrity": "MW9rUKz+g/ZwBlsUvQiISFw+Vt0qlXADJddcO/XKSbY=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/reqfromcust/fileall/icon-line.png"
+    },
+    {
       "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/reqfromcust/fileall/Lenovo-00WG691-1.jpg",
       "SourceId": "goalongapi",
       "SourceType": "Discovered",
@@ -9276,6 +9318,27 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot/reqfromcust/fileall/Lenovo-00WG691-1.jpg"
+    },
+    {
+      "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/reqfromcust/fileall/line-b.png",
+      "SourceId": "goalongapi",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/",
+      "BasePath": "_content/goalongapi",
+      "RelativePath": "reqfromcust/fileall/line-b#[.{fingerprint}]?.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "h86itcjhnf",
+      "Integrity": "EU1n2cAJ6/FjutNPFVGU5LBVB0emHN4LCWtvT5iLLOo=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/reqfromcust/fileall/line-b.png"
     },
     {
       "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/reqfromcust/fileall/Logo KANDA 2021-02.jpg",
@@ -9318,6 +9381,48 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot/reqfromcust/fileall/QT-240066840e6efda-f0d9-4a39-9707-39754c3f4e7e.pdf"
+    },
+    {
+      "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/reqfromcust/fileall/rq3ufs29bpvqI4Q3v6nKs-o.jpg",
+      "SourceId": "goalongapi",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/",
+      "BasePath": "_content/goalongapi",
+      "RelativePath": "reqfromcust/fileall/rq3ufs29bpvqI4Q3v6nKs-o#[.{fingerprint}]?.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "ge1hhrrdbb",
+      "Integrity": "WA5Gq07ADzpNROi6IXzFbqARQNzUhXcKdTT6LugNqsk=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/reqfromcust/fileall/rq3ufs29bpvqI4Q3v6nKs-o.jpg"
+    },
+    {
+      "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/reqfromcust/fileall/s-l1200.jpg",
+      "SourceId": "goalongapi",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/",
+      "BasePath": "_content/goalongapi",
+      "RelativePath": "reqfromcust/fileall/s-l1200#[.{fingerprint}]?.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "h4xld8q2qf",
+      "Integrity": "8QdMBVGP9f9cTvU7KUkeBb1nYwveXjTQlcYsuGmMktE=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/reqfromcust/fileall/s-l1200.jpg"
     },
     {
       "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/reqfromcust/fileall/Test file.docx",
@@ -43991,7 +44096,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Fri, 17 Jan 2025 13:15:34 GMT"
+          "Value": "Sat, 08 Feb 2025 11:49:39 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -44028,7 +44133,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Fri, 17 Jan 2025 13:15:34 GMT"
+          "Value": "Sat, 08 Feb 2025 11:49:39 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -45691,6 +45796,170 @@
       ]
     },
     {
+      "Route": "reqfromcust/fileall/icon-facebook.png",
+      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/reqfromcust/fileall/icon-facebook.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "12093"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"U0iZ/8kEvGbKG3ZTx+XJaVCl8Woy4TDOKLzEfd87ycg=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 08 Feb 2025 11:30:21 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-U0iZ/8kEvGbKG3ZTx+XJaVCl8Woy4TDOKLzEfd87ycg="
+        }
+      ]
+    },
+    {
+      "Route": "reqfromcust/fileall/icon-facebook.ptkd5md0na.png",
+      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/reqfromcust/fileall/icon-facebook.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "12093"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"U0iZ/8kEvGbKG3ZTx+XJaVCl8Woy4TDOKLzEfd87ycg=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 08 Feb 2025 11:30:21 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "ptkd5md0na"
+        },
+        {
+          "Name": "label",
+          "Value": "reqfromcust/fileall/icon-facebook.png"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-U0iZ/8kEvGbKG3ZTx+XJaVCl8Woy4TDOKLzEfd87ycg="
+        }
+      ]
+    },
+    {
+      "Route": "reqfromcust/fileall/icon-line.ho0rf167z3.png",
+      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/reqfromcust/fileall/icon-line.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "12937"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"MW9rUKz+g/ZwBlsUvQiISFw+Vt0qlXADJddcO/XKSbY=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 08 Feb 2025 09:59:44 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "ho0rf167z3"
+        },
+        {
+          "Name": "label",
+          "Value": "reqfromcust/fileall/icon-line.png"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-MW9rUKz+g/ZwBlsUvQiISFw+Vt0qlXADJddcO/XKSbY="
+        }
+      ]
+    },
+    {
+      "Route": "reqfromcust/fileall/icon-line.png",
+      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/reqfromcust/fileall/icon-line.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "12937"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"MW9rUKz+g/ZwBlsUvQiISFw+Vt0qlXADJddcO/XKSbY=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 08 Feb 2025 09:59:44 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-MW9rUKz+g/ZwBlsUvQiISFw+Vt0qlXADJddcO/XKSbY="
+        }
+      ]
+    },
+    {
       "Route": "reqfromcust/fileall/Lenovo-00WG691-1.4f7g44313a.jpg",
       "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/reqfromcust/fileall/Lenovo-00WG691-1.jpg",
       "Selectors": [],
@@ -45713,7 +45982,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 14 Jan 2025 12:37:15 GMT"
+          "Value": "Sat, 08 Feb 2025 11:29:10 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -45758,7 +46027,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 14 Jan 2025 12:37:15 GMT"
+          "Value": "Sat, 08 Feb 2025 11:29:10 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -45769,6 +46038,88 @@
         {
           "Name": "integrity",
           "Value": "sha256-cPKsTTzit+btiSRqTlvnV2h6h3XJVJ0eF2rrlurv8bk="
+        }
+      ]
+    },
+    {
+      "Route": "reqfromcust/fileall/line-b.h86itcjhnf.png",
+      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/reqfromcust/fileall/line-b.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "10861"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"EU1n2cAJ6/FjutNPFVGU5LBVB0emHN4LCWtvT5iLLOo=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 08 Feb 2025 09:57:35 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "h86itcjhnf"
+        },
+        {
+          "Name": "label",
+          "Value": "reqfromcust/fileall/line-b.png"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-EU1n2cAJ6/FjutNPFVGU5LBVB0emHN4LCWtvT5iLLOo="
+        }
+      ]
+    },
+    {
+      "Route": "reqfromcust/fileall/line-b.png",
+      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/reqfromcust/fileall/line-b.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "10861"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"EU1n2cAJ6/FjutNPFVGU5LBVB0emHN4LCWtvT5iLLOo=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 08 Feb 2025 09:57:35 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-EU1n2cAJ6/FjutNPFVGU5LBVB0emHN4LCWtvT5iLLOo="
         }
       ]
     },
@@ -45933,6 +46284,170 @@
         {
           "Name": "integrity",
           "Value": "sha256-ojQuIS7SpzQdBu1UuS4zfUWRNdVXXYMhfjbtNBvzoec="
+        }
+      ]
+    },
+    {
+      "Route": "reqfromcust/fileall/rq3ufs29bpvqI4Q3v6nKs-o.ge1hhrrdbb.jpg",
+      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/reqfromcust/fileall/rq3ufs29bpvqI4Q3v6nKs-o.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "73217"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"WA5Gq07ADzpNROi6IXzFbqARQNzUhXcKdTT6LugNqsk=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 08 Feb 2025 11:43:53 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "ge1hhrrdbb"
+        },
+        {
+          "Name": "label",
+          "Value": "reqfromcust/fileall/rq3ufs29bpvqI4Q3v6nKs-o.jpg"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-WA5Gq07ADzpNROi6IXzFbqARQNzUhXcKdTT6LugNqsk="
+        }
+      ]
+    },
+    {
+      "Route": "reqfromcust/fileall/rq3ufs29bpvqI4Q3v6nKs-o.jpg",
+      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/reqfromcust/fileall/rq3ufs29bpvqI4Q3v6nKs-o.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "73217"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"WA5Gq07ADzpNROi6IXzFbqARQNzUhXcKdTT6LugNqsk=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 08 Feb 2025 11:43:53 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-WA5Gq07ADzpNROi6IXzFbqARQNzUhXcKdTT6LugNqsk="
+        }
+      ]
+    },
+    {
+      "Route": "reqfromcust/fileall/s-l1200.h4xld8q2qf.jpg",
+      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/reqfromcust/fileall/s-l1200.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "168997"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"8QdMBVGP9f9cTvU7KUkeBb1nYwveXjTQlcYsuGmMktE=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 08 Feb 2025 09:41:17 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "h4xld8q2qf"
+        },
+        {
+          "Name": "label",
+          "Value": "reqfromcust/fileall/s-l1200.jpg"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-8QdMBVGP9f9cTvU7KUkeBb1nYwveXjTQlcYsuGmMktE="
+        }
+      ]
+    },
+    {
+      "Route": "reqfromcust/fileall/s-l1200.jpg",
+      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/reqfromcust/fileall/s-l1200.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "168997"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"8QdMBVGP9f9cTvU7KUkeBb1nYwveXjTQlcYsuGmMktE=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 08 Feb 2025 09:41:17 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-8QdMBVGP9f9cTvU7KUkeBb1nYwveXjTQlcYsuGmMktE="
         }
       ]
     },

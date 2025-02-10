@@ -96,6 +96,8 @@ app.UseEndpoints(endpoints =>
     endpoints.MapHub<NotificationHub>("/notificationhub");
     endpoints.MapHub<TicketCommentHub>("/ticketcommenthub");
     endpoints.MapHub<ChatHub>("/chathub");
+     endpoints.MapHub<TicketTaskReplyHub>("/tickettaskreplyhub");
+
 });
 
 app.Run();

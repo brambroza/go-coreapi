@@ -43,7 +43,7 @@ namespace goalongapi.Models
         public string Shipping { get; set; }
         public int StateApprove { get; set; }
         public string CustomerContactName { get; set; }
-        public int JobType { get; set; }
+        public string JobType { get; set; }
         public int StateSendApprove { get; set; }
         public string QuotationNo { get; set; }
         public string CustomerPONo { get; set; }

@@ -8,11 +8,11 @@ using Newtonsoft.Json;
 
 namespace goalongapi.Hubs
 {
-    public class TicketCommentHub : Hub
+    public class TicketTaskReplyHub : Hub
     {
-          public async Task SendMessage(TicketCommentMessage mt)
+          public async Task SendMessage(CustomerReqTicketRouteReply mt)
         {
-            await Clients.All.SendAsync($"ReceiveCommentTicket{mt.cmpId}{mt.ticketId}", mt);
+            await Clients.All.SendAsync($"ReceiveTicketTaskReply{mt.CmpId}{mt.TicketId}{mt.RouteId}{mt.RemindId}", mt);
         } 
 
         public async Task JoinTicketGroup(string ticketId)

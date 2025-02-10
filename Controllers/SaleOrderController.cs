@@ -62,6 +62,7 @@ namespace goalongapi.Controllers
                     SaleOrderDisAmt = Convert.ToDecimal(r["SaleOrderDisAmt"]),
                     SaleOrderNetAmt = Convert.ToDecimal(r["SaleOrderNetAmt"]),
                     SaleOrderVatAmt = Convert.ToDecimal(r["SaleOrderVatAmt"]),
+                    SaleOrderVatPer = Convert.ToDecimal(r["SaleOrderVatPer"]),
                     SaleOrderGrandAmt = Convert.ToDecimal(r["SaleOrderGrandAmt"]),
                     SaleOrderGrandAmtTHB = r["SaleOrderGrandAmtTHB"].ToString(),
                     SaleOrderGrandAmtENB = r["SaleOrderGrandAmtENB"].ToString(),
@@ -178,6 +179,7 @@ namespace goalongapi.Controllers
                 _cmd += " ,@SaleOrderDisAmt=" + Quotation.SaleOrderDisAmt;
                 _cmd += " ,@SaleOrderNetAmt=" + Quotation.SaleOrderNetAmt;
                 _cmd += " ,@SaleOrderVatAmt=" + Quotation.SaleOrderVatAmt;
+                 _cmd += " ,@SaleOrderVatPer=" + Quotation.SaleOrderVatPer;
                 _cmd += " ,@SaleOrderGrandAmt=" + Quotation.SaleOrderGrandAmt;
                 _cmd += " ,@WithholdingTaxState=" + Quotation.WithholdingTaxState;
                 _cmd += " ,@ShowSignatureState='" + Quotation.ShowSignatureState + "'";
@@ -188,7 +190,7 @@ namespace goalongapi.Controllers
                 _cmd += " ,@RevNo=" + Quotation.RevNo;
                 _cmd +=
                     " ,@CustContact='" + Tool.Tool.validateStr(Quotation.CustomerContactName) + "'";
-                _cmd += ", @Jobtype=" + Quotation.JobType;
+                _cmd += ", @Jobtype='" + Quotation.JobType + "'";
                 _cmd += " ,@QuotationNo='" + Quotation.QuotationNo + "'";
                 _cmd += " ,@CustomerPONo='" + Quotation.CustomerPONo + "'";
                 _cmd += ", @TicketId='" + Quotation.TicketId + "'";
@@ -644,6 +646,7 @@ namespace goalongapi.Controllers
         }
 
 
+ 
         [HttpPost("[action]")]
         public ActionResult deleteitem([FromQuery] string cmpid, [FromQuery] string docno, [FromQuery] string prodcode, [FromQuery] int seq, [FromQuery] int revno)
         {

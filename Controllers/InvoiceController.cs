@@ -71,7 +71,7 @@ namespace goalongapi.Controllers
                     Shipping = r["Shipping"].ToString(),
                     StateApprove = Convert.ToInt32(r["StateApprove"]),
                     CustomerContactName = r["CustomerContactName"].ToString(),
-                    JobType = Convert.ToInt32(r["JobType"]),
+                    JobType =  r["JobType"].ToString(),
                     StateSendApprove = Convert.ToInt32(r["StateSendApprove"]),
                     QuotationNo = r["QuotationNo"].ToString(),
                     CustomerPONo = r["CustomerPONo"].ToString(),
@@ -167,7 +167,7 @@ namespace goalongapi.Controllers
                 _cmd += ",@StateApprove =" + inv.StateApprove;
 
                 _cmd += ",@CustomerContactName ='" + inv.CustomerContactName + "'";
-                _cmd += ",@JobType =" + inv.JobType;
+                _cmd += ",@JobType ='" + inv.JobType+"'";
                 _cmd += ",@StateSendApprove =" + inv.StateSendApprove;
 
                 _cmd += ",@QuotationNo ='" + inv.QuotationNo + "'";
@@ -242,7 +242,7 @@ namespace goalongapi.Controllers
                 _cmd += ",@StateApprove =" + inv.StateApprove;
 
                 _cmd += ",@CustomerContactName ='" + inv.CustomerContactName + "'";
-                _cmd += ",@JobType =" + inv.JobType;
+                _cmd += ",@JobType ='" + inv.JobType + "'";
                 _cmd += ",@StateSendApprove =" + inv.StateSendApprove;
 
                 _cmd += ",@QuotationNo ='" + inv.QuotationNo + "'";
@@ -316,7 +316,7 @@ namespace goalongapi.Controllers
                 _cmd += ",@StateApprove =" + inv.StateApprove;
 
                 _cmd += ",@CustomerContactName ='" + inv.CustomerContactName + "'";
-                _cmd += ",@JobType =" + inv.JobType;
+                _cmd += ",@JobType ='" + inv.JobType + "'";
                 _cmd += ",@StateSendApprove =" + inv.StateSendApprove;
 
                 _cmd += ",@QuotationNo ='" + inv.QuotationNo + "'";

@@ -266,6 +266,8 @@ namespace goalongapi.Models
         public decimal SaleOrderDisAmt { get; set; }
         public decimal SaleOrderNetAmt { get; set; }
         public decimal SaleOrderVatAmt { get; set; }
+
+        public decimal SaleOrderVatPer { get; set; }
         public decimal SaleOrderGrandAmt { get; set; }
         public string SaleOrderGrandAmtTHB { get; set; }
         public string SaleOrderGrandAmtENB { get; set; }

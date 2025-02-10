@@ -11,6 +11,9 @@ using goalongapi.Models.Trial;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using Microsoft.AspNetCore.SignalR;
+using goalongapi.Hubs;
+
 
 namespace goalongapi.Controllers
 {
@@ -19,12 +22,22 @@ namespace goalongapi.Controllers
     [Authorize]
     public class CrmController : ControllerBase
     {
+
+        private readonly IHubContext<TicketTaskReplyHub> _hubContext;
+
+        public CrmController(IHubContext<TicketTaskReplyHub> hubContext)
+        {
+            _hubContext = hubContext;
+        }
+
+
+
         [HttpGet("[action]")]
         public IActionResult getreqfromcustlist(
             [FromQuery] string userlogin,
             [FromQuery] string cmpid
         )
-        { 
+        {
             DataTable dt = new System.Data.DataTable();
             DataTable dtItem = new System.Data.DataTable();
             DataTable dtAssign = new System.Data.DataTable();
@@ -129,6 +142,8 @@ namespace goalongapi.Controllers
                 crm.ticketIdRef = r["TicketIdRef"].ToString();
                 crm.Priority = r["Priority"].ToString();
                 crm.CustomerImgPath = r["CustomerImgPath"].ToString();
+                crm.TaskUnRead = int.Parse(r["taskUnRead"].ToString());
+                crm.TodoStatus = int.Parse(r["TodoStatus"].ToString());
 
                 crm.ReqRoute = new List<CustomerReqTicketRoute>();
                 foreach (
@@ -246,13 +261,13 @@ namespace goalongapi.Controllers
                     item.UserFullName = i["FullName"].ToString();
                     item.ImgPath = i["ImgPath"].ToString();
                     item.UserId = i["UserId"].ToString();
-                    
+
 
                     crm.ReqOwner.Add(item);
                 }
 
                 crm.ReqItem = new List<ReqFromCustItem>();
-            
+
 
                 foreach (
                     DataRow i in dtItem.Select(
@@ -1167,12 +1182,14 @@ namespace goalongapi.Controllers
         }
 
         [HttpPost("[action]")]
-        public IActionResult setRouteReply(CustomerReqTicketRouteReply task)
+        public ActionResult setRouteReply(CustomerReqTicketRouteReply task)
         {
             MsgReturn msgretrun = new MsgReturn();
 
             try
             {
+
+
                 string _cmd = "";
                 _cmd = "exec  dbo.setReqRouteReply";
                 _cmd += " @TicketId  ='" + task.TicketId + "'";
@@ -1203,6 +1220,123 @@ namespace goalongapi.Controllers
                 msgretrun.Msg = "Error !!";
                 return NotFound(msgretrun);
             }
+        }
+
+        [HttpPost("[action]")]
+        public ActionResult setRouteReplyRead(CustomerReqTicketRouteReplyRead task)
+        {
+            MsgReturn msgretrun = new MsgReturn();
+
+            try
+            {
+
+
+                string _cmd = "";
+                _cmd = "exec  dbo.setReqRouteReplyRead";
+                _cmd += " @TicketId  ='" + task.TicketId + "'";
+                _cmd += ",@CmpId ='" + task.CmpId + "'";
+                _cmd += ",@UpdUser ='" + task.UpdUser + "'";
+                _cmd += ",@RouteId  ='" + task.RouteId + "'";
+                _cmd += ",@RemindId  ='" + task.RemindId + "'";
+                _cmd += ",@Seq =" + task.Seq;
+
+                if (DB.DBConn.ExecuteOnly(_cmd))
+                {
+                    msgretrun.ReturnCode = "200";
+                    msgretrun.Msg = "Save Success !!";
+                    return Ok(msgretrun);
+                }
+                else
+                {
+                    msgretrun.ReturnCode = "400";
+                    msgretrun.Msg = "Error !!";
+                    return NotFound(msgretrun);
+                }
+            }
+            catch
+            {
+                msgretrun.ReturnCode = "400";
+                msgretrun.Msg = "Error !!";
+                return NotFound(msgretrun);
+            }
+        }
+
+        [HttpGet("[action]")]
+        public ActionResult getRouteReply([FromQuery] string userlogin, [FromQuery] string cmpid)
+        {
+            MsgReturn msgretrun = new MsgReturn();
+
+
+            string _cmd = "";
+            DataTable dtRouteReply = new DataTable();
+            DataTable dtRoute = new DataTable();
+
+
+            _cmd =
+                           "exec dbo.[getReqFromCustomerRoute] @user='"
+                           + userlogin
+                           + "', @cmpid='"
+                           + cmpid
+                           + "'";
+            dtRoute = DB.DBConn.GetDataTable(_cmd);
+
+
+            _cmd =
+                "exec dbo.[getReqFromCustomerRoute_Reply] @user='"
+                + userlogin
+                + "', @cmpid='"
+                + cmpid
+                + "'";
+            dtRouteReply = DB.DBConn.GetDataTable(_cmd);
+
+
+
+
+            List<CustomerReqTicketRouteReply> item = new List<CustomerReqTicketRouteReply>();
+
+
+            foreach (DataRow i in dtRoute.Rows)
+            {
+                foreach (
+                    DataRow a in dtRouteReply.Select("TicketId='" + i["TicketId"].ToString() + "' and RouteId='" + i["RouteId"].ToString() + "'")
+                )
+                {
+                    var itemr = new CustomerReqTicketRouteReply();
+                    itemr.CmpId = a["CmpId"].ToString();
+                    itemr.TicketId = a["TicketId"].ToString();
+                    itemr.UpdUser = a["updUser"].ToString();
+                    itemr.FileUrl = a["FileUrl"].ToString();
+                    itemr.Comment = a["Comment"].ToString();
+                    itemr.RouteId = a["RouteId"].ToString();
+                    itemr.RemindId = a["RemindId"].ToString();
+                    itemr.createAt = DateTime.Parse(a["createAt"].ToString());
+                    itemr.Seq = int.Parse(a["Seq"].ToString());
+                    itemr.ImgPath = a["ImgPath"].ToString();
+
+                    item.Add(itemr);
+                }
+
+                // new comment
+                var itemrb = new CustomerReqTicketRouteReply();
+                itemrb.CmpId = cmpid;
+                itemrb.TicketId = i["TicketId"].ToString();
+                itemrb.UpdUser = "";
+                itemrb.FileUrl = "";
+                itemrb.Comment = "";
+                itemrb.RouteId = i["RouteId"].ToString();
+                itemrb.RemindId = i["RemindId"].ToString();
+                itemrb.createAt = DateTime.Now.AddMinutes(1);
+                itemrb.Seq = 99999999;
+                itemrb.ImgPath = "";
+
+                item.Add(itemrb);
+
+                // end comment
+
+            }
+
+
+            return Ok(new { tickets = item });
         }
 
         [HttpPost("[action]")]

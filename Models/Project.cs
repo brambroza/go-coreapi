@@ -56,6 +56,7 @@ namespace goalongapi.Models
         public string ReferCode { get; set; }
         public string StateActive { get; set; }
         public string SaleOrderNo { get; set; }
+        public string TicketId { get; set; }
     }
 
     public class AppInvoice
@@ -64,6 +65,7 @@ namespace goalongapi.Models
         public string SaleOrderNo { get; set; }
         public string CmpId { get; set; }
         public string State { get; set; }
+        public string InvoiceNo { get; set; }
     }
 
     public class Project_Detail

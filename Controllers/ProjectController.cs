@@ -20,10 +20,10 @@ namespace goalongapi.Controllers
     [ApiController]
     [Authorize]
     public class ProjectController : ControllerBase
-    { 
+    {
 
         [HttpGet("[action]")]
-        public IActionResult getProject([FromQuery] string CmpId, [FromQuery] string user)
+        public ActionResult getProject([FromQuery] string CmpId, [FromQuery] string user)
         {
             string _cmd;
             _cmd = "exec dbo.GetProjectAll @CmpId='" + CmpId + "' , @User='" + user + "'";
@@ -307,7 +307,7 @@ namespace goalongapi.Controllers
         }
 
         [HttpGet("[action]")]
-        public IActionResult getProjectKanban([FromQuery] string CmpId, [FromQuery] string user)
+        public ActionResult getProjectKanban([FromQuery] string CmpId, [FromQuery] string user)
         {
             string _cmd;
             DataTable dtystemroute = new DataTable();
@@ -468,7 +468,7 @@ namespace goalongapi.Controllers
                                     .Split(',')
                                     .ToList(), // Assuming resources are comma-separated
                                 InstallQty = Convert.ToDecimal(d["InstallQty"]),
-                                InstallStartDate = d["InstallStartDate"].ToString() ,
+                                InstallStartDate = d["InstallStartDate"].ToString(),
                                 InstallStartTime = d["InstallStartTime"].ToString(),
                                 InstallEndDate = d["InstallEndDate"].ToString(),
                                 InstallEndTime = d["InstallEndTime"].ToString(),
@@ -631,7 +631,7 @@ namespace goalongapi.Controllers
         }
 
         [HttpGet("[action]")]
-        public IActionResult getProjectView(
+        public ActionResult getProjectView(
             [FromQuery] string CmpId,
             [FromQuery] string user,
             [FromQuery] string docno
@@ -653,7 +653,7 @@ namespace goalongapi.Controllers
         }
 
         [HttpGet("[action]")]
-        public IActionResult getProjectDetail([FromQuery] string CmpId, [FromQuery] string docno)
+        public ActionResult getProjectDetail([FromQuery] string CmpId, [FromQuery] string docno)
         {
             string _cmd;
             _cmd = "exec dbo.GetProjectDetail @CmpId='" + (CmpId) + "' , @DocNo='" + docno + "'";
@@ -664,7 +664,7 @@ namespace goalongapi.Controllers
         }
 
         [HttpGet("[action]")]
-        public IActionResult getProjectTask([FromQuery] string CmpId, [FromQuery] string docno)
+        public ActionResult getProjectTask([FromQuery] string CmpId, [FromQuery] string docno)
         {
             string _cmd;
             _cmd = "exec dbo.GetProjecttask @CmpId='" + (CmpId) + "' , @DocNo='" + docno + "'";
@@ -676,7 +676,7 @@ namespace goalongapi.Controllers
         }
 
         [HttpGet("[action]")]
-        public IActionResult getProjectInstallTask(
+        public ActionResult getProjectInstallTask(
             [FromQuery] string CmpId,
             [FromQuery] string docno
         )
@@ -692,7 +692,7 @@ namespace goalongapi.Controllers
         }
 
         [HttpGet("[action]")]
-        public IActionResult getProjecttaskres([FromQuery] string CmpId, [FromQuery] string docno)
+        public ActionResult getProjecttaskres([FromQuery] string CmpId, [FromQuery] string docno)
         {
             string _cmd;
 
@@ -709,7 +709,7 @@ namespace goalongapi.Controllers
         }
 
         [HttpGet("[action]")]
-        public IActionResult getProjectDemand([FromQuery] string CmpId, [FromQuery] string docno)
+        public ActionResult getProjectDemand([FromQuery] string CmpId, [FromQuery] string docno)
         {
             string _cmd;
 
@@ -723,7 +723,7 @@ namespace goalongapi.Controllers
         // POST: api/Project
 
         [HttpPost("[action]")]
-        public IActionResult QuoAppToSaleOrder(QuoHApprovetoPo apppo)
+        public ActionResult QuoAppToSaleOrder(QuoHApprovetoPo apppo)
         {
             MsgReturn msgretrun = new MsgReturn();
 
@@ -770,7 +770,7 @@ namespace goalongapi.Controllers
         }
 
         [HttpPost("[action]")]
-        public IActionResult apppo(Apppo project)
+        public ActionResult setSoToProject(Apppo project)
         {
             MsgReturn msgretrun = new MsgReturn();
 
@@ -782,12 +782,14 @@ namespace goalongapi.Controllers
                 _cmd += ",@ProjectNo  ='" + project.ProjectNo + "'";
                 _cmd += ",@CustCode  ='" + project.CustCode + "'";
                 _cmd += ",@Description  ='" + project.Description + "'";
-                _cmd += ",@CmpId =" + project.CmpId;
+                _cmd += ",@CmpId ='" + project.CmpId + "'";
                 _cmd += ",@PurchaseNo  ='" + project.PurchaseNo + "'";
                 _cmd += ",@QuotationNo  ='" + project.QuotationNo + "'";
                 _cmd += ",@ReferCode  ='" + project.ReferCode + "'";
                 _cmd += ",@StateActive =" + project.StateActive;
                 _cmd += ",@SaleOrderNo  ='" + project.SaleOrderNo + "'";
+                _cmd += ",@TicketId  ='" + project.TicketId + "'";
+
 
                 if (DB.DBConn.ExecuteOnly(_cmd))
                 {
@@ -811,7 +813,7 @@ namespace goalongapi.Controllers
         }
 
         [HttpPost("[action]")]
-        public IActionResult apptoinvoice(AppInvoice project)
+        public ActionResult apptoinvoice(AppInvoice project)
         {
             MsgReturn msgretrun = new MsgReturn();
 
@@ -821,9 +823,10 @@ namespace goalongapi.Controllers
                 _cmd = "exec  dbo.setSaleOrderToInvoice";
                 _cmd += " @User  ='" + project.UpdUser + "'";
                 _cmd += ",@SaleOrderNo  ='" + project.SaleOrderNo + "'";
-                _cmd += ",@CmpId =" + project.CmpId;
+                _cmd += ",@CmpId ='" + project.CmpId + "'";
 
                 _cmd += ",@State =" + project.State;
+                _cmd += ",@InvoiceNo='" + project.InvoiceNo + "'";
 
                 if (DB.DBConn.ExecuteOnly(_cmd))
                 {
@@ -847,7 +850,7 @@ namespace goalongapi.Controllers
         }
 
         [HttpPost("[action]")]
-        public IActionResult setProject(Project project)
+        public ActionResult setProject(Project project)
         {
             System.Globalization.CultureInfo thaiCulture = new System.Globalization.CultureInfo(
                 "th-TH"
@@ -909,7 +912,7 @@ namespace goalongapi.Controllers
         }
 
         [HttpPost("[action]")]
-        public IActionResult setProjectDetail(List<Project_Detail> project)
+        public ActionResult setProjectDetail(List<Project_Detail> project)
         {
             MsgReturn msgretrun = new MsgReturn();
 
@@ -975,7 +978,7 @@ namespace goalongapi.Controllers
                     msgretrun.Msg = "Save Success !!";
                     return Ok(msgretrun);
                 }
-                catch 
+                catch
                 {
                     DB.DBConn.Tran.Rollback();
                     DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
@@ -994,7 +997,7 @@ namespace goalongapi.Controllers
         }
 
         [HttpPost("[action]")]
-        public IActionResult setProjectMoveRoute(TaskUpdate comment)
+        public ActionResult setProjectMoveRoute(TaskUpdate comment)
         {
             System.Globalization.CultureInfo thaiCulture = new System.Globalization.CultureInfo(
                 "th-TH"
@@ -1034,7 +1037,7 @@ namespace goalongapi.Controllers
                 msgretrun.Msg = "Save Success !!";
                 return Ok(msgretrun);
             }
-            catch  
+            catch
             {
                 DB.DBConn.Tran.Rollback();
                 DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
@@ -1047,7 +1050,7 @@ namespace goalongapi.Controllers
         }
 
         [HttpPost("[action]")]
-        public IActionResult setProjectTask(List<Project_Task> project)
+        public ActionResult setProjectTask(List<Project_Task> project)
         {
             MsgReturn msgretrun = new MsgReturn();
 
@@ -1134,7 +1137,7 @@ namespace goalongapi.Controllers
                     msgretrun.Msg = "Save Success !!";
                     return Ok(msgretrun);
                 }
-                catch  
+                catch
                 {
                     DB.DBConn.Tran.Rollback();
                     DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
@@ -1153,7 +1156,7 @@ namespace goalongapi.Controllers
         }
 
         [HttpPost("[action]")]
-        public IActionResult setProjectTaskInstall(List<Project_TaskInstall> project)
+        public ActionResult setProjectTaskInstall(List<Project_TaskInstall> project)
         {
             MsgReturn msgretrun = new MsgReturn();
 
@@ -1231,7 +1234,7 @@ namespace goalongapi.Controllers
                     msgretrun.Msg = "Save Success !!";
                     return Ok(msgretrun);
                 }
-                catch  
+                catch
                 {
                     DB.DBConn.Tran.Rollback();
                     DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
@@ -1250,7 +1253,7 @@ namespace goalongapi.Controllers
         }
 
         [HttpGet("[action]")]
-        public IActionResult getProjectCost(
+        public ActionResult getProjectCost(
             [FromQuery] string CmpId,
             [FromQuery] string user,
             [FromQuery] string docno
@@ -1272,7 +1275,7 @@ namespace goalongapi.Controllers
         }
 
         [HttpPost("[action]")]
-        public IActionResult setProjectCost(List<ProjectCost> project)
+        public ActionResult setProjectCost(List<ProjectCost> project)
         {
             MsgReturn msgretrun = new MsgReturn();
 
@@ -1325,7 +1328,7 @@ namespace goalongapi.Controllers
                     msgretrun.Msg = "Save Success !!";
                     return Ok(msgretrun);
                 }
-                catch  
+                catch
                 {
                     DB.DBConn.Tran.Rollback();
                     DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
@@ -1344,7 +1347,7 @@ namespace goalongapi.Controllers
         }
 
         [HttpDelete("[action]")]
-        public IActionResult deleteProjectCost([FromQuery] string docno)
+        public ActionResult deleteProjectCost([FromQuery] string docno)
         {
             MsgReturn msgretrun = new MsgReturn();
 
@@ -1369,7 +1372,7 @@ namespace goalongapi.Controllers
                     msgretrun.Msg = "Del Success !!";
                     return Ok(msgretrun);
                 }
-                catch  
+                catch
                 {
                     DB.DBConn.Tran.Rollback();
                     DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);

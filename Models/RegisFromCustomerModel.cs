@@ -92,6 +92,8 @@ namespace goalongapi.Models
         public string DueDate { get; set; }
         public string Priority { get; set; }
         public string? CustomerImgPath { get; set; }
+        public int? TaskUnRead { get; set; } = 0;
+        public int? TodoStatus { get; set; } = 0;
     }
 
     public class ReqFromCustItem
@@ -213,6 +215,18 @@ namespace goalongapi.Models
         public string UpdUser { get; set; }
         public string ImgPath { get; set; } = "";
     }
+
+    public class CustomerReqTicketRouteReplyRead
+    {
+        public string TicketId { get; set; }
+        public string CmpId { get; set; }
+        public string RouteId { get; set; }
+        public string RemindId { get; set; }
+        public int Seq { get; set; }
+        public string UpdUser { get; set; }
+
+    }
+
 
     public class TaskUpdate
     {

@@ -13,7 +13,7 @@ using Google.Apis.Sheets.v4.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
- 
+
 namespace goalongapi.Controllers
 {
     [ApiController]
@@ -224,7 +224,7 @@ namespace goalongapi.Controllers
                         _cmd += ", @FileUrl  =''";
                     }
 
-                      if (request.ReqItem[i].FileUrl1 != null)
+                    if (request.ReqItem[i].FileUrl1 != null)
                     {
                         _cmd +=
                             ", @FileUrl1  ='" + string.Join(",", request.ReqItem[i].FileUrl1) + "'";
@@ -366,6 +366,14 @@ namespace goalongapi.Controllers
 
                     return BadRequest();
                 }
+
+
+                _cmd = " delete from dbo.CustomerReqAssign  where ";
+                _cmd += "  CmpId='" + request.CmpId + "'";
+                _cmd += "  and TicketId='" + request.TicketId + "'";
+                _cmd += "  and RouteId='" + request.RouteId + "'";
+                _cmd += "  and RemindId='" + request.RemindId + "'";
+                DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran);
 
                 for (int a = 0; a < request.reqAssign.Count; a++)
                 {
