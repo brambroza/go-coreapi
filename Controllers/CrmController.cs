@@ -196,7 +196,7 @@ namespace goalongapi.Controllers
                     }
 
                     // new comment
-                    var itemrb = new CustomerReqTicketRouteReply();
+                /*     var itemrb = new CustomerReqTicketRouteReply();
                     itemrb.CmpId = item.CmpId;
                     itemrb.TicketId = item.TicketId;
                     itemrb.UpdUser = "";
@@ -208,7 +208,7 @@ namespace goalongapi.Controllers
                     itemrb.Seq = 99999999;
                     itemrb.ImgPath = "";
 
-                    item.reqReply.Add(itemrb);
+                    item.reqReply.Add(itemrb); */
 
                     // end comment
 
