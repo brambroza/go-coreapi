@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "K0ARIFIOGaHE9vkxcPlH1+ajWLMbwq9gIX9K+tq73iQ=",
+  "Hash": "J5tSCML4l/mxOaarLxefnR0tXgf0jXlqEuqdBWyDEJk=",
   "Source": "goalongapi",
   "BasePath": "_content/goalongapi",
   "Mode": "Default",
@@ -1821,6 +1821,27 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot/230015/product/images/ffed4c9e-3df7-4180-9438-1993af3efe2a.jpg"
+    },
+    {
+      "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/product/images/poweredge-server-t160-black-cart-480-left.jpg",
+      "SourceId": "goalongapi",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/",
+      "BasePath": "_content/goalongapi",
+      "RelativePath": "230015/product/images/poweredge-server-t160-black-cart-480-left#[.{fingerprint}]?.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "clykwki06s",
+      "Integrity": "IPxMLGoWAQMW7YhJF09wcd1jKvnqWznpTIL/Nfiq8s4=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/230015/product/images/poweredge-server-t160-black-cart-480-left.jpg"
     },
     {
       "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/saleorder/SO-230209/DELL EMC PowerEdge T350.jpg",
@@ -16332,6 +16353,88 @@
         {
           "Name": "integrity",
           "Value": "sha256-cPKsTTzit+btiSRqTlvnV2h6h3XJVJ0eF2rrlurv8bk="
+        }
+      ]
+    },
+    {
+      "Route": "230015/product/images/poweredge-server-t160-black-cart-480-left.clykwki06s.jpg",
+      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/product/images/poweredge-server-t160-black-cart-480-left.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "5077"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"IPxMLGoWAQMW7YhJF09wcd1jKvnqWznpTIL/Nfiq8s4=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 11 Feb 2025 10:47:03 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "clykwki06s"
+        },
+        {
+          "Name": "label",
+          "Value": "230015/product/images/poweredge-server-t160-black-cart-480-left.jpg"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-IPxMLGoWAQMW7YhJF09wcd1jKvnqWznpTIL/Nfiq8s4="
+        }
+      ]
+    },
+    {
+      "Route": "230015/product/images/poweredge-server-t160-black-cart-480-left.jpg",
+      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/product/images/poweredge-server-t160-black-cart-480-left.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "5077"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"IPxMLGoWAQMW7YhJF09wcd1jKvnqWznpTIL/Nfiq8s4=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 11 Feb 2025 10:47:03 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-IPxMLGoWAQMW7YhJF09wcd1jKvnqWznpTIL/Nfiq8s4="
         }
       ]
     },
@@ -45818,7 +45921,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sat, 08 Feb 2025 11:30:21 GMT"
+          "Value": "Tue, 11 Feb 2025 06:22:41 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -45855,7 +45958,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sat, 08 Feb 2025 11:30:21 GMT"
+          "Value": "Tue, 11 Feb 2025 06:22:41 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -46228,7 +46331,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 15 Jan 2025 03:07:22 GMT"
+          "Value": "Tue, 11 Feb 2025 07:33:46 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -46273,7 +46376,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 15 Jan 2025 03:07:22 GMT"
+          "Value": "Tue, 11 Feb 2025 07:33:46 GMT"
         },
         {
           "Name": "Cache-Control",

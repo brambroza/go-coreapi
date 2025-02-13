@@ -206,6 +206,7 @@ namespace goalongapi.Controllers
                     _cmd += ", @PartNo='" + request.ReqItem[i].PartNo + "'";
                     _cmd += ", @MABy='" + request.ReqItem[i].MABy + "'";
                     _cmd += ", @Priority='" + request.Priority + "'";
+                    _cmd += ", @Status='" + request.Status + "'";
 
                     _cmd += ", @AdvanceReplacement='" + request.ReqItem[i].AdvanceReplacement + "'";
 

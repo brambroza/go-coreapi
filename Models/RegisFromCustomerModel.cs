@@ -94,6 +94,7 @@ namespace goalongapi.Models
         public string? CustomerImgPath { get; set; }
         public int? TaskUnRead { get; set; } = 0;
         public int? TodoStatus { get; set; } = 0;
+        public string? Labels { get; set; } = "";
     }
 
     public class ReqFromCustItem

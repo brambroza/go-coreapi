@@ -144,6 +144,8 @@ namespace goalongapi.Controllers
                 crm.CustomerImgPath = r["CustomerImgPath"].ToString();
                 crm.TaskUnRead = int.Parse(r["taskUnRead"].ToString());
                 crm.TodoStatus = int.Parse(r["TodoStatus"].ToString());
+                crm.Labels = r["Labels"].ToString();
+
 
                 crm.ReqRoute = new List<CustomerReqTicketRoute>();
                 foreach (
@@ -196,19 +198,19 @@ namespace goalongapi.Controllers
                     }
 
                     // new comment
-                /*     var itemrb = new CustomerReqTicketRouteReply();
-                    itemrb.CmpId = item.CmpId;
-                    itemrb.TicketId = item.TicketId;
-                    itemrb.UpdUser = "";
-                    itemrb.FileUrl = "";
-                    itemrb.Comment = "";
-                    itemrb.RouteId = item.RouteId;
-                    itemrb.RemindId = item.RemindId;
-                    itemrb.createAt = DateTime.Now.AddMinutes(1);
-                    itemrb.Seq = 99999999;
-                    itemrb.ImgPath = "";
+                    /*     var itemrb = new CustomerReqTicketRouteReply();
+                        itemrb.CmpId = item.CmpId;
+                        itemrb.TicketId = item.TicketId;
+                        itemrb.UpdUser = "";
+                        itemrb.FileUrl = "";
+                        itemrb.Comment = "";
+                        itemrb.RouteId = item.RouteId;
+                        itemrb.RemindId = item.RemindId;
+                        itemrb.createAt = DateTime.Now.AddMinutes(1);
+                        itemrb.Seq = 99999999;
+                        itemrb.ImgPath = "";
 
-                    item.reqReply.Add(itemrb); */
+                        item.reqReply.Add(itemrb); */
 
                     // end comment
 
@@ -504,6 +506,8 @@ namespace goalongapi.Controllers
                     crm.ticketIdRef = r["TicketIdRef"].ToString();
                     crm.Priority = r["Priority"].ToString();
                     crm.CustomerImgPath = r["CustomerImgPath"].ToString();
+                    crm.TaskUnRead = int.Parse(r["taskUnRead"].ToString());
+                    crm.Labels = r["Labels"].ToString();
 
                     crm.ReqRoute = new List<CustomerReqTicketRoute>();
                     foreach (

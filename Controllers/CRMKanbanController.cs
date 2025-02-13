@@ -24,7 +24,7 @@ namespace goalongapi.Controllers
         {
             DataTable dt = new System.Data.DataTable();
             string _cmd;
- 
+
             _cmd =
                 "exec dbo.[CRM_KANBAN_GET_Columns]  @userlogin='"
                 + userlogin
@@ -62,6 +62,8 @@ namespace goalongapi.Controllers
                         name = row["TaskName"].ToString(),
                         status = row["Status"].ToString(),
 
+                        taskUnRead = int.Parse(row["taskUnRead"].ToString()),
+                        
                         priority = row["Priority"].ToString(),
 
                         labels = new List<string>(),
