@@ -14,7 +14,7 @@ WORKDIR /src
 COPY ["goalongapi.csproj", "./"]
 RUN dotnet restore "goalongapi.csproj"
 COPY . .
-WORKDIR "/src/."
+WORKDIR "/src"
 RUN dotnet build "goalongapi.csproj" -c Release -o /app/build
 
 FROM build AS publish
