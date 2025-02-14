@@ -103,7 +103,7 @@ namespace goalongapi.Controllers
                 _cmd += ", @FileUrl  ='" + string.Join(",", url) + "'";
             }
             else
-            {
+            { 
                 _cmd += ", @FileUrl  =''";
             }
 
