@@ -95,6 +95,7 @@ namespace goalongapi.Models
         public int? TaskUnRead { get; set; } = 0;
         public int? TodoStatus { get; set; } = 0;
         public string? Labels { get; set; } = "";
+        public decimal? GrandAmt {get;set;} = 0;
     }
 
     public class ReqFromCustItem

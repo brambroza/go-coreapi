@@ -145,6 +145,7 @@ namespace goalongapi.Controllers
                 crm.TaskUnRead = int.Parse(r["taskUnRead"].ToString());
                 crm.TodoStatus = int.Parse(r["TodoStatus"].ToString());
                 crm.Labels = r["Labels"].ToString();
+                crm.GrandAmt = decimal.Parse(r["GrandAmt"].ToString());
 
 
                 crm.ReqRoute = new List<CustomerReqTicketRoute>();
@@ -508,6 +509,7 @@ namespace goalongapi.Controllers
                     crm.CustomerImgPath = r["CustomerImgPath"].ToString();
                     crm.TaskUnRead = int.Parse(r["taskUnRead"].ToString());
                     crm.Labels = r["Labels"].ToString();
+                    crm.GrandAmt = decimal.Parse(r["GrandAmt"].ToString());
 
                     crm.ReqRoute = new List<CustomerReqTicketRoute>();
                     foreach (
