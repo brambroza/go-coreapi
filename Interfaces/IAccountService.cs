@@ -16,6 +16,8 @@ namespace goalongapi.Interfaces
         bool UpdateConfirmEmail(string Username);
         bool validateEmails(string Username);
         bool removeUser(string Username);
+        Task<Account> ForgotPassword(string username);
+        Task<bool> ResetPassword(string token, string newPassword);
 
     }
 }

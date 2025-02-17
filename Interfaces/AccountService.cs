@@ -2,6 +2,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading.Tasks;
 using goalongapi.Data;
 using goalongapi.Entities;
 using Microsoft.AspNetCore.CookiePolicy;
@@ -16,7 +17,7 @@ namespace goalongapi.Interfaces
     {
         private readonly DatabaseContext databaseContext;
         private readonly JwtSettings jwtSettings;
- 
+
         public AccountService(DatabaseContext databaseContext, JwtSettings jwtSettings)
         {
             this.jwtSettings = jwtSettings;
@@ -225,6 +226,39 @@ namespace goalongapi.Interfaces
             }
         }
 
+        public async Task<Account> ForgotPassword(string Username)
+        {
+            var account = databaseContext.Accounts.FirstOrDefault(a => a.Username == Username);
+            if (account == null)
+                throw new Exception("User not found");
+
+            var token = Convert.ToBase64String(RandomNumberGenerator.GetBytes(32));
+            account.ResetToken = token;
+            account.ResetTokenExpiry = DateTime.UtcNow.AddMinutes(15);
+
+            await databaseContext.SaveChangesAsync();
+
+            return account;
+        }
+
+        public async Task<bool> ResetPassword(string token, string newPassword)
+        {
+            var account = await databaseContext.Accounts.FirstOrDefaultAsync(a => a.ResetToken == token);
+            if (account == null || account.ResetTokenExpiry < DateTime.UtcNow)
+                throw new Exception("Invalid or expired token");
+
+            // Hash the new password (use BCrypt or another hashing algorithm)
+
+            account.ResetToken = null;
+            account.ResetTokenExpiry = null;
+            account.Password = CreatePasswordHash(newPassword);
+            databaseContext.Accounts.Update(account);
+            await databaseContext.SaveChangesAsync();
+
+            return true;
+        }
+
+
         public Account GetInfo(string accessToken)
         {
             var token = new JwtSecurityTokenHandler().ReadJwtToken(accessToken);
@@ -266,6 +300,8 @@ namespace goalongapi.Interfaces
                 return false;
             }
         }
+
+
 
         private string BuildToken(Claim[] claims)
         {

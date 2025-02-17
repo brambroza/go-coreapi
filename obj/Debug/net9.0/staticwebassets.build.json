@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "DsxAPimEy+TLt32mepiislYMgoAxRkk9Bq2ijH6bpxA=",
+  "Hash": "cyFOrhLLNs5STSRfnDwk8M+BmqU1jJ+H4TL+HnBd9DE=",
   "Source": "goalongapi",
   "BasePath": "_content/goalongapi",
   "Mode": "Default",
@@ -1571,6 +1571,27 @@
       "OriginalItemSpec": "wwwroot/230015/product/images/bf0f0b08-2f05-405e-a83a-f9a2972d429e.jpg"
     },
     {
+      "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/product/images/cappuccino-756490_640.jpg",
+      "SourceId": "goalongapi",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/",
+      "BasePath": "_content/goalongapi",
+      "RelativePath": "230015/product/images/cappuccino-756490_640#[.{fingerprint}]?.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "dooothh4xn",
+      "Integrity": "EzzcUOYH0cCf3k6o/aO1RA79ahOBm94GlHFwP1KtKC4=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/230015/product/images/cappuccino-756490_640.jpg"
+    },
+    {
       "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/product/images/cee98e83-997e-462d-b7a0-78913d7360b2.jpg",
       "SourceId": "goalongapi",
       "SourceType": "Discovered",
@@ -1590,6 +1611,27 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot/230015/product/images/cee98e83-997e-462d-b7a0-78913d7360b2.jpg"
+    },
+    {
+      "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/product/images/cold-coffee-8981086_640.jpg",
+      "SourceId": "goalongapi",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/",
+      "BasePath": "_content/goalongapi",
+      "RelativePath": "230015/product/images/cold-coffee-8981086_640#[.{fingerprint}]?.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "lqskn8bokh",
+      "Integrity": "g+qam9CVwd7iFh31YDVxL/FUmUsoHpwnfjQtNjhAKuQ=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/230015/product/images/cold-coffee-8981086_640.jpg"
     },
     {
       "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/product/images/d098ef14-db19-4557-ac3c-cbbc9f0788e8.png",
@@ -1821,6 +1863,48 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot/230015/product/images/ffed4c9e-3df7-4180-9438-1993af3efe2a.jpg"
+    },
+    {
+      "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/product/images/istockphoto-2187142621-2048x2048.jpg",
+      "SourceId": "goalongapi",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/",
+      "BasePath": "_content/goalongapi",
+      "RelativePath": "230015/product/images/istockphoto-2187142621-2048x2048#[.{fingerprint}]?.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "y8i5vyb408",
+      "Integrity": "ouIWJZkxzA8zqjVemZUUMWdB+mmSCm+4Y/U0xxRq91o=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/230015/product/images/istockphoto-2187142621-2048x2048.jpg"
+    },
+    {
+      "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/product/images/istockphoto-665686532-612x612.jpg",
+      "SourceId": "goalongapi",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/",
+      "BasePath": "_content/goalongapi",
+      "RelativePath": "230015/product/images/istockphoto-665686532-612x612#[.{fingerprint}]?.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "z12pdp6s3k",
+      "Integrity": "WZhqDZOOMSzB2oY6Hk5owmc3XiwxkcEEH9G3lFxiGjU=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/230015/product/images/istockphoto-665686532-612x612.jpg"
     },
     {
       "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/product/images/poweredge-server-t160-black-cart-480-left.jpg",
@@ -15373,6 +15457,88 @@
       ]
     },
     {
+      "Route": "230015/product/images/cappuccino-756490_640.dooothh4xn.jpg",
+      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/product/images/cappuccino-756490_640.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "41542"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"EzzcUOYH0cCf3k6o/aO1RA79ahOBm94GlHFwP1KtKC4=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 17 Feb 2025 05:26:25 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "dooothh4xn"
+        },
+        {
+          "Name": "label",
+          "Value": "230015/product/images/cappuccino-756490_640.jpg"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-EzzcUOYH0cCf3k6o/aO1RA79ahOBm94GlHFwP1KtKC4="
+        }
+      ]
+    },
+    {
+      "Route": "230015/product/images/cappuccino-756490_640.jpg",
+      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/product/images/cappuccino-756490_640.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "41542"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"EzzcUOYH0cCf3k6o/aO1RA79ahOBm94GlHFwP1KtKC4=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 17 Feb 2025 05:26:25 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-EzzcUOYH0cCf3k6o/aO1RA79ahOBm94GlHFwP1KtKC4="
+        }
+      ]
+    },
+    {
       "Route": "230015/product/images/cee98e83-997e-462d-b7a0-78913d7360b2.4f7g44313a.jpg",
       "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/product/images/cee98e83-997e-462d-b7a0-78913d7360b2.jpg",
       "Selectors": [],
@@ -15451,6 +15617,88 @@
         {
           "Name": "integrity",
           "Value": "sha256-cPKsTTzit+btiSRqTlvnV2h6h3XJVJ0eF2rrlurv8bk="
+        }
+      ]
+    },
+    {
+      "Route": "230015/product/images/cold-coffee-8981086_640.jpg",
+      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/product/images/cold-coffee-8981086_640.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "86590"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"g+qam9CVwd7iFh31YDVxL/FUmUsoHpwnfjQtNjhAKuQ=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 17 Feb 2025 05:35:17 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-g+qam9CVwd7iFh31YDVxL/FUmUsoHpwnfjQtNjhAKuQ="
+        }
+      ]
+    },
+    {
+      "Route": "230015/product/images/cold-coffee-8981086_640.lqskn8bokh.jpg",
+      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/product/images/cold-coffee-8981086_640.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "86590"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"g+qam9CVwd7iFh31YDVxL/FUmUsoHpwnfjQtNjhAKuQ=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 17 Feb 2025 05:35:17 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "lqskn8bokh"
+        },
+        {
+          "Name": "label",
+          "Value": "230015/product/images/cold-coffee-8981086_640.jpg"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-g+qam9CVwd7iFh31YDVxL/FUmUsoHpwnfjQtNjhAKuQ="
         }
       ]
     },
@@ -16353,6 +16601,170 @@
         {
           "Name": "integrity",
           "Value": "sha256-cPKsTTzit+btiSRqTlvnV2h6h3XJVJ0eF2rrlurv8bk="
+        }
+      ]
+    },
+    {
+      "Route": "230015/product/images/istockphoto-2187142621-2048x2048.jpg",
+      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/product/images/istockphoto-2187142621-2048x2048.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "173133"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"ouIWJZkxzA8zqjVemZUUMWdB+mmSCm+4Y/U0xxRq91o=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 17 Feb 2025 05:31:05 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-ouIWJZkxzA8zqjVemZUUMWdB+mmSCm+4Y/U0xxRq91o="
+        }
+      ]
+    },
+    {
+      "Route": "230015/product/images/istockphoto-2187142621-2048x2048.y8i5vyb408.jpg",
+      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/product/images/istockphoto-2187142621-2048x2048.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "173133"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"ouIWJZkxzA8zqjVemZUUMWdB+mmSCm+4Y/U0xxRq91o=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 17 Feb 2025 05:31:05 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "y8i5vyb408"
+        },
+        {
+          "Name": "label",
+          "Value": "230015/product/images/istockphoto-2187142621-2048x2048.jpg"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-ouIWJZkxzA8zqjVemZUUMWdB+mmSCm+4Y/U0xxRq91o="
+        }
+      ]
+    },
+    {
+      "Route": "230015/product/images/istockphoto-665686532-612x612.jpg",
+      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/product/images/istockphoto-665686532-612x612.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "30110"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"WZhqDZOOMSzB2oY6Hk5owmc3XiwxkcEEH9G3lFxiGjU=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 17 Feb 2025 05:32:10 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-WZhqDZOOMSzB2oY6Hk5owmc3XiwxkcEEH9G3lFxiGjU="
+        }
+      ]
+    },
+    {
+      "Route": "230015/product/images/istockphoto-665686532-612x612.z12pdp6s3k.jpg",
+      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/product/images/istockphoto-665686532-612x612.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "30110"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"WZhqDZOOMSzB2oY6Hk5owmc3XiwxkcEEH9G3lFxiGjU=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 17 Feb 2025 05:32:10 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "z12pdp6s3k"
+        },
+        {
+          "Name": "label",
+          "Value": "230015/product/images/istockphoto-665686532-612x612.jpg"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-WZhqDZOOMSzB2oY6Hk5owmc3XiwxkcEEH9G3lFxiGjU="
         }
       ]
     },

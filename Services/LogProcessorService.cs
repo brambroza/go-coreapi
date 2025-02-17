@@ -93,3 +93,12 @@ public class GetLogRequest
     public string ObjectName { get; set; }
     public string CmpId { get; set; }
 }
+
+public class IVersionInfo
+{
+    public string? CreateAt { get; set; }
+    public int? Seq { get; set; }
+    public string Version { get; set; }
+    public string Descriptions { get; set; }
+    public string CmpId { get; set; }
+}

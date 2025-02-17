@@ -8,7 +8,7 @@ namespace goalongapi.Datatools.Account
         [EmailAddress]
         public string Username { get; set; }
 
-        [Required] 
+        [Required]
         [MinLength(8)]
         public string Password { get; set; }
         public int RoleId { get; set; }
@@ -41,6 +41,30 @@ namespace goalongapi.Datatools.Account
 
 
     }
+
+    public class ForgotPassword
+    {
+
+        [Required]
+        [EmailAddress]
+        public string Username { get; set; }
+ 
+
+        public string Url { get; set; }
+
+    }
+
+      public class ResetPassword
+    {
+ 
+        public string ResetToken { get; set; }
+
+        public string NewPassword { get; set; }
+
+    }
+
+
+
 
     public class RegisterGoogle
     {

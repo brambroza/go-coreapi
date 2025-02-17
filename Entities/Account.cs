@@ -21,6 +21,9 @@ namespace goalongapi.Entities
 
         public virtual Role Role { get; set; } = null!;
         public string imgPath { get; set; }
+
+        public string? ResetToken {get;set;}
+        public DateTime? ResetTokenExpiry {get;set;}
     }
  
     public partial class AccountGoogle

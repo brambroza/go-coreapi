@@ -289,8 +289,16 @@
       "PackagePath": "staticwebassets/230015/product/images/bf0f0b08-2f05-405e-a83a-f9a2972d429e.jpg"
     },
     {
+      "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/product/images/cappuccino-756490_640.jpg",
+      "PackagePath": "staticwebassets/230015/product/images/cappuccino-756490_640.jpg"
+    },
+    {
       "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/product/images/cee98e83-997e-462d-b7a0-78913d7360b2.jpg",
       "PackagePath": "staticwebassets/230015/product/images/cee98e83-997e-462d-b7a0-78913d7360b2.jpg"
+    },
+    {
+      "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/product/images/cold-coffee-8981086_640.jpg",
+      "PackagePath": "staticwebassets/230015/product/images/cold-coffee-8981086_640.jpg"
     },
     {
       "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/product/images/d098ef14-db19-4557-ac3c-cbbc9f0788e8.png",
@@ -335,6 +343,14 @@
     {
       "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/product/images/ffed4c9e-3df7-4180-9438-1993af3efe2a.jpg",
       "PackagePath": "staticwebassets/230015/product/images/ffed4c9e-3df7-4180-9438-1993af3efe2a.jpg"
+    },
+    {
+      "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/product/images/istockphoto-2187142621-2048x2048.jpg",
+      "PackagePath": "staticwebassets/230015/product/images/istockphoto-2187142621-2048x2048.jpg"
+    },
+    {
+      "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/product/images/istockphoto-665686532-612x612.jpg",
+      "PackagePath": "staticwebassets/230015/product/images/istockphoto-665686532-612x612.jpg"
     },
     {
       "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/product/images/poweredge-server-t160-black-cart-480-left.jpg",

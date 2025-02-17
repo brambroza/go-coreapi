@@ -19,7 +19,7 @@ namespace goalongapi.Controllers
     [ApiController]
     [Route("[controller]")]
     public class AccountController : ControllerBase
-    {  
+    {
 
         private readonly IAccountService accountService;
 
@@ -49,6 +49,44 @@ namespace goalongapi.Controllers
 
             return Ok(JSONString);
         }
+
+        [HttpPost("forgot-password")]
+        public async Task<IActionResult> ForgotPassword([FromBody] ForgotPassword request)
+        {
+
+            try
+            {
+                var account = await accountService.ForgotPassword(request.Username);
+
+                var encodedToken = WebUtility.UrlEncode(account.ResetToken);
+
+                var resetLink = $"{request.Url}/auth/go-portal/reset-password?token={encodedToken}";
+                MailConfirm.ResetPassword(account.Username, account.FullName, resetLink);
+
+
+                return Ok(new { message = "Reset token generated. Check your email.", token = account.ResetToken });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+
+        }
+
+
+        [HttpPost("reset-password")]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPassword request)
+        {
+
+            var account = await accountService.ResetPassword(request.ResetToken, request.NewPassword);
+            if (!account)
+            {
+                return BadRequest();
+            }
+            return Ok("Password reset successful.");
+        }
+
+
 
         [HttpPost("[action]")]
         public async Task<ActionResult> ChangePassword(PasswordChange registerRequest)
@@ -438,7 +476,7 @@ namespace goalongapi.Controllers
             var smtpPassword = "zsdwjtbgnouxrnvb";
 
             // Sender and recipient email addresses
-            var fromEmail = "info@goalong.co";
+            var fromEmail = "info@goalong.co.th";
             var toEmail = emailto;
 
             // Create a new SMTP client
@@ -464,6 +502,44 @@ namespace goalongapi.Controllers
                 Console.WriteLine("Failed to send email: " + ex.Message);
             }
         }
+
+
+        public static void ResetPassword(string emailto, string fullname, string url)
+        {
+            // SMTP settings for Gmail
+            var smtpHost = "smtp.gmail.com";
+            var smtpPort = 587;
+            var smtpUsername = "brambroza@gmail.com";
+            var smtpPassword = "berz vwob qnfe uedt";
+
+            // Sender and recipient email addresses
+            var fromEmail = "info@goalong.co.th";
+            var toEmail = emailto;
+
+            // Create a new SMTP client
+            var smtpClient = new SmtpClient(smtpHost, smtpPort);
+            smtpClient.EnableSsl = true;
+            smtpClient.UseDefaultCredentials = false;
+            smtpClient.Credentials = new NetworkCredential(smtpUsername, smtpPassword);
+
+            try
+            {
+                // Create a new email message
+                var message = new MailMessage(fromEmail, toEmail);
+                message.Subject = " GoAlong System Reset Password";
+                message.Body = mailbodyReset(fullname, url);
+                message.IsBodyHtml = true;
+
+                // Send the email
+                smtpClient.Send(message);
+                Console.WriteLine("Email sent successfully.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Failed to send email: " + ex.Message);
+            }
+        }
+
 
         public static void testmail(
             string emailfrom,
@@ -613,5 +689,59 @@ namespace goalongapi.Controllers
 
             return _str;
         }
+
+
+
+        public static string mailbodyReset(string toname, string linkconfirm)
+        {
+            var _str = "";
+            _str = @"<!DOCTYPE html>  <html> <head> <style>";
+            _str += " body {  font-family: Arial, sans-serif;   background-color: #F1F9F4;  }";
+            _str += " .container {";
+            _str += "   max-width: 600px;";
+            _str += "   margin: 0 auto;";
+            _str += "   padding: 20px;";
+            _str += "   background-color: #FFFFFF;";
+            _str += "  border-radius: 5px;";
+            _str += "   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);";
+            _str += "  }";
+            _str += " h1 {";
+            _str += "     color: #2E8B57;";
+            _str += "    margin-bottom: 20px;";
+            _str += " }";
+            _str += " p {";
+            _str += " color: #333333;";
+            _str += "  line-height: 1.6;";
+            _str += "}";
+            _str += " .button {";
+            _str += "    display: inline-block;";
+            _str += "    padding: 10px 20px;";
+            _str += "  background-color:rgb(255, 3, 3);";
+            _str += "  color: #FFFFFF;";
+            _str += "  text-decoration: none;";
+            _str += "  border-radius: 5px;";
+            _str += " }";
+            _str += ".button:hover {";
+            _str += "    background-color: #228B22;";
+            _str += " }";
+            _str += "</style>";
+            _str += "</head>";
+            _str += "<body>";
+            _str += " <div class=\"container\">";
+            _str += "  <h1>Reset Your Password</h1>";
+            _str += "  <p>Hi " + toname + ",We received a request to reset your password! </p>";
+            _str +=
+                "  <p>Use the link below to set a new password for your account. If you did not request to reset your password, ignore this email and the link will expire on its own.</p>";
+            _str += " <p><a class=\"button\" href=\"" + linkconfirm + "\">SET NEW PASSWORD</a></p>";
+            _str +=
+                " <p>Link is valid until </p>";
+
+            _str += "</body>";
+            _str += "</html>";
+
+            return _str;
+        }
+
+
     }
 }
