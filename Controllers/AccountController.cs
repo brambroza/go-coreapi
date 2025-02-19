@@ -518,7 +518,9 @@ namespace goalongapi.Controllers
 
             try
             {
-                var message = new MailMessage(fromEmail, toEmail);
+                var fromAddress = new MailAddress(fromEmail , "Go Along Support");
+                var message = new MailMessage(fromAddress,  new MailAddress(toEmail));
+                
                 message.Subject = " Go Along System Reset Password";
                 message.Body = mailbodyReset(fullname, url);
                 message.IsBodyHtml = true;
