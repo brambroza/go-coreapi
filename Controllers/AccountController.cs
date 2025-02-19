@@ -61,7 +61,7 @@ namespace goalongapi.Controllers
                 var encodedToken = WebUtility.UrlEncode(account.ResetToken);
 
                 var resetLink = $"{request.Url}/auth/go-portal/reset-password?token={encodedToken}";
-                MailConfirm.ResetPassword(account.Username, account.FullName, resetLink);
+                MailConfirm.ReplyEmail(account.Username, account.FullName, resetLink);
 
 
                 return Ok(new { message = "Reset token generated. Check your email.", token = account.ResetToken });
@@ -500,6 +500,35 @@ namespace goalongapi.Controllers
             catch (Exception ex)
             {
                 Console.WriteLine("Failed to send email: " + ex.Message);
+            }
+        }
+
+        public static void ReplyEmail(string toEmail, string fullname, string url)
+        {
+            var smtpHost = "smtp-relay.gmail.com"; // ใช้ SMTP Relay
+            var smtpPort = 587;
+            var fromEmail = "info@goalong.co.th"; // อีเมลที่ได้รับอนุญาตให้ส่งผ่าน SMTP Relay
+
+            var smtpClient = new SmtpClient(smtpHost, smtpPort)
+            {
+                EnableSsl = true,
+                UseDefaultCredentials = false,
+              //  Credentials = new NetworkCredential(fromEmail, "your-app-password") // ใช้ App Password ถ้าต้องการ
+            };
+
+            try
+            {
+                var message = new MailMessage(fromEmail, toEmail);
+                message.Subject = " Go Along System Reset Password";
+                message.Body = mailbodyReset(fullname, url);
+                message.IsBodyHtml = true;
+
+                smtpClient.Send(message);
+                Console.WriteLine("✅ Email sent successfully.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("❌ Failed to send email: " + ex.Message);
             }
         }
 
