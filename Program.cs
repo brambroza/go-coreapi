@@ -16,8 +16,8 @@ builder.Services.AddCors(p =>
         "_MyAllowSpecificOrigins",
         builder =>
         {
-          /*   builder.WithOrigins("*").AllowAnyMethod().AllowAnyHeader().AllowCredentials();   */
-            builder
+          builder.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();     
+           /*  builder
                  .WithOrigins(
                     "http://nisolution.fortiddns.com:8284",
                     "http://localhost:8080",
@@ -26,7 +26,7 @@ builder.Services.AddCors(p =>
                 )
                 .AllowAnyMethod()
                 .AllowAnyHeader()
-                .AllowCredentials();
+                .AllowCredentials();   */
         }
     )
 );

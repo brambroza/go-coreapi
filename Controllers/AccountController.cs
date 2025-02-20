@@ -467,28 +467,57 @@ namespace goalongapi.Controllers
 
     public class MailConfirm
     {
-        public static void main(string emailto, string fullname, string token, string url)
+
+        public static void SendEmail( string from,  string toEmail, string fullname, string subject , string body )
         {
-            // SMTP settings for Gmail
-            var smtpHost = "smtp.gmail.com";
+            var smtpHost = "smtp-relay.gmail.com"; // ใช้ SMTP Relay
             var smtpPort = 587;
-            var smtpUsername = "amnart.gl@gmail.com";
-            var smtpPassword = "zsdwjtbgnouxrnvb";
+            var fromEmail = "info@goalong.co.th"; // อีเมลที่ได้รับอนุญาตให้ส่งผ่าน SMTP Relay
 
-            // Sender and recipient email addresses
-            var fromEmail = "info@goalong.co.th";
-            var toEmail = emailto;
-
-            // Create a new SMTP client
-            var smtpClient = new SmtpClient(smtpHost, smtpPort);
-            smtpClient.EnableSsl = true;
-            smtpClient.UseDefaultCredentials = false;
-            smtpClient.Credentials = new NetworkCredential(smtpUsername, smtpPassword);
+            var smtpClient = new SmtpClient(smtpHost, smtpPort)
+            {
+                EnableSsl = true,
+                UseDefaultCredentials = false,
+               };
 
             try
             {
-                // Create a new email message
-                var message = new MailMessage(fromEmail, toEmail);
+                var fromAddress = new MailAddress(fromEmail,fullname);
+                var message = new MailMessage(fromAddress, new MailAddress(toEmail));
+
+                message.Subject = subject;
+                message.Body = body ;
+                message.IsBodyHtml = true;
+
+                message.Bcc.Add(new MailAddress(from));
+
+                smtpClient.Send(message);
+                Console.WriteLine("✅ Email sent successfully.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("❌ Failed to send email: " + ex.Message);
+            }
+        }
+
+
+        public static void main(string emailto, string fullname, string token, string url)
+        {
+            var smtpHost = "smtp-relay.gmail.com"; // ใช้ SMTP Relay
+            var smtpPort = 587;
+            var fromEmail = "info@goalong.co.th"; // อีเมลที่ได้รับอนุญาตให้ส่งผ่าน SMTP Relay
+
+            var smtpClient = new SmtpClient(smtpHost, smtpPort)
+            {
+                EnableSsl = true,
+                UseDefaultCredentials = false,
+                //  Credentials = new NetworkCredential(fromEmail, "your-app-password") // ใช้ App Password ถ้าต้องการ
+            };
+
+            try
+            {
+                var fromAddress = new MailAddress(fromEmail, "Go Along Support");
+                var message = new MailMessage(fromAddress, new MailAddress(emailto));
                 message.Subject = "Welcome to GoAlong System!";
                 message.Body = mailbody(fullname, url + "/#/confirmemail?id=" + token);
                 message.IsBodyHtml = true;
@@ -513,17 +542,19 @@ namespace goalongapi.Controllers
             {
                 EnableSsl = true,
                 UseDefaultCredentials = false,
-              //  Credentials = new NetworkCredential(fromEmail, "your-app-password") // ใช้ App Password ถ้าต้องการ
+                //  Credentials = new NetworkCredential(fromEmail, "your-app-password") // ใช้ App Password ถ้าต้องการ
             };
 
             try
             {
-                var fromAddress = new MailAddress(fromEmail , "Go Along Support");
-                var message = new MailMessage(fromAddress,  new MailAddress(toEmail));
-                
+                var fromAddress = new MailAddress(fromEmail, "Go Along Support");
+                var message = new MailMessage(fromAddress, new MailAddress(toEmail));
+
                 message.Subject = " Go Along System Reset Password";
                 message.Body = mailbodyReset(fullname, url);
                 message.IsBodyHtml = true;
+
+                message.Bcc.Add(new MailAddress(fromEmail));
 
                 smtpClient.Send(message);
                 Console.WriteLine("✅ Email sent successfully.");

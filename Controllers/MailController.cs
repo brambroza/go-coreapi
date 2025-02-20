@@ -8,7 +8,12 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using MimeKit;
-using System.IO;
+using System.IO; 
+using System.Net;
+using System.Net.Mail;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http; 
+
  
 [ApiController]
 [Route("api/[controller]")]
@@ -29,13 +34,52 @@ public class MailController : ControllerBase
     }
 
     [HttpPost("send")]
-    public async Task<IActionResult> SendEmail([FromForm] EmailRequest emailRequest, List<IFormFile> files)
+    public async Task<IActionResult> SendEmail([FromForm] EmailRequest emailRequest, [FromForm] IFormFile? files)
     {
-        var message = await CreateMessageAsync(emailRequest, files);
+        try
+        {
+            var smtpHost = "smtp-relay.gmail.com"; // ใช้ SMTP Relay
+            var smtpPort = 587;
+            var fromEmail = "info@goalong.co.th"; // ต้องเป็นอีเมลที่ได้รับอนุญาต
+            var smtpClient = new SmtpClient(smtpHost, smtpPort)
+            {
+                EnableSsl = true,
+                UseDefaultCredentials = false
+            };
 
-        await _gmailService.SendEmailAsync("me", emailRequest.To, emailRequest.Subject, message.Body); 
+            // ตั้งค่าผู้ส่งและผู้รับ
+            var fromAddress = new MailAddress(fromEmail, emailRequest.Fullname);
+            var message = new MailMessage(fromAddress, new MailAddress(emailRequest.To))
+            {
+                Subject = emailRequest.Subject,
+                Body = emailRequest.Body,
+                IsBodyHtml = true
+            };
 
-        return Ok("Email sent successfully!");
+            // ✅ เพิ่ม BCC ส่งสำเนาให้ตัวเอง
+            if (!string.IsNullOrEmpty(emailRequest.From))
+            {
+                message.Bcc.Add(new MailAddress(emailRequest.From));
+            }
+
+            // ✅ แนบไฟล์ถ้ามีการอัปโหลด
+            if (files != null && files.Length > 0)
+            {
+                using var memoryStream = new MemoryStream();
+                await files.CopyToAsync(memoryStream);
+                var fileBytes = memoryStream.ToArray();
+                message.Attachments.Add(new Attachment(new MemoryStream(fileBytes), files.FileName));
+            }
+
+            // ✅ ส่งอีเมล
+            smtpClient.Send(message);
+
+            return Ok("✅ Email sent successfully with attachment.");
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, "❌ Failed to send email: " + ex.Message);
+        }
     }
 
     private async Task<MimeMessage> CreateMessageAsync(EmailRequest emailRequest, List<IFormFile> files)
@@ -281,6 +325,8 @@ public class EmailRequest
     public string To { get; set; }
     public string Subject { get; set; }
     public string Body { get; set; }
+    public string From {get;set;}
+    public string Fullname {get;set;}
 }
 
 
