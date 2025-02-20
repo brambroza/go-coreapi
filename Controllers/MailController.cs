@@ -16,8 +16,7 @@ using Microsoft.AspNetCore.Http;
 namespace goalongapi.Controllers
 { 
 
-[ApiController]
-   [Authorize]
+[ApiController] 
 [Route("api/[controller]")]
 public class MailController : ControllerBase
 {
