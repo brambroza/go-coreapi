@@ -13,9 +13,11 @@ using System.Net;
 using System.Net.Mail;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
-
+namespace goalongapi.Controllers
+{ 
 
 [ApiController]
+   [Authorize]
 [Route("api/[controller]")]
 public class MailController : ControllerBase
 {
@@ -379,7 +381,10 @@ public class IMail
 }
 
 public class MailsResponse
+
 {
     public Dictionary<string, IMail> ById { get; set; }
     public List<string> AllIds { get; set; }
+}
+
 }
