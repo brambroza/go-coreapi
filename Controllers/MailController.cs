@@ -39,7 +39,7 @@ public class MailController : ControllerBase
         [FromForm] string to,
         [FromForm] string fullname,
         [FromForm] string subject,
-        [FromForm] string body,   IFormFile? files)
+        [FromForm] string body,  [FromForm] List<IFormFile>? files)
     {
         try
         {
@@ -68,12 +68,12 @@ public class MailController : ControllerBase
             }
 
             // ✅ แนบไฟล์ถ้ามีการอัปโหลด
-            if (files != null && files.Length > 0)
+            if (files != null && files.Count > 0)
             {
                 using var memoryStream = new MemoryStream();
-                await files.CopyToAsync(memoryStream);
+                await files[0].CopyToAsync(memoryStream);
                 var fileBytes = memoryStream.ToArray();
-                message.Attachments.Add(new Attachment(new MemoryStream(fileBytes), files.FileName));
+                message.Attachments.Add(new Attachment(new MemoryStream(fileBytes), files[0].FileName));
             }
 
             // ✅ ส่งอีเมล
