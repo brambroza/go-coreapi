@@ -17,6 +17,7 @@ namespace goalongapi.Controllers
 {
 
     [ApiController]
+    [Authorize]
     [Route("api/[controller]")]
     public class MailController : ControllerBase
     {
