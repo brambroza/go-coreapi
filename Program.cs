@@ -16,17 +16,17 @@ builder.Services.AddCors(p =>
         "_MyAllowSpecificOrigins",
         builder =>
         {
-          builder.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();     
-           /*  builder
-                 .WithOrigins(
-                    "http://nisolution.fortiddns.com:8284",
-                    "http://localhost:8080",
-                    "http://192.168.55.219:8285", "http://10.0.2.2:8000",
-                    "http://127.0.0.1:51052"
-                )
-                .AllowAnyMethod()
-                .AllowAnyHeader()
-                .AllowCredentials();   */
+            /*  builder.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();      */
+            builder
+                  .WithOrigins(
+                     "http://nisolution.fortiddns.com:8284",
+                     "http://localhost:8080",
+                     "http://192.168.55.219:8285", "http://10.0.2.2:8000",
+                     "http://127.0.0.1:51052"
+                 )
+                 .AllowAnyMethod()
+                 .AllowAnyHeader()
+                 .AllowCredentials();
         }
     )
 );
