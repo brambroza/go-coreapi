@@ -35,7 +35,7 @@ namespace goalongapi.Controllers
         }
 
         [HttpPost("send")]
-        public async Task<IActionResult> SendToEmail([FromForm] EmailRequest request,  [FromForm] List<IFormFile>? files)
+        public async Task<IActionResult> SendToEmail([FromBody] EmailRequest request)
         {
             try
             {
@@ -63,16 +63,18 @@ namespace goalongapi.Controllers
                     message.Bcc.Add(new MailAddress(request.From));
                 }
 
-                // ✅ แนบไฟล์ถ้ามีการอัปโหลด
-                if (files != null && files.Count > 0)
-                {
-                    foreach (var formFile in files)
-                    {
-                        using var memoryStream = new MemoryStream();
-                        await formFile.CopyToAsync(memoryStream);
-                        var fileBytes = memoryStream.ToArray();
-                        message.Attachments.Add(new Attachment(new MemoryStream(fileBytes), formFile.FileName));
 
+                // ✅ แปลง Base64 หลายไฟล์กลับเป็นไฟล์แนบ
+                if (request.Files != null && request.Files.Count > 0)
+                {
+                    foreach (var file in request.Files)
+                    {
+                        if (!string.IsNullOrEmpty(file.FileData))
+                        {
+                            byte[] fileBytes = Convert.FromBase64String(file.FileData);
+                            var memoryStream = new MemoryStream(fileBytes);
+                            message.Attachments.Add(new Attachment(memoryStream, file.Filename));
+                        }
                     }
                 }
 
@@ -332,6 +334,13 @@ namespace goalongapi.Controllers
         public string Body { get; set; }
         public string From { get; set; }
         public string Fullname { get; set; }
+        public List<FileBase64> Files { get; set; } // รายการไฟล์แนบ
+    }
+
+    public class FileBase64
+    {
+        public string Filename { get; set; } // ชื่อไฟล์
+        public string FileData { get; set; } // ข้อมูลไฟล์ Base64
     }
 
 
