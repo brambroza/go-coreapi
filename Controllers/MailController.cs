@@ -35,11 +35,7 @@ namespace goalongapi.Controllers
         }
 
         [HttpPost("send")]
-        public async Task<IActionResult> SendToEmail([FromForm] string from,
-            [FromForm] string to,
-            [FromForm] string fullname,
-            [FromForm] string subject,
-            [FromForm] string body, [FromForm] List<IFormFile>? files)
+        public async Task<IActionResult> SendToEmail([FromForm] EmailRequest request,  [FromForm] List<IFormFile>? files)
         {
             try
             {
@@ -53,18 +49,18 @@ namespace goalongapi.Controllers
                 };
 
                 // ตั้งค่าผู้ส่งและผู้รับ
-                var fromAddress = new MailAddress(fromEmail, fullname);
-                var message = new MailMessage(fromAddress, new MailAddress(to))
+                var fromAddress = new MailAddress(fromEmail, request.Fullname);
+                var message = new MailMessage(fromAddress, new MailAddress(request.To))
                 {
-                    Subject = subject,
-                    Body = body,
+                    Subject = request.Subject,
+                    Body = request.Body,
                     IsBodyHtml = true
                 };
 
                 // ✅ เพิ่ม BCC ส่งสำเนาให้ตัวเอง
-                if (!string.IsNullOrEmpty(from))
+                if (!string.IsNullOrEmpty(request.From))
                 {
-                    message.Bcc.Add(new MailAddress(from));
+                    message.Bcc.Add(new MailAddress(request.From));
                 }
 
                 // ✅ แนบไฟล์ถ้ามีการอัปโหลด
