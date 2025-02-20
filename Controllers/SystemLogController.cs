@@ -95,6 +95,42 @@ namespace goalongapi.Controllers
         }
 
 
+        [HttpPost("[action]")]
+        public IActionResult setLogTrans([FromBody] LogTrans log)
+        {
+            MsgReturn msgretrun = new MsgReturn();
+
+            try
+            {
+                string _cmd;
+                _cmd = "exec dbo.setLogTransactions @CmpId='" + log.CmpId + "'  ";
+                _cmd += " , @TicketId='" + log.TicketId + "'";
+                _cmd += " , @Descriptions='" + log.Descriptions + "'";
+                _cmd += " , @DocNo='" + log.DocNo + "'";
+                _cmd += " , @Username='" + log.Username + "'";
+
+
+                if (!DB.DBConn.ExecuteOnly(_cmd))
+                {
+                    msgretrun.ReturnCode = "400";
+                    msgretrun.Msg = "Error !!";
+                    return BadRequest(msgretrun);
+                }
+
+
+                msgretrun.ReturnCode = "200";
+                msgretrun.Msg = "Save Success !!";
+                return Ok(msgretrun);
+            }
+            catch
+            {
+                msgretrun.ReturnCode = "400";
+                msgretrun.Msg = "Error !!";
+                return BadRequest(msgretrun);
+            }
+        }
+
+
 
 
         [HttpGet("[action]")]

@@ -86,6 +86,17 @@ public class LogRequest
     public DateTime TimeStamp { get; set; }
 }
 
+public class LogTrans
+{
+
+    public string Username { get; set; }
+    public string TicketId { get; set; }
+    public string DocNo { get; set; }
+    public string Descriptions { get; set; }
+    public string CmpId { get; set; }
+    public DateTime TimeStamp { get; set; }
+}
+
 public class GetLogRequest
 {
     public string Username { get; set; }

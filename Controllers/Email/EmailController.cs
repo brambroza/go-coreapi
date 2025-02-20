@@ -32,12 +32,27 @@ namespace goalongapi.Controllers
 
                 // ตั้งค่าผู้ส่งและผู้รับ
                 var fromAddress = new MailAddress(fromEmail, request.Fullname);
-                var message = new MailMessage(fromAddress, new MailAddress(request.To))
+                /*   var message = new MailMessage(fromAddress, new MailAddress(request.To))
+                  {
+                      Subject = request.Subject,
+                      Body = request.Body,
+                      IsBodyHtml = true
+                  };
+   */
+                var message = new MailMessage
                 {
+                    From = fromAddress,
                     Subject = request.Subject,
                     Body = request.Body,
                     IsBodyHtml = true
                 };
+
+                // ✅ เพิ่มอีเมลหลายรายการใน `To`
+                foreach (var email in request.To.Split(',')) // ใช้ `;` หรือ `,` คั่น
+                {
+                    message.To.Add(new MailAddress(email.Trim()));
+                }
+
 
                 // ✅ เพิ่ม BCC ส่งสำเนาให้ตัวเอง
                 if (!string.IsNullOrEmpty(request.From))
