@@ -65,19 +65,7 @@ namespace goalongapi.Controllers
                 }
 
 
-                // ✅ แปลง Base64 หลายไฟล์กลับเป็นไฟล์แนบ
-                if (request.Files != null && request.Files.Count > 0)
-                {
-                    foreach (var file in request.Files)
-                    {
-                        if (!string.IsNullOrEmpty(file.FileData))
-                        {
-                            byte[] fileBytes = Convert.FromBase64String(file.FileData);
-                            var memoryStream = new MemoryStream(fileBytes);
-                            message.Attachments.Add(new Attachment(memoryStream, file.Filename));
-                        }
-                    }
-                }
+                
 
                 // ✅ ส่งอีเมล
                 smtpClient.Send(message);
@@ -335,7 +323,7 @@ namespace goalongapi.Controllers
         public string Body { get; set; }
         public string From { get; set; }
         public string Fullname { get; set; }
-        public List<FileBase64> Files { get; set; } // รายการไฟล์แนบ
+      
     }
 
     public class FileBase64

@@ -5,19 +5,19 @@ using System.Net.Mail;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic; 
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Authorization;
 
 namespace goalongapi.Controllers
 {
     [ApiController]
-    [Authorize]
     [Route("api/email")]
     public class EmailController : ControllerBase
     {
         [HttpPost("sendBase64")]
 
-        public async Task<IActionResult> SendToEmail([FromBody] EmailRequest request)
+        public async Task<IActionResult> SendToEmail([FromForm] EmailRequest request,
+        [FromForm] List<IFormFile>? files)
         {
             try
             {
@@ -47,16 +47,13 @@ namespace goalongapi.Controllers
 
 
                 // ✅ แปลง Base64 หลายไฟล์กลับเป็นไฟล์แนบ
-                if (request.Files != null && request.Files.Count > 0)
+                if (files != null && files.Count > 0)
                 {
-                    foreach (var file in request.Files)
+                    foreach (var file in files)
                     {
-                        if (!string.IsNullOrEmpty(file.FileData))
-                        {
-                            byte[] fileBytes = Convert.FromBase64String(file.FileData);
-                            var memoryStream = new MemoryStream(fileBytes);
-                            message.Attachments.Add(new Attachment(memoryStream, file.Filename));
-                        }
+                        using var memoryStream = new MemoryStream();
+                        await file.CopyToAsync(memoryStream);
+                        message.Attachments.Add(new Attachment(new MemoryStream(memoryStream.ToArray()), file.FileName));
                     }
                 }
 
