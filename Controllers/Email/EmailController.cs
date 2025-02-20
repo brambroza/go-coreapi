@@ -42,7 +42,7 @@ namespace goalongapi.Controllers
                 // ✅ เพิ่ม BCC ส่งสำเนาให้ตัวเอง
                 if (!string.IsNullOrEmpty(request.From))
                 {
-                    message.Bcc.Add(new MailAddress(request.From));
+                    message.CC.Add(new MailAddress(request.From));
                 }
 
 
