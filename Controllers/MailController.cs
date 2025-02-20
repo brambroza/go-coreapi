@@ -8,13 +8,13 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using MimeKit;
-using System.IO; 
+using System.IO;
 using System.Net;
 using System.Net.Mail;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http; 
+using Microsoft.AspNetCore.Http;
 
- 
+
 [ApiController]
 [Route("api/[controller]")]
 public class MailController : ControllerBase
@@ -34,7 +34,11 @@ public class MailController : ControllerBase
     }
 
     [HttpPost("send")]
-    public async Task<IActionResult> SendEmail([FromForm] EmailRequest emailRequest, [FromForm] IFormFile? files)
+    public async Task<IActionResult> SendToEmail([FromForm] string from,
+        [FromForm] string to,
+        [FromForm] string fullname,
+        [FromForm] string subject,
+        [FromForm] string body,   IFormFile? files)
     {
         try
         {
@@ -48,18 +52,18 @@ public class MailController : ControllerBase
             };
 
             // ตั้งค่าผู้ส่งและผู้รับ
-            var fromAddress = new MailAddress(fromEmail, emailRequest.Fullname);
-            var message = new MailMessage(fromAddress, new MailAddress(emailRequest.To))
+            var fromAddress = new MailAddress(fromEmail,  fullname);
+            var message = new MailMessage(fromAddress, new MailAddress( to))
             {
-                Subject = emailRequest.Subject,
-                Body = emailRequest.Body,
+                Subject = subject,
+                Body = body,
                 IsBodyHtml = true
             };
 
             // ✅ เพิ่ม BCC ส่งสำเนาให้ตัวเอง
-            if (!string.IsNullOrEmpty(emailRequest.From))
+            if (!string.IsNullOrEmpty(from))
             {
-                message.Bcc.Add(new MailAddress(emailRequest.From));
+                message.Bcc.Add(new MailAddress(from));
             }
 
             // ✅ แนบไฟล์ถ้ามีการอัปโหลด
@@ -99,26 +103,26 @@ public class MailController : ControllerBase
 
         if (files != null && files.Any())
         {
-             foreach (var formFile in files)
-    {
-        if (formFile.Length > 0)
-        {
-            // ใช้ OpenReadStream() เพื่อเปิด stream โดยไม่ต้องใช้ MemoryStream
-            var stream = formFile.OpenReadStream();
-
-            var attachment = new MimeKit.MimePart(formFile.ContentType)
+            foreach (var formFile in files)
             {
-                Content = new MimeKit.MimeContent(stream, MimeKit.ContentEncoding.Default),
-                ContentDisposition = new MimeKit.ContentDisposition(MimeKit.ContentDisposition.Attachment),
-                ContentTransferEncoding = MimeKit.ContentEncoding.Base64,
-                FileName = formFile.FileName
-            };
+                if (formFile.Length > 0)
+                {
+                    // ใช้ OpenReadStream() เพื่อเปิด stream โดยไม่ต้องใช้ MemoryStream
+                    var stream = formFile.OpenReadStream();
 
-            multipart.Add(attachment);
+                    var attachment = new MimeKit.MimePart(formFile.ContentType)
+                    {
+                        Content = new MimeKit.MimeContent(stream, MimeKit.ContentEncoding.Default),
+                        ContentDisposition = new MimeKit.ContentDisposition(MimeKit.ContentDisposition.Attachment),
+                        ContentTransferEncoding = MimeKit.ContentEncoding.Base64,
+                        FileName = formFile.FileName
+                    };
 
-            // stream จะถูกปิดเมื่อ attachment ถูก dispose ถ้าจำเป็นต้องปิดเพิ่มเติมให้ใช้การจัดการที่เหมาะสม
-        }
-    }
+                    multipart.Add(attachment);
+
+                    // stream จะถูกปิดเมื่อ attachment ถูก dispose ถ้าจำเป็นต้องปิดเพิ่มเติมให้ใช้การจัดการที่เหมาะสม
+                }
+            }
         }
 
 
@@ -325,8 +329,8 @@ public class EmailRequest
     public string To { get; set; }
     public string Subject { get; set; }
     public string Body { get; set; }
-    public string From {get;set;}
-    public string Fullname {get;set;}
+    public string From { get; set; }
+    public string Fullname { get; set; }
 }
 
 
