@@ -66,6 +66,31 @@ namespace goalongapi.Controllers
         }
 
         [HttpGet]
+        [Route("getTotalSaleOrderWonByUser")]
+        public IActionResult TotalSaleOrderWonByUser(
+            [FromQuery] string cmpid,
+            [FromQuery] string user,
+            [FromQuery] string year
+        )
+        {
+            DataTable dt = new System.Data.DataTable();
+            string _cmd;
+            _cmd =
+                "exec dbo.DashboardSale_TotalSaleOrder_Won_ByUser @User='"
+                + user
+                + "'  ,@CmpId='"
+                + cmpid
+                + "' , @Year='"
+                + year
+                + "'";
+            dt = DB.DBConn.GetDataTable(_cmd);
+            string JSONString = string.Empty;
+            JSONString = JsonConvert.SerializeObject(dt);
+            return Ok(JSONString);
+        }
+
+
+        [HttpGet]
         [Route("getTotalQuotation")]
         public IActionResult TotalQuotation(
             [FromQuery] string cmpid,
@@ -89,6 +114,32 @@ namespace goalongapi.Controllers
             return Ok(JSONString);
         }
 
+
+        [HttpGet]
+        [Route("getTotalQuotationByUser")]
+        public IActionResult TotalQuotationByUser(
+            [FromQuery] string cmpid,
+            [FromQuery] string user,
+            [FromQuery] string year
+        )
+        {
+            DataTable dt = new System.Data.DataTable();
+            string _cmd;
+            _cmd =
+                "exec dbo.DashboardSale_TotalQuotation_ByUser @User='"
+                + user
+                + "'  ,@CmpId='"
+                + cmpid
+                + "' , @Year='"
+                + year
+                + "'";
+            dt = DB.DBConn.GetDataTable(_cmd);
+            string JSONString = string.Empty;
+            JSONString = JsonConvert.SerializeObject(dt);
+            return Ok(JSONString);
+        }
+
+
         [HttpGet]
         [Route("getOpportunity")]
         public IActionResult Opportunity(
@@ -101,6 +152,30 @@ namespace goalongapi.Controllers
             string _cmd;
             _cmd =
                 "exec dbo.DashboardSale_Opportunity @User='"
+                + user
+                + "'  ,@CmpId='"
+                + cmpid
+                + "' , @Year='"
+                + year
+                + "'";
+            dt = DB.DBConn.GetDataTable(_cmd);
+            string JSONString = string.Empty;
+            JSONString = JsonConvert.SerializeObject(dt);
+            return Ok(JSONString);
+        }
+
+         [HttpGet]
+        [Route("getOpportunityByUser")]
+        public IActionResult OpportunityByuser(
+            [FromQuery] string cmpid,
+            [FromQuery] string user,
+            [FromQuery] string year
+        )
+        {
+            DataTable dt = new System.Data.DataTable();
+            string _cmd;
+            _cmd =
+                "exec dbo.DashboardSale_Opportunity_ByUser @User='"
                 + user
                 + "'  ,@CmpId='"
                 + cmpid
@@ -136,6 +211,32 @@ namespace goalongapi.Controllers
             JSONString = JsonConvert.SerializeObject(dt);
             return Ok(JSONString);
         }
+
+
+        [HttpGet]
+        [Route("getSaleCustGroupByUser")]
+        public IActionResult SaleCustGroupByUser(
+            [FromQuery] string cmpid,
+            [FromQuery] string user,
+            [FromQuery] string year
+        )
+        {
+            DataTable dt = new System.Data.DataTable();
+            string _cmd;
+            _cmd =
+                "exec dbo.DashboardSale_SaleCustGroup_ByUser @User='"
+                + user
+                + "'  ,@CmpId='"
+                + cmpid
+                + "' , @Year='"
+                + year
+                + "'";
+            dt = DB.DBConn.GetDataTable(_cmd);
+            string JSONString = string.Empty;
+            JSONString = JsonConvert.SerializeObject(dt);
+            return Ok(JSONString);
+        }
+
 
         [HttpGet]
         [Route("getSaleBestTopMonthly")]
