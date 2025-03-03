@@ -1209,6 +1209,10 @@
       "PackagePath": "staticwebassets/reqfromcust/fileall/1ee5c93b-238f-43f4-993a-34fbee7b21b2.jpg"
     },
     {
+      "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/reqfromcust/fileall/2024-11-15.xlsx",
+      "PackagePath": "staticwebassets/reqfromcust/fileall/2024-11-15.xlsx"
+    },
+    {
       "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/reqfromcust/fileall/26a39c1a-a9c3-4c2a-89f9-b8d01c49d515.png",
       "PackagePath": "staticwebassets/reqfromcust/fileall/26a39c1a-a9c3-4c2a-89f9-b8d01c49d515.png"
     },
@@ -1529,6 +1533,10 @@
       "PackagePath": "staticwebassets/reqfromcust/fileall/Test file.docx"
     },
     {
+      "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/reqfromcust/fileall/Test file.txt",
+      "PackagePath": "staticwebassets/reqfromcust/fileall/Test file.txt"
+    },
+    {
       "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/reqfromcust/fileall/a06f5ab0-391f-4d2c-941d-4068629b57c6.jpg",
       "PackagePath": "staticwebassets/reqfromcust/fileall/a06f5ab0-391f-4d2c-941d-4068629b57c6.jpg"
     },
@@ -1799,6 +1807,10 @@
     {
       "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/reqfromcust/fileall/line-b.png",
       "PackagePath": "staticwebassets/reqfromcust/fileall/line-b.png"
+    },
+    {
+      "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/reqfromcust/fileall/logo.png",
+      "PackagePath": "staticwebassets/reqfromcust/fileall/logo.png"
     },
     {
       "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/reqfromcust/fileall/rq3ufs29bpvqI4Q3v6nKs-o.jpg",

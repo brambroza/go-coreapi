@@ -5,7 +5,7 @@ using System.Web;
 
 namespace goalongapi.Models
 {
-    
+
     public class ReceiveModel
     {
         public string UpdUser { get; set; }
@@ -16,7 +16,7 @@ namespace goalongapi.Models
         public string InvoiceNo { get; set; }
         public string InvoiceDate { get; set; }
         public int ReceiveType { get; set; }
-        public int CmpId { get; set; }
+        public string CmpId { get; set; }
         public string Remark { get; set; }
         public int StateApp { get; set; }
         public string AppBy { get; set; }
@@ -24,6 +24,13 @@ namespace goalongapi.Models
         public string SupplierCode { get; set; }
         public int SysWHId { get; set; }
         public int SysWHLocId { get; set; }
+
+        public string? ImgPath { get; set; }
+        public string? WareHouseName { get; set; }
+        public string? WareHouseLocName { get; set; }
+        public string? SupplierName { get; set; }
+        public List<InvenTransModel> itmes {get;set;}
+
     }
 
 
@@ -93,7 +100,7 @@ namespace goalongapi.Models
         public string IssueNo { get; set; }
         public string IssueDate { get; set; }
         public string IssueBy { get; set; }
-        public string  CmpId { get; set; }
+        public string CmpId { get; set; }
         public string Remark { get; set; }
         public string DocRef { get; set; }
         public int WHId { get; set; }
@@ -143,7 +150,7 @@ namespace goalongapi.Models
         public string Remark { get; set; }
         public int SysWHId { get; set; }
         public int SysWHLocId { get; set; }
-    } 
+    }
 
     public class invenAppModel
     {
@@ -166,7 +173,7 @@ namespace goalongapi.Models
         public int WHLocId { get; set; }
         public int WHToId { get; set; }
         public int WHLocToId { get; set; }
-    } 
+    }
     public class TransferWHRcvModel
     {
         public string UpdUser { get; set; }

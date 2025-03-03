@@ -863,9 +863,9 @@ namespace goalongapi.Controllers
                         if ((_docnew.ToString() == "") || (_docnew.ToLower() == "null"))
                         {
                             _cmd =
-                                "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo."
+                                "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo.["
                                 + cmpid
-                                + "-quorun   set @Runno  = 'QT-'+@Runno  select @Runno   "; // + cmpid  ;
+                                + "-quorun]   set @Runno  = 'QT-'+@Runno  select @Runno   "; // + cmpid  ;
                             dt = DB.DBConn.GetDataTable(_cmd);
                         }
 
@@ -894,9 +894,9 @@ namespace goalongapi.Controllers
                         if ((_docnew.ToString() == "") || (_docnew.ToLower() == "null"))
                         {
                             _cmd =
-                                "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo."
+                                "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo.["
                                 + cmpid
-                                + "-Salemanrun      select @Runno   "; // + cmpid  ;
+                                + "-Salemanrun]      select @Runno   "; // + cmpid  ;
                             dt = DB.DBConn.GetDataTable(_cmd);
                         }
 
@@ -925,9 +925,9 @@ namespace goalongapi.Controllers
                         if ((_docnew.ToString() == "") || (_docnew.ToLower() == "null"))
                         {
                             _cmd =
-                                "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo."
+                                "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo.["
                                 + cmpid
-                                + "-LeadsRun      select @Runno   "; // + cmpid  ;
+                                + "-LeadsRun]     select @Runno   "; // + cmpid  ;
                             dt = DB.DBConn.GetDataTable(_cmd);
                         }
                         break;
@@ -955,9 +955,9 @@ namespace goalongapi.Controllers
                         if ((_docnew.ToString() == "") || (_docnew.ToLower() == "null"))
                         {
                             _cmd =
-                                "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo."
+                                "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo.["
                                 + cmpid
-                                + "-adjrun      select 'AD-'+@Runno   "; // + cmpid  ;
+                                + "-adjrun]      select 'AD-'+@Runno   "; // + cmpid  ;
                             dt = DB.DBConn.GetDataTable(_cmd);
                         }
                         break;
@@ -985,9 +985,9 @@ namespace goalongapi.Controllers
                         if ((_docnew.ToString() == "") || (_docnew.ToLower() == "null"))
                         {
                             _cmd =
-                                "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo."
+                                "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo.["
                                 + cmpid
-                                + "-porun      select 'PO-'+@Runno   "; // + cmpid  ;
+                                + "-porun]     select 'PO-'+@Runno   "; // + cmpid  ;
                             dt = DB.DBConn.GetDataTable(_cmd);
                         }
                         break;
@@ -1074,9 +1074,9 @@ namespace goalongapi.Controllers
                         if ((_docnew.ToString() == "") || (_docnew.ToLower() == "null"))
                         {
                             _cmd =
-                                "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo."
+                                "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo.["
                                 + cmpid
-                                + "-issrun      select 'IS-'+@Runno   "; // + cmpid  ;
+                                + "-issrun]      select 'IS-'+@Runno   "; // + cmpid  ;
                             dt = DB.DBConn.GetDataTable(_cmd);
                         }
                         break;
@@ -1104,9 +1104,9 @@ namespace goalongapi.Controllers
                         if ((_docnew.ToString() == "") || (_docnew.ToLower() == "null"))
                         {
                             _cmd =
-                                "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo."
+                                "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo.["
                                 + cmpid
-                                + "-rtsrun      select 'RS-'+@Runno   "; // + cmpid  ;
+                                + "-rtsrun]      select 'RS-'+@Runno   "; // + cmpid  ;
                             dt = DB.DBConn.GetDataTable(_cmd);
                         }
                         break;
@@ -1131,9 +1131,9 @@ namespace goalongapi.Controllers
                         if ((_docnew.ToString() == "") || (_docnew.ToLower() == "null"))
                         {
                             _cmd =
-                                "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo."
+                                "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo.["
                                 + cmpid
-                                + "-Rtcrun      select 'RT-'+@Runno   "; // + cmpid  ;
+                                + "-Rtcrun]     select 'RT-'+@Runno   "; // + cmpid  ;
                             dt = DB.DBConn.GetDataTable(_cmd);
                         }
                         break;
@@ -1160,9 +1160,9 @@ namespace goalongapi.Controllers
                         if ((_docnew.ToString() == "") || (_docnew.ToLower() == "null"))
                         {
                             _cmd =
-                                "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo."
+                                "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo.["
                                 + cmpid
-                                + "-RsvRun     select 'RV-'+@Runno   "; // + cmpid  ;
+                                + "-RsvRun]     select 'RV-'+@Runno   "; // + cmpid  ;
                             dt = DB.DBConn.GetDataTable(_cmd);
                         }
                         break;
@@ -1189,9 +1189,9 @@ namespace goalongapi.Controllers
                         if ((_docnew.ToString() == "") || (_docnew.ToLower() == "null"))
                         {
                             _cmd =
-                                "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo."
+                                "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo.["
                                 + cmpid
-                                + "-trwRun     select 'TW-'+@Runno   "; // + cmpid  ;
+                                + "-trwRun]     select 'TW-'+@Runno   "; // + cmpid  ;
                             dt = DB.DBConn.GetDataTable(_cmd);
                         }
                         break;
@@ -1218,9 +1218,9 @@ namespace goalongapi.Controllers
                         if ((_docnew.ToString() == "") || (_docnew.ToLower() == "null"))
                         {
                             _cmd =
-                                "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo."
+                                "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo.["
                                 + cmpid
-                                + "-trwRunrcv      select 'TWR-'+@Runno   "; // + cmpid  ;
+                                + "-trwRunrcv]     select 'TWR-'+@Runno   "; // + cmpid  ;
                             dt = DB.DBConn.GetDataTable(_cmd);
                         }
                         break;
@@ -1247,9 +1247,9 @@ namespace goalongapi.Controllers
                         if ((_docnew.ToString() == "") || (_docnew.ToLower() == "null"))
                         {
                             _cmd =
-                                "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo."
+                                "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo.["
                                 + cmpid
-                                + "-custrun      select   @Runno   "; // + cmpid  ;
+                                + "-custrun]      select   @Runno   "; // + cmpid  ;
                             dt = DB.DBConn.GetDataTable(_cmd);
                         }
                         break;
@@ -1274,9 +1274,9 @@ namespace goalongapi.Controllers
                         if ((_docnew.ToString() == "") || (_docnew.ToLower() == "null"))
                         {
                             _cmd =
-                                "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo."
+                                "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo.["
                                 + cmpid
-                                + "-jobtyperun      select   @Runno   "; // + cmpid  ;
+                                + "-jobtyperun]     select   @Runno   "; // + cmpid  ;
                             dt = DB.DBConn.GetDataTable(_cmd);
                         }
                         break;
@@ -1304,9 +1304,9 @@ namespace goalongapi.Controllers
                         if ((_docnew.ToString() == "") || (_docnew.ToLower() == "null"))
                         {
                             _cmd =
-                                "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo."
+                                "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo.["
                                 + cmpid
-                                + "-bomrun   set @Runno  = 'BM-'+@Runno  select @Runno   "; // + cmpid  ;
+                                + "-bomrun]   set @Runno  = 'BM-'+@Runno  select @Runno   "; // + cmpid  ;
                             dt = DB.DBConn.GetDataTable(_cmd);
                         }
 
@@ -1335,9 +1335,9 @@ namespace goalongapi.Controllers
                         if ((_docnew.ToString() == "") || (_docnew.ToLower() == "null"))
                         {
                             _cmd =
-                                "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo."
+                                "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo.["
                                 + cmpid
-                                + "-vendorrun   set @Runno  = 'VD-'+@Runno  select @Runno   "; // + cmpid  ;
+                                + "-vendorrun]   set @Runno  = 'VD-'+@Runno  select @Runno   "; // + cmpid  ;
                             dt = DB.DBConn.GetDataTable(_cmd);
                         }
 
@@ -1366,9 +1366,9 @@ namespace goalongapi.Controllers
                         if ((_docnew.ToString() == "") || (_docnew.ToLower() == "null"))
                         {
                             _cmd =
-                                "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo."
+                                "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo.["
                                 + cmpid
-                                + "-saleorderrun   set @Runno  = 'SO-'+@Runno  select @Runno   "; // + cmpid  ;
+                                + "-saleorderrun]   set @Runno  = 'SO-'+@Runno  select @Runno   "; // + cmpid  ;
                             dt = DB.DBConn.GetDataTable(_cmd);
                         }
 
@@ -1397,9 +1397,9 @@ namespace goalongapi.Controllers
                         if ((_docnew.ToString() == "") || (_docnew.ToLower() == "null"))
                         {
                             _cmd =
-                                "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo."
+                                "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo.["
                                 + cmpid
-                                + "-crmgrprun   set @Runno  =  @Runno  select @Runno   "; // + cmpid  ;
+                                + "-crmgrprun]   set @Runno  =  @Runno  select @Runno   "; // + cmpid  ;
                             dt = DB.DBConn.GetDataTable(_cmd);
                         }
 
@@ -1428,9 +1428,9 @@ namespace goalongapi.Controllers
                         if ((_docnew.ToString() == "") || (_docnew.ToLower() == "null"))
                         {
                             _cmd =
-                                "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo."
+                                "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo.["
                                 + cmpid
-                                + "-crmtaskrun   set @Runno  =  @Runno  select @Runno   "; // + cmpid  ;
+                                + "-crmtaskrun]   set @Runno  =  @Runno  select @Runno   "; // + cmpid  ;
                             dt = DB.DBConn.GetDataTable(_cmd);
                         }
 
@@ -1459,9 +1459,9 @@ namespace goalongapi.Controllers
                         if ((_docnew.ToString() == "") || (_docnew.ToLower() == "null"))
                         {
                             _cmd =
-                                "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo."
+                                "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo.["
                                 + cmpid
-                                + "-crmcommentrun   set @Runno  =  @Runno  select @Runno   "; // + cmpid  ;
+                                + "-crmcommentrun]   set @Runno  =  @Runno  select @Runno   "; // + cmpid  ;
                             dt = DB.DBConn.GetDataTable(_cmd);
                         }
 
@@ -1490,9 +1490,9 @@ namespace goalongapi.Controllers
                         if ((_docnew.ToString() == "") || (_docnew.ToLower() == "null"))
                         {
                             _cmd =
-                                "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo."
+                                "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo.["
                                 + cmpid
-                                + "-invoicerun   set @Runno  =  @Runno  select @Runno   "; // + cmpid  ;
+                                + "-invoicerun]   set @Runno  =  @Runno  select @Runno   "; // + cmpid  ;
                             dt = DB.DBConn.GetDataTable(_cmd);
                         }
 
@@ -1521,9 +1521,9 @@ namespace goalongapi.Controllers
                         if ((_docnew.ToString() == "") || (_docnew.ToLower() == "null"))
                         {
                             _cmd =
-                                "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo."
+                                "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo.["
                                 + cmpid
-                                + "-accaracvrun   set @Runno  =  @Runno  select @Runno   "; // + cmpid  ;
+                                + "-accaracvrun]   set @Runno  =  @Runno  select @Runno   "; // + cmpid  ;
                             dt = DB.DBConn.GetDataTable(_cmd);
                         }
 
@@ -1552,9 +1552,9 @@ namespace goalongapi.Controllers
                         if ((_docnew.ToString() == "") || (_docnew.ToLower() == "null"))
                         {
                             _cmd =
-                                "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo."
+                                "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo.["
                                 + cmpid
-                                + "-systemsaleteamrun   set @Runno  =  @Runno  select @Runno   "; // + cmpid  ;
+                                + "-systemsaleteamrun]   set @Runno  =  @Runno  select @Runno   "; // + cmpid  ;
                             dt = DB.DBConn.GetDataTable(_cmd);
                         }
 
@@ -1583,9 +1583,9 @@ namespace goalongapi.Controllers
                         if ((_docnew.ToString() == "") || (_docnew.ToLower() == "null"))
                         {
                             _cmd =
-                                "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo."
+                                "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo.["
                                 + cmpid
-                                + "-accarcreditrun   set @Runno  =  @Runno  select @Runno   "; // + cmpid  ;
+                                + "-accarcreditrun]   set @Runno  =  @Runno  select @Runno   "; // + cmpid  ;
                             dt = DB.DBConn.GetDataTable(_cmd);
                         }
 
@@ -1614,9 +1614,9 @@ namespace goalongapi.Controllers
                         if ((_docnew.ToString() == "") || (_docnew.ToLower() == "null"))
                         {
                             _cmd =
-                                "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo."
+                                "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo.["
                                 + cmpid
-                                + "-accarbillingrun   set @Runno  =  @Runno  select @Runno   "; // + cmpid  ;
+                                + "-accarbillingrun]   set @Runno  =  @Runno  select @Runno   "; // + cmpid  ;
                             dt = DB.DBConn.GetDataTable(_cmd);
                         }
 
@@ -1645,9 +1645,9 @@ namespace goalongapi.Controllers
                         if ((_docnew.ToString() == "") || (_docnew.ToLower() == "null"))
                         {
                             _cmd =
-                                "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo."
+                                "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo.["
                                 + cmpid
-                                + "-mataskgrprun   set @Runno  =  @Runno  select @Runno   "; // + cmpid  ;
+                                + "-mataskgrprun]   set @Runno  =  @Runno  select @Runno   "; // + cmpid  ;
                             dt = DB.DBConn.GetDataTable(_cmd);
                         }
 
@@ -1677,9 +1677,9 @@ namespace goalongapi.Controllers
                         if ((_docnew.ToString() == "") || (_docnew.ToLower() == "null"))
                         {
                             _cmd =
-                                "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo."
+                                "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo.["
                                 + cmpid
-                                + "-accentry   set @Runno  =  @Runno  select @Runno   "; // + cmpid  ;
+                                + "-accentry]   set @Runno  =  @Runno  select @Runno   "; // + cmpid  ;
                             dt = DB.DBConn.GetDataTable(_cmd);
                         }
 
@@ -1709,9 +1709,9 @@ namespace goalongapi.Controllers
                         if ((_docnew.ToString() == "") || (_docnew.ToLower() == "null"))
                         {
                             _cmd =
-                                "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR dbo."
+                                "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR dbo.["
                                 + cmpid
-                                + "-apcredit   set @Runno  =  @Runno  select @Runno   "; // + cmpid  ;
+                                + "-apcredit]   set @Runno  =  @Runno  select @Runno   "; // + cmpid  ;
                             dt = DB.DBConn.GetDataTable(_cmd);
                         }
 

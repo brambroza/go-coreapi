@@ -50,6 +50,39 @@ namespace goalongapi.Controllers
             return Ok(JSONString);
         }
 
+
+        [HttpPost("[action]")]
+        public async Task<ActionResult> RegisterFormMobile(RegisterFromMobileRequest registerRequest)
+        {
+            var account = registerRequest.Adapt<Account>();
+            await accountService.Register(account);
+            var tokenregis = accountService.GenerateTokenRegister(account.Username);
+
+            /*  MailConfirm.main(account.Username, account.FullName, tokenregis, registerRequest.Url); */
+
+            DataTable dt = new System.Data.DataTable();
+            string _cmd;
+            _cmd =
+                "exec dbo.[setNewAccountFormMobile] @Email='"
+                + registerRequest.Username
+                + "' , @FullName='"
+                + registerRequest.FullName
+                + "'";
+
+            _cmd += " , @TaxId='" + registerRequest.TaxId + "'";
+            _cmd += " , @Tel ='" + registerRequest.Tel + "'";
+            _cmd += " , @CompanyName='" + registerRequest.CompanyName + "'";
+            _cmd += " , @CompanyAddress='" + registerRequest.CompanyAddress + "'";
+            dt = goalongapi.DB.DBConn.GetDataTable(_cmd);
+            string JSONString = string.Empty;
+            JSONString = JsonConvert.SerializeObject(dt);
+
+            return Ok(JSONString);
+        }
+
+
+
+
         [HttpPost("forgot-password")]
         public async Task<IActionResult> ForgotPassword([FromBody] ForgotPassword request)
         {
@@ -468,7 +501,7 @@ namespace goalongapi.Controllers
     public class MailConfirm
     {
 
-        public static void SendEmail( string from,  string toEmail, string fullname, string subject , string body )
+        public static void SendEmail(string from, string toEmail, string fullname, string subject, string body)
         {
             var smtpHost = "smtp-relay.gmail.com"; // ใช้ SMTP Relay
             var smtpPort = 587;
@@ -478,15 +511,15 @@ namespace goalongapi.Controllers
             {
                 EnableSsl = true,
                 UseDefaultCredentials = false,
-               };
+            };
 
             try
             {
-                var fromAddress = new MailAddress(fromEmail,fullname);
+                var fromAddress = new MailAddress(fromEmail, fullname);
                 var message = new MailMessage(fromAddress, new MailAddress(toEmail));
 
                 message.Subject = subject;
-                message.Body = body ;
+                message.Body = body;
                 message.IsBodyHtml = true;
 
                 message.Bcc.Add(new MailAddress(from));

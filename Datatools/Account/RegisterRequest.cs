@@ -22,6 +22,28 @@ namespace goalongapi.Datatools.Account
 
     }
 
+    public class RegisterFromMobileRequest
+    {
+        [Required]
+        [EmailAddress]
+        public string Username { get; set; }
+
+        [Required]
+        [MinLength(8)]
+        public string Password { get; set; }
+        public int RoleId { get; set; }
+
+        [Required]
+        public string FullName { get; set; }
+
+        public string CompanyName { get; set; }
+        public string CompanyAddress { get; set; }
+        public string Tel { get; set; }
+        public string TaxId { get; set; }
+
+    }
+    
+
 
     public class PasswordChange
     {

@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "BXgzZA8V7Us5XNp/gXJYaG7vlXJxNI6FNiCi2ziIQw4=",
+  "Hash": "lnDvji/BgJo9d8k4BgJHx2qXgK4tC10HijrRbSNG01o=",
   "Source": "goalongapi",
   "BasePath": "_content/goalongapi",
   "Mode": "Default",
@@ -57,6 +57,27 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/reqfromcust/fileall/0baf7034-a26f-4273-8bc9-b954cc2f633d.csv"
+    },
+    {
+      "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/obj/Debug/net9.0/compressed/83aeb1aimm-iksbalyxwd.gz",
+      "SourceId": "goalongapi",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/obj/Debug/net9.0/compressed/",
+      "BasePath": "_content/goalongapi",
+      "RelativePath": "reqfromcust/fileall/Test file#[.{fingerprint=iksbalyxwd}]?.txt.gz",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Alternative",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/reqfromcust/fileall/Test file.txt",
+      "AssetTraitName": "Content-Encoding",
+      "AssetTraitValue": "gzip",
+      "Fingerprint": "mjoky01zkl",
+      "Integrity": "vhQQFlvuPyOECj9TEHWjTtfYXDLaR9vQsq76tyIx9jA=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/reqfromcust/fileall/Test file.txt"
     },
     {
       "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/03a57b52-ca91-4cf9-bb60-460a093f41cd/comment/attachment/0a27ab92-2f1f-4a85-b85b-56ff4fb12a85.jpg",
@@ -6422,6 +6443,27 @@
       "OriginalItemSpec": "wwwroot/reqfromcust/fileall/1ee5c93b-238f-43f4-993a-34fbee7b21b2.jpg"
     },
     {
+      "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/reqfromcust/fileall/2024-11-15.xlsx",
+      "SourceId": "goalongapi",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/",
+      "BasePath": "_content/goalongapi",
+      "RelativePath": "reqfromcust/fileall/2024-11-15#[.{fingerprint}]?.xlsx",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "bg1hf0yxhx",
+      "Integrity": "m/A3RtypPMty+1MFmFy1wSrvsNtc4S+QAYOHKq4AM30=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/reqfromcust/fileall/2024-11-15.xlsx"
+    },
+    {
       "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/reqfromcust/fileall/26a39c1a-a9c3-4c2a-89f9-b8d01c49d515.png",
       "SourceId": "goalongapi",
       "SourceType": "Discovered",
@@ -9488,6 +9530,27 @@
       "OriginalItemSpec": "wwwroot/reqfromcust/fileall/Logo KANDA 2021-02.jpg"
     },
     {
+      "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/reqfromcust/fileall/logo.png",
+      "SourceId": "goalongapi",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/",
+      "BasePath": "_content/goalongapi",
+      "RelativePath": "reqfromcust/fileall/logo#[.{fingerprint}]?.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "uwra7um3vy",
+      "Integrity": "MpX4MeLwJP6x0TAwQbiWq081j9GDiDA4lq6858R85Vs=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/reqfromcust/fileall/logo.png"
+    },
+    {
       "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/reqfromcust/fileall/QT-240066840e6efda-f0d9-4a39-9707-39754c3f4e7e.pdf",
       "SourceId": "goalongapi",
       "SourceType": "Discovered",
@@ -9570,6 +9633,27 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot/reqfromcust/fileall/Test file.docx"
+    },
+    {
+      "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/reqfromcust/fileall/Test file.txt",
+      "SourceId": "goalongapi",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/",
+      "BasePath": "_content/goalongapi",
+      "RelativePath": "reqfromcust/fileall/Test file#[.{fingerprint}]?.txt",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "iksbalyxwd",
+      "Integrity": "nnyNad/gPXLStQzfFbkkA9cV4hTGJtieLSLqA9ZwMYs=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/reqfromcust/fileall/Test file.txt"
     }
   ],
   "Endpoints": [
@@ -34852,6 +34936,88 @@
       ]
     },
     {
+      "Route": "reqfromcust/fileall/2024-11-15.bg1hf0yxhx.xlsx",
+      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/reqfromcust/fileall/2024-11-15.xlsx",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "29784"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"m/A3RtypPMty+1MFmFy1wSrvsNtc4S+QAYOHKq4AM30=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 25 Feb 2025 06:11:50 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "bg1hf0yxhx"
+        },
+        {
+          "Name": "label",
+          "Value": "reqfromcust/fileall/2024-11-15.xlsx"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-m/A3RtypPMty+1MFmFy1wSrvsNtc4S+QAYOHKq4AM30="
+        }
+      ]
+    },
+    {
+      "Route": "reqfromcust/fileall/2024-11-15.xlsx",
+      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/reqfromcust/fileall/2024-11-15.xlsx",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "29784"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"m/A3RtypPMty+1MFmFy1wSrvsNtc4S+QAYOHKq4AM30=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 25 Feb 2025 06:11:50 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-m/A3RtypPMty+1MFmFy1wSrvsNtc4S+QAYOHKq4AM30="
+        }
+      ]
+    },
+    {
       "Route": "reqfromcust/fileall/26a39c1a-a9c3-4c2a-89f9-b8d01c49d515.cxatsyvuyf.png",
       "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/reqfromcust/fileall/26a39c1a-a9c3-4c2a-89f9-b8d01c49d515.png",
       "Selectors": [],
@@ -44468,7 +44634,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Thu, 20 Feb 2025 15:24:41 GMT"
+          "Value": "Tue, 25 Feb 2025 06:10:22 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -44513,7 +44679,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Thu, 20 Feb 2025 15:24:41 GMT"
+          "Value": "Tue, 25 Feb 2025 06:10:22 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -46824,6 +46990,88 @@
       ]
     },
     {
+      "Route": "reqfromcust/fileall/logo.png",
+      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/reqfromcust/fileall/logo.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "205848"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"MpX4MeLwJP6x0TAwQbiWq081j9GDiDA4lq6858R85Vs=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 25 Feb 2025 06:10:22 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-MpX4MeLwJP6x0TAwQbiWq081j9GDiDA4lq6858R85Vs="
+        }
+      ]
+    },
+    {
+      "Route": "reqfromcust/fileall/logo.uwra7um3vy.png",
+      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/reqfromcust/fileall/logo.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "205848"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"MpX4MeLwJP6x0TAwQbiWq081j9GDiDA4lq6858R85Vs=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 25 Feb 2025 06:10:22 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "uwra7um3vy"
+        },
+        {
+          "Name": "label",
+          "Value": "reqfromcust/fileall/logo.png"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-MpX4MeLwJP6x0TAwQbiWq081j9GDiDA4lq6858R85Vs="
+        }
+      ]
+    },
+    {
       "Route": "reqfromcust/fileall/QT-240066840e6efda-f0d9-4a39-9707-39754c3f4e7e.ets73ldyc2.pdf",
       "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/reqfromcust/fileall/QT-240066840e6efda-f0d9-4a39-9707-39754c3f4e7e.pdf",
       "Selectors": [],
@@ -47148,6 +47396,304 @@
         {
           "Name": "integrity",
           "Value": "sha256-yO3B7zCK37PmgFf3L+0li2wTRjAG/p1pf3ymGwoICQ8="
+        }
+      ]
+    },
+    {
+      "Route": "reqfromcust/fileall/Test file.iksbalyxwd.txt",
+      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/obj/Debug/net9.0/compressed/83aeb1aimm-iksbalyxwd.gz",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip",
+          "Quality": "0.032258064516"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "30"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"vhQQFlvuPyOECj9TEHWjTtfYXDLaR9vQsq76tyIx9jA=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 25 Feb 2025 06:10:22 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/plain"
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"nnyNad/gPXLStQzfFbkkA9cV4hTGJtieLSLqA9ZwMYs=\""
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "iksbalyxwd"
+        },
+        {
+          "Name": "label",
+          "Value": "reqfromcust/fileall/Test file.txt"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-nnyNad/gPXLStQzfFbkkA9cV4hTGJtieLSLqA9ZwMYs="
+        }
+      ]
+    },
+    {
+      "Route": "reqfromcust/fileall/Test file.iksbalyxwd.txt",
+      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/reqfromcust/fileall/Test file.txt",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "10"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/plain"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"nnyNad/gPXLStQzfFbkkA9cV4hTGJtieLSLqA9ZwMYs=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 25 Feb 2025 06:10:22 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "iksbalyxwd"
+        },
+        {
+          "Name": "label",
+          "Value": "reqfromcust/fileall/Test file.txt"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-nnyNad/gPXLStQzfFbkkA9cV4hTGJtieLSLqA9ZwMYs="
+        }
+      ]
+    },
+    {
+      "Route": "reqfromcust/fileall/Test file.iksbalyxwd.txt.gz",
+      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/obj/Debug/net9.0/compressed/83aeb1aimm-iksbalyxwd.gz",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "30"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/plain"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"vhQQFlvuPyOECj9TEHWjTtfYXDLaR9vQsq76tyIx9jA=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 25 Feb 2025 06:10:22 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "iksbalyxwd"
+        },
+        {
+          "Name": "label",
+          "Value": "reqfromcust/fileall/Test file.txt.gz"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-vhQQFlvuPyOECj9TEHWjTtfYXDLaR9vQsq76tyIx9jA="
+        }
+      ]
+    },
+    {
+      "Route": "reqfromcust/fileall/Test file.txt",
+      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/obj/Debug/net9.0/compressed/83aeb1aimm-iksbalyxwd.gz",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip",
+          "Quality": "0.032258064516"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "30"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"vhQQFlvuPyOECj9TEHWjTtfYXDLaR9vQsq76tyIx9jA=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 25 Feb 2025 06:10:22 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/plain"
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"nnyNad/gPXLStQzfFbkkA9cV4hTGJtieLSLqA9ZwMYs=\""
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-nnyNad/gPXLStQzfFbkkA9cV4hTGJtieLSLqA9ZwMYs="
+        }
+      ]
+    },
+    {
+      "Route": "reqfromcust/fileall/Test file.txt",
+      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/reqfromcust/fileall/Test file.txt",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "10"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/plain"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"nnyNad/gPXLStQzfFbkkA9cV4hTGJtieLSLqA9ZwMYs=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 25 Feb 2025 06:10:22 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-nnyNad/gPXLStQzfFbkkA9cV4hTGJtieLSLqA9ZwMYs="
+        }
+      ]
+    },
+    {
+      "Route": "reqfromcust/fileall/Test file.txt.gz",
+      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/obj/Debug/net9.0/compressed/83aeb1aimm-iksbalyxwd.gz",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "30"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/plain"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"vhQQFlvuPyOECj9TEHWjTtfYXDLaR9vQsq76tyIx9jA=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 25 Feb 2025 06:10:22 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-vhQQFlvuPyOECj9TEHWjTtfYXDLaR9vQsq76tyIx9jA="
         }
       ]
     }

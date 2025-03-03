@@ -410,4 +410,122 @@ namespace goalongapi.Models
         public string LineId { get; set; } = "";
         public string BomNo { get; set; }
     }
+
+
+    public class QuotationMobile
+    {
+        public string QuotationNo { get; set; }
+        public string QuotationDate { get; set; }
+        public string QuotationBy { get; set; }
+        public string QuotationState { get; set; }
+        public string CustomerCode { get; set; }
+        public int CreditType { get; set; }
+        public int CreditDate { get; set; }
+        public string ProjectName { get; set; }
+        public string ReferCode { get; set; }
+        public int VatType { get; set; }
+        public string Remark { get; set; }
+        public string Note { get; set; }
+        public decimal QuotationAmt { get; set; }
+        public decimal QuotationDisPer { get; set; }
+        public decimal QuotationDisAmt { get; set; }
+        public decimal QuotationNetAmt { get; set; }
+        public decimal QuotationVatAmt { get; set; }
+        public decimal QuotationGrandAmt { get; set; }
+        public string QuotationGrandAmtTHB { get; set; }
+        public string QuotationGrandAmtENB { get; set; }
+        public int WithholdingTaxState { get; set; }
+        public int ShowSignatureState { get; set; }
+        public string CmpId { get; set; }
+        public string PriceStand { get; set; }
+        public string PaymentDue { get; set; }
+        public string Shipping { get; set; }
+        public int RevNo { get; set; }
+        public string CustomerContactName { get; set; }
+
+        public string Jobtype { get; set; }
+        public string TicketId { get; set; }
+        public string BomNo { get; set; }
+
+        public List<QuotationListItem> Items { get; set; }
+        public cmpinfo company { get; set; }
+        public Customer customer { get; set; }
+    }
+
+
+
+    public class QuotationListMobile
+    {
+        public string QuotationNo { get; set; }
+        public string QuotationDate { get; set; } // ISO Date
+        public string QuotationBy { get; set; }
+        public string QuotationState { get; set; } // Nullable
+        public string CustomerCode { get; set; } // Nullable
+        public string CustomerName { get; set; }
+        public int CreditType { get; set; }
+        public int? CreditDate { get; set; } // Nullable
+        public string ProjectName { get; set; } // Nullable
+        public string ReferCode { get; set; } // Nullable
+        public int VatType { get; set; }
+        public string Remark { get; set; } // Nullable
+        public string Note { get; set; } // Nullable
+        public decimal QuotationAmt { get; set; }
+        public decimal QuotationDisPer { get; set; }
+        public decimal QuotationDisAmt { get; set; }
+        public decimal QuotationNetAmt { get; set; }
+        public decimal QuotationVatAmt { get; set; }
+        public decimal QuotationGrandAmt { get; set; }
+        public string QuotationGrandAmtTHB { get; set; }
+        public string QuotationGrandAmtENB { get; set; }
+        public int WithholdingTaxState { get; set; }
+        public int ShowSignatureState { get; set; }
+        public string CmpId { get; set; }
+        public string? DocState { get; set; } // Nullable
+        public string PriceStand { get; set; }
+        public string PaymentDue { get; set; }
+        public string Shipping { get; set; }
+        public int RevNo { get; set; }
+        public int RevNoMax { get; set; }
+        public int? StateApprove { get; set; } // Nullable
+        public string DateApprove { get; set; } // ISO Date Nullable
+        public string ApproveBy { get; set; } // Nullable
+        public string CustomerContactName { get; set; }
+        public int? StateApproveToPO { get; set; } // Nullable
+        public string DateApproveToPO { get; set; } // ISO Date Nullable
+        public string ApproveToPOBy { get; set; } // Nullable
+        public string JobType { get; set; }
+        public int? StateSendApprove { get; set; } // Nullable
+        public string DateSendApprove { get; set; } // ISO Date Nullable
+        public string SendApproveBy { get; set; } // Nullable
+
+        public string SignaturePath { get; set; }
+        public string? LineQRCodePath { get; set; }
+        public string FullName { get; set; }
+
+        public string JobTypeFilter { get; set; }
+        public string ImgPath { get; set; }
+
+        public string TicketId { get; set; }
+
+        public List<QuotationListItem> Items { get; set; }
+        public string PhoneNo { get; set; } = "";
+        public string LineId { get; set; } = "";
+        public string BomNo { get; set; }
+
+        public cmpinfo company { get; set; }
+        public Customer customer { get; set; }
+    }
+
+
+    public class QuoToInvoice
+    {
+        public string UpdUser { get; set; }
+        public string QuotationNo { get; set; }
+        public string CmpId { get; set; }
+        public string State { get; set; }
+        public string InvoiceNo { get; set; }
+    }
+
+
+
 }

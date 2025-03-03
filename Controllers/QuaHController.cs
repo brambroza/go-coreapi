@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
 namespace goalongapi.Controllers
-{ 
+{
     [ApiController]
     [Authorize]
     public class QuaHController : ControllerBase
@@ -874,5 +874,6 @@ namespace goalongapi.Controllers
                 Console.WriteLine(ex.ToString());
             }
         }
+
     }
 }
