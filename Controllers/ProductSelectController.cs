@@ -36,6 +36,25 @@ namespace goalongapi.Controllers
             }
         }
 
+        [HttpGet("[action]")]
+        public ActionResult checkUseProduct([FromQuery] string productCode , [FromQuery] string cmpId)
+        {
+            try
+            {
+                string _cmd = "exec dbo.check_Use_ProdMaster @ProdCode='" + productCode + "' , @CmpId='" + cmpId + "'";
+                DataTable dt = DB.DBConn.GetDataTable(_cmd); 
+
+                return Ok(dt.Rows.Count > 0);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = "An error occurred while fetching products.", Details = ex.Message });
+            }
+        }
+
+
+
+
         [HttpPost]
         public ActionResult Post([FromBody] string value)
         {
