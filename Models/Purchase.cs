@@ -116,6 +116,8 @@ namespace goalongapi.Models
 
         public int Seq { get; set; }
         public int StateClose { get; set; }
+        public string CustomerName { get; set; }
+        public string ProjectName { get; set; }
         public List<TicketPurchaseItemList> items { get; set; }
     }
 

@@ -700,6 +700,8 @@ namespace goalongapi.Controllers
                 purchase.TicketId = r["TicketId"].ToString();
                 purchase.Seq = Convert.ToInt32(r["Seq"]);
                 purchase.StateClose = Convert.ToInt32(r["StateClose"]);
+                purchase.ProjectName = r["ProjectName"].ToString();
+                purchase.CustomerName = r["CustomerName"].ToString();
                 purchase.items = new List<TicketPurchaseItemList>();
                 foreach (
                     DataRow d in dtItem.Select(
