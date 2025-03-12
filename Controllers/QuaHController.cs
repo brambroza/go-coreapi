@@ -724,7 +724,11 @@ namespace goalongapi.Controllers
                 quotaion.FullName = r["FullName"].ToString();
                 quotaion.JobTypeFilter = r["JobTypeFilter"].ToString();
                 quotaion.ImgPath = r["ImgPath"].ToString();
+                quotaion.TicketId = r["TicketId"].ToString();
+                quotaion.PhoneNo = r["PhoneNo"].ToString();
+                quotaion.LineId = r["LineId"].ToString();
                 quotaion.BomNo = r["BomNo"].ToString();
+                quotaion.LineQRCodePath = r["LineQRCodePath"].ToString();
 
                 if (
                     datatableDetail
@@ -779,9 +783,12 @@ namespace goalongapi.Controllers
                     item.GroupCaption3 = d["GroupCaption3"].ToString();
                     item.CmpId = d["CmpId"].ToString();
                     item.GrossProfitPer = Convert.ToDecimal(d["GrossProfitPer"]);
+
+                    item.MainProdCode = d["MainProdCode"].ToString();
                     item.MainSeq = Convert.ToInt32(d["MainSeq"]);
-                    item.SeqSort = int.Parse(d["SeqSort"].ToString());
+                    item.SeqSort = Convert.ToInt32(d["SeqSort"]);
                     quotaion.Items.Add(item);
+                  
                 }
             }
 
