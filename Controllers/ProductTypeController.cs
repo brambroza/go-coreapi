@@ -33,7 +33,7 @@ namespace goalongapi.Controllers
             qdetail = JsonConvert.SerializeObject(dt);
             return Ok(qdetail);
         }
- 
+
 
         [HttpGet("[action]")]
         public IActionResult getProductTypeSub([FromQuery] string cmpid)
@@ -83,16 +83,52 @@ namespace goalongapi.Controllers
         }
 
 
+        [HttpGet("[action]")]
+        public IActionResult validateprodtype([FromQuery] string cmpid, [FromQuery] string prodtype)
+        {
+
+            DataTable dt = new System.Data.DataTable();
+            string _cmd;
+            _cmd = "exec dbo.[check_Use_ProdType] @CmpId='" + cmpid + "' , @ProdType='" + prodtype + "'";
+            dt = DB.DBConn.GetDataTable(_cmd);
+            return Ok(dt.Rows.Count > 0);
+        }
+
+        [HttpGet("[action]")]
+        public IActionResult validateprodsubtype([FromQuery] string cmpid, [FromQuery] string prodsubtype)
+        {
+
+            DataTable dt = new System.Data.DataTable();
+            string _cmd;
+            _cmd = "exec dbo.[check_Use_ProdTypeSub] @CmpId='" + cmpid + "' , @ProdTypeSub='" + prodsubtype + "'";
+            dt = DB.DBConn.GetDataTable(_cmd);
+            return Ok(dt.Rows.Count > 0);
+        }
+
+
+
+
 
 
 
         // DELETE: api/ProductType/5
         [HttpDelete("[action]")]
-        public void DeleteProdtype(string id)
+        public void DeleteProdtype(string id, string cmpid)
         {
             string _cmd = "";
-            _cmd = "delete from msb.mProductCategory where  ProdCateCode='" + id + "' ";
+            _cmd = "delete from msb.mProductCategory where  ProdCateCode='" + id + "' and CmpId='" + cmpid + "'";
             DB.DBConn.ExecuteOnly(_cmd);
         }
+
+
+        [HttpDelete("[action]")]
+        public void DeleteProdtypeSub(string id, string cmpid)
+        {
+            string _cmd = "";
+            _cmd = "delete from msb.mProductCategorySub where  ProdCateSubCode='" + id + "' and CmpId='" + cmpid + "'";
+            DB.DBConn.ExecuteOnly(_cmd);
+        }
+
+
     }
 }
