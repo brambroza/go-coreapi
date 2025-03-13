@@ -133,6 +133,48 @@ namespace goalongapi.Controllers
             }
         }
 
+
+  [HttpPost("[action]")]
+        public IActionResult setCalendarEventBusy(CalendarBusyModel mt)
+        {
+            MsgReturn msgretrun = new MsgReturn();
+
+            System.Globalization.CultureInfo thaiCulture = new System.Globalization.CultureInfo(
+                "th-TH"
+            );
+            thaiCulture.DateTimeFormat.Calendar = new System.Globalization.GregorianCalendar();
+
+            try
+            {
+                 
+                string _cmd = "";
+                _cmd = "exec  dbo.setCalendarEventBusy"; 
+                _cmd += " @cmpid ='" + mt.cmpId + "'";
+                _cmd += ",@calendarid ='" + mt.calendarId + "'"; 
+                _cmd += " ,@invite='" + mt.invite.UserId + "'"; 
+
+                if (DB.DBConn.ExecuteOnly(_cmd))
+                {
+                    msgretrun.ReturnCode = "200";
+                    msgretrun.Msg = "Save Success !!";
+                    return Ok(msgretrun);
+                }
+                else
+                {
+                    msgretrun.ReturnCode = "400";
+                    msgretrun.Msg = "Error !!";
+                    return NotFound(msgretrun);
+                }
+            }
+            catch
+            {
+                msgretrun.ReturnCode = "400";
+                msgretrun.Msg = "Error !!";
+                return NotFound(msgretrun);
+            }
+        }
+
+
         [HttpPatch("[action]")]
         public IActionResult delCalendarEvent(calendarDel model)
         {

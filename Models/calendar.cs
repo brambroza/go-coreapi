@@ -24,6 +24,17 @@ namespace goalongapi.Models
         public string ticketIdRef { get; set; }
     }
 
+      public class CalendarBusyModel
+    { 
+        public string calendarId { get; set; }
+        public string cmpId { get; set; }
+ 
+        public  Invite invite { get; set; }
+       
+    }
+
+
+
     public class Invite
     {
         public string UserId { get; set; }
