@@ -531,9 +531,9 @@ namespace goalongapi.Controllers
             {
                 string _cmd = "";
                 _cmd =
-                    "exec dbo.setQuotationApp @CmpId="
+                    "exec dbo.setQuotationApp @CmpId='"
                     + quoHApprove.cmpid
-                    + " , @DocNo='"
+                    + "' , @DocNo='"
                     + quoHApprove.docno
                     + "' , @RevNo ="
                     + quoHApprove.revno
