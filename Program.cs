@@ -16,7 +16,7 @@ builder.Services.AddCors(p =>
         "_MyAllowSpecificOrigins",
         builder =>
         {
-             /*  builder.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();       */
+          /*     builder.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();      */
              builder
                   .WithOrigins(
                      "https://erp.nisolution.co.th" , "https://app.nisolution.co.th", 
@@ -25,6 +25,7 @@ builder.Services.AddCors(p =>
                      "http://192.168.55.219:8285", "http://10.0.2.2:8000",
                      "http://127.0.0.1:51052" 
                  )
+                 .SetIsOriginAllowed(origin => true)
                  .AllowAnyMethod()
                  .AllowAnyHeader()
                  .AllowCredentials();  

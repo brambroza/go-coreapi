@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Newtonsoft.Json;
+using Microsoft.IdentityModel.Tokens;
 
 namespace goalongapi.Controllers
 {
@@ -188,6 +189,21 @@ namespace goalongapi.Controllers
                 }
             );
         }
+
+        [HttpPost("validate")]
+        public IActionResult ValidateToken([FromHeader] string Authorization)
+        {
+            if (string.IsNullOrEmpty(Authorization) || !Authorization.StartsWith("Bearer "))
+                return Unauthorized(new { message = "Token is missing or invalid" });
+
+            var token = Authorization.Substring(7);
+
+            if (accountService.ValidateToken(token, out SecurityToken validatedToken))
+                return Ok(new { message = "Token is valid" });
+
+            return Unauthorized(new { message = "Token is invalid" });
+        }
+
 
         [HttpPost("[action]")]
         public async Task<ActionResult> LoginState(LoginState loginRequest)
@@ -496,6 +512,8 @@ namespace goalongapi.Controllers
          }
 
   */
+
+
     }
 
     public class MailConfirm

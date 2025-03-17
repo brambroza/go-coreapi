@@ -1,4 +1,5 @@
 using goalongapi.Entities;
+using Microsoft.IdentityModel.Tokens;
 
 namespace goalongapi.Interfaces
 {
@@ -18,6 +19,8 @@ namespace goalongapi.Interfaces
         bool removeUser(string Username);
         Task<Account> ForgotPassword(string username);
         Task<bool> ResetPassword(string token, string newPassword);
+
+        bool ValidateToken(string token, out SecurityToken validatedToken);
 
     }
 }

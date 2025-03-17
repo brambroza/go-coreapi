@@ -40,6 +40,12 @@ namespace goalongapi.Controllers
                 _cmd += $" , @TicketId='{ma.TicketId}'";
                 _cmd += $" , @type='{ma.type}'";
                 _cmd += $" , @NotificationAgain='{ma.NotificationAgain.ToString("yyyy-MM-dd HH:mm", thaiCulture)}'";
+                _cmd += $" ,@ExpiresDate  ='" + ma.ExpiresDate.ToString("yyyy-MM-dd", thaiCulture) + "'";
+                _cmd += $" ,@EveryDay  ='" + ma.EveryDay.ToString("yyyy-MM-dd", thaiCulture) + "'";
+                _cmd += $" ,@ExpiresCount =" + ma.ExpiresCount;
+                _cmd += $" ,@IntervalType =" + ma.IntervalType;
+                _cmd += $" ,@RecurringEvery =" + ma.RecurringEvery;
+                _cmd += $" ,@ExpiresType  ='" + ma.ExpiresType + "'";
 
 
                 DB.DBConn.ExecuteOnly(_cmd);

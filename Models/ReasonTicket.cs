@@ -24,6 +24,14 @@ namespace goalongapi.Models
         public string updUser { get; set; }
         public string Reason { get; set; }
         public string CmpId { get; set; }
+         public int RecurringEvery { get; set; }
+        public int IntervalType { get; set; }
+        public DateTime EveryDay { get; set; }
+        public string ExpiresType { get; set; }
+        public DateTime ExpiresDate { get; set; }
+        public int ExpiresCount { get; set; }
+
+
 
 
     }
