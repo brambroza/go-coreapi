@@ -360,6 +360,7 @@ namespace goalongapi.Controllers
                         itemprice.PriceSeq = Convert.ToInt32(i["PriceSeq"]);
                         itemprice.StateDelete = Convert.ToInt32(i["StateDelete"]);
                         itemprice.StateSelect = Convert.ToInt32(i["StateSelect"]);
+                        itemprice.ContactName = i["ContactName"].ToString();
 
                         item.bomitemPrice.Add(itemprice);
                     }
@@ -619,7 +620,7 @@ namespace goalongapi.Controllers
 
             MsgReturn msgretrun = new MsgReturn();
 
-            try 
+            try
             {
                 string _cmd = "";
                 _cmd = "exec  dbo.sp_SetSalesBomCopy";
@@ -767,7 +768,7 @@ namespace goalongapi.Controllers
                 msgretrun.Msg = "Save Success !!";
                 return Ok(msgretrun);
             }
-            catch  
+            catch
             {
                 DB.DBConn.Tran.Rollback();
                 DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
@@ -825,7 +826,7 @@ namespace goalongapi.Controllers
                 msgretrun.Msg = "Save Success !!";
                 return Ok(msgretrun);
             }
-            catch  
+            catch
             {
                 DB.DBConn.Tran.Rollback();
                 DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
@@ -884,7 +885,7 @@ namespace goalongapi.Controllers
                 msgretrun.Msg = "Save Success !!";
                 return Ok(msgretrun);
             }
-            catch  
+            catch
             {
                 DB.DBConn.Tran.Rollback();
                 DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
@@ -938,6 +939,8 @@ namespace goalongapi.Controllers
 
                 _cmd += ",@UnitCode='" + item.UnitCode + "'";
                 _cmd += ",@Remark='" + item.Remark + "'";
+                _cmd += ",@Contact='" + item.ContactName + "'";
+
 
                 if (DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran) <= 0)
                 {

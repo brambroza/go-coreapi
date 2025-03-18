@@ -204,6 +204,8 @@ namespace goalongapi.Models
         public decimal Amt { get; set; }
         public int StateSelect { get; set; }
         public int StateDelete { get; set; }
+        public string? ProdDescription { get; set; } = "";
+        public string ContactName { get; set; }
     }
 
     public class SaleBomToQuo

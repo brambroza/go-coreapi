@@ -10,7 +10,7 @@ using goalongapi.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
- 
+
 namespace goalongapi.Controllers
 {
     [ApiController]
@@ -862,9 +862,10 @@ namespace goalongapi.Controllers
                         itemprice.RevNo = bom.RevNo;
                         itemprice.Seq = Convert.ToInt32(i["Seq"]);
                         itemprice.ProdCode = i["ProdCode"].ToString() ?? string.Empty;
+                        itemprice.ProdDescription = i["ProdDescription"].ToString() ?? string.Empty;
                         itemprice.SupplierCode = i["SupplierCode"].ToString() ?? string.Empty;
                         itemprice.SupplierName = i["SupplierName"].ToString() ?? string.Empty;
-                        itemprice.DeliveryDate = DateTime.Parse(i["DeliveryDate"].ToString()) ;
+                        itemprice.DeliveryDate = DateTime.Parse(i["DeliveryDate"].ToString());
                         itemprice.Qty = Convert.ToDecimal(i["Qty"]);
                         itemprice.QtyBal = Convert.ToDecimal(i["QtyBal"]);
                         itemprice.UnitPrice = Convert.ToDecimal(i["UnitPrice"]);

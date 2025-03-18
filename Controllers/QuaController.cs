@@ -67,7 +67,7 @@ namespace goalongapi.Controllers
                     il++;
                     _cmd =
                         "Exec setQuotationDetail @QuotationNo='" + Quotation[i].QuotationNo + "'";
-                    _cmd += ",@Seq=" + Quotation[i].Seq;
+                    _cmd += ",@Seq=" + il;
                     _cmd += ",@ProdCode='" + Quotation[i].ProdCode + "'";
                     _cmd +=
                         ",@ProdDesc='" + Tool.Tool.validateStr(Quotation[i].ProdDescription) + "'";
