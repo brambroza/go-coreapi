@@ -317,6 +317,27 @@ namespace goalongapi.Controllers
             return Ok(quotationList);
         }
 
+
+        [HttpGet("[action]")]
+        public ActionResult convertNumberToText(
+           [FromQuery] decimal amt
+
+       )
+        {
+            string _cmd;
+
+
+            _cmd =
+                "select dbo.[udf_Num2Thai] (" + amt.ToString() + ")"
+                ;
+            DataTable datatable = DB.DBConn.GetDataTable(_cmd);
+
+
+
+            return Ok(datatable.Rows[0][0]);
+        }
+
+
         [HttpGet("[action]")]
         public ActionResult getQuaHAccept([FromQuery] string id, [FromQuery] string user)
         {
@@ -788,7 +809,7 @@ namespace goalongapi.Controllers
                     item.MainSeq = Convert.ToInt32(d["MainSeq"]);
                     item.SeqSort = Convert.ToInt32(d["SeqSort"]);
                     quotaion.Items.Add(item);
-                  
+
                 }
             }
 
