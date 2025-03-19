@@ -90,6 +90,7 @@ namespace goalongapi.Controllers
                     item.ReplaceProdCode = x["ReplaceProdCode"].ToString();
                     item.StatePriceReq = Convert.ToInt32(x["StatePriceReq"]);
                     item.StateUpdatePrice = Convert.ToInt32(x["StateUpdatePrice"]);
+                    item.SeqSort = Convert.ToInt32(x["SeqSort"]);
 
                     item.bomitemPrice = new List<SalesBom_Price_Item>();
 
@@ -322,6 +323,7 @@ namespace goalongapi.Controllers
                     item.ReplaceProdCode = x["ReplaceProdCode"].ToString();
                     item.StatePriceReq = Convert.ToInt32(x["StatePriceReq"]);
                     item.StateUpdatePrice = Convert.ToInt32(x["StateUpdatePrice"]);
+                    item.SeqSort = Convert.ToInt32(x["SeqSort"]);
 
                     item.bomitemPrice = new List<SalesBom_Price_Item>();
 
@@ -669,8 +671,11 @@ namespace goalongapi.Controllers
             {
                 string _cmd;
 
+
+                int il = 0;
                 for (int i = 0; i < salebomD.Count; i++)
                 {
+                    il++;
                     _cmd = "exec  dbo.sp_SetSalesBom_Detail";
 
                     _cmd += "  @UpdUser  ='" + salebomD[i].UpdUser + "'";
@@ -688,6 +693,7 @@ namespace goalongapi.Controllers
                     _cmd += ",@CmpId  ='" + salebomD[i].CmpId + "'";
                     _cmd += ",@OutofstockStatus =" + salebomD[i].OutofstockStatus;
                     _cmd += ",@ReplaceProdCode  ='" + salebomD[i].ReplaceProdCode + "'";
+                    _cmd += ",@SeqSort =" + il;
 
                     if (DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran) <= 0)
                     {

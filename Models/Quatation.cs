@@ -164,6 +164,7 @@ namespace goalongapi.Models
         public string VendorName { get; set; } = "";
 
         public List<SalesBom_Price_Item> bomitemPrice { get; set; }
+        public int? SeqSort {get;set;} = 0;
     }
 
     public class SalesBom_Price_Version
