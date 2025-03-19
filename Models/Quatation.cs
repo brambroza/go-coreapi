@@ -205,7 +205,7 @@ namespace goalongapi.Models
         public int StateSelect { get; set; }
         public int StateDelete { get; set; }
         public string? ProdDescription { get; set; } = "";
-        public string ContactName { get; set; }
+        public string? ContactName { get; set; } = "";
     }
 
     public class SaleBomToQuo
