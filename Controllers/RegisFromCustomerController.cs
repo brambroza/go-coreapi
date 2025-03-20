@@ -103,7 +103,7 @@ namespace goalongapi.Controllers
                 _cmd += ", @FileUrl  ='" + string.Join(",", url) + "'";
             }
             else
-            { 
+            {
                 _cmd += ", @FileUrl  =''";
             }
 
@@ -235,7 +235,7 @@ namespace goalongapi.Controllers
                         _cmd += ", @FileUrl1  =''";
                     }
 
-                    DataTable dt = DB.DBConn.GetDataTable(_cmd);
+                    DataTable dt = DB.DBConn.GetDataTableOnbeginTrans(_cmd);
                     JSONString = JsonConvert.SerializeObject(dt);
                     if (dt.Rows.Count > 0)
                     {
@@ -581,7 +581,7 @@ namespace goalongapi.Controllers
                 DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
                 msgretrun.ReturnCode = "200";
                 msgretrun.Msg = "Save Success !!";
-                return Ok(msgretrun); 
+                return Ok(msgretrun);
             }
             catch (Exception ex)
             {
@@ -766,5 +766,64 @@ namespace goalongapi.Controllers
                 return NotFound(msgretrun);
             }
         }
+
+
+
+        [HttpPost("ReqOtherFromGoalongRemoveItem")]
+        public async Task<IActionResult> ReqOtherFromGoalongRemoveItem(ReqFromCustRemoveItem request)
+        {
+            System.Globalization.CultureInfo thaiCulture = new System.Globalization.CultureInfo(
+                "th-TH"
+            );
+            thaiCulture.DateTimeFormat.Calendar = new System.Globalization.GregorianCalendar();
+
+            DB.DBConn.SqlConnectionOpen();
+            DB.DBConn.Cmd = DB.DBConn.Cnn.CreateCommand();
+            DB.DBConn.Tran = DB.DBConn.Cnn.BeginTransaction();
+
+            try
+            {
+                /*    var url = await UploadFilesAsyn(formFiles); */
+
+                string _cmd;
+            
+
+
+                _cmd = "exec  dbo.[setReqOtherFromGoAlong_RemoveItem]";
+                _cmd += " @Username  ='" + request.UpdUser + "'";
+                _cmd += ", @ServiceType  ='" + request.ServiceType + "'";
+                _cmd += ", @CmpId='" + request.CmpId + "'";
+                _cmd += ", @TicketId='" + request.TicketId + "'";
+                _cmd += " , @Seq=" + request.Seq + "";
+
+                if (DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran) <= 0)
+                {
+                    DB.DBConn.Tran.Rollback();
+                    DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
+                    DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
+
+                    return BadRequest();
+                }
+
+
+
+
+
+                DB.DBConn.Tran.Commit();
+                DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
+                DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
+
+                return Ok();
+            }
+            catch
+            {
+                DB.DBConn.Tran.Rollback();
+                DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
+                DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
+
+                return BadRequest();
+            }
+        }
+
     }
 }

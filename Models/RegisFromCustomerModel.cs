@@ -95,8 +95,19 @@ namespace goalongapi.Models
         public int? TaskUnRead { get; set; } = 0;
         public int? TodoStatus { get; set; } = 0;
         public string? Labels { get; set; } = "";
-        public decimal? GrandAmt {get;set;} = 0;
+        public decimal? GrandAmt { get; set; } = 0;
     }
+
+    public class ReqFromCustRemoveItem
+    {
+        public string UpdUser { get; set; }
+        public string CmpId { get; set; }
+        public string TicketId { get; set; }
+        public string ServiceType { get; set; }
+        public int Seq { get; set; }
+
+    }
+
 
     public class ReqFromCustItem
     {
