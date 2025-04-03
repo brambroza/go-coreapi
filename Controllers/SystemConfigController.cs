@@ -6,11 +6,12 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
+using goalongapi.Installers;
 using goalongapi.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
- 
+
 namespace goalongapi.Controllers
 {
     [ApiController]
@@ -193,5 +194,185 @@ namespace goalongapi.Controllers
                 return Ok(msgretrun);
             }
         }
+
+
+
+        [HttpGet("[action]/{endpointName}")]
+        public IActionResult getConfigTerms([FromQuery] string cmpid, string endpointName)
+        {
+            string _cmd;
+            System.Globalization.CultureInfo thaiCulture = new System.Globalization.CultureInfo(
+              "th-TH"
+          );
+            thaiCulture.DateTimeFormat.Calendar = new System.Globalization.GregorianCalendar();
+
+
+            switch (endpointName.ToLower())
+            {
+                case "shippingmethod":
+                    _cmd = "exec dbo.get_ShippingMethod @CmpId='" + cmpid + "'";
+                    break;
+                case "serviceterms":
+                    _cmd = "exec dbo.get_ServiceTerms @CmpId='" + cmpid + "'";
+                    break;
+                case "serviceofterms":
+                    _cmd = "exec dbo.get_ServiceOfTerms @CmpId='" + cmpid + "'";
+                    break;
+                case "deliveryterms":
+                    _cmd = "exec dbo.get_DeliveryTerms @CmpId='" + cmpid + "'";
+                    break;
+                default:
+                    _cmd = "exec dbo.get_ShippingMethod @CmpId='" + cmpid + "'";
+                    break;
+            }
+
+
+
+            DataTable dt = DB.DBConn.GetDataTable(_cmd);
+
+
+
+
+            var datas = new List<TermsService>();
+            foreach (DataRow row in dt.Rows)
+            {
+                var data = new TermsService()
+                {
+                    Id = row["Id"].ToString(),
+                    CmpId = row["CmpId"].ToString(),
+                    Description = row["Description"].ToString()
+                    ,
+                    Name = row["Name"].ToString(),
+                    UpdUser = row["UpdUser"].ToString()
+                    ,
+                    CreateAt = DateTime
+                        .Parse(row["CreateAt"].ToString())
+                        .ToString("yyyy-MM-dd HH:mm", thaiCulture)
+                        ,
+                    StateActive = int.Parse(row["StateActive"].ToString())
+                };
+
+
+                datas.Add(data);
+            }
+
+            return Ok(datas);
+        }
+
+
+        [HttpPost("[action]/{endpointName}")]
+        public ActionResult setConfigTerms(TermsService data, string endpointName)
+        {
+            MsgReturn msgretrun = new MsgReturn();
+
+            try
+            {
+                string _cmd = "";
+                switch (endpointName.ToLower())
+                {
+                    case "shippingmethod":
+                        _cmd = "exec dbo.set_ShippingMethod  ";
+                        break;
+                    case "serviceterms":
+                        _cmd = "exec dbo.set_ServiceTerms  ";
+                        break;
+                    case "serviceofterms":
+                        _cmd = "exec dbo.set_ServiceOfTerms  ";
+                        break;
+                    case "deliveryterms":
+                        _cmd = "exec dbo.set_DeliveryTerms  ";
+                        break;
+                    default:
+                        _cmd = "exec dbo.set_ShippingMethod ";
+                        break;
+                }
+
+                _cmd += "   @Id ='" + data.Id + "'";
+                _cmd += " , @Name='" + data.Name + "'";
+                _cmd += " , @Description='" + data.Description + "'";
+                _cmd += " , @CmpId='" + data.CmpId + "'";
+                _cmd += " , @UpdUser='" + data.UpdUser + "'";
+                _cmd += " , @StateActive=" + data.StateActive;
+
+
+                
+                if (DB.DBConn.ExecuteOnly(_cmd))
+                {
+
+                    msgretrun.ReturnCode = "200";
+                    msgretrun.Msg = "Save Success !!";
+                    return Ok(msgretrun);
+                }
+                else
+                {
+                    msgretrun.ReturnCode = "400";
+                    msgretrun.Msg = "Error !!";
+                    return Ok(msgretrun);
+                }
+            }
+            catch
+            {
+                msgretrun.ReturnCode = "400";
+                msgretrun.Msg = "Error !!";
+                return Ok(msgretrun);
+            }
+        }
+
+        [HttpDelete("[action]/{endpointName}")]
+        public ActionResult delConfigTerms([FromQuery] string cmpId, [FromQuery] string id, string endpointName)
+        {
+            MsgReturn msgretrun = new MsgReturn();
+
+            try
+            {
+                string _cmd = "";
+                switch (endpointName.ToLower())
+                {
+                    case "shippingmethod":
+                        _cmd = "delete from  dbo.ShippingMethod  ";
+                        break;
+                    case "serviceterms":
+                        _cmd = "delete from dbo.ServiceTerms  ";
+                        break;
+                    case "serviceofterms":
+                        _cmd = "delete from dbo.ServiceOfTerms  ";
+                        break;
+                    case "deliveryterms":
+                        _cmd = "delete from  dbo.DeliveryTerms  ";
+                        break;
+                    default:
+                        _cmd = "delete from  dbo.ShippingMethod ";
+                        break;
+                }
+
+                _cmd += "  where  Id ='" + id + "'";
+                _cmd += "  and CmpId='" + cmpId + "'";
+
+
+               if (DB.DBConn.ExecuteOnly(_cmd))
+                {
+
+                    msgretrun.ReturnCode = "200";
+                    msgretrun.Msg = "Save Success !!";
+                    return Ok(msgretrun);
+                }
+                else
+                {
+                    msgretrun.ReturnCode = "400";
+                    msgretrun.Msg = "Error !!";
+                    return Ok(msgretrun);
+                }
+            }
+            catch
+            {
+                msgretrun.ReturnCode = "400";
+                msgretrun.Msg = "Error !!";
+                return Ok(msgretrun);
+            }
+        }
+
+
+
+
     }
 }

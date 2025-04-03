@@ -727,9 +727,51 @@ namespace goalongapi.Controllers
         {
             MsgReturn msgretrun = new MsgReturn();
 
+            DB.DBConn.SqlConnectionOpen();
+            DB.DBConn.Cmd = DB.DBConn.Cnn.CreateCommand();
+            DB.DBConn.Tran = DB.DBConn.Cnn.BeginTransaction();
+
+
             try
             {
                 string _cmd = "";
+                for (int i = 0; i < apppo.items.Count; i++)
+                {
+                    _cmd =
+                                       "exec dbo.setQuotationAppToPO_Item @CmpId='"
+                                       + apppo.cmpid
+                                       + "' , @DocNo='"
+                                       + apppo.docno
+                                       + "' , @RevNo ="
+                                       + apppo.revno
+                                       + ",@User='"
+                                       + apppo.user
+                                       + "',@state='"
+                                       + apppo.state
+                                       + "' , @SaleOrderNo='"
+                                       + apppo.saleorderno
+                                       + "'"
+                                       + " , @Remark='"
+                                       + apppo.remark
+                                       + "'";
+                    _cmd += " , @ProdCode='" + apppo.items[i].ProdCode + "'";
+                    _cmd += " , @Seq=" + apppo.items[i].Seq + "";
+                    if (DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran) <= 0)
+                    {
+                        DB.DBConn.Tran.Rollback();
+                        DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
+                        DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
+                        msgretrun.ReturnCode = "400";
+                        msgretrun.Msg = "Error !!";
+                        return Ok(msgretrun);
+                    }
+
+
+
+                }
+
+
+
                 _cmd =
                     "exec dbo.setQuotationAppToPO @CmpId='"
                     + apppo.cmpid
@@ -748,18 +790,24 @@ namespace goalongapi.Controllers
                     + apppo.remark
                     + "'";
 
-                if (DB.DBConn.ExecuteOnly(_cmd))
+                if (DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran) <= 0)
                 {
-                    msgretrun.ReturnCode = "200";
-                    msgretrun.Msg = "Save Success !!";
-                    return Ok(msgretrun);
-                }
-                else
-                {
+                    DB.DBConn.Tran.Rollback();
+                    DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
+                    DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
                     msgretrun.ReturnCode = "400";
                     msgretrun.Msg = "Error !!";
                     return Ok(msgretrun);
                 }
+
+                DB.DBConn.Tran.Commit();
+                DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
+                DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
+                msgretrun.ReturnCode = "200";
+                msgretrun.Msg = "Save Success !!";
+                return Ok(msgretrun);
+
+
             }
             catch
             {
@@ -890,6 +938,8 @@ namespace goalongapi.Controllers
                 _cmd += " , @Title='" + project.Title + "'";
                 _cmd += " , @Priority='" + project.Priority + "'";
                 _cmd += " , @RouteId='" + project.RouteId + "'";
+
+                
                 if (DB.DBConn.ExecuteOnly(_cmd))
                 {
                     msgretrun.ReturnCode = "200";
@@ -958,7 +1008,7 @@ namespace goalongapi.Controllers
                         _cmd += ",@GroupCaption1 ='" + project[i].GroupCaption1 + "'";
                         _cmd += ",@GroupCaption2 ='" + project[i].GroupCaption2 + "'";
                         _cmd += ",@GroupCaption3 ='" + project[i].GroupCaption3 + "'";
-
+                        _cmd += " , @Type='" + project[i].type + "'"; 
                         if (DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran) <= 0)
                         {
                             DB.DBConn.Tran.Rollback();

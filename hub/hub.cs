@@ -51,6 +51,7 @@ namespace goalongapi.Hubs
                 _cmd += " , @Category='" + data[0].Category.ToString() + "'";
                 _cmd += " , @Type='" + data[0].Type.ToString() + "'";
                 _cmd += " , @linkTo='" + data[0].urllink.ToString() + "'";
+                _cmd += " , @ModuleFormName='" + data[0].ModuleFormName.ToString() + "'";
 
                 if (DB.DBConn.ExecuteOnly(_cmd))
                 {

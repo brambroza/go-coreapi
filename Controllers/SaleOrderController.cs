@@ -77,6 +77,13 @@ namespace goalongapi.Controllers
                     QuotationNo = r["QuotationNo"].ToString(),
                     CustomerPONo = r["CustomerPONo"].ToString(),
                     TicketId = r["TicketId"].ToString(),
+                    StateShipAddr = r["StateShipAddr"].ToString(),
+                    Shiptoother = r["Shiptoother"].ToString(),
+                    CustomerPODate = DateTime.Parse(r["CustomerPODate"].ToString()),
+                    ShipOfDay = Convert.ToInt32(r["ShipOfDay"]),
+
+
+
                     items = new List<SaleOrderItem>(),
                     files = new List<SaleOrderFiles>(),
                 };
@@ -110,6 +117,10 @@ namespace goalongapi.Controllers
                         GroupCaption2 = itemRow["GroupCaption2"].ToString(),
                         GroupCaption3 = itemRow["GroupCaption3"].ToString(),
                         CmpId = itemRow["CmpId"].ToString(),
+                        QuotationRevNo = Convert.ToInt32(itemRow["QuotationRevNo"]),
+                        QuotationNo = itemRow["QuotationNo"].ToString(),
+                        QuotationSeq = Convert.ToInt32(itemRow["QuotationSeq"]),
+
                     };
                     saleorder.items.Add(saleOrderItem);
                 }
@@ -158,6 +169,15 @@ namespace goalongapi.Controllers
             {
                 string _cmd = "";
 
+                if (Quotation.items.Count > 0)
+                {
+                    _cmd = " delete from mdb.SaleOrder_Detail where SaleOrderNo='" + Quotation.SaleOrderNo + "'  ";
+                    _cmd += " and RevNo=" + Quotation.RevNo + " ";
+                    DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran);
+
+
+                }
+
                 _cmd = "exec  dbo.setSaleOrder @SaleOrderNo='" + Quotation.SaleOrderNo + "' ";
                 _cmd +=
                     " ,@SaleOrderDate='"
@@ -179,7 +199,7 @@ namespace goalongapi.Controllers
                 _cmd += " ,@SaleOrderDisAmt=" + Quotation.SaleOrderDisAmt;
                 _cmd += " ,@SaleOrderNetAmt=" + Quotation.SaleOrderNetAmt;
                 _cmd += " ,@SaleOrderVatAmt=" + Quotation.SaleOrderVatAmt;
-                 _cmd += " ,@SaleOrderVatPer=" + Quotation.SaleOrderVatPer;
+                _cmd += " ,@SaleOrderVatPer=" + Quotation.SaleOrderVatPer;
                 _cmd += " ,@SaleOrderGrandAmt=" + Quotation.SaleOrderGrandAmt;
                 _cmd += " ,@WithholdingTaxState=" + Quotation.WithholdingTaxState;
                 _cmd += " ,@ShowSignatureState='" + Quotation.ShowSignatureState + "'";
@@ -194,6 +214,10 @@ namespace goalongapi.Controllers
                 _cmd += " ,@QuotationNo='" + Quotation.QuotationNo + "'";
                 _cmd += " ,@CustomerPONo='" + Quotation.CustomerPONo + "'";
                 _cmd += ", @TicketId='" + Quotation.TicketId + "'";
+                _cmd += " ,@StateShipAddr='" + Quotation.StateShipAddr + "'";
+                _cmd += " ,@Shiptoother='" + Quotation.Shiptoother + "'";
+                _cmd += ", @CustomerPODate='" + Quotation.CustomerPODate.ToString("yyyy-MM-dd HH:mm", thaiCulture) + "'";
+                _cmd += " ,@ShipOfDay=" + Quotation.ShipOfDay;
 
                 if (DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran) <= 0)
                 {
@@ -204,7 +228,7 @@ namespace goalongapi.Controllers
                     msgretrun.Msg = "Error !!";
                     return Ok(msgretrun);
                 }
-                ;
+
 
                 for (int i = 0; i < Quotation.items.Count; i++)
                 {
@@ -240,6 +264,9 @@ namespace goalongapi.Controllers
                         + "'";
                     _cmd += ",@CmpId='" + Quotation.items[i].CmpId + "'";
                     _cmd += ",@UpdUser='" + Quotation.UpdUser + "'";
+                    _cmd += ",@QuotationNo='" + Quotation.items[i].QuotationNo + "'";
+                    _cmd += ",@QuotationRevNo=" + Quotation.items[i].QuotationRevNo;
+                    _cmd += ",@QuotationSeq=" + Quotation.items[i].QuotationSeq;
 
                     if (DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran) <= 0)
                     {
@@ -646,7 +673,7 @@ namespace goalongapi.Controllers
         }
 
 
- 
+
         [HttpPost("[action]")]
         public ActionResult deleteitem([FromQuery] string cmpid, [FromQuery] string docno, [FromQuery] string prodcode, [FromQuery] int seq, [FromQuery] int revno)
         {

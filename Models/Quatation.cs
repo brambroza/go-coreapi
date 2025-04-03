@@ -82,6 +82,8 @@ namespace goalongapi.Models
         public string remark { get; set; }
 
         public string saleorderno { get; set; }
+
+        public List<QuotationDetail> items {get;set;}
     }
 
     public class SalesBomApprove
@@ -164,7 +166,7 @@ namespace goalongapi.Models
         public string VendorName { get; set; } = "";
 
         public List<SalesBom_Price_Item> bomitemPrice { get; set; }
-        public int? SeqSort {get;set;} = 0;
+        public int? SeqSort { get; set; } = 0;
     }
 
     public class SalesBom_Price_Version
@@ -290,6 +292,14 @@ namespace goalongapi.Models
         public List<SaleOrderFiles>? files { get; set; }
 
         public string TicketId { get; set; }
+        public string StateShipAddr { get; set; }
+        public string Shiptoother { get; set; }
+        public int ShipOfDay { get; set; }
+        public DateTime CustomerPODate { get; set; }
+
+
+
+
     }
 
     public class SaleOrderFiles
@@ -325,6 +335,10 @@ namespace goalongapi.Models
         public string CmpId { get; set; }
 
         public int RevNo { get; set; }
+        public string QuotationNo { get; set; }
+        public int QuotationRevNo { get; set; }
+          public int QuotationSeq {get;set;}
+      
     }
 
     public class QuotationListItem
@@ -412,6 +426,7 @@ namespace goalongapi.Models
         public string PhoneNo { get; set; } = "";
         public string LineId { get; set; } = "";
         public string BomNo { get; set; }
+        public string? TicketIdRef { get; set; } = "";
     }
 
 

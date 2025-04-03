@@ -20,7 +20,6 @@ namespace goalongapi.Models
         public DateTime ProjectDate { get; set; }
         public string SaleOrderNo { get; set; }
         public int TotalQty { get; set; }
-
         public CustomerList? customer { get; set; } = null;
 
         public List<Project_Detail> items { get; set; }
@@ -36,6 +35,39 @@ namespace goalongapi.Models
         public string RouteId { get; set; }
         public string RouteName { get; set; }
         public string Labels { get; set; }
+        public string CustomerCode { get; set; }
+        public int CreditType { get; set; }
+        public int CreditDate { get; set; }
+        public string ProjectName { get; set; }
+        public int VatType { get; set; }
+        public string Remark { get; set; }
+        public decimal SaleOrderAmt { get; set; }
+        public string Note { get; set; }
+        public string CustomerName { get; set; }
+        public string PaymentDue { get; set; }
+        public string Shipping { get; set; }
+        public int RevNo { get; set; }
+        public int StateApprove { get; set; }
+        public string CustomerContactName { get; set; }
+        public string CustomerAddress { get; set; }
+        public string CustomerTaxNo { get; set; }
+        public string CustomerBranchCode { get; set; }
+        public string JobType { get; set; }
+        public string CustomerPONo { get; set; }
+        public int StateCreateInvoice { get; set; }
+        public int StateCreateProject { get; set; }
+        public string TicketId { get; set; }
+        public string StateShipAddr { get; set; }
+        public string Shiptoother { get; set; }
+        public int ShipOfDay { get; set; }
+        public string CustomerPODate { get; set; }
+
+        public string ShippingMethod { get; set; }
+        public string ServiceTerms { get; set; }
+        public string ServiceOfTerms { get; set; }
+        public string DeliveryTerms { get; set; }
+
+
     }
 
     public enum MessageType
@@ -94,6 +126,8 @@ namespace goalongapi.Models
         public int RevNo { get; set; }
 
         public string imgpath { get; set; }
+
+        public string type { get; set; }
     }
 
     public class Project_Task

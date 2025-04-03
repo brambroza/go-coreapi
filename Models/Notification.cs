@@ -11,5 +11,6 @@ namespace goalongapi.Models
         public bool IsUnRead { get; set; }
         public bool IsUnAlert { get; set; }
         public string urllink { get; set; }
+        public string ModuleFormName { get; set; }
     }
 }
