@@ -11,8 +11,10 @@ namespace goalongapi.Interfaces
         Task<Account> Login(string username, string password);
         Task<AccountGoogle> LoginGoogle(long Id, string Email);
         string GenerateToken(Account account);
+        string GenerateRefreshToken( Account account);
         string GenerateTokenGoogle(AccountGoogle account);
         Account GetInfo(string accessToken);
+         Task<Account?> GetAccount(string accessToken);
         string GenerateTokenRegister(string Username);
         bool UpdateConfirmEmail(string Username);
         bool validateEmails(string Username);

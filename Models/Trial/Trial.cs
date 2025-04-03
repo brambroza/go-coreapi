@@ -28,4 +28,13 @@ namespace goalongapi.Models.Trial
         public string BranchName { get; set; } 
         public string Userlogin { get; set; }
     }
+
+
+    public class TokenModel
+    {
+        public string AccessToken { get; set; }
+        public string RefreshToken { get; set; }
+    }
+
+
 }

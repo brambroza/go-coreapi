@@ -188,6 +188,19 @@ namespace goalongapi.Interfaces
             return BuildToken(claims);
         }
 
+        public string GenerateRefreshToken(Account account)
+        {
+             var refreshToken = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
+            account.refreshToken = refreshToken;
+            account.refreshTokenExpiry = DateTime.UtcNow.AddDays(7);
+            databaseContext.Entry(account).State = EntityState.Modified;
+            databaseContext.SaveChanges();
+            return refreshToken;
+         
+        }
+
+
+
         public string GenerateTokenGoogle(AccountGoogle account)
         {
             var claims = new[]
@@ -259,6 +272,21 @@ namespace goalongapi.Interfaces
             return true;
         }
 
+        public async Task<Account?> GetAccount(string accessToken)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var token = tokenHandler.ReadJwtToken(accessToken);
+
+            var username = token.Claims.FirstOrDefault(claim => claim.Type == JwtRegisteredClaimNames.Sub)?.Value;
+            if (string.IsNullOrEmpty(username)) return null;
+
+            var account = await databaseContext.Accounts
+                .Include(a => a.Role)
+                .FirstOrDefaultAsync(a => a.Username == username);
+
+            return account;
+        }
+ 
 
         public Account GetInfo(string accessToken)
         {
@@ -272,6 +300,7 @@ namespace goalongapi.Interfaces
             {
                 Username = username,
                 Role = new Role { Name = role },
+                
             };
 
             return account;
@@ -306,7 +335,7 @@ namespace goalongapi.Interfaces
 
         private string BuildToken(Claim[] claims)
         {
-            var expires = DateTime.Now.AddDays(Convert.ToDouble(jwtSettings.Expire));
+            var expires = DateTime.Now.AddMinutes(Convert.ToDouble(jwtSettings.Expire));
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Key));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
@@ -320,6 +349,7 @@ namespace goalongapi.Interfaces
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
+ 
 
 
         public bool ValidateToken(string token, out SecurityToken validatedToken)

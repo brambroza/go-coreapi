@@ -24,6 +24,9 @@ namespace goalongapi.Entities
 
         public string? ResetToken {get;set;}
         public DateTime? ResetTokenExpiry {get;set;}
+
+        public string? refreshToken {get;set;}
+        public DateTime? refreshTokenExpiry {get;set;}
     }
  
     public partial class AccountGoogle

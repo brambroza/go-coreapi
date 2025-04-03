@@ -3,6 +3,7 @@ using System.Data;
 using System.Net;
 using System.Net.Mail;
 using goalongapi.Models;
+using goalongapi.Models.Trial;
 using goalongapi.Datatools.Account;
 using goalongapi.Entities;
 using goalongapi.Interfaces;
@@ -14,6 +15,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Newtonsoft.Json;
 using Microsoft.IdentityModel.Tokens;
+
 
 namespace goalongapi.Controllers
 {
@@ -184,11 +186,36 @@ namespace goalongapi.Controllers
                 new
                 {
                     token = accountService.GenerateToken(account),
+                    refreshToken = accountService.GenerateRefreshToken(account),
                     CmpId = account.CmpId,
                     imgurl = account.imgPath,
                 }
             );
         }
+
+        [HttpPost("[action]")]
+        public async Task<IActionResult> RefreshToken([FromBody] TokenModel model)
+        {
+            Account account = await accountService.GetAccount(model.AccessToken); 
+            if (account == null) return Unauthorized();
+
+            if (account.refreshToken != model.RefreshToken || account.refreshTokenExpiry < DateTime.UtcNow)
+                return Unauthorized();
+
+            var newAccessToken = accountService.GenerateToken(account);
+            var newRefreshToken = accountService.GenerateRefreshToken(account);
+
+            return Ok(new {
+                token = newAccessToken,
+                refreshToken = newRefreshToken,
+                CmpId = account.CmpId,
+                imgurl = account.imgPath
+            });
+        }
+
+
+     
+
 
         [HttpPost("validate")]
         public IActionResult ValidateToken([FromHeader] string Authorization)
