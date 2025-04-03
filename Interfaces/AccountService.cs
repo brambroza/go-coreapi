@@ -91,11 +91,8 @@ namespace goalongapi.Interfaces
                 return account;
             }
 
-           
-                return account;
-          
-
-          /*   return null; */
+             
+         return null;  
         }
 
         public async Task<Account?> LoginNewUser(string username, string password)
