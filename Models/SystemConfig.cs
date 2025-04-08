@@ -17,6 +17,14 @@ namespace goalongapi.Installers
         public int userId { get; set; }
     }
 
+      public class setReadNotificationMenu
+    {
+        public string cmpid { get; set; }
+        public int userId { get; set; }
+        public string MenuName { get; set; }
+    }
+
+
 
     public class TermsService  {
         public string Id {get;set;}

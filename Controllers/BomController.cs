@@ -57,6 +57,7 @@ namespace goalongapi.Controllers
                 bom.StateApp = Convert.ToInt32(r["StateApp"]);
                 bom.RevNoMax = Convert.ToInt32(r["RevNoMax"]);
                 bom.RevNo = Convert.ToInt32(r["RevNo"]);
+                bom.StateNotification = r["StateNotification"].ToString(); 
                 bom.items = new List<SalesBom_Detail>();
                 foreach (
                     DataRow x in dtItem.Select(
@@ -1229,12 +1230,14 @@ namespace goalongapi.Controllers
                 _cmd += " ,@RevNo =" + salebom.RevNo;
                 _cmd += " ,@CmpId ='" + salebom.CmpId + "'";
                 _cmd += " ,@TicketId ='" + salebom.TicketId + "'";
+                _cmd += " ,@UserApprove ='" + salebom.UserApproveTo + "'";
 
-                if (DB.DBConn.ExecuteOnly(_cmd))
+                 System.Data.DataTable dt = DB.DBConn.GetDataTable(_cmd);
+                if (dt.Rows.Count > 0)
                 {
                     msgretrun.ReturnCode = "200";
                     msgretrun.Msg = "Save Success !!";
-                    return Ok(msgretrun);
+                   return Ok(new { approvedoc = dt.Rows[0][0] });
                 }
                 else
                 {

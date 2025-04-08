@@ -61,6 +61,21 @@ namespace goalongapi.Controllers
             return Ok();
         }
 
+
+         [HttpPost("[action]")]
+        public IActionResult setReadNotificationMenu(setReadNotificationMenu noti)
+        {
+            string _cmd = "";
+            _cmd = "exec  dbo.setReadNotificationMenu";
+            _cmd += "  @userId  =" + noti.userId + "";
+            _cmd += " , @CmpId='" + noti.cmpid + "'";
+            _cmd += " , @ModuleFormName='" + noti.MenuName + "'";
+
+            DB.DBConn.ExecuteOnly(_cmd);
+            return Ok();
+        }
+
+
         [HttpPost("[action]")]
         public IActionResult setReadNotificationId(ReadNotification noti)
         {

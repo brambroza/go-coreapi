@@ -14,6 +14,8 @@ namespace goalongapi.Hubs
         {
             var message = await SendNotifications(cmpid, userlogin);
             await Clients.All.SendAsync($"ReceiveNotification{cmpid}{userlogin}", message);
+            await Clients.All.SendAsync($"ReceiveNotificationMenu{cmpid}{userlogin}", message);
+
         }
 
         public async Task ReceiveMessage(
@@ -27,6 +29,55 @@ namespace goalongapi.Hubs
             await SetNotifications(cmpid, userlogin, message, userFrom);
             await SendMessage(cmpid, userlogin);
         }
+
+        public async   Task SetReadNotificationMenu(
+            string cmpid,
+            string userlogin,
+            string userId , 
+            string menuName 
+        )
+        {
+             await SetNotificationsReadMenu(cmpid, userlogin,userId,  menuName);
+            await SendMessage(cmpid, userlogin);
+        }
+        public async Task<string> SetNotificationsReadMenu(
+            string cmpid,
+            string userlogin, 
+            string userId , 
+            string menuName
+        )
+        {
+             try
+            {
+                DataTable dt = new System.Data.DataTable();
+                string _cmd = "";
+                  
+                _cmd = "exec  dbo.setReadNotificationMenu";
+                _cmd += "  @userId  =" + userId + "";
+                _cmd += " , @CmpId='" + cmpid + "'";
+                _cmd += " , @ModuleFormName='" + menuName + "'";
+
+
+                if (DB.DBConn.ExecuteOnly(_cmd))
+                {
+
+                  var message = await SendNotifications(cmpid, userlogin);
+                  await Clients.All.SendAsync($"ReceiveNotificationMenu{cmpid}{userlogin}", message);
+
+                  return "200";
+                }
+                else
+                {
+                    return "";
+                }
+            }
+            catch (Exception ex)
+            {
+                // จัดการข้อผิดพลาดที่นี่
+                return "";
+            }
+        }
+
 
         public async Task<string> SetNotifications(
             string cmpid,
@@ -52,6 +103,8 @@ namespace goalongapi.Hubs
                 _cmd += " , @Type='" + data[0].Type.ToString() + "'";
                 _cmd += " , @linkTo='" + data[0].urllink.ToString() + "'";
                 _cmd += " , @ModuleFormName='" + data[0].ModuleFormName.ToString() + "'";
+                _cmd += " , @DocNo='" + data[0].DocNo.ToString() + "'";
+                _cmd += " , @RevNo=" + data[0].RevNo  + "";
 
                 if (DB.DBConn.ExecuteOnly(_cmd))
                 {

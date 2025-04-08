@@ -99,7 +99,7 @@ namespace goalongapi.Controllers
                 quotaion.BomNo = r["BomNo"].ToString();
                 quotaion.LineQRCodePath = r["LineQRCodePath"].ToString();
                 quotaion.TicketIdRef = r["TicketIdRef"].ToString();
-
+                quotaion.StateNotification = r["StateNotification"].ToString();
                 if (
                     datatableDetail
                         .Select(
@@ -603,6 +603,7 @@ namespace goalongapi.Controllers
                     + ",@User='"
                     + quoH.user
                     + "'";
+                    _cmd += " , @UserTo='" + quoH.userTo + "'";
 
                 System.Data.DataTable dt = DB.DBConn.GetDataTable(_cmd);
                 if (dt.Rows.Count > 0)

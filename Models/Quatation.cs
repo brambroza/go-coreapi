@@ -69,6 +69,7 @@ namespace goalongapi.Models
         public string docno { get; set; }
         public int revno { get; set; }
         public string user { get; set; }
+        public string userTo { get; set; }
     }
 
     public class QuoHApprovetoPo
@@ -121,6 +122,9 @@ namespace goalongapi.Models
         public int RevNoMax { get; set; }
 
         public List<SalesBom_Detail> items { get; set; }
+
+        public string? StateNotification { get; set; } = "";
+        public string? UserApproveTo {get;set;}
     }
 
     public class SalesBomCopy
@@ -427,6 +431,7 @@ namespace goalongapi.Models
         public string LineId { get; set; } = "";
         public string BomNo { get; set; }
         public string? TicketIdRef { get; set; } = "";
+        public string? StateNotification { get; set; } = "";
     }
 
 
