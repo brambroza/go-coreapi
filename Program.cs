@@ -78,11 +78,12 @@ var app = builder.Build();
 app.UseMiddleware<DuplicateRouteNameMiddleware>(); */
 //if (app.Environment.IsDevelopment())
 //{
+
+ 
 app.UseSwagger();
 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "goalong api"));
 
 // }
-
 app.UseCors("_MyAllowSpecificOrigins");
 app.UseStaticFiles();
 app.UseHttpsRedirection();

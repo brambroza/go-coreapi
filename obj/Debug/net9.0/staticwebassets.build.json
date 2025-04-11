@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "FyITjhX0vFSfY8HMCZ1VrjywbMjodoQyh+hdHglTADE=",
+  "Hash": "cdvJviwIYkWHCZEL8cvXSFVzufxvn8cbB1DO0q6x2KM=",
   "Source": "goalongapi",
   "BasePath": "_content/goalongapi",
   "Mode": "Default",
@@ -6273,6 +6273,27 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot/reqfromcust/fileall/0e64f31a-985c-4ab0-b003-2186a6648616.jpg"
+    },
+    {
+      "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/reqfromcust/fileall/1-1 (1).png",
+      "SourceId": "goalongapi",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/",
+      "BasePath": "_content/goalongapi",
+      "RelativePath": "reqfromcust/fileall/1-1 (1)#[.{fingerprint}]?.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "g7dcrr9bhs",
+      "Integrity": "JJveW7DWyG+pfwnrQlZerrtxQTbT+hI7eZ66gQV+3zU=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/reqfromcust/fileall/1-1 (1).png"
     },
     {
       "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/reqfromcust/fileall/1140b65e-3d10-4063-b05e-7d81df56cca7.jpg",
@@ -34060,6 +34081,88 @@
         {
           "Name": "integrity",
           "Value": "sha256-2U6qh/xJOMlUKdC/ay13rQ9b9F7WkI54R3fnHwIsscI="
+        }
+      ]
+    },
+    {
+      "Route": "reqfromcust/fileall/1-1 (1).g7dcrr9bhs.png",
+      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/reqfromcust/fileall/1-1 (1).png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "289967"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"JJveW7DWyG+pfwnrQlZerrtxQTbT+hI7eZ66gQV+3zU=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 11 Apr 2025 03:49:44 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "g7dcrr9bhs"
+        },
+        {
+          "Name": "label",
+          "Value": "reqfromcust/fileall/1-1 (1).png"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-JJveW7DWyG+pfwnrQlZerrtxQTbT+hI7eZ66gQV+3zU="
+        }
+      ]
+    },
+    {
+      "Route": "reqfromcust/fileall/1-1 (1).png",
+      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/reqfromcust/fileall/1-1 (1).png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "289967"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"JJveW7DWyG+pfwnrQlZerrtxQTbT+hI7eZ66gQV+3zU=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 11 Apr 2025 03:49:44 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-JJveW7DWyG+pfwnrQlZerrtxQTbT+hI7eZ66gQV+3zU="
         }
       ]
     },
