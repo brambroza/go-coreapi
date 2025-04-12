@@ -35691,7 +35691,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Fri, 11 Apr 2025 03:38:29 GMT"
+          "Value": "Fri, 11 Apr 2025 07:25:36 GMT"
         }
       ],
       "EndpointProperties": [
@@ -35736,7 +35736,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Fri, 11 Apr 2025 03:38:29 GMT"
+          "Value": "Fri, 11 Apr 2025 07:25:36 GMT"
         }
       ],
       "EndpointProperties": [
@@ -37551,6 +37551,88 @@
       ]
     },
     {
+      "Route": "reqfromcust/fileall/go-logo.png",
+      "AssetFile": "reqfromcust/fileall/go-logo.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "22102"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"+k6yessn9tD6swzwvxDfthrRuJiIH3Cz8KxiZRNmNUw=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 11 Apr 2025 07:49:53 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-+k6yessn9tD6swzwvxDfthrRuJiIH3Cz8KxiZRNmNUw="
+        }
+      ]
+    },
+    {
+      "Route": "reqfromcust/fileall/go-logo.qrmrprgsa0.png",
+      "AssetFile": "reqfromcust/fileall/go-logo.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "22102"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"+k6yessn9tD6swzwvxDfthrRuJiIH3Cz8KxiZRNmNUw=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 11 Apr 2025 07:49:53 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "qrmrprgsa0"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-+k6yessn9tD6swzwvxDfthrRuJiIH3Cz8KxiZRNmNUw="
+        },
+        {
+          "Name": "label",
+          "Value": "reqfromcust/fileall/go-logo.png"
+        }
+      ]
+    },
+    {
       "Route": "reqfromcust/fileall/icon-facebook.png",
       "AssetFile": "reqfromcust/fileall/icon-facebook.png",
       "Selectors": [],
@@ -38039,6 +38121,88 @@
         {
           "Name": "integrity",
           "Value": "sha256-8QdMBVGP9f9cTvU7KUkeBb1nYwveXjTQlcYsuGmMktE="
+        }
+      ]
+    },
+    {
+      "Route": "reqfromcust/fileall/test20250411.hcmbo72pxo.pdf",
+      "AssetFile": "reqfromcust/fileall/test20250411.pdf",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "3761449"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/pdf"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"H8ZiZQmRp93rvJjzQ7ybZIMTsSAUCA9JmhfWa5IR1So=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 11 Apr 2025 07:49:53 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "hcmbo72pxo"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-H8ZiZQmRp93rvJjzQ7ybZIMTsSAUCA9JmhfWa5IR1So="
+        },
+        {
+          "Name": "label",
+          "Value": "reqfromcust/fileall/test20250411.pdf"
+        }
+      ]
+    },
+    {
+      "Route": "reqfromcust/fileall/test20250411.pdf",
+      "AssetFile": "reqfromcust/fileall/test20250411.pdf",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "3761449"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/pdf"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"H8ZiZQmRp93rvJjzQ7ybZIMTsSAUCA9JmhfWa5IR1So=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 11 Apr 2025 07:49:53 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-H8ZiZQmRp93rvJjzQ7ybZIMTsSAUCA9JmhfWa5IR1So="
         }
       ]
     },

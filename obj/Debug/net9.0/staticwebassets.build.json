@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "cdvJviwIYkWHCZEL8cvXSFVzufxvn8cbB1DO0q6x2KM=",
+  "Hash": "QnAFSeCubZ8Av/H7JY48jCtxyS6QeHj3uarETsx0TyM=",
   "Source": "goalongapi",
   "BasePath": "_content/goalongapi",
   "Mode": "Default",
@@ -9446,6 +9446,27 @@
       "OriginalItemSpec": "wwwroot/reqfromcust/fileall/feb184c6-b3de-4358-9362-2c77f5fb95e9.png"
     },
     {
+      "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/reqfromcust/fileall/go-logo.png",
+      "SourceId": "goalongapi",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/",
+      "BasePath": "_content/goalongapi",
+      "RelativePath": "reqfromcust/fileall/go-logo#[.{fingerprint}]?.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "qrmrprgsa0",
+      "Integrity": "+k6yessn9tD6swzwvxDfthrRuJiIH3Cz8KxiZRNmNUw=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/reqfromcust/fileall/go-logo.png"
+    },
+    {
       "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/reqfromcust/fileall/icon-facebook.png",
       "SourceId": "goalongapi",
       "SourceType": "Discovered",
@@ -9675,6 +9696,27 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot/reqfromcust/fileall/Test file.txt"
+    },
+    {
+      "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/reqfromcust/fileall/test20250411.pdf",
+      "SourceId": "goalongapi",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/",
+      "BasePath": "_content/goalongapi",
+      "RelativePath": "reqfromcust/fileall/test20250411#[.{fingerprint}]?.pdf",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "hcmbo72pxo",
+      "Integrity": "H8ZiZQmRp93rvJjzQ7ybZIMTsSAUCA9JmhfWa5IR1So=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/reqfromcust/fileall/test20250411.pdf"
     }
   ],
   "Endpoints": [
@@ -44737,7 +44779,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Fri, 11 Apr 2025 03:38:29 GMT"
+          "Value": "Fri, 11 Apr 2025 07:25:36 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -44782,7 +44824,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Fri, 11 Apr 2025 03:38:29 GMT"
+          "Value": "Fri, 11 Apr 2025 07:25:36 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -46683,6 +46725,88 @@
       ]
     },
     {
+      "Route": "reqfromcust/fileall/go-logo.png",
+      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/reqfromcust/fileall/go-logo.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "22102"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"+k6yessn9tD6swzwvxDfthrRuJiIH3Cz8KxiZRNmNUw=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 11 Apr 2025 07:49:53 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-+k6yessn9tD6swzwvxDfthrRuJiIH3Cz8KxiZRNmNUw="
+        }
+      ]
+    },
+    {
+      "Route": "reqfromcust/fileall/go-logo.qrmrprgsa0.png",
+      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/reqfromcust/fileall/go-logo.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "22102"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"+k6yessn9tD6swzwvxDfthrRuJiIH3Cz8KxiZRNmNUw=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 11 Apr 2025 07:49:53 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "qrmrprgsa0"
+        },
+        {
+          "Name": "label",
+          "Value": "reqfromcust/fileall/go-logo.png"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-+k6yessn9tD6swzwvxDfthrRuJiIH3Cz8KxiZRNmNUw="
+        }
+      ]
+    },
+    {
       "Route": "reqfromcust/fileall/icon-facebook.png",
       "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/reqfromcust/fileall/icon-facebook.png",
       "Selectors": [],
@@ -47797,6 +47921,88 @@
         {
           "Name": "integrity",
           "Value": "sha256-vhQQFlvuPyOECj9TEHWjTtfYXDLaR9vQsq76tyIx9jA="
+        }
+      ]
+    },
+    {
+      "Route": "reqfromcust/fileall/test20250411.hcmbo72pxo.pdf",
+      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/reqfromcust/fileall/test20250411.pdf",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "3761449"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/pdf"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"H8ZiZQmRp93rvJjzQ7ybZIMTsSAUCA9JmhfWa5IR1So=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 11 Apr 2025 07:49:53 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "hcmbo72pxo"
+        },
+        {
+          "Name": "label",
+          "Value": "reqfromcust/fileall/test20250411.pdf"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-H8ZiZQmRp93rvJjzQ7ybZIMTsSAUCA9JmhfWa5IR1So="
+        }
+      ]
+    },
+    {
+      "Route": "reqfromcust/fileall/test20250411.pdf",
+      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/reqfromcust/fileall/test20250411.pdf",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "3761449"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/pdf"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"H8ZiZQmRp93rvJjzQ7ybZIMTsSAUCA9JmhfWa5IR1So=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 11 Apr 2025 07:49:53 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-H8ZiZQmRp93rvJjzQ7ybZIMTsSAUCA9JmhfWa5IR1So="
         }
       ]
     }

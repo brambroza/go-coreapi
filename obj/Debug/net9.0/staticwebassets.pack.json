@@ -1801,6 +1801,10 @@
       "PackagePath": "staticwebassets/reqfromcust/fileall/feb184c6-b3de-4358-9362-2c77f5fb95e9.png"
     },
     {
+      "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/reqfromcust/fileall/go-logo.png",
+      "PackagePath": "staticwebassets/reqfromcust/fileall/go-logo.png"
+    },
+    {
       "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/reqfromcust/fileall/icon-facebook.png",
       "PackagePath": "staticwebassets/reqfromcust/fileall/icon-facebook.png"
     },
@@ -1823,6 +1827,10 @@
     {
       "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/reqfromcust/fileall/s-l1200.jpg",
       "PackagePath": "staticwebassets/reqfromcust/fileall/s-l1200.jpg"
+    },
+    {
+      "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/reqfromcust/fileall/test20250411.pdf",
+      "PackagePath": "staticwebassets/reqfromcust/fileall/test20250411.pdf"
     },
     {
       "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/reqfromcust/fileall/—Pngtree—scan me qr code label_6532380.png",
