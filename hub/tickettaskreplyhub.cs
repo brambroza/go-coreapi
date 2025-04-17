@@ -10,7 +10,7 @@ namespace goalongapi.Hubs
 {
     public class TicketTaskReplyHub : Hub
     {
-          public async Task SendMessage(CustomerReqTicketRouteReply mt)
+         public async Task SendMessage(CustomerReqTicketRouteReply mt)
         {
             var message = await SendReplyMsg(mt.CmpId, mt.UpdUser);
             await Clients.All.SendAsync($"ReceiveTicketTaskReply{mt.CmpId}{mt.TicketId}{mt.RouteId}{mt.RemindId}", message);
