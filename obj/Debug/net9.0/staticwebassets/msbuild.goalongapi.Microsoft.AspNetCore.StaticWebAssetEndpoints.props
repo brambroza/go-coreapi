@@ -5340,6 +5340,18 @@
       <EndpointProperties><![CDATA[[{"Name":"integrity","Value":"sha256-JJveW7DWyG\u002BpfwnrQlZerrtxQTbT\u002BhI7eZ66gQV\u002B3zU="}]]]></EndpointProperties>
       <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=3600, must-revalidate"},{"Name":"Content-Length","Value":"289967"},{"Name":"Content-Type","Value":"image/png"},{"Name":"ETag","Value":"\u0022JJveW7DWyG\u002BpfwnrQlZerrtxQTbT\u002BhI7eZ66gQV\u002B3zU=\u0022"},{"Name":"Last-Modified","Value":"Wed, 27 Nov 2024 09:28:36 GMT"}]]]></ResponseHeaders>
     </StaticWebAssetEndpoint>
+    <StaticWebAssetEndpoint Include="_content/goalongapi/reqfromcust/fileall/GO-ALONG-8.png">
+      <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\GO-ALONG-8.png'))</AssetFile>
+      <Selectors><![CDATA[[]]]></Selectors>
+      <EndpointProperties><![CDATA[[{"Name":"integrity","Value":"sha256-D4xQm28x9z5pwpn3Ixn2FI/sNK2XHz13BBnYdrOi5GI="}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=3600, must-revalidate"},{"Name":"Content-Length","Value":"14138"},{"Name":"Content-Type","Value":"image/png"},{"Name":"ETag","Value":"\u0022D4xQm28x9z5pwpn3Ixn2FI/sNK2XHz13BBnYdrOi5GI=\u0022"},{"Name":"Last-Modified","Value":"Sat, 12 Apr 2025 14:00:24 GMT"}]]]></ResponseHeaders>
+    </StaticWebAssetEndpoint>
+    <StaticWebAssetEndpoint Include="_content/goalongapi/reqfromcust/fileall/GO-ALONG-8.vwnsovzclv.png">
+      <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\GO-ALONG-8.png'))</AssetFile>
+      <Selectors><![CDATA[[]]]></Selectors>
+      <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"vwnsovzclv"},{"Name":"integrity","Value":"sha256-D4xQm28x9z5pwpn3Ixn2FI/sNK2XHz13BBnYdrOi5GI="},{"Name":"label","Value":"_content/goalongapi/reqfromcust/fileall/GO-ALONG-8.png"}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"14138"},{"Name":"Content-Type","Value":"image/png"},{"Name":"ETag","Value":"\u0022D4xQm28x9z5pwpn3Ixn2FI/sNK2XHz13BBnYdrOi5GI=\u0022"},{"Name":"Last-Modified","Value":"Sat, 12 Apr 2025 14:00:24 GMT"}]]]></ResponseHeaders>
+    </StaticWebAssetEndpoint>
     <StaticWebAssetEndpoint Include="_content/goalongapi/reqfromcust/fileall/go-logo.png">
       <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\reqfromcust\fileall\go-logo.png'))</AssetFile>
       <Selectors><![CDATA[[]]]></Selectors>

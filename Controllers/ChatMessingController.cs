@@ -347,6 +347,8 @@ namespace goalongapi.Controllers
 
             try
             {
+
+                
                 response.EnsureSuccessStatusCode();
             }
              catch (Exception)

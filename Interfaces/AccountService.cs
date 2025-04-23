@@ -335,7 +335,7 @@ namespace goalongapi.Interfaces
 
         private string BuildToken(Claim[] claims)
         {
-            var expires = DateTime.Now.AddMinutes(Convert.ToDouble(jwtSettings.Expire));
+            var expires = DateTime.Now.AddDays(Convert.ToDouble(jwtSettings.Expire));
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Key));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
