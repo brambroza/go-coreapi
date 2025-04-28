@@ -459,6 +459,53 @@ namespace goalongapi.Controllers
             }
         }
 
+        [HttpPost("[action]")]
+        public ActionResult setSaleOrderSendApp(QuoHApprove quoHApprove)
+        {
+            MsgReturn msgretrun = new MsgReturn();
+
+            try
+            {
+                string _cmd = "";
+                _cmd =
+                    "exec dbo.setSaleOrderSendApp @CmpId="
+                    + quoHApprove.cmpid
+                    + " , @DocNo='"
+                    + quoHApprove.docno
+                    + "' , @RevNo ="
+                    + quoHApprove.revno
+                    + ",@User='"
+                    + quoHApprove.user
+                    + "'";
+                      _cmd += " , @UserTo='" + quoHApprove.userTo + "'";
+
+
+              System.Data.DataTable dt = DB.DBConn.GetDataTable(_cmd);
+                if (dt.Rows.Count > 0)
+                {
+                    /*  var x = linenotisendapp(quoH.docno); */
+
+
+                    msgretrun.ReturnCode = "200";
+                    msgretrun.Msg = "Save Success !!";
+                    return Ok(new { approvedoc = dt.Rows[0][0] });
+                }
+                else
+                {
+                    msgretrun.ReturnCode = "400";
+                    msgretrun.Msg = "Error !!";
+                    return Ok(msgretrun);
+                }
+            }
+            catch
+            {
+                msgretrun.ReturnCode = "400";
+                msgretrun.Msg = "Error !!";
+                return Ok(msgretrun);
+            }
+        }
+
+
         // DELETE: api/QuaH/5
 
         [HttpDelete("[action]")]
