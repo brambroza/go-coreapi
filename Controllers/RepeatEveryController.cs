@@ -96,5 +96,52 @@ namespace goalongapi.Controllers
                 return BadRequest(msgretrun);
             }
         }
+    
+    
+
+        [HttpPost("[action]")]
+        public IActionResult delRepeatEvery(RepeatEvery po)
+        {
+            System.Globalization.CultureInfo thaiCulture = new System.Globalization.CultureInfo(
+                "th-TH"
+            );
+            thaiCulture.DateTimeFormat.Calendar = new System.Globalization.GregorianCalendar();
+
+            MsgReturn msgretrun = new MsgReturn();
+            try
+            {
+                string _cmd = "";
+                _cmd = "exec  dbo.delRepeatEvery";
+                _cmd += " @UpdUser  ='" + po.UpdUser + "'";
+                _cmd += " ,@RepeatEveryId  ='" + po.RepeatEveryId + "'";
+                _cmd += " ,@DocNo  ='" + po.DocNo + "'";
+                _cmd += " ,@DocType ='" + po.DocType + "'";
+                _cmd += " ,@CmpId ='" + po.CmpId + "'";
+                _cmd += " ,@RevNo =" + po.RevNo;
+                if (DB.DBConn.ExecuteOnly(_cmd))
+                {
+                    msgretrun.ReturnCode = "200";
+                    msgretrun.Msg = "Save Success !!";
+                    return Ok(msgretrun);
+                }
+                else
+                {
+                    msgretrun.ReturnCode = "400";
+                    msgretrun.Msg = "Error !!";
+                    return BadRequest(msgretrun);
+                }
+            }
+            catch
+            {
+                msgretrun.ReturnCode = "400";
+                msgretrun.Msg = "Error !!";
+                return BadRequest(msgretrun);
+            }
+        }
+    
+    
+
+
+    
     }
 }

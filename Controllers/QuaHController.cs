@@ -30,6 +30,22 @@ namespace goalongapi.Controllers
             return Ok(JSONString);
         }
 
+
+         [HttpGet("[action]")]
+        public ActionResult getSaleOrderNoByQua([FromQuery] string id, [FromQuery] string quotationNo)
+        {
+            string _cmd;
+            DataTable dt = new System.Data.DataTable();
+            _cmd = "exec dbo.getQuotaionSaleNo @CmpId='" + id + "', @QuotationNo='" + quotationNo + "'";
+
+            dt = DB.DBConn.GetDataTable(_cmd);
+            string JSONString = string.Empty;
+            JSONString = JsonConvert.SerializeObject(dt);
+            return Ok(JSONString);
+        }
+
+
+
         [HttpGet("[action]")]
         public ActionResult getQuaHList([FromQuery] string id, [FromQuery] string user)
         {

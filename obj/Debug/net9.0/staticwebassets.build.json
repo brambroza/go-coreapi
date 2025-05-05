@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "wIMz/uAX69diR8iDy7Y9EBnMGmHXE0YGPTUVxdacWMs=",
+  "Hash": "6NeoBqDvQcthnqTOyV0ikAJy8eCEKwQ+SySaqCPj8i8=",
   "Source": "goalongapi",
   "BasePath": "_content/goalongapi",
   "Mode": "Default",
@@ -2157,6 +2157,27 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot/230015/saleorder/SO-230218/Pdffile.pdf"
+    },
+    {
+      "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/saleorder/SO-2500305/test20250411.pdf",
+      "SourceId": "goalongapi",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/",
+      "BasePath": "_content/goalongapi",
+      "RelativePath": "230015/saleorder/SO-2500305/test20250411#[.{fingerprint}]?.pdf",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "hcmbo72pxo",
+      "Integrity": "H8ZiZQmRp93rvJjzQ7ybZIMTsSAUCA9JmhfWa5IR1So=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/230015/saleorder/SO-2500305/test20250411.pdf"
     },
     {
       "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/vendor/images/1e40217c-23bc-4c3b-b0ed-42a58ef98f15.png",
@@ -9717,27 +9738,6 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot/reqfromcust/fileall/Test file.txt"
-    },
-    {
-      "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/reqfromcust/fileall/test20250411.pdf",
-      "SourceId": "goalongapi",
-      "SourceType": "Discovered",
-      "ContentRoot": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/",
-      "BasePath": "_content/goalongapi",
-      "RelativePath": "reqfromcust/fileall/test20250411#[.{fingerprint}]?.pdf",
-      "AssetKind": "All",
-      "AssetMode": "All",
-      "AssetRole": "Primary",
-      "AssetMergeBehavior": "",
-      "AssetMergeSource": "",
-      "RelatedAsset": "",
-      "AssetTraitName": "",
-      "AssetTraitValue": "",
-      "Fingerprint": "hcmbo72pxo",
-      "Integrity": "H8ZiZQmRp93rvJjzQ7ybZIMTsSAUCA9JmhfWa5IR1So=",
-      "CopyToOutputDirectory": "Never",
-      "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot/reqfromcust/fileall/test20250411.pdf"
     }
   ],
   "Endpoints": [
@@ -17856,6 +17856,88 @@
         {
           "Name": "integrity",
           "Value": "sha256-DzGflVjrJibnj4f8KchAatVtAT3uiA6XYsQqf116HRc="
+        }
+      ]
+    },
+    {
+      "Route": "230015/saleorder/SO-2500305/test20250411.hcmbo72pxo.pdf",
+      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/saleorder/SO-2500305/test20250411.pdf",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "3761449"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/pdf"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"H8ZiZQmRp93rvJjzQ7ybZIMTsSAUCA9JmhfWa5IR1So=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 05 May 2025 04:50:07 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "hcmbo72pxo"
+        },
+        {
+          "Name": "label",
+          "Value": "230015/saleorder/SO-2500305/test20250411.pdf"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-H8ZiZQmRp93rvJjzQ7ybZIMTsSAUCA9JmhfWa5IR1So="
+        }
+      ]
+    },
+    {
+      "Route": "230015/saleorder/SO-2500305/test20250411.pdf",
+      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/saleorder/SO-2500305/test20250411.pdf",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "3761449"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/pdf"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"H8ZiZQmRp93rvJjzQ7ybZIMTsSAUCA9JmhfWa5IR1So=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 05 May 2025 04:50:07 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-H8ZiZQmRp93rvJjzQ7ybZIMTsSAUCA9JmhfWa5IR1So="
         }
       ]
     },
@@ -48024,88 +48106,6 @@
         {
           "Name": "integrity",
           "Value": "sha256-vhQQFlvuPyOECj9TEHWjTtfYXDLaR9vQsq76tyIx9jA="
-        }
-      ]
-    },
-    {
-      "Route": "reqfromcust/fileall/test20250411.hcmbo72pxo.pdf",
-      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/reqfromcust/fileall/test20250411.pdf",
-      "Selectors": [],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "3761449"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "application/pdf"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"H8ZiZQmRp93rvJjzQ7ybZIMTsSAUCA9JmhfWa5IR1So=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Fri, 11 Apr 2025 07:49:53 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "max-age=31536000, immutable"
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "fingerprint",
-          "Value": "hcmbo72pxo"
-        },
-        {
-          "Name": "label",
-          "Value": "reqfromcust/fileall/test20250411.pdf"
-        },
-        {
-          "Name": "integrity",
-          "Value": "sha256-H8ZiZQmRp93rvJjzQ7ybZIMTsSAUCA9JmhfWa5IR1So="
-        }
-      ]
-    },
-    {
-      "Route": "reqfromcust/fileall/test20250411.pdf",
-      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/reqfromcust/fileall/test20250411.pdf",
-      "Selectors": [],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "3761449"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "application/pdf"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"H8ZiZQmRp93rvJjzQ7ybZIMTsSAUCA9JmhfWa5IR1So=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Fri, 11 Apr 2025 07:49:53 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "no-cache"
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "integrity",
-          "Value": "sha256-H8ZiZQmRp93rvJjzQ7ybZIMTsSAUCA9JmhfWa5IR1So="
         }
       ]
     }
