@@ -234,7 +234,7 @@ namespace goalongapi.Controllers
                 {
                     _cmd =
                         "Exec setSaleOrderDetail @SaleOrderNo='"
-                        + Quotation.items[i].SaleOrderNo
+                        + Quotation.SaleOrderNo
                         + "'";
                     _cmd += ",@Seq=" + Quotation.items[i].Seq;
                     _cmd += ",@ProdCode='" + Quotation.items[i].ProdCode + "'";
@@ -283,7 +283,7 @@ namespace goalongapi.Controllers
                 {
                     _cmd =
                         "Exec dbo.setSaleOrderFiles @SaleOrderNo='"
-                        + Quotation.files[i].SaleOrderNo
+                        + Quotation.SaleOrderNo
                         + "'";
                     _cmd += " ,@Seq=" + Quotation.files[i].Seq;
                     _cmd += " , @CmpId='" + Quotation.files[i].CmpId + "'";

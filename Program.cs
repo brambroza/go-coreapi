@@ -9,6 +9,7 @@ System.Net.ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolTyp
 
 var builder = WebApplication.CreateBuilder(args);
 
+ิี
 builder.Services.AddControllers();
 builder.Services.AddSignalR();
 builder.Services.AddCors(p =>
@@ -16,9 +17,9 @@ builder.Services.AddCors(p =>
         "_MyAllowSpecificOrigins",
         builder =>
         {
-          /*     builder.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();  
+            /*  builder.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();   */
           
-                 .SetIsOriginAllowed(origin => true)    */
+              
              builder
                   .WithOrigins(
                      "https://erp.nisolution.co.th" , "https://app.nisolution.co.th", 
@@ -29,7 +30,7 @@ builder.Services.AddCors(p =>
                  )
                  .AllowAnyMethod()
                  .AllowAnyHeader()
-                 .AllowCredentials();  
+                 .AllowCredentials();    
         }
     )
 );
