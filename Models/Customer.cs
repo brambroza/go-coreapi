@@ -84,7 +84,7 @@ namespace goalongapi.Models
         public int DebitAccId { get; set; }
         public string BusinessGrpCode { get; set; }
 
-        public List<ContactList> contacts { get; set; }
+        public List<ContactList>? contacts { get; set; } = null;
 
         public string StateCustomer { get; set; }
         public string StateVendor { get; set; }

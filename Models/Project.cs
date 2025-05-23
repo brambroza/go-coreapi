@@ -8,18 +8,17 @@ namespace goalongapi.Models
     public class Project
     {
         public string UpdUser { get; set; }
-        public string ProjectNo { get; set; }
-        public string CustCode { get; set; }
+        public string ProjectNo { get; set; } 
         public string Description { get; set; }
         public string CmpId { get; set; }
         public string PurchaseNo { get; set; }
         public string QuotationNo { get; set; }
         public string ReferCode { get; set; }
         public string StateActive { get; set; }
-        public DateTime ProjectDueDate { get; set; }
-        public DateTime ProjectDate { get; set; }
+        public string ProjectDueDate { get; set; }
+        public string ProjectDate { get; set; }
         public string SaleOrderNo { get; set; }
-        public int TotalQty { get; set; }
+        public int? TotalQty { get; set; } = 0;
         public CustomerList? customer { get; set; } = null;
 
         public List<Project_Detail> items { get; set; }
@@ -28,13 +27,13 @@ namespace goalongapi.Models
         public List<Project_File> attachfile { get; set; }
         public List<ProjectCost> costs { get; set; }
 
-        public ProjectHistory history { get; set; }
+        public ProjectHistory? history { get; set; } = null;
 
         public string Title { get; set; }
-        public string Priority { get; set; }
-        public string RouteId { get; set; }
-        public string RouteName { get; set; }
-        public string Labels { get; set; }
+        public string? Priority { get; set; } = null;
+        public string? RouteId { get; set; } = null;
+        public string? RouteName { get; set; } = null;
+        public string? Labels { get; set; } = null;
         public string CustomerCode { get; set; }
         public int CreditType { get; set; }
         public int CreditDate { get; set; }
@@ -128,6 +127,11 @@ namespace goalongapi.Models
         public string imgpath { get; set; }
 
         public string type { get; set; }
+        public string CmpId { get; set; }
+        public string QuotationNo { get; set; }
+        public string SaleOrderNo { get; set; }
+        public string? Status { get; set; } = null;
+         
     }
 
     public class Project_Task
@@ -192,12 +196,12 @@ namespace goalongapi.Models
     public class ProjectHistory
     {
         public string ProjectNo { get; set; }
-        public DateTime? ProjectTime { get; set; }
-        public DateTime? PaymentTime { get; set; }
-        public DateTime? DeliveryTime { get; set; }
-        public DateTime? CompletionTime { get; set; }
+        public string? ProjectTime { get; set; } = null;
+        public string? PaymentTime { get; set; } = null;
+        public string? DeliveryTime { get; set; } = null;
+        public string? CompletionTime { get; set; } = null;
         public string CmpId { get; set; }
-        public List<ProjectTimeline> timeline { get; set; }
+        public List<ProjectTimeline> timeline { get; set; }   
     }
 
     public class ProjectTimeline

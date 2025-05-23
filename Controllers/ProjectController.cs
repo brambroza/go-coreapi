@@ -68,16 +68,33 @@ namespace goalongapi.Controllers
                 var project = new Project();
                 project.UpdUser = r["UpdUser"].ToString();
                 project.ProjectNo = r["ProjectNo"].ToString();
-                project.CustCode = r["CustCode"].ToString();
+                project.CustomerCode = r["CustCode"].ToString();
                 project.Description = r["Description"].ToString();
                 project.CmpId = r["CmpId"].ToString();
                 project.PurchaseNo = r["PurchaseNo"].ToString();
                 project.QuotationNo = r["QuotationNo"].ToString();
                 project.ReferCode = r["ReferCode"].ToString();
                 project.StateActive = r["StateActive"].ToString();
-                project.ProjectDueDate = DateTime.Parse(r["ProjectDueDate"].ToString());
-                project.ProjectDate = DateTime.Parse(r["ProjectDate"].ToString());
+                project.ProjectDueDate = r["ProjectDueDate"].ToString() ;
+                project.ProjectDate =  r["ProjectDate"].ToString() ;
                 project.SaleOrderNo = r["SaleOrderNo"].ToString();
+                project.Title = r["Title"].ToString();
+                project.Priority = r["Priority"].ToString();
+                project.RouteId  = r["RouteId"].ToString();
+                project.Labels = r["Labels"].ToString();
+                project.ShippingMethod = r["ShippingMethod"].ToString();
+                project.ServiceTerms = r["ServiceTerms"].ToString();
+                project.ServiceOfTerms = r["ServiceOfTerms"].ToString();
+                project.DeliveryTerms = r["DeliveryTerms"].ToString();
+                project.JobType = r["JobType"].ToString();
+                project.Shipping = r["Shipping"].ToString();
+                project.CustomerPONo = r["CustomerPONo"].ToString();
+                project.CustomerPODate = r["CustomerPODate"].ToString();
+                project.StateShipAddr = r["StateShipAddr"].ToString();
+                project.Shiptoother = r["Shiptoother"].ToString();
+                project.TicketId = r["TicketId"].ToString();
+
+
 
                 project.items = new List<Project_Detail>();
                 project.TotalQty = dtItem.Select("ProjectNo='" + project.ProjectNo + "'").Length;
@@ -108,6 +125,11 @@ namespace goalongapi.Controllers
                             DeliveryDate = d["DeliveryDate"].ToString(),
                             RevNo = Convert.ToInt32(d["RevNo"]),
                             imgpath = d["imgpath"].ToString(),
+                            CmpId = d["CmpId"].ToString(),
+                            type = d["type"].ToString(),
+                            QuotationNo = d["QuotationNo"].ToString(),
+                            SaleOrderNo = d["SaleOrderNo"].ToString(),
+                            Status = d["Status"].ToString(),
                         }
                     );
                 }
@@ -205,10 +227,10 @@ namespace goalongapi.Controllers
                 {
                     var hist = new ProjectHistory();
                     hist.ProjectNo = d["ProjectNo"].ToString();
-                    hist.ProjectTime = DateTime.Parse(d["ProjectTime"].ToString());
-                    hist.PaymentTime = DateTime.Parse(d["PaymentTime"].ToString());
-                    hist.DeliveryTime = DateTime.Parse(d["DeliveryTime"].ToString());
-                    hist.CompletionTime = DateTime.Parse(d["CompletionTime"].ToString());
+                    hist.ProjectTime =  d["ProjectTime"].ToString();
+                    hist.PaymentTime = d["PaymentTime"].ToString();
+                    hist.DeliveryTime =  d["DeliveryTime"].ToString();
+                    hist.CompletionTime =  d["CompletionTime"].ToString();
                     hist.CmpId = d["CmpId"].ToString();
 
                     hist.timeline = new List<ProjectTimeline>();
@@ -230,7 +252,7 @@ namespace goalongapi.Controllers
 
                 project.customer = new CustomerList();
 
-                foreach (DataRow d in dtcust.Select("CustomerCode='" + project.CustCode + "'"))
+                foreach (DataRow d in dtcust.Select("CustomerCode='" + project.CustomerCode + "'"))
                 {
                     var customer = new CustomerList();
 
@@ -363,6 +385,7 @@ namespace goalongapi.Controllers
                 route.Department = rt["Department"].ToString();
                 route.completepercent = double.Parse(rt["completepercent"].ToString());
                 route.Seq = int.Parse(rt["Seq"].ToString());
+                
                 columns.Add(route);
 
                 tasks[route.RouteId] = new List<object>();
@@ -372,15 +395,15 @@ namespace goalongapi.Controllers
                     var project = new Project();
                     project.UpdUser = r["UpdUser"].ToString();
                     project.ProjectNo = r["ProjectNo"].ToString();
-                    project.CustCode = r["CustCode"].ToString();
+                    project.CustomerCode = r["CustCode"].ToString();
                     project.Description = r["Description"].ToString();
                     project.CmpId = r["CmpId"].ToString();
                     project.PurchaseNo = r["PurchaseNo"].ToString();
                     project.QuotationNo = r["QuotationNo"].ToString();
                     project.ReferCode = r["ReferCode"].ToString();
                     project.StateActive = r["StateActive"].ToString();
-                    project.ProjectDueDate = DateTime.Parse(r["ProjectDueDate"].ToString());
-                    project.ProjectDate = DateTime.Parse(r["ProjectDate"].ToString());
+                    project.ProjectDueDate =  r["ProjectDueDate"].ToString();
+                    project.ProjectDate =  r["ProjectDate"].ToString();
                     project.SaleOrderNo = r["SaleOrderNo"].ToString();
                     project.Title = r["Title"].ToString();
                     project.Priority = r["Priority"].ToString();
@@ -419,6 +442,10 @@ namespace goalongapi.Controllers
                                 DeliveryDate = d["DeliveryDate"].ToString(),
                                 RevNo = Convert.ToInt32(d["RevNo"]),
                                 imgpath = d["imgpath"].ToString(),
+                                CmpId = d["CmpId"].ToString(),
+                                type = d["type"].ToString(),
+                                QuotationNo = d["QuotationNo"].ToString(),
+                                SaleOrderNo = d["SaleOrderNo"].ToString(),
                             }
                         );
                     }
@@ -519,10 +546,10 @@ namespace goalongapi.Controllers
                     {
                         var hist = new ProjectHistory();
                         hist.ProjectNo = d["ProjectNo"].ToString();
-                        hist.ProjectTime = DateTime.Parse(d["ProjectTime"].ToString());
-                        hist.PaymentTime = DateTime.Parse(d["PaymentTime"].ToString());
-                        hist.DeliveryTime = DateTime.Parse(d["DeliveryTime"].ToString());
-                        hist.CompletionTime = DateTime.Parse(d["CompletionTime"].ToString());
+                        hist.ProjectTime = d["ProjectTime"].ToString();
+                        hist.PaymentTime = d["PaymentTime"].ToString();
+                        hist.DeliveryTime = d["DeliveryTime"].ToString();
+                        hist.CompletionTime = d["CompletionTime"].ToString();
                         hist.CmpId = d["CmpId"].ToString();
 
                         hist.timeline = new List<ProjectTimeline>();
@@ -546,7 +573,7 @@ namespace goalongapi.Controllers
 
                     project.customer = new CustomerList();
 
-                    foreach (DataRow d in dtcust.Select("CustomerCode='" + project.CustCode + "'"))
+                    foreach (DataRow d in dtcust.Select("CustomerCode='" + project.CustomerCode + "'"))
                     {
                         var customer = new CustomerList();
 
@@ -913,13 +940,14 @@ namespace goalongapi.Controllers
                 _cmd = "exec  dbo.SetProject";
                 _cmd += " @UpdUser  ='" + project.UpdUser + "'";
                 _cmd += ",@ProjectNo  ='" + project.ProjectNo + "'";
-                _cmd += ",@CustCode  ='" + project.CustCode + "'";
+                _cmd += ",@CustCode  ='" + project.CustomerCode + "'";
                 _cmd += ",@Description  ='" + project.Description + "'";
                 _cmd += ",@CmpId ='" + project.CmpId + "'";
                 _cmd += ",@PurchaseNo  ='" + project.PurchaseNo + "'";
                 _cmd += ",@QuotationNo  ='" + project.QuotationNo + "'";
                 _cmd += ",@ReferCode  ='" + project.ReferCode + "'";
                 _cmd += ",@StateActive ='" + project.StateActive + "'";
+                _cmd += ",@TicketId ='" + project.TicketId + "'";
                 _cmd +=
                     ",@ProjectDueDate  ='"
                     + DateTime
@@ -938,6 +966,21 @@ namespace goalongapi.Controllers
                 _cmd += " , @Title='" + project.Title + "'";
                 _cmd += " , @Priority='" + project.Priority + "'";
                 _cmd += " , @RouteId='" + project.RouteId + "'";
+                _cmd += " , @ShippingMethod='" + project.ShippingMethod + "'";
+                _cmd += " , @ServiceTerms='" + project.ServiceTerms + "'";
+                _cmd += " , @ServiceOfTerms='" + project.ServiceOfTerms + "'";
+                _cmd += " , @DeliveryTerms='" + project.DeliveryTerms + "'";
+                _cmd += " , @StateShipAddr='" + project.StateShipAddr + "'";
+                _cmd += " , @Shiptoother='" + project.Shiptoother + "'";
+                _cmd += " , @JobType='" + project.JobType + "'";
+                _cmd += " , @CustomerPONo='" + project.CustomerPONo + "'";
+                _cmd +=
+                    ",@CustomerPODate  ='"
+                    + DateTime
+                        .Parse(project.CustomerPODate.ToString())
+                        .ToString("yyyy-MM-dd HH:mm", thaiCulture)
+                    + "'";
+                _cmd += " , @Shipping='" + project.Shipping + "'";
 
                 
                 if (DB.DBConn.ExecuteOnly(_cmd))
@@ -950,7 +993,7 @@ namespace goalongapi.Controllers
                 {
                     msgretrun.ReturnCode = "400";
                     msgretrun.Msg = "Error !!";
-                    return Ok(msgretrun);
+                    return BadRequest(msgretrun);
                 }
             }
             catch
@@ -1009,6 +1052,9 @@ namespace goalongapi.Controllers
                         _cmd += ",@GroupCaption2 ='" + project[i].GroupCaption2 + "'";
                         _cmd += ",@GroupCaption3 ='" + project[i].GroupCaption3 + "'";
                         _cmd += " , @Type='" + project[i].type + "'"; 
+                        _cmd += " , @cmpId='" + project[i].CmpId + "'"; 
+                        _cmd += " , @QuotationNo='" + project[i].QuotationNo + "'";
+                        _cmd += " , @SaleOrderNo='" + project[i].SaleOrderNo + "'";
                         if (DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran) <= 0)
                         {
                             DB.DBConn.Tran.Rollback();
