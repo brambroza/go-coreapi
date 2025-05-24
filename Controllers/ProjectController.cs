@@ -93,6 +93,7 @@ namespace goalongapi.Controllers
                 project.StateShipAddr = r["StateShipAddr"].ToString();
                 project.Shiptoother = r["Shiptoother"].ToString();
                 project.TicketId = r["TicketId"].ToString();
+                project.ProjectState = r["ProjectState"].ToString();
 
 
 
@@ -981,6 +982,7 @@ namespace goalongapi.Controllers
                         .ToString("yyyy-MM-dd HH:mm", thaiCulture)
                     + "'";
                 _cmd += " , @Shipping='" + project.Shipping + "'";
+                _cmd += " , @ProjectState='" + project.ProjectState + "'";
 
                 
                 if (DB.DBConn.ExecuteOnly(_cmd))

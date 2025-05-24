@@ -8,7 +8,7 @@ namespace goalongapi.Models
     public class Project
     {
         public string UpdUser { get; set; }
-        public string ProjectNo { get; set; } 
+        public string ProjectNo { get; set; }
         public string Description { get; set; }
         public string CmpId { get; set; }
         public string PurchaseNo { get; set; }
@@ -65,6 +65,7 @@ namespace goalongapi.Models
         public string ServiceTerms { get; set; }
         public string ServiceOfTerms { get; set; }
         public string DeliveryTerms { get; set; }
+        public string ProjectState { get; set; }
 
 
     }
