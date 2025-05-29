@@ -83,14 +83,12 @@
 /Users/amnartkongpet/Project/GoAlong/coreapi-new/bin/Debug/net9.0/System.Composition.Runtime.dll
 /Users/amnartkongpet/Project/GoAlong/coreapi-new/bin/Debug/net9.0/System.Composition.TypedParts.dll
 /Users/amnartkongpet/Project/GoAlong/coreapi-new/bin/Debug/net9.0/System.Configuration.ConfigurationManager.dll
-/Users/amnartkongpet/Project/GoAlong/coreapi-new/bin/Debug/net9.0/System.Formats.Asn1.dll
 /Users/amnartkongpet/Project/GoAlong/coreapi-new/bin/Debug/net9.0/System.IdentityModel.Tokens.Jwt.dll
 /Users/amnartkongpet/Project/GoAlong/coreapi-new/bin/Debug/net9.0/System.Management.dll
 /Users/amnartkongpet/Project/GoAlong/coreapi-new/bin/Debug/net9.0/System.Memory.Data.dll
 /Users/amnartkongpet/Project/GoAlong/coreapi-new/bin/Debug/net9.0/System.Net.WebSockets.WebSocketProtocol.dll
 /Users/amnartkongpet/Project/GoAlong/coreapi-new/bin/Debug/net9.0/System.Runtime.Caching.dll
 /Users/amnartkongpet/Project/GoAlong/coreapi-new/bin/Debug/net9.0/System.Security.Cryptography.ProtectedData.dll
-/Users/amnartkongpet/Project/GoAlong/coreapi-new/bin/Debug/net9.0/System.Text.Json.dll
 /Users/amnartkongpet/Project/GoAlong/coreapi-new/bin/Debug/net9.0/cs/Microsoft.CodeAnalysis.resources.dll
 /Users/amnartkongpet/Project/GoAlong/coreapi-new/bin/Debug/net9.0/de/Microsoft.CodeAnalysis.resources.dll
 /Users/amnartkongpet/Project/GoAlong/coreapi-new/bin/Debug/net9.0/es/Microsoft.CodeAnalysis.resources.dll
@@ -172,7 +170,6 @@
 /Users/amnartkongpet/Project/GoAlong/coreapi-new/bin/Debug/net9.0/runtimes/win-arm64/native/Microsoft.Data.SqlClient.SNI.dll
 /Users/amnartkongpet/Project/GoAlong/coreapi-new/bin/Debug/net9.0/runtimes/win-x64/native/Microsoft.Data.SqlClient.SNI.dll
 /Users/amnartkongpet/Project/GoAlong/coreapi-new/bin/Debug/net9.0/runtimes/win-x86/native/Microsoft.Data.SqlClient.SNI.dll
-/Users/amnartkongpet/Project/GoAlong/coreapi-new/bin/Debug/net9.0/runtimes/win/lib/net8.0/System.Diagnostics.EventLog.Messages.dll
 /Users/amnartkongpet/Project/GoAlong/coreapi-new/bin/Debug/net9.0/runtimes/win/lib/net7.0/System.Management.dll
 /Users/amnartkongpet/Project/GoAlong/coreapi-new/bin/Debug/net9.0/runtimes/win/lib/net8.0/System.Runtime.Caching.dll
 /Users/amnartkongpet/Project/GoAlong/coreapi-new/obj/Debug/net9.0/goalongapi.csproj.AssemblyReference.cache

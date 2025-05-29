@@ -93,8 +93,28 @@ namespace goalongapi.Controllers
                 project.StateShipAddr = r["StateShipAddr"].ToString();
                 project.Shiptoother = r["Shiptoother"].ToString();
                 project.TicketId = r["TicketId"].ToString();
-                project.ProjectState = r["ProjectState"].ToString();
+                project.ProjectState =   r["ProjectState"].ToString();
 
+                project.MaintenanceServiceNumberOfTime = Convert.ToInt32( r["MaintenanceServiceNumberOfTime"] );
+                project.MaintenanceRemoteNumberOfTime = Convert.ToInt32(r["MaintenanceRemoteNumberOfTime"] );
+                
+                project.MaintenanceServiceReport = r["MaintenanceServiceReport"].ToString()  == "1"  ;
+                project.PreventiveServiceNumberOfTime =Convert.ToInt32( r["PreventiveServiceNumberOfTime"] );
+                project.PreventiveRemoteNumberOfTime =Convert.ToInt32( r["PreventiveRemoteNumberOfTime"] );
+                project.PreventiveServiceReport = r["PreventiveServiceReport"].ToString()  == "1" ;
+                project.ServiceSLA = r["ServiceSLA"].ToString();
+                project.ServiceReplacement = r["ServiceReplacement"].ToString();
+                project.ServiceBackupConfig = r["ServiceBackupConfig"].ToString();
+                project.DescriptionShipping = r["DescriptionShipping"].ToString();
+                project.ServiceOfTermsSelect = r["ServiceOfTermsSelect"]
+                    .ToString()
+                    .Split(',')
+                    .ToList(); // Assuming ServiceOfTermsSelect is a comma-separated string
+                project.ServiceTermsReport = r["ServiceTermsReport"].ToString();
+
+                project.CreditDate = Convert.ToInt32(r["CreditDate"]);
+                project.ShipOfDay = Convert.ToInt32(r["ShipOfDay"]);
+                
 
 
                 project.items = new List<Project_Detail>();
@@ -949,18 +969,12 @@ namespace goalongapi.Controllers
                 _cmd += ",@ReferCode  ='" + project.ReferCode + "'";
                 _cmd += ",@StateActive ='" + project.StateActive + "'";
                 _cmd += ",@TicketId ='" + project.TicketId + "'";
-                _cmd +=
-                    ",@ProjectDueDate  ='"
-                    + DateTime
-                        .Parse(project.ProjectDueDate.ToString())
-                        .ToString("yyyy-MM-dd HH:mm", thaiCulture)
-                    + "'";
-
+               
                 _cmd +=
                     ",@ProjectDate  ='"
-                    + DateTime
+                    + ( project.ProjectDate.Length <= 10 ? project.ProjectDate.ToString() :  DateTime
                         .Parse(project.ProjectDate.ToString())
-                        .ToString("yyyy-MM-dd HH:mm", thaiCulture)
+                        .ToString("yyyy-MM-dd HH:mm", thaiCulture))
                     + "'";
 
                 _cmd += " , @SaleOrderNo='" + project.SaleOrderNo + "'";
@@ -977,13 +991,49 @@ namespace goalongapi.Controllers
                 _cmd += " , @CustomerPONo='" + project.CustomerPONo + "'";
                 _cmd +=
                     ",@CustomerPODate  ='"
-                    + DateTime
+                    + (project.CustomerPODate.Length <=0 ? project.CustomerPODate.ToString() :  DateTime
                         .Parse(project.CustomerPODate.ToString())
-                        .ToString("yyyy-MM-dd HH:mm", thaiCulture)
+                        .ToString("yyyy-MM-dd HH:mm", thaiCulture))
                     + "'";
                 _cmd += " , @Shipping='" + project.Shipping + "'";
+                
                 _cmd += " , @ProjectState='" + project.ProjectState + "'";
+                _cmd +=
+                    ",@ProjectDueDate  ='"
+                    + (project.ProjectDueDate.Length <= 10 ? project.ProjectDueDate.ToString() : DateTime
+                        .Parse(project.ProjectDueDate.ToString())
+                        .ToString("yyyy-MM-dd HH:mm", thaiCulture))
+                    + "'";
 
+                _cmd += " , @MaintenanceServiceNumberOfTime='" + project.MaintenanceServiceNumberOfTime.ToString() + "'";
+                _cmd += " , @MaintenanceRemoteNumberOfTime='" + project.MaintenanceRemoteNumberOfTime.ToString() + "'"; 
+                
+                _cmd += " , @MaintenanceServiceReport=" + (project.MaintenanceServiceReport ? '1' : '0') ;
+                _cmd += " , @PreventiveServiceNumberOfTime='" + project.PreventiveServiceNumberOfTime.ToString() + "'";
+                _cmd += " , @PreventiveRemoteNumberOfTime='" + project.PreventiveRemoteNumberOfTime.ToString() + "'";
+                _cmd += " , @PreventiveServiceReport=" + (project.PreventiveServiceReport ? '1' : '0') ;
+
+                _cmd += " , @ServiceSLA='" + project.ServiceSLA + "'";
+                _cmd += " , @ServiceReplacement='" + project.ServiceReplacement + "'";
+                _cmd += " , @ServiceBackupConfig='" + project.ServiceBackupConfig + "'";
+                _cmd += " , @DescriptionShipping='" +  project.DescriptionShipping + "'";
+              
+                _cmd += " , @CreditDate='" + project.CreditDate + "'";
+                _cmd += " , @ShipOfDay='" +  project.ShipOfDay + "'";
+              
+
+                if (project.ServiceOfTermsSelect != null)
+                {
+                    _cmd += " , @ServiceOfTermsSelect='"
+                            + string.Join(",", project.ServiceOfTermsSelect)
+                            + "'";
+                }
+                else
+                {
+                    _cmd += " , @ServiceOfTermsSelect=''";
+                }
+
+                _cmd += ", @ServiceTermsReport='" + project.ServiceTermsReport + "'";
                 
                 if (DB.DBConn.ExecuteOnly(_cmd))
                 {

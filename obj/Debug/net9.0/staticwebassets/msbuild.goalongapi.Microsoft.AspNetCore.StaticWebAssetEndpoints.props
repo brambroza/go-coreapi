@@ -1200,18 +1200,6 @@
       <EndpointProperties><![CDATA[[{"Name":"integrity","Value":"sha256-H8ZiZQmRp93rvJjzQ7ybZIMTsSAUCA9JmhfWa5IR1So="}]]]></EndpointProperties>
       <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"no-cache"},{"Name":"Content-Length","Value":"3761449"},{"Name":"Content-Type","Value":"application/pdf"},{"Name":"ETag","Value":"\u0022H8ZiZQmRp93rvJjzQ7ybZIMTsSAUCA9JmhfWa5IR1So=\u0022"},{"Name":"Last-Modified","Value":"Mon, 05 May 2025 04:50:07 GMT"}]]]></ResponseHeaders>
     </StaticWebAssetEndpoint>
-    <StaticWebAssetEndpoint Include="_content/goalongapi/230015/saleorder/SO-2500354/test20250411.hcmbo72pxo.pdf">
-      <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\230015\saleorder\SO-2500354\test20250411.pdf'))</AssetFile>
-      <Selectors><![CDATA[[]]]></Selectors>
-      <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"hcmbo72pxo"},{"Name":"integrity","Value":"sha256-H8ZiZQmRp93rvJjzQ7ybZIMTsSAUCA9JmhfWa5IR1So="},{"Name":"label","Value":"_content/goalongapi/230015/saleorder/SO-2500354/test20250411.pdf"}]]]></EndpointProperties>
-      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"3761449"},{"Name":"Content-Type","Value":"application/pdf"},{"Name":"ETag","Value":"\u0022H8ZiZQmRp93rvJjzQ7ybZIMTsSAUCA9JmhfWa5IR1So=\u0022"},{"Name":"Last-Modified","Value":"Mon, 19 May 2025 10:22:09 GMT"}]]]></ResponseHeaders>
-    </StaticWebAssetEndpoint>
-    <StaticWebAssetEndpoint Include="_content/goalongapi/230015/saleorder/SO-2500354/test20250411.pdf">
-      <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\230015\saleorder\SO-2500354\test20250411.pdf'))</AssetFile>
-      <Selectors><![CDATA[[]]]></Selectors>
-      <EndpointProperties><![CDATA[[{"Name":"integrity","Value":"sha256-H8ZiZQmRp93rvJjzQ7ybZIMTsSAUCA9JmhfWa5IR1So="}]]]></EndpointProperties>
-      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"no-cache"},{"Name":"Content-Length","Value":"3761449"},{"Name":"Content-Type","Value":"application/pdf"},{"Name":"ETag","Value":"\u0022H8ZiZQmRp93rvJjzQ7ybZIMTsSAUCA9JmhfWa5IR1So=\u0022"},{"Name":"Last-Modified","Value":"Mon, 19 May 2025 10:22:09 GMT"}]]]></ResponseHeaders>
-    </StaticWebAssetEndpoint>
     <StaticWebAssetEndpoint Include="_content/goalongapi/230015/vendor/images/1e40217c-23bc-4c3b-b0ed-42a58ef98f15.p9z55iiuh2.png">
       <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\230015\vendor\images\1e40217c-23bc-4c3b-b0ed-42a58ef98f15.png'))</AssetFile>
       <Selectors><![CDATA[[]]]></Selectors>

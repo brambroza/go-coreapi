@@ -18,6 +18,8 @@ namespace goalongapi.Models
         public string ProjectDueDate { get; set; }
         public string ProjectDate { get; set; }
         public string SaleOrderNo { get; set; }
+        public int CreditDate { get; set; }
+        public int ShipOfDay { get; set; }
         public int? TotalQty { get; set; } = 0;
         public CustomerList? customer { get; set; } = null;
 
@@ -36,7 +38,7 @@ namespace goalongapi.Models
         public string? Labels { get; set; } = null;
         public string CustomerCode { get; set; }
         public int CreditType { get; set; }
-        public int CreditDate { get; set; }
+        
         public string ProjectName { get; set; }
         public int VatType { get; set; }
         public string Remark { get; set; }
@@ -58,7 +60,7 @@ namespace goalongapi.Models
         public string TicketId { get; set; }
         public string StateShipAddr { get; set; }
         public string Shiptoother { get; set; }
-        public int ShipOfDay { get; set; }
+       
         public string CustomerPODate { get; set; }
 
         public string ShippingMethod { get; set; }
@@ -66,6 +68,23 @@ namespace goalongapi.Models
         public string ServiceOfTerms { get; set; }
         public string DeliveryTerms { get; set; }
         public string ProjectState { get; set; }
+
+        public List<string>? ServiceOfTermsSelect { get; set; }
+        public int MaintenanceServiceNumberOfTime { get; set; }
+        public int MaintenanceRemoteNumberOfTime { get; set; }
+        public bool MaintenanceServiceReport { get; set; }
+
+        public int PreventiveServiceNumberOfTime { get; set; }
+        public int PreventiveRemoteNumberOfTime { get; set; }
+        public bool PreventiveServiceReport { get; set; }
+
+        public string ServiceSLA { get; set; }
+        public string ServiceReplacement { get; set; }
+        public string ServiceBackupConfig { get; set; }
+        public string DescriptionShipping { get; set; }
+      
+        public string ServiceTermsReport { get; set; }
+      
 
 
     }
