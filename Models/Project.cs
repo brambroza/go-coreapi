@@ -151,6 +151,7 @@ namespace goalongapi.Models
         public string QuotationNo { get; set; }
         public string SaleOrderNo { get; set; }
         public string? Status { get; set; } = null;
+        public string SupplierCode { get; set; }
          
     }
 

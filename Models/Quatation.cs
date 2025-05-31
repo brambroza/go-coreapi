@@ -341,7 +341,9 @@ namespace goalongapi.Models
         public int RevNo { get; set; }
         public string QuotationNo { get; set; }
         public int QuotationRevNo { get; set; }
-          public int QuotationSeq {get;set;}
+        public int QuotationSeq { get; set; }
+          
+        public string SupplierCode { get; set; }
       
     }
 
@@ -371,6 +373,7 @@ namespace goalongapi.Models
         public string MainProdCode { get; set; }
         public int MainSeq { get; set; }
         public int SeqSort { get; set; }
+        public string SupplierCode { get; set; }
     }
 
     public class QuotationList

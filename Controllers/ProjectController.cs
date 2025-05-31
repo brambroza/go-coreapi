@@ -151,6 +151,7 @@ namespace goalongapi.Controllers
                             QuotationNo = d["QuotationNo"].ToString(),
                             SaleOrderNo = d["SaleOrderNo"].ToString(),
                             Status = d["Status"].ToString(),
+                            SupplierCode = d["SupplierCode"].ToString(), 
                         }
                     );
                 }
@@ -1107,6 +1108,7 @@ namespace goalongapi.Controllers
                         _cmd += " , @cmpId='" + project[i].CmpId + "'"; 
                         _cmd += " , @QuotationNo='" + project[i].QuotationNo + "'";
                         _cmd += " , @SaleOrderNo='" + project[i].SaleOrderNo + "'";
+                        _cmd += " ,@SupplierCode='" + project[i].SupplierCode + "'";
                         if (DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran) <= 0)
                         {
                             DB.DBConn.Tran.Rollback();

@@ -120,6 +120,7 @@ namespace goalongapi.Controllers
                         QuotationRevNo = Convert.ToInt32(itemRow["QuotationRevNo"]),
                         QuotationNo = itemRow["QuotationNo"].ToString(),
                         QuotationSeq = Convert.ToInt32(itemRow["QuotationSeq"]),
+                        SupplierCode = itemRow["SupplierCode"].ToString(), 
 
                     };
                     saleorder.items.Add(saleOrderItem);
@@ -266,7 +267,8 @@ namespace goalongapi.Controllers
                     _cmd += ",@UpdUser='" + Quotation.UpdUser + "'";
                     _cmd += ",@QuotationNo='" + Quotation.items[i].QuotationNo + "'";
                     _cmd += ",@QuotationRevNo=" + Quotation.items[i].QuotationRevNo;
-                    _cmd += ",@QuotationSeq=" + Quotation.items[i].QuotationSeq;
+                    _cmd += ",@QuotationSeq=" + Quotation.items[i].QuotationSeq; 
+                    _cmd += ",@SupplierCode='"+ Quotation.items[i].SupplierCode + "'";
 
                     if (DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran) <= 0)
                     {
@@ -696,6 +698,7 @@ namespace goalongapi.Controllers
                         + Tool.Tool.validateStr(saleorderD[i].GroupCaption3)
                         + "'";
                     _cmd += ",@CmpId='" + saleorderD[i].CmpId + "'";
+                    _cmd += ", @SupplierCode='" + saleorderD[i].SupplierCode + "'";
 
                     if (DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran) <= 0)
                     {

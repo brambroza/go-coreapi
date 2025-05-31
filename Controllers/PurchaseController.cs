@@ -102,6 +102,7 @@ namespace goalongapi.Controllers
                     item.GroupCaption2 = d["GroupCaption2"].ToString();
                     item.GroupCaption3 = d["GroupCaption3"].ToString();
                     item.CmpId = d["CmpId"].ToString();
+                    item.PurchaseReqNo = d["PurchaseReqNo"].ToString(); 
 
                     purchase.items.Add(item);
                 }
@@ -369,6 +370,7 @@ namespace goalongapi.Controllers
                     _cmd += ",@GroupCaption2  ='" + po[i].GroupCaption2 + "'";
                     _cmd += ",@GroupCaption3  ='" + po[i].GroupCaption3 + "'";
                     _cmd += ",@CmpId  ='" + po[i].CmpId + "'";
+                    _cmd += ",@PurchaseReqNo='" + po[i].PurchaseReqNo + "'";
 
                     if (DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran) <= 0)
                     {

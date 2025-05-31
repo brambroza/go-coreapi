@@ -105,6 +105,7 @@ namespace goalongapi.Controllers
                     item.GroupCaption2 = d["GroupCaption2"].ToString();
                     item.GroupCaption3 = d["GroupCaption3"].ToString();
                     item.CmpId = d["CmpId"].ToString();
+                    item.SupplierCode = d["SupplierCode"].ToString();
 
                     purchase.items.Add(item);
                 }

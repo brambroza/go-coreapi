@@ -97,6 +97,7 @@ namespace goalongapi.Controllers
                     _cmd += ",@MainProdCode='" + Quotation[i].MainProdCode + "'";
                     _cmd += ",@MainSeq=" + Quotation[i].MainSeq;
                     _cmd += ",@SeqSort=" + il;
+                 _cmd += ",@SupplierCode='" + Quotation[i].SupplierCode + "'";
 
                     if (DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran) <= 0)
                     {

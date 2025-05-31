@@ -34,6 +34,8 @@ namespace goalongapi.Models
         public string MainProdCode { get; set; }
         public int MainSeq { get; set; }
         public int SeqSort { get; set; }
+
+        public string SupplierCode { get; set; }
     }
 
     public class saleorderDetail
@@ -62,5 +64,6 @@ namespace goalongapi.Models
         public string UpdUser { get; set; }
 
         public string CmpId { get; set; }
+         public string SupplierCode { get; set; }
     }
 }

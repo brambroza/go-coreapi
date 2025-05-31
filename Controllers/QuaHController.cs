@@ -173,6 +173,7 @@ namespace goalongapi.Controllers
                     item.MainProdCode = d["MainProdCode"].ToString();
                     item.MainSeq = Convert.ToInt32(d["MainSeq"]);
                     item.SeqSort = Convert.ToInt32(d["SeqSort"]);
+                    item.SupplierCode = d["SupplierCode"].ToString();
                     quotaion.Items.Add(item);
                 }
 
