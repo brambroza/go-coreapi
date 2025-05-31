@@ -38,7 +38,7 @@ namespace goalongapi.Models
         public string? Labels { get; set; } = null;
         public string CustomerCode { get; set; }
         public int CreditType { get; set; }
-        
+
         public string ProjectName { get; set; }
         public int VatType { get; set; }
         public string Remark { get; set; }
@@ -60,7 +60,7 @@ namespace goalongapi.Models
         public string TicketId { get; set; }
         public string StateShipAddr { get; set; }
         public string Shiptoother { get; set; }
-       
+
         public string CustomerPODate { get; set; }
 
         public string ShippingMethod { get; set; }
@@ -82,9 +82,9 @@ namespace goalongapi.Models
         public string ServiceReplacement { get; set; }
         public string ServiceBackupConfig { get; set; }
         public string DescriptionShipping { get; set; }
-      
+
         public string ServiceTermsReport { get; set; }
-      
+
 
 
     }
@@ -152,7 +152,7 @@ namespace goalongapi.Models
         public string SaleOrderNo { get; set; }
         public string? Status { get; set; } = null;
         public string SupplierCode { get; set; }
-         
+
     }
 
     public class Project_Task
@@ -174,6 +174,8 @@ namespace goalongapi.Models
         public string EndTime { get; set; } = null;
         public string InstallDescription { get; set; }
         public string CmpId { get; set; }
+    
+        public string? StatusJob { get; set; }
     }
 
     public class Project_TaskInstall
@@ -222,7 +224,7 @@ namespace goalongapi.Models
         public string? DeliveryTime { get; set; } = null;
         public string? CompletionTime { get; set; } = null;
         public string CmpId { get; set; }
-        public List<ProjectTimeline> timeline { get; set; }   
+        public List<ProjectTimeline> timeline { get; set; }
     }
 
     public class ProjectTimeline
@@ -230,6 +232,13 @@ namespace goalongapi.Models
         public string ProjectNo { get; set; }
         public string Title { get; set; }
         public DateTime Time { get; set; }
+        public string CmpId { get; set; }
+    }
+
+    public class ProjectGenerate
+    {
+        public string ProjectNo { get; set; }
+        public string UpdUser { get; set; }
         public string CmpId { get; set; }
     }
 }

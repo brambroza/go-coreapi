@@ -72,6 +72,7 @@ namespace goalongapi.Models
         public string CmpId { get; set; }
         public string? SupplierCode { get; set; }
         public string? PurchaseReqNo { get; set; }
+        public string? PurchaseNoRef { get; set; }
     }
 
     public class TicketPurchase

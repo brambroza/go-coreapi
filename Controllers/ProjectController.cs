@@ -178,6 +178,7 @@ namespace goalongapi.Controllers
                             EndTime = d["EndTime"].ToString(),
                             InstallDescription = d["InstallDescription"].ToString(),
                             CmpId = d["CmpId"].ToString(),
+                            StatusJob = d["StatusJob"].ToString(), 
                             Resource = d["Resource"]
                                 .ToString()
                                 .Split(',')
@@ -946,6 +947,45 @@ namespace goalongapi.Controllers
             }
         }
 
+
+        [HttpPost("[action]")]
+        public ActionResult setProjectGenerate(ProjectGenerate project)
+        {
+            System.Globalization.CultureInfo thaiCulture = new System.Globalization.CultureInfo(
+                "th-TH"
+            );
+            thaiCulture.DateTimeFormat.Calendar = new System.Globalization.GregorianCalendar();
+
+            MsgReturn msgretrun = new MsgReturn();
+
+            try
+            {
+                string _cmd = "";
+                _cmd = "exec  dbo.setProject_TaskGenerate";
+                _cmd += " @UpdUser  ='" + project.UpdUser + "'";
+                _cmd += ",@ProjectNo  ='" + project.ProjectNo + "'";
+                _cmd += ",@CmpId  ='" + project.CmpId + "'"; 
+                
+                if (DB.DBConn.ExecuteOnly(_cmd))
+                {
+                    msgretrun.ReturnCode = "200";
+                    msgretrun.Msg = "Save Success !!";
+                    return Ok(msgretrun);
+                }
+                else
+                {
+                    msgretrun.ReturnCode = "400";
+                    msgretrun.Msg = "Error !!";
+                    return BadRequest(msgretrun);
+                }
+            }
+            catch
+            {
+                msgretrun.ReturnCode = "400";
+                msgretrun.Msg = "Error !!";
+                return Ok(msgretrun);
+            }
+        }
         [HttpPost("[action]")]
         public ActionResult setProject(Project project)
         {
