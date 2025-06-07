@@ -247,5 +247,6 @@ namespace goalongapi.Models
         public string TicketId { get; set; }
         public string RouteId { get; set; }
         public string CmpId { get; set; }
+        public string? TaskId  { get; set; } = null;
     }
 }

@@ -29,6 +29,8 @@ namespace goalongapi.Models
         public List<Project_File> attachfile { get; set; }
         public List<ProjectCost> costs { get; set; }
 
+        public List<Project_Assign>? Assign { get; set; }
+
         public ProjectHistory? history { get; set; } = null;
 
         public string Title { get; set; }
@@ -84,8 +86,12 @@ namespace goalongapi.Models
         public string DescriptionShipping { get; set; }
 
         public string ServiceTermsReport { get; set; }
+        public int? Seq { get; set; } = null;
+        public string? TaskName { get; set; }
 
 
+        public string? TaskNo { get; set; }
+        public string? TaskId { get; set; }
 
     }
 
@@ -168,14 +174,17 @@ namespace goalongapi.Models
         public List<String> Resource { get; set; }
         public decimal DayQty { get; set; }
         public decimal Time { get; set; }
-        public string StartDate { get; set; } = null;
-        public string StartTime { get; set; } = null;
-        public string EndDate { get; set; } = null;
-        public string EndTime { get; set; } = null;
+        public string? StartDate { get; set; }
+        public string? StartTime { get; set; }
+        public string? EndDate { get; set; }
+        public string? EndTime { get; set; }
         public string InstallDescription { get; set; }
         public string CmpId { get; set; }
-    
+
         public string? StatusJob { get; set; }
+
+        public string TaskNo { get; set; }
+        public string TaskId { get; set; }
     }
 
     public class Project_TaskInstall
@@ -202,7 +211,9 @@ namespace goalongapi.Models
         public int Seq { get; set; }
         public string FileName { get; set; }
         public string FilePath { get; set; }
-        public byte[] Files { get; set; }
+        public string TaskId { get; set; }
+        public string CmpId { get; set; }
+
     }
 
     public class ProjectCost
@@ -241,4 +252,47 @@ namespace goalongapi.Models
         public string UpdUser { get; set; }
         public string CmpId { get; set; }
     }
+
+    public class ServiceTask
+    {
+        public string UpdUser { get; set; }
+        public string TaskNo { get; set; }
+        public string TaskId { get; set; }
+        public string CmpId { get; set; }
+        public string CustCode { get; set; }
+        public string Priority { get; set; }
+        public string Title { get; set; }
+        public string DueDate { get; set; }
+        public string RouteId { get; set; }
+        public string TaskStatus { get; set; }
+
+    }
+
+    public class Project_Assign
+    {
+        public string UpdUser { get; set; }
+        public string ProjectNo { get; set; }
+        public int Seq { get; set; }
+        public string UserId { get; set; }
+        public string CmpId { get; set; }
+        public string UserFullName { get; set; }
+        public string ImgPath { get; set; }
+        public string Permission { get; set; }
+        public string RouteId { get; set; }
+        public string RemindId { get; set; }
+
+
+    }
+
+    public class ProjectSplit
+    {
+        public string UpdUser { get; set; }
+        public string TaskId { get; set; }
+        public string CmpId { get; set; }
+        public string TaskIdNew { get; set; }
+        public string TaskNoNew { get; set; }
+        
+    }
+
+
 }

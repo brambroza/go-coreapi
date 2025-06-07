@@ -89,6 +89,10 @@
       "PackagePath": "staticwebassets/230015/4bd09e65-b9be-47a9-8c74-c3d6a9d94810/comment/attachment/8f5dadfa-6593-49d9-88c0-87b3e45d234f.jpg"
     },
     {
+      "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/7ada6587-9ea3-48ec-99fd-1adb04c7dcbe/comment/attachment/test20250411.pdf",
+      "PackagePath": "staticwebassets/230015/7ada6587-9ea3-48ec-99fd-1adb04c7dcbe/comment/attachment/test20250411.pdf"
+    },
+    {
       "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/NIS-2200153/attachfileProjectCost/089391c2-1383-482e-b06c-783378d8f055.pdf",
       "PackagePath": "staticwebassets/230015/NIS-2200153/attachfileProjectCost/089391c2-1383-482e-b06c-783378d8f055.pdf"
     },
@@ -399,6 +403,14 @@
     {
       "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/saleorder/SO-2500305/test20250411.pdf",
       "PackagePath": "staticwebassets/230015/saleorder/SO-2500305/test20250411.pdf"
+    },
+    {
+      "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/servicetask/ed9c0a69-bc55-4e3d-a6b8-f8048fe92b5e/250022/call-b.png",
+      "PackagePath": "staticwebassets/230015/servicetask/ed9c0a69-bc55-4e3d-a6b8-f8048fe92b5e/250022/call-b.png"
+    },
+    {
+      "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/servicetask/ed9c0a69-bc55-4e3d-a6b8-f8048fe92b5e/250022/test20250411.pdf",
+      "PackagePath": "staticwebassets/230015/servicetask/ed9c0a69-bc55-4e3d-a6b8-f8048fe92b5e/250022/test20250411.pdf"
     },
     {
       "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/vendor/images/1e40217c-23bc-4c3b-b0ed-42a58ef98f15.png",

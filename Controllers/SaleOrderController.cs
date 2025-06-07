@@ -353,6 +353,7 @@ namespace goalongapi.Controllers
                     _cmd += " , @RevNo=" + Quotation[i].RevNo;
                     _cmd += " , @FileName='" + Quotation[i].FileName + "'";
                     _cmd += " , @User='" + Quotation[i].UpdUser + "'";
+                   
 
                     if (DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran) <= 0)
                     {

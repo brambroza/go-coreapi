@@ -189,6 +189,32 @@ namespace goalongapi.Controllers
                         }
                         break;
 
+                     case "task":
+                        _cmd =
+                            "Select Top 1  TaskNo  FROM  dbo.Project_task  where  TaskNo='"
+                            + DocNo
+                            + "'";
+                        dt = DB.DBConn.GetDataTable(_cmd);
+                        if (dt.Rows.Count > 0)
+                        {
+                            try
+                            {
+                                _docnew = dt.Rows[0][0].ToString();
+                            }
+                            catch
+                            {
+                                _docnew = "";
+                            }
+                        }
+
+                        if ((_docnew.ToString() == "") || (_docnew.ToLower() == "null"))
+                        {
+                            _cmd =
+                                "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo.TaskNo      select  @Runno   "; // + cmpid  ;
+                            dt = DB.DBConn.GetDataTable(_cmd);
+                        }
+                        break;
+
                     case "rcv":
                         _cmd =
                             "Select Top 1  ReceiveNo  FROM  Inven.Receive  where  ReceiveNo='"
@@ -1018,6 +1044,34 @@ namespace goalongapi.Controllers
                                 "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo."
                                 + cmpid
                                 + "-projectrun      select 'NIS-'+@Runno   "; // + cmpid  ;
+                            dt = DB.DBConn.GetDataTable(_cmd);
+                        }
+                        break;
+
+                     case "task":
+                        _cmd =
+                            "Select Top 1  TaskNo  FROM  dbo.Project_task  where  TaskNo='"
+                            + DocNo
+                            + "' and  CmpId ='"
+                            + cmpid
+                            + "'";
+                        dt = DB.DBConn.GetDataTable(_cmd);
+                        if (dt.Rows.Count > 0)
+                        {
+                            try
+                            {
+                                _docnew = dt.Rows[0][0].ToString();
+                            }
+                            catch
+                            {
+                                _docnew = "";
+                            }
+                        }
+
+                        if ((_docnew.ToString() == "") || (_docnew.ToLower() == "null"))
+                        {
+                            _cmd =
+                                "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo.TaskNo      select  @Runno   "; // + cmpid  ;
                             dt = DB.DBConn.GetDataTable(_cmd);
                         }
                         break;
