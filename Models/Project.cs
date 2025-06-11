@@ -93,6 +93,13 @@ namespace goalongapi.Models
         public string? TaskNo { get; set; }
         public string? TaskId { get; set; }
 
+        public int? StateApprve { get; set; }
+        public int? StateSendApprove { get; set; }
+
+        public string? StateApproveType { get; set; }  
+        
+       
+
     }
 
     public enum MessageType
@@ -291,8 +298,17 @@ namespace goalongapi.Models
         public string CmpId { get; set; }
         public string TaskIdNew { get; set; }
         public string TaskNoNew { get; set; }
-        
+
     }
 
 
+
+    public class ProjectApprove
+    {
+        public string UpdUser { get; set; }
+        public string ProjectNo { get; set; }
+        public string CmpId { get; set; }
+        public int State { get; set; }
+        public string? UserTo { get; set; } 
+    }
 }

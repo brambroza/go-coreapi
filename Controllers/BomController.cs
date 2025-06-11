@@ -58,6 +58,7 @@ namespace goalongapi.Controllers
                 bom.RevNoMax = Convert.ToInt32(r["RevNoMax"]);
                 bom.RevNo = Convert.ToInt32(r["RevNo"]);
                 bom.StateNotification = r["StateNotification"].ToString(); 
+                bom.TicketIdRef = r["TicketIdRef"].ToString();
                 bom.items = new List<SalesBom_Detail>();
                 foreach (
                     DataRow x in dtItem.Select(

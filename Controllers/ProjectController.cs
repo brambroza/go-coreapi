@@ -115,7 +115,11 @@ namespace goalongapi.Controllers
                 project.CreditDate = Convert.ToInt32(r["CreditDate"]);
                 project.ShipOfDay = Convert.ToInt32(r["ShipOfDay"]);
 
+                project.StateApproveType = r["StateApproveType"].ToString();
+                project.StateApprove = Convert.ToInt32(r["StateApprove"]);
+                project.StateSendApprove = Convert.ToInt32(r["StateSendApprove"]);
 
+                project.CustomerContactName = r["CustomerContactName"].ToString();
 
                 project.items = new List<Project_Detail>();
                 project.TotalQty = dtItem.Select("ProjectNo='" + project.ProjectNo + "'").Length;
@@ -184,6 +188,8 @@ namespace goalongapi.Controllers
                                 .Split(',')
                                 .ToList() // Assuming resources are comma-separated
                             ,
+                            TaskNo = d["TaskNo"].ToString(),
+                            TaskId = d["TaskId"].ToString(),
                         }
                     );
                 }
@@ -435,6 +441,7 @@ namespace goalongapi.Controllers
                     project.TaskName = r["ProdDescription"].ToString();
                     project.TaskNo = r["TaskNo"].ToString();
                     project.TaskId = r["TaskId"].ToString();
+                    project.CustomerContactName = r["CustomerContactName"].ToString();
 
                     project.items = new List<Project_Detail>();
                     project.Seq = int.Parse(r["Seq"].ToString());
@@ -1453,6 +1460,7 @@ namespace goalongapi.Controllers
                 }
 
                 _cmd += ", @ServiceTermsReport='" + project.ServiceTermsReport + "'";
+                _cmd += ", @CustomerContactName='" + project.CustomerContactName + "'";
 
                 if (DB.DBConn.ExecuteOnly(_cmd))
                 {
@@ -2179,6 +2187,109 @@ namespace goalongapi.Controllers
 
         
 
+        [HttpPost("[action]")]
+        public IActionResult setProjectApprove([FromBody]  ProjectApprove task)
+        {
+            MsgReturn msgretrun = new MsgReturn();
+ 
+            DB.DBConn.SqlConnectionOpen();
+            DB.DBConn.Cmd = DB.DBConn.Cnn.CreateCommand();
+            DB.DBConn.Tran = DB.DBConn.Cnn.BeginTransaction();
+
+            try
+            {
+                string _cmd = ""; 
+                
+                    _cmd =
+                        "Exec dbo.SetProject_Approve @ProjectNo='"
+                        + task.ProjectNo
+                        + "'";
+                    _cmd += " ,@StateApp='" + task.State + "'";
+                    _cmd += " , @CmpId='" + task.CmpId + "'"; 
+                    _cmd += " , @UpdUser='" + task.UpdUser + "'"; 
+
+                    if (DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran) <= 0)
+                    {
+                        DB.DBConn.Tran.Rollback();
+                        DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
+                        DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
+                        msgretrun.ReturnCode = "400";
+                        msgretrun.Msg = "Error !!";
+                        return Ok(msgretrun);
+                    }
+             
+                DB.DBConn.Tran.Commit();
+                DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
+                DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
+
+                msgretrun.ReturnCode = "200";
+                msgretrun.Msg = "Save Success !!";
+                return Ok(msgretrun);
+            }
+            catch
+            {
+                DB.DBConn.Tran.Rollback();
+                DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
+                DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
+
+                msgretrun.ReturnCode = "400";
+                msgretrun.Msg = "Error !!";
+                return Ok(msgretrun);
+            }
+        }
+        
+         [HttpPost("[action]")]
+        public IActionResult setProjectSendApprove([FromBody]  ProjectApprove task)
+        {
+            MsgReturn msgretrun = new MsgReturn();
+ 
+            DB.DBConn.SqlConnectionOpen();
+            DB.DBConn.Cmd = DB.DBConn.Cnn.CreateCommand();
+            DB.DBConn.Tran = DB.DBConn.Cnn.BeginTransaction();
+
+            try
+            {
+                string _cmd = ""; 
+                
+                    _cmd =
+                        "Exec dbo.SetProject_SendApprove @ProjectNo='"
+                        + task.ProjectNo
+                        + "'";
+                    _cmd += " ,@StateApp='" + task.State + "'";
+                    _cmd += " , @CmpId='" + task.CmpId + "'"; 
+                    _cmd += " , @UpdUser='" + task.UpdUser + "'"; 
+                    _cmd += " , @UserTo='" + task.UserTo + "'"; 
+
+                    if (DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran) <= 0)
+                {
+                    DB.DBConn.Tran.Rollback();
+                    DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
+                    DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
+                    msgretrun.ReturnCode = "400";
+                    msgretrun.Msg = "Error !!";
+                    return Ok(msgretrun);
+                }
+             
+                DB.DBConn.Tran.Commit();
+                DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
+                DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
+
+                msgretrun.ReturnCode = "200";
+                msgretrun.Msg = "Save Success !!";
+                return Ok(msgretrun);
+            }
+            catch
+            {
+                DB.DBConn.Tran.Rollback();
+                DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
+                DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
+
+                msgretrun.ReturnCode = "400";
+                msgretrun.Msg = "Error !!";
+                return Ok(msgretrun);
+            }
+        }
+        
 
     }
 }

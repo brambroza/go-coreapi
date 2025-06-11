@@ -124,7 +124,8 @@ namespace goalongapi.Models
         public List<SalesBom_Detail> items { get; set; }
 
         public string? StateNotification { get; set; } = "";
-        public string? UserApproveTo {get;set;}
+        public string? UserApproveTo { get; set; }
+         public string? TicketIdRef { get; set; }  
     }
 
     public class SalesBomCopy
@@ -142,6 +143,8 @@ namespace goalongapi.Models
         public string CmpId { get; set; }
 
         public string TicketId { get; set; }
+
+       
     }
 
     public class SalesBom_Detail

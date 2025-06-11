@@ -163,6 +163,35 @@ namespace goalongapi.Controllers
                         }
                         break;
 
+
+                    case "pr":
+
+                        _cmd =
+                            "Select Top 1  PurchaseNo  FROM  pur.PurchaseRequest  where  PurchaseNo='"
+                            + DocNo
+                            + "'";
+                        dt = DB.DBConn.GetDataTable(_cmd);
+                        if (dt.Rows.Count > 0)
+                        {
+                            try
+                            {
+                                _docnew = dt.Rows[0][0].ToString();
+                            }
+                            catch
+                            {
+                                _docnew = "";
+                            }
+                        }
+
+                        if ((_docnew.ToString() == "") || (_docnew.ToLower() == "null"))
+                        {
+                            _cmd =
+                                "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo.prrun      select 'PR-'+@Runno   "; // + cmpid  ;
+                            dt = DB.DBConn.GetDataTable(_cmd);
+                        }
+                        break;
+
+
                     case "project":
                         _cmd =
                             "Select Top 1  ProjectNo  FROM  dbo.Project  where  ProjectNo='"
@@ -1014,6 +1043,37 @@ namespace goalongapi.Controllers
                                 "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo.["
                                 + cmpid
                                 + "-porun]     select 'PO-'+@Runno   "; // + cmpid  ;
+                            dt = DB.DBConn.GetDataTable(_cmd);
+                        }
+                        break;
+
+                    case "pr":
+
+                        _cmd =
+                            "Select Top 1  PurchaseNo  FROM  pur.PurchaseRequest  where  PurchaseNo='"
+                            + DocNo
+                            + "' and  CmpId ='"
+                            + cmpid
+                            + "'";
+                        dt = DB.DBConn.GetDataTable(_cmd);
+                        if (dt.Rows.Count > 0)
+                        {
+                            try
+                            {
+                                _docnew = dt.Rows[0][0].ToString();
+                            }
+                            catch
+                            {
+                                _docnew = "";
+                            }
+                        }
+
+                        if ((_docnew.ToString() == "") || (_docnew.ToLower() == "null"))
+                        {
+                            _cmd =
+                                "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo.["
+                                + cmpid
+                                + "-prrun]     select 'PR-'+@Runno   "; // + cmpid  ;
                             dt = DB.DBConn.GetDataTable(_cmd);
                         }
                         break;
