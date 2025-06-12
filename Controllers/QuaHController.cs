@@ -371,7 +371,7 @@ namespace goalongapi.Controllers
             {
                 var quotaion = new QuotationList();
 
-                quotaion.QuotationNo = r["QuotationNo"].ToString();
+                 quotaion.QuotationNo = r["QuotationNo"].ToString();
                 quotaion.QuotationDate = r["QuotationDate"].ToString();
                 quotaion.QuotationBy = r["QuotationBy"].ToString();
                 quotaion.QuotationState = r["QuotationState"].ToString();
@@ -423,6 +423,9 @@ namespace goalongapi.Controllers
                 quotaion.LineId = r["LineId"].ToString();
                 quotaion.BomNo = r["BomNo"].ToString();
                 quotaion.LineQRCodePath = r["LineQRCodePath"].ToString();
+                quotaion.TicketIdRef = r["TicketIdRef"].ToString();
+                quotaion.StateNotification = r["StateNotification"].ToString();
+
                 if (
                     datatableDetail
                         .Select(
@@ -480,6 +483,8 @@ namespace goalongapi.Controllers
                     item.MainProdCode = d["MainProdCode"].ToString();
                     item.MainSeq = Convert.ToInt32(d["MainSeq"]);
                     item.SeqSort = Convert.ToInt32(d["SeqSort"]);
+                    item.SupplierCode = d["SupplierCode"].ToString();
+
                     quotaion.Items.Add(item);
                 }
 
