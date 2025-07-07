@@ -12,13 +12,13 @@ namespace goalongapi.Models
         public string ReceiveNo { get; set; }
         public string ReceiveDate { get; set; }
         public string ReceiveBy { get; set; }
-        public string PurChaseNo { get; set; }
+        public string PurchaseNo { get; set; }
         public string InvoiceNo { get; set; }
         public string InvoiceDate { get; set; }
-        public int ReceiveType { get; set; }
+        public string ReceiveType { get; set; }
         public string CmpId { get; set; }
         public string Remark { get; set; }
-        public int StateApp { get; set; }
+        public string StateApp { get; set; }
         public string AppBy { get; set; }
 
         public string SupplierCode { get; set; }
@@ -29,7 +29,8 @@ namespace goalongapi.Models
         public string? WareHouseName { get; set; }
         public string? WareHouseLocName { get; set; }
         public string? SupplierName { get; set; }
-        public List<InvenTransModel> itmes {get;set;}
+        public string? PurchaseDate { get; set; }
+        public List<InvenTransModel> items { get; set; }
 
     }
 
@@ -47,7 +48,7 @@ namespace goalongapi.Models
         public decimal UnitPrice { get; set; }
         public decimal Qty { get; set; }
         public string UnitCode { get; set; }
-        public string PurChaseNo { get; set; }
+        public string PurchaseNo { get; set; }
         public int StateReserve { get; set; }
         public string BatchNo { get; set; }
         public string Grade { get; set; }
@@ -56,6 +57,7 @@ namespace goalongapi.Models
         public string QCBy { get; set; }
         public string TransType { get; set; }
         public string CmpId { get; set; }
+        public string? ProdDescription { get; set; }
     }
 
 
@@ -103,9 +105,17 @@ namespace goalongapi.Models
         public string CmpId { get; set; }
         public string Remark { get; set; }
         public string DocRef { get; set; }
-        public int WHId { get; set; }
-        public int WHLocId { get; set; }
+        public int SysWHId { get; set; }
+        public int SysWHLocId { get; set; }
         public string ProjectNo { get; set; }
+        public string StateApp { get; set; }
+        public string? WareHouseName { get; set; }
+        public string? WareHouseLocName { get; set; }
+        public string? AppBy { get; set; }
+        public List<InvenTransModel> items { get; set; }
+
+        public string? CustomerName { get; set; }
+        public string? ReferCode { get; set; }
 
     }
 

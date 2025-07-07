@@ -346,7 +346,7 @@ namespace goalongapi.Models
         public int QuotationRevNo { get; set; }
         public int QuotationSeq { get; set; }
           
-        public string SupplierCode { get; set; }
+        public string? SupplierCode { get; set; }
       
     }
 

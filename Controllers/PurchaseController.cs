@@ -72,7 +72,7 @@ namespace goalongapi.Controllers
                 foreach (
                     DataRow d in dtItem.Select(
                         "PurchaseNo ='"
-                            + r["PurchaseNo"].ToString()
+                             + r["PurchaseNo"].ToString()
                             + "'  and RevNo="
                             + Convert.ToInt32(r["RevNo"])
                     )

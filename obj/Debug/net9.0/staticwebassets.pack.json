@@ -929,6 +929,10 @@
       "PackagePath": "staticwebassets/images/9face500-9e62-428e-b0e3-2f3f5aca0ea8.png"
     },
     {
+      "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/GO-ALONG-8.png",
+      "PackagePath": "staticwebassets/images/GO-ALONG-8.png"
+    },
+    {
       "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/Logo KANDA 2021-02.jpg",
       "PackagePath": "staticwebassets/images/Logo KANDA 2021-02.jpg"
     },
@@ -1147,6 +1151,14 @@
     {
       "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/line-user.png",
       "PackagePath": "staticwebassets/images/line-user.png"
+    },
+    {
+      "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/logo.png",
+      "PackagePath": "staticwebassets/images/logo.png"
+    },
+    {
+      "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/ดีไซน์ที่ยังไม่ได้ตั้งชื่อ-12.png",
+      "PackagePath": "staticwebassets/images/ดีไซน์ที่ยังไม่ได้ตั้งชื่อ-12.png"
     },
     {
       "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/reqfromcust/fileall/003870a8-9296-4de5-b2c0-020e58eed7a3.jpg",

@@ -165,6 +165,7 @@ namespace goalongapi.Models
         public string SaleOrderNo { get; set; }
         public string? Status { get; set; } = null;
         public string SupplierCode { get; set; }
+        public string? BarcodeNo { get; set; }  
 
     }
 

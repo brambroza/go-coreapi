@@ -156,6 +156,7 @@ namespace goalongapi.Controllers
                             SaleOrderNo = d["SaleOrderNo"].ToString(),
                             Status = d["Status"].ToString(),
                             SupplierCode = d["SupplierCode"].ToString(),
+                            BarcodeNo = d["BarcodeNo"].ToString(),
                         }
                     );
                 }
@@ -480,6 +481,7 @@ namespace goalongapi.Controllers
                                 type = d["type"].ToString(),
                                 QuotationNo = d["QuotationNo"].ToString(),
                                 SaleOrderNo = d["SaleOrderNo"].ToString(),
+                                BarcodeNo = d["BarcodeNo"].ToString(),
                             }
                         );
                     }
