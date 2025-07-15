@@ -136,6 +136,35 @@ namespace goalongapi.Controllers
                             dt = DB.DBConn.GetDataTable(_cmd);
                         }
                         break;
+
+                 case "count":
+
+                    _cmd =
+                        "Select Top 1  AdjustNo  FROM Inven.[Adjust]  where  AdjustNo='"
+                        + DocNo
+                        + "'";
+                    dt = DB.DBConn.GetDataTable(_cmd);
+                    if (dt.Rows.Count > 0)
+                    {
+                        try
+                        {
+                            _docnew = dt.Rows[0][0].ToString();
+                        }
+                        catch
+                        {
+                            _docnew = "";
+                        }
+                    }
+
+                    if ((_docnew.ToString() == "") || (_docnew.ToLower() == "null"))
+                    {
+                        _cmd =
+                            "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo.countrun      select 'CT-'+@Runno   "; // + cmpid  ;
+                        dt = DB.DBConn.GetDataTable(_cmd);
+                    }
+                    break;
+
+
                     case "pur":
 
                         _cmd =
@@ -1016,6 +1045,39 @@ namespace goalongapi.Controllers
                             dt = DB.DBConn.GetDataTable(_cmd);
                         }
                         break;
+
+                   case "count":
+
+                        _cmd =
+                            "Select Top 1  AdjustNo  FROM Inven.[Adjust]  where  AdjustNo='"
+                            + DocNo
+                            + "' and  CmpId ='"
+                            + cmpid
+                            + "'";
+                        dt = DB.DBConn.GetDataTable(_cmd);
+                        if (dt.Rows.Count > 0)
+                        {
+                            try
+                            {
+                                _docnew = dt.Rows[0][0].ToString();
+                            }
+                            catch
+                            {
+                                _docnew = "";
+                            }
+                        }
+
+                        if ((_docnew.ToString() == "") || (_docnew.ToLower() == "null"))
+                        {
+                            _cmd =
+                                "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo.["
+                                + cmpid
+                                + "-count]      select 'AD-'+@Runno   "; // + cmpid  ;
+                            dt = DB.DBConn.GetDataTable(_cmd);
+                        }
+                        break;
+
+
                     case "pur":
 
                         _cmd =
@@ -1964,6 +2026,34 @@ namespace goalongapi.Controllers
                         dt = DB.DBConn.GetDataTable(_cmd);
                     }
                     break;
+
+                case "count":
+
+                    _cmd =
+                        "Select Top 1  AdjustNo  FROM Inven.[Adjust]  where  AdjustNo='"
+                        + DocNo
+                        + "'";
+                    dt = DB.DBConn.GetDataTable(_cmd);
+                    if (dt.Rows.Count > 0)
+                    {
+                        try
+                        {
+                            _docnew = dt.Rows[0][0].ToString();
+                        }
+                        catch
+                        {
+                            _docnew = "";
+                        }
+                    }
+
+                    if ((_docnew.ToString() == "") || (_docnew.ToLower() == "null"))
+                    {
+                        _cmd =
+                            "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo.adjrun      select 'CT-'+@Runno   "; // + cmpid  ;
+                        dt = DB.DBConn.GetDataTable(_cmd);
+                    }
+                    break;
+
                 case "pur":
 
                     _cmd =

@@ -98,7 +98,7 @@ namespace goalongapi.Models
 
         public string? StateApproveType { get; set; }  
         
-       
+        public List<ServiceTaskItem>? SubTaskItem { get; set; }
 
     }
 
@@ -275,6 +275,22 @@ namespace goalongapi.Models
         public string TaskStatus { get; set; }
 
     }
+
+
+
+    public class ServiceTaskItem
+    {
+        public string UpdUser { get; set; }
+        public string TaskId { get; set; }
+        public string CmpId { get; set; }
+        public string Description { get; set; }
+        public int? Seq { get; set; }
+        public string? StateFinish { get; set; }
+        
+
+    }
+
+
 
     public class Project_Assign
     {

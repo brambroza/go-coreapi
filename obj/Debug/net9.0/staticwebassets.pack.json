@@ -89,6 +89,10 @@
       "PackagePath": "staticwebassets/230015/4bd09e65-b9be-47a9-8c74-c3d6a9d94810/comment/attachment/8f5dadfa-6593-49d9-88c0-87b3e45d234f.jpg"
     },
     {
+      "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/72F8F281-0917-49F3-9D2B-F9831A22CDE2/comment/attachment/Quo_GoAlong-DTBB(AP)_R1.pdf",
+      "PackagePath": "staticwebassets/230015/72F8F281-0917-49F3-9D2B-F9831A22CDE2/comment/attachment/Quo_GoAlong-DTBB(AP)_R1.pdf"
+    },
+    {
       "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/7ada6587-9ea3-48ec-99fd-1adb04c7dcbe/comment/attachment/test20250411.pdf",
       "PackagePath": "staticwebassets/230015/7ada6587-9ea3-48ec-99fd-1adb04c7dcbe/comment/attachment/test20250411.pdf"
     },
@@ -403,6 +407,14 @@
     {
       "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/saleorder/SO-2500305/test20250411.pdf",
       "PackagePath": "staticwebassets/230015/saleorder/SO-2500305/test20250411.pdf"
+    },
+    {
+      "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/servicetask/72F8F281-0917-49F3-9D2B-F9831A22CDE2/250067/lineidton.jpg",
+      "PackagePath": "staticwebassets/230015/servicetask/72F8F281-0917-49F3-9D2B-F9831A22CDE2/250067/lineidton.jpg"
+    },
+    {
+      "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/servicetask/72F8F281-0917-49F3-9D2B-F9831A22CDE2/250067/test20250411.pdf",
+      "PackagePath": "staticwebassets/230015/servicetask/72F8F281-0917-49F3-9D2B-F9831A22CDE2/250067/test20250411.pdf"
     },
     {
       "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/servicetask/ed9c0a69-bc55-4e3d-a6b8-f8048fe92b5e/250022/call-b.png",

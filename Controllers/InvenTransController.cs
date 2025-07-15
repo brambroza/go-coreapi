@@ -344,7 +344,7 @@ namespace goalongapi.Controllers
 
 
         [HttpGet("[action]")]
-        public IActionResult getCheckBarcodeNo([FromQuery] string CmpId , [FromQuery] string BarcodeNo)
+        public IActionResult getCheckBarcodeNo([FromQuery] string CmpId, [FromQuery] string BarcodeNo)
         {
             try
             {
@@ -352,30 +352,75 @@ namespace goalongapi.Controllers
                 string _cmd = "exec dbo.[inven_check_barcode_issue] @CmpId='" + CmpId + "' , @BarcodeNo='" + BarcodeNo + "'";
                 dt = DB.DBConn.GetDataTable(_cmd);
 
-             
+
 
                 string JSONString = string.Empty;
                 JSONString = JsonConvert.SerializeObject(dt);
 
-               var prodlist = new List<Dictionary<string, object>>();
-                 foreach (DataRow row in dt.Rows)
-                 {
-                     var eventObj = new Dictionary<string, object>();
-                     foreach (DataColumn column in dt.Columns)
-                     {
-                         string lowercaseColumnName =
-                             char.ToLowerInvariant(column.ColumnName[0])
-                             + column.ColumnName.Substring(1);
+                var prodlist = new List<Dictionary<string, object>>();
+                foreach (DataRow row in dt.Rows)
+                {
+                    var eventObj = new Dictionary<string, object>();
+                    foreach (DataColumn column in dt.Columns)
+                    {
+                        string lowercaseColumnName =
+                            char.ToLowerInvariant(column.ColumnName[0])
+                            + column.ColumnName.Substring(1);
 
-                         eventObj[lowercaseColumnName] = row[column];
-                     }
+                        eventObj[lowercaseColumnName] = row[column];
+                    }
 
-                     prodlist.Add(eventObj);
-                 }
+                    prodlist.Add(eventObj);
+                }
 
 
-                     return Ok(  prodlist  ); 
- 
+                return Ok(prodlist);
+
+
+
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = "An error occurred while fetching products.", Details = ex.Message });
+            }
+        }
+
+
+
+
+        [HttpGet("[action]")]
+        public IActionResult getCheckBarcodeNoForReturnSupl([FromQuery] string CmpId, [FromQuery] string BarcodeNo)
+        {
+            try
+            {
+                DataTable dt = new System.Data.DataTable();
+                string _cmd = "exec dbo.[inven_check_barcode_returnsupl] @CmpId='" + CmpId + "' , @BarcodeNo='" + BarcodeNo + "'";
+                dt = DB.DBConn.GetDataTable(_cmd);
+
+
+
+                string JSONString = string.Empty;
+                JSONString = JsonConvert.SerializeObject(dt);
+
+                var prodlist = new List<Dictionary<string, object>>();
+                foreach (DataRow row in dt.Rows)
+                {
+                    var eventObj = new Dictionary<string, object>();
+                    foreach (DataColumn column in dt.Columns)
+                    {
+                        string lowercaseColumnName =
+                            char.ToLowerInvariant(column.ColumnName[0])
+                            + column.ColumnName.Substring(1);
+
+                        eventObj[lowercaseColumnName] = row[column];
+                    }
+
+                    prodlist.Add(eventObj);
+                }
+
+
+                return Ok(prodlist);
+
 
 
             }

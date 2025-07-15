@@ -221,6 +221,9 @@ namespace goalongapi.Controllers
                 case "deliveryterms":
                     _cmd = "exec dbo.get_DeliveryTerms @CmpId='" + cmpid + "'";
                     break;
+                case "adjustreason":
+                    _cmd = "exec dbo.get_AdjustReason @CmpId='" + cmpid + "'";
+                    break;
                 default:
                     _cmd = "exec dbo.get_ShippingMethod @CmpId='" + cmpid + "'";
                     break;
@@ -282,6 +285,9 @@ namespace goalongapi.Controllers
                     case "deliveryterms":
                         _cmd = "exec dbo.set_DeliveryTerms  ";
                         break;
+                     case "adjustreason":
+                        _cmd = "exec dbo.set_AdjustReason  ";
+                        break;
                     default:
                         _cmd = "exec dbo.set_ShippingMethod ";
                         break;
@@ -339,6 +345,9 @@ namespace goalongapi.Controllers
                         break;
                     case "deliveryterms":
                         _cmd = "delete from  dbo.DeliveryTerms  ";
+                        break;
+                    case "adjustreason":
+                        _cmd = "delete from [inven].[AdjustReason]  ";
                         break;
                     default:
                         _cmd = "delete from  dbo.ShippingMethod ";

@@ -24,11 +24,26 @@ namespace goalongapi.Controllers.Master
             DataTable dt = new System.Data.DataTable();
             string _cmd;
             _cmd = "exec dbo.getmProblemType @CmpId=" + cmpid + "";
-            dt = DB.DBConn.GetDataTable(_cmd);
-            string JSONString = string.Empty;
-            JSONString = JsonConvert.SerializeObject(dt);
+            dt = DB.DBConn.GetDataTable(_cmd); 
 
-            return Ok(JSONString);
+                var prodlist = new List<Dictionary<string, object>>();
+                foreach (DataRow row in dt.Rows)
+                {
+                    var eventObj = new Dictionary<string, object>();
+                    foreach (DataColumn column in dt.Columns)
+                    {
+                        string lowercaseColumnName =
+                            char.ToLowerInvariant(column.ColumnName[0])
+                            + column.ColumnName.Substring(1);
+
+                        eventObj[lowercaseColumnName] = row[column];
+                    }
+
+                    prodlist.Add(eventObj);
+                }
+
+
+                return Ok(prodlist);
         } 
 
 
@@ -59,7 +74,7 @@ namespace goalongapi.Controllers.Master
                 {
                     msgretrun.ReturnCode = "400";
                     msgretrun.Msg = "Error !!";
-                    return Ok(msgretrun);
+                    return BadRequest(msgretrun);
                 }
 
             }

@@ -396,6 +396,24 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\230015\4bd09e65-b9be-47a9-8c74-c3d6a9d94810\comment\attachment\8f5dadfa-6593-49d9-88c0-87b3e45d234f.jpg'))</OriginalItemSpec>
     </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\230015\72F8F281-0917-49F3-9D2B-F9831A22CDE2\comment\attachment\Quo_GoAlong-DTBB(AP)_R1.pdf'))">
+      <SourceType>Package</SourceType>
+      <SourceId>goalongapi</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/goalongapi</BasePath>
+      <RelativePath>230015/72F8F281-0917-49F3-9D2B-F9831A22CDE2/comment/attachment/Quo_GoAlong-DTBB(AP)_R1.pdf</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <Fingerprint>22fkww8505</Fingerprint>
+      <Integrity>xhZVDY9vmaHcra2fPauhfCv4izq1pJwwslvQQ1Z4gwM=</Integrity>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\230015\72F8F281-0917-49F3-9D2B-F9831A22CDE2\comment\attachment\Quo_GoAlong-DTBB(AP)_R1.pdf'))</OriginalItemSpec>
+    </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\230015\7ada6587-9ea3-48ec-99fd-1adb04c7dcbe\comment\attachment\test20250411.pdf'))">
       <SourceType>Package</SourceType>
       <SourceId>goalongapi</SourceId>
@@ -1817,6 +1835,42 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\230015\saleorder\SO-2500305\test20250411.pdf'))</OriginalItemSpec>
+    </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\230015\servicetask\72F8F281-0917-49F3-9D2B-F9831A22CDE2\250067\lineidton.jpg'))">
+      <SourceType>Package</SourceType>
+      <SourceId>goalongapi</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/goalongapi</BasePath>
+      <RelativePath>230015/servicetask/72F8F281-0917-49F3-9D2B-F9831A22CDE2/250067/lineidton.jpg</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <Fingerprint>ucs598u8b6</Fingerprint>
+      <Integrity>MjjHXHZasa74kvmlxV7yk/qDTHgqmztF1Yjtoja8kfY=</Integrity>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\230015\servicetask\72F8F281-0917-49F3-9D2B-F9831A22CDE2\250067\lineidton.jpg'))</OriginalItemSpec>
+    </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\230015\servicetask\72F8F281-0917-49F3-9D2B-F9831A22CDE2\250067\test20250411.pdf'))">
+      <SourceType>Package</SourceType>
+      <SourceId>goalongapi</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/goalongapi</BasePath>
+      <RelativePath>230015/servicetask/72F8F281-0917-49F3-9D2B-F9831A22CDE2/250067/test20250411.pdf</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <Fingerprint>hcmbo72pxo</Fingerprint>
+      <Integrity>H8ZiZQmRp93rvJjzQ7ybZIMTsSAUCA9JmhfWa5IR1So=</Integrity>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\230015\servicetask\72F8F281-0917-49F3-9D2B-F9831A22CDE2\250067\test20250411.pdf'))</OriginalItemSpec>
     </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\230015\servicetask\ed9c0a69-bc55-4e3d-a6b8-f8048fe92b5e\250022\call-b.png'))">
       <SourceType>Package</SourceType>

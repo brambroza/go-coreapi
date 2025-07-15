@@ -82,18 +82,13 @@ namespace goalongapi.Controllers
             }
         }
 
-
-
-
-
-
         [HttpPost("[action]")]
         public IActionResult setLogClick([FromBody] LogRequest log)
         {
+            
             _rabbitMQService.SendLog(log);
             return Ok();
         }
-
 
         [HttpPost("[action]")]
         public IActionResult setLogTrans([FromBody] LogTrans log)
