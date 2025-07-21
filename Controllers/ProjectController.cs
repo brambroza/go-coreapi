@@ -356,6 +356,8 @@ namespace goalongapi.Controllers
             return Ok(projects);
         }
 
+
+
         [HttpGet("[action]")]
         public ActionResult getProjectKanban([FromQuery] string CmpId, [FromQuery] string user)
         {
@@ -1205,6 +1207,1260 @@ namespace goalongapi.Controllers
             JSONString = JsonConvert.SerializeObject(datatable2);
             return Ok(JSONString);
         }
+
+
+
+
+
+        [HttpGet("[action]")]
+        public ActionResult getServiceTasklist([FromQuery] string CmpId, [FromQuery] string user)
+        {
+              string _cmd;
+
+            _cmd = "exec dbo.GetServiceTaskAll @CmpId='" + CmpId + "' , @User='" + user + "'";
+            DataTable dtTaskAll = DB.DBConn.GetDataTable(_cmd);
+
+            _cmd = "exec dbo.GetProjectKanbanAll @CmpId='" + CmpId + "' , @User='" + user + "'";
+            DataTable dt = DB.DBConn.GetDataTable(_cmd);
+
+            _cmd = "exec dbo.GetProjectItemAll @CmpId='" + CmpId + "' ";
+            DataTable dtItem = DB.DBConn.GetDataTable(_cmd);
+
+            _cmd = "exec dbo.GetProjecttaskAll @CmpId='" + CmpId + "' ";
+            DataTable dtTask = DB.DBConn.GetDataTable(_cmd);
+
+            _cmd = "exec dbo.GetProjecttaskSubAll @CmpId='" + CmpId + "' ";
+            DataTable dtTaskSub = DB.DBConn.GetDataTable(_cmd);
+
+            _cmd = "exec dbo.GetProjectInstalltaskAll @CmpId='" + CmpId + "'  ";
+            DataTable dtInstall = DB.DBConn.GetDataTable(_cmd);
+
+            _cmd = "exec dbo.getProjectCostAll @CmpId='" + CmpId + "'";
+            DataTable dtCost = DB.DBConn.GetDataTable(_cmd);
+
+            _cmd = "exec dbo.GetProjecttask_resourceAll @CmpId='" + CmpId + "'";
+            DataTable dtResource = DB.DBConn.GetDataTable(_cmd);
+
+            _cmd = "exec dbo.GetProjectFileAll @CmpId='" + CmpId + "'";
+            DataTable dtfiles = DB.DBConn.GetDataTable(_cmd);
+
+            _cmd = "exec dbo.GetProjectHistoryAll @CmpId='" + CmpId + "'";
+            DataTable dtHis = DB.DBConn.GetDataTable(_cmd);
+
+            _cmd = "exec dbo.GetProjectTimelineAll @CmpId='" + CmpId + "'";
+            DataTable dtTime = DB.DBConn.GetDataTable(_cmd);
+
+            _cmd = "exec dbo.getCustomer @CmpId='" + CmpId + "' , @Type='0'";
+            DataTable dtcust = DB.DBConn.GetDataTable(_cmd);
+
+            _cmd = "exec dbo.getContact @CmpId='" + CmpId + "'";
+            DataTable dtContact = DB.DBConn.GetDataTable(_cmd);
+
+
+             _cmd = "exec dbo.[getProblem] @CmpId=" + CmpId + " ,  @User='" + user + "'";
+            DataTable dtb = DB.DBConn.GetDataTable(_cmd);
+
+
+            _cmd = "exec dbo.[getProblem_Assign] @CmpId=" + CmpId + " ,  @User='" + user + "'";
+            DataTable dta = DB.DBConn.GetDataTable(_cmd);
+
+
+            _cmd = "exec dbo.[getProblem_File] @CmpId=" + CmpId + " ,  @User='" + user + "'";
+            DataTable dtf = DB.DBConn.GetDataTable(_cmd);
+
+          _cmd = "exec dbo.[getProblemActions_All] @CmpId=" + CmpId + " ,  @User='" + user + "'";
+           DataTable dtba = DB.DBConn.GetDataTable(_cmd);
+
+          _cmd = "exec dbo.[getProblemActions_Actions_All] @CmpId=" + CmpId + " ,  @User='" + user + "'";
+           DataTable dtbb = DB.DBConn.GetDataTable(_cmd);
+
+          _cmd = "exec dbo.[getProblemActions_Files_All] @CmpId=" + CmpId + " ,  @User='" + user + "'";
+           DataTable dtbf = DB.DBConn.GetDataTable(_cmd);
+
+
+
+
+            string _DocType = "customer";
+
+            List<Project> projects = new List<Project>();
+
+            List<ServiceTask> serviceTasks = new List<ServiceTask>();
+
+ 
+
+
+
+            foreach (DataRow tx in dtTaskAll.Rows)
+            {
+                var serviceTask = new ServiceTask();
+                serviceTask.UpdUser = tx["UpdUser"].ToString();
+                serviceTask.TaskNo = tx["TaskNo"].ToString();
+                serviceTask.TaskId = tx["TaskId"].ToString();
+                serviceTask.CmpId = tx["CmpId"].ToString();
+                serviceTask.CustCode = tx["CustCode"].ToString();
+                serviceTask.Priority = tx["Priority"].ToString();
+                serviceTask.DueDate = tx["DueDate"].ToString();
+                serviceTask.RouteId = tx["RouteId"].ToString();
+                serviceTask.TaskStatus = tx["TaskStatus"].ToString();
+                serviceTask.DocRef = tx["DocRef"].ToString();
+                serviceTask.TaskDate = tx["TaskDate"].ToString();
+                serviceTask.TaskTime = tx["TaskTime"].ToString();
+                serviceTask.RequestBy = tx["RequestBy"].ToString();
+                serviceTask.Type = tx["Type"].ToString();
+                serviceTask.customer = new CustomerList();
+
+                foreach (DataRow d in dtcust.Select("CustomerCode='" + serviceTask.CustCode + "'"))
+                    {
+                        var customer = new CustomerList();
+
+                        customer.UpdUser = d["UpdUser"].ToString();
+                        customer.CustomerCode = d["CustomerCode"].ToString();
+                        customer.CustomerName = d["CustomerName"].ToString();
+                        customer.CustomerAddress = d["CustomerAddress"].ToString();
+                        customer.CustomerTaxNo = d["CustomerTaxNo"].ToString();
+                        customer.CustomerBranch = d["CustomerBranch"].ToString();
+                        customer.CustomerBranchCode = d["CustomerBranchCode"].ToString();
+                        customer.CustomerBranchName = d["CustomerBranchName"].ToString();
+                        customer.ContactName = d["ContactName"].ToString();
+                        customer.ContactEmail = d["ContactEmail"].ToString();
+                        customer.ContactPhone = d["ContactPhone"].ToString();
+                        customer.ContactName1 = d["ContactName1"].ToString();
+                        customer.ContactEmail1 = d["ContactEmail1"].ToString();
+                        customer.ContactPhone1 = d["ContactPhone1"].ToString();
+                        customer.CreditDay = Convert.ToInt32(d["CreditDay"]);
+                        customer.PhoneOffice = d["PhoneOffice"].ToString();
+                        customer.FaxOffice = d["FaxOffice"].ToString();
+                        customer.Website = d["Website"].ToString();
+                        customer.AddressShip = d["AddressShip"].ToString();
+                        customer.Remark = d["Remark"].ToString();
+                        customer.CmpId = d["CmpId"].ToString();
+                        customer.ContactName2 = d["ContactName2"].ToString();
+                        customer.ContactEmail2 = d["ContactEmail2"].ToString();
+                        customer.ContactPhone2 = d["ContactPhone2"].ToString();
+                        customer.ContactPosition2 = d["ContactPosition2"].ToString();
+                        customer.ContactPosition1 = d["ContactPosition1"].ToString();
+                        customer.ContactPosition = d["ContactPosition"].ToString();
+                        customer.AddrSubDistrict = d["AddrSubDistrict"].ToString();
+                        customer.AddrDistrict = d["AddrDistrict"].ToString();
+                        customer.AddrProvince = d["AddrProvince"].ToString();
+                        customer.AddrPostCode = d["AddrPostCode"].ToString();
+                        customer.ImgPath = d["ImgPath"].ToString();
+                        customer.CreditAccId = Convert.ToInt32(d["CreditAccId"]);
+                        customer.DebitAccId = Convert.ToInt32(d["DebitAccId"]);
+                        customer.BusinessGrpCode = d["BusinessGrpCode"].ToString();
+                        customer.StateCustomer = d["StateCustomer"].ToString();
+                        customer.StateVendor = d["StateVendor"].ToString();
+
+                        customer.contacts = new List<ContactList>();
+
+                        foreach (
+                            DataRow c in dtContact.Select(
+                                "DocType='" + _DocType + "' and DocNo='" + customer.CustomerCode + "'"
+                            )
+                        )
+                        {
+                            var item = new ContactList();
+                            item.UpdUser = c["UpdUser"].ToString();
+                            item.ContactName = c["ContactName"].ToString();
+                            item.ContactPhone = c["ContactPhone"].ToString();
+                            item.ContactEmail = c["ContactEmail"].ToString();
+                            item.ContactPosition = c["ContactPosition"].ToString();
+                            item.ContactLineId = c["ContactLineId"].ToString();
+                            item.Remark = c["Remark"].ToString();
+                            item.CmpId = c["CmpId"].ToString();
+                            item.ContactId = c["ContactId"].ToString();
+                            item.ImgPath = c["ImgPath"].ToString();
+                            item.DocNo = c["DocNo"].ToString();
+                            item.DocType = c["DocType"].ToString();
+
+                            customer.contacts.Add(item);
+                        }
+
+                        serviceTask.customer = customer;
+                    }
+
+
+
+                serviceTask.project = new Project();
+
+                foreach (DataRow r in dt.Select("TaskId='" + serviceTask.TaskId + "'"))
+                {
+                    var project = new Project();
+                    project.UpdUser = r["UpdUser"].ToString();
+                    project.ProjectNo = r["ProjectNo"].ToString();
+                    project.CustomerCode = r["CustCode"].ToString();
+                    project.CustomerName = r["CustomerName"].ToString();
+                    project.Description = r["Description"].ToString();
+                    project.CmpId = r["CmpId"].ToString();
+                    project.PurchaseNo = r["PurchaseNo"].ToString();
+                    project.QuotationNo = r["QuotationNo"].ToString();
+                    project.ReferCode = r["ReferCode"].ToString();
+                    project.StateActive = r["StateActive"].ToString();
+                    project.ProjectDueDate = r["ProjectDueDate"].ToString();
+                    project.ProjectDate = r["ProjectDate"].ToString();
+                    project.SaleOrderNo = r["SaleOrderNo"].ToString();
+                    project.Title = r["Title"].ToString();
+                    project.Priority = r["Priority"].ToString();
+                    project.RouteId = r["RouteId"].ToString();
+                    project.Labels = r["Labels"].ToString();
+                    project.RouteName = r["RouteName"].ToString();
+                    project.TaskName = r["ProdDescription"].ToString();
+                    project.TaskNo = r["TaskNo"].ToString();
+                    project.TaskId = r["TaskId"].ToString();
+
+                    project.items = new List<Project_Detail>();
+                    project.Seq = int.Parse(r["Seq"].ToString());
+                    project.TotalQty = dtItem
+                        .Select("ProjectNo='" + project.ProjectNo + "' and Seq=" + project.Seq + "")
+                        .Length;
+
+                    foreach (DataRow d in dtItem.Select("ProjectNo='" + project.ProjectNo + "' and Seq=" + project.Seq))
+                    {
+                        project.items.Add(
+                            new Project_Detail
+                            {
+                                UpdUser = d["UpdUser"].ToString(),
+                                ProjectNo = d["ProjectNo"].ToString(),
+                                Seq = Convert.ToInt32(d["Seq"]),
+                                ProdCode = d["ProdCode"].ToString(),
+                                ProdDescription = d["ProdDescription"].ToString(),
+                                Qty = Convert.ToDecimal(d["Qty"]),
+                                UnitCode = d["UnitCode"].ToString(),
+                                UnitPrice = Convert.ToDecimal(d["UnitPrice"]),
+                                Amt = Convert.ToDecimal(d["Amt"]),
+                                DisPer = Convert.ToDecimal(d["DisPer"]),
+                                DisAmt = Convert.ToDecimal(d["DisAmt"]),
+                                NetAmt = Convert.ToDecimal(d["NetAmt"]),
+                                PricePur = Convert.ToDecimal(d["PricePur"]),
+                                CostAmt = Convert.ToDecimal(d["CostAmt"]),
+                                ProfitAmt = Convert.ToDecimal(d["ProfitAmt"]),
+                                GroupCaption1 = d["GroupCaption1"].ToString(),
+                                GroupCaption2 = d["GroupCaption2"].ToString(),
+                                GroupCaption3 = d["GroupCaption3"].ToString(),
+                                PurchaseNo = d["PurchaseNo"].ToString(),
+                                DeliveryDate = d["DeliveryDate"].ToString(),
+                                RevNo = Convert.ToInt32(d["RevNo"]),
+                                imgpath = d["imgpath"].ToString(),
+                                CmpId = d["CmpId"].ToString(),
+                                type = d["type"].ToString(),
+                                QuotationNo = d["QuotationNo"].ToString(),
+                                SaleOrderNo = d["SaleOrderNo"].ToString(),
+                            }
+                        );
+                    }
+
+                    project.tasks = new List<Project_Task>();
+                    foreach (DataRow d in dtTask.Select("ProjectNo='" + project.ProjectNo + "' and Seq=" + project.Seq))
+                    {
+                        project.tasks.Add(
+                            new Project_Task
+                            {
+                                UpdUser = d["UpdUser"].ToString(),
+                                ProjectNo = d["ProjectNo"].ToString(),
+                                Seq = Convert.ToInt32(d["Seq"]),
+                                Description = d["Description"].ToString(),
+                                Qty = Convert.ToDecimal(d["Qty"]),
+                                UnitCode = d["UnitCode"].ToString(),
+                                UnitPrice = Convert.ToDecimal(d["UnitPrice"]),
+                                Amt = Convert.ToDecimal(d["Amt"]),
+                                DayQty = Convert.ToDecimal(d["DayQty"]),
+                                Time = Convert.ToDecimal(d["Time"]),
+                                StartDate = d["StartDate"].ToString(),
+                                StartTime = d["StartTime"].ToString(),
+                                EndDate = d["EndDate"].ToString(),
+                                EndTime = d["EndTime"].ToString(),
+                                InstallDescription = d["InstallDescription"].ToString(),
+                                CmpId = d["CmpId"].ToString(),
+                                TaskNo = d["TaskNo"].ToString(),
+                                TaskId = d["TaskId"].ToString(),
+                                Resource = d["Resource"]
+                                    .ToString()
+                                    .Split(',')
+                                    .ToList() // Assuming resources are comma-separated
+                                ,
+                            }
+                        );
+                    }
+
+                    project.installs = new List<Project_TaskInstall>();
+                    foreach (DataRow d in dtInstall.Select("ProjectNo='" + project.ProjectNo + "' and Seq=" + project.Seq))
+                    {
+                        project.installs.Add(
+                            new Project_TaskInstall
+                            {
+                                UpdUser = d["UpdUser"].ToString(),
+                                ProjectNo = d["ProjectNo"].ToString(),
+                                Seq = Convert.ToInt32(d["Seq"]),
+                                InstallResource = d["InstallResource"]
+                                    .ToString()
+                                    .Split(',')
+                                    .ToList(), // Assuming resources are comma-separated
+                                InstallQty = Convert.ToDecimal(d["InstallQty"]),
+                                InstallStartDate = d["InstallStartDate"].ToString(),
+                                InstallStartTime = d["InstallStartTime"].ToString(),
+                                InstallEndDate = d["InstallEndDate"].ToString(),
+                                InstallEndTime = d["InstallEndTime"].ToString(),
+                                InstallDescription = d["InstallDescription"].ToString(),
+                                CmpId = d["CmpId"].ToString(),
+                            }
+                        );
+                    }
+
+                    project.attachfile = new List<Project_File>();
+                    foreach (DataRow d in dtfiles.Select("TaskId='" + project.TaskId + "'"))
+                    {
+                        project.attachfile.Add(
+                            new Project_File
+                            {
+                                UpdUser = d["UpdUser"].ToString(),
+                                ProjectNo = d["ProjectNo"].ToString(),
+                                Seq = Convert.ToInt32(d["Seq"]),
+                                FileName = d["FileName"].ToString(),
+                                FilePath = d["FilePath"].ToString(),
+                                TaskId = d["TaskId"].ToString(),
+                                CmpId = d["CmpId"].ToString(),
+
+                            }
+                        );
+                    }
+
+                    project.costs = new List<ProjectCost>();
+                    foreach (DataRow d in dtCost.Select("ProjectNo='" + project.ProjectNo + "'"))
+                    {
+                        project.costs.Add(
+                            new ProjectCost
+                            {
+                                UpdUser = d["UpdUser"].ToString(),
+                                ProjectNo = d["ProjectNo"].ToString(),
+                                Seq = Convert.ToInt32(d["Seq"]),
+                                CostDescription = d["CostDescription"].ToString(),
+                                CostAmt = Convert.ToDecimal(d["CostAmt"]),
+                                AttachFile = d["AttachFile"].ToString(),
+                                CmpId = d["CmpId"].ToString(),
+                            }
+                        );
+                    }
+
+                    project.history = new ProjectHistory();
+                    foreach (DataRow d in dtHis.Select("ProjectNo='" + project.ProjectNo + "'"))
+                    {
+                        var hist = new ProjectHistory();
+                        hist.ProjectNo = d["ProjectNo"].ToString();
+                        hist.ProjectTime = d["ProjectTime"].ToString();
+                        hist.PaymentTime = d["PaymentTime"].ToString();
+                        hist.DeliveryTime = d["DeliveryTime"].ToString();
+                        hist.CompletionTime = d["CompletionTime"].ToString();
+                        hist.CmpId = d["CmpId"].ToString();
+
+                        hist.timeline = new List<ProjectTimeline>();
+                        foreach (
+                            DataRow x in dtTime.Select("ProjectNo='" + project.ProjectNo + "'")
+                        )
+                        {
+                            hist.timeline.Add(
+                                new ProjectTimeline
+                                {
+                                    ProjectNo = x["ProjectNo"].ToString(),
+                                    Title = x["Title"].ToString(),
+                                    Time = DateTime.Parse(x["Time"].ToString()),
+                                    CmpId = x["CmpId"].ToString(),
+                                }
+                            );
+                        }
+
+                        project.history = hist;
+                    }
+
+                    project.customer = new CustomerList();
+
+                    foreach (DataRow d in dtcust.Select("CustomerCode='" + project.CustomerCode + "'"))
+                    {
+                        var customer = new CustomerList();
+
+                        customer.UpdUser = d["UpdUser"].ToString() ?? string.Empty;
+                        customer.CustomerCode = d["CustomerCode"].ToString() ?? string.Empty;
+                        customer.CustomerName = d["CustomerName"].ToString() ?? string.Empty;
+                        customer.CustomerAddress = d["CustomerAddress"].ToString() ?? string.Empty;
+                        customer.CustomerTaxNo = d["CustomerTaxNo"].ToString() ?? string.Empty;
+                        customer.CustomerBranch = d["CustomerBranch"].ToString() ?? string.Empty;
+                        customer.CustomerBranchCode = d["CustomerBranchCode"].ToString() ?? string.Empty;
+                        customer.CustomerBranchName = d["CustomerBranchName"].ToString() ?? string.Empty;
+                        customer.ContactName = d["ContactName"].ToString() ?? string.Empty;
+                        customer.ContactEmail = d["ContactEmail"].ToString() ?? string.Empty;
+                        customer.ContactPhone = d["ContactPhone"].ToString() ?? string.Empty;
+                        customer.ContactName1 = d["ContactName1"].ToString() ?? string.Empty;
+                        customer.ContactEmail1 = d["ContactEmail1"].ToString() ?? string.Empty;
+                        customer.ContactPhone1 = d["ContactPhone1"].ToString() ?? string.Empty;
+                        customer.CreditDay = Convert.ToInt32(d["CreditDay"]);
+                        customer.PhoneOffice = d["PhoneOffice"].ToString() ?? string.Empty;
+                        customer.FaxOffice = d["FaxOffice"].ToString() ?? string.Empty;
+                        customer.Website = d["Website"].ToString() ?? string.Empty;
+                        customer.AddressShip = d["AddressShip"].ToString() ?? string.Empty;
+                        customer.Remark = d["Remark"].ToString() ?? string.Empty;
+                        customer.CmpId = d["CmpId"].ToString() ?? string.Empty;
+                        customer.ContactName2 = d["ContactName2"].ToString() ?? string.Empty;
+                        customer.ContactEmail2 = d["ContactEmail2"].ToString() ?? string.Empty;
+                        customer.ContactPhone2 = d["ContactPhone2"].ToString() ?? string.Empty;
+                        customer.ContactPosition2 = d["ContactPosition2"].ToString() ?? string.Empty;
+                        customer.ContactPosition1 = d["ContactPosition1"].ToString() ?? string.Empty;
+                        customer.ContactPosition = d["ContactPosition"].ToString() ?? string.Empty;
+                        customer.AddrSubDistrict = d["AddrSubDistrict"].ToString() ?? string.Empty;
+                        customer.AddrDistrict = d["AddrDistrict"].ToString() ?? string.Empty;
+                        customer.AddrProvince = d["AddrProvince"].ToString() ?? string.Empty;
+                        customer.AddrPostCode = d["AddrPostCode"].ToString() ?? string.Empty;
+                        customer.ImgPath = d["ImgPath"].ToString() ?? string.Empty;
+                        customer.CreditAccId = Convert.ToInt32(d["CreditAccId"]);
+                        customer.DebitAccId = Convert.ToInt32(d["DebitAccId"]);
+                        customer.BusinessGrpCode = d["BusinessGrpCode"].ToString() ?? string.Empty;
+                        customer.StateCustomer = d["StateCustomer"].ToString() ?? string.Empty;
+                        customer.StateVendor = d["StateVendor"].ToString() ?? string.Empty;
+
+                        customer.contacts = new List<ContactList>();
+
+                        foreach (
+                            DataRow c in dtContact.Select(
+                                "DocType='"
+                                    + _DocType
+                                    + "' and DocNo='"
+                                    + customer.CustomerCode
+                                    + "'"
+                            )
+                        )
+                        {
+                            var item = new ContactList();
+                            item.UpdUser = c["UpdUser"].ToString();
+                            item.ContactName = c["ContactName"].ToString();
+                            item.ContactPhone = c["ContactPhone"].ToString();
+                            item.ContactEmail = c["ContactEmail"].ToString();
+                            item.ContactPosition = c["ContactPosition"].ToString();
+                            item.ContactLineId = c["ContactLineId"].ToString();
+                            item.Remark = c["Remark"].ToString();
+                            item.CmpId = c["CmpId"].ToString() ?? string.Empty;
+                            item.ContactId = c["ContactId"].ToString();
+                            item.ImgPath = c["ImgPath"].ToString();
+                            item.DocNo = c["DocNo"].ToString();
+                            item.DocType = c["DocType"].ToString();
+
+                            customer.contacts.Add(item);
+                        }
+
+                        project.customer = customer;
+                    }
+
+
+
+                    project.Assign = new List<Project_Assign>();
+
+                    foreach (DataRow d in dtResource.Select("TaskId='" + project.TaskId + "'"))
+                    {
+                        project.Assign.Add(
+                            new Project_Assign
+                            {
+                                UpdUser = d["UpdUser"].ToString(),
+                                ProjectNo = d["ProjectNo"].ToString(),
+                                Seq = Convert.ToInt32(d["Seq"]),
+
+                                CmpId = d["CmpId"].ToString(),
+                                UserId = d["UserId"].ToString(),
+                                UserFullName = d["UserFullName"].ToString(),
+                                ImgPath = d["ImgPath"].ToString(),
+                                Permission = d["Permission"].ToString(),
+                                RouteId = d["RouteId"].ToString(),
+                                RemindId = d["RemindId"].ToString(),
+                            }
+                        );
+                    }
+
+
+                    project.SubTaskItem = new List<ServiceTaskItem>();
+                    foreach (DataRow d in dtTaskSub.Select("TaskId='" + project.TaskId + "'"))
+                    {
+                        project.SubTaskItem.Add(
+                            new ServiceTaskItem
+                            {
+                                UpdUser = d["UpdUser"].ToString(),
+                                TaskId = d["TaskId"].ToString(),
+                                Seq = Convert.ToInt32(d["Seq"]),
+                                StateFinish = d["StateFinish"].ToString(),
+
+                                CmpId = d["CmpId"].ToString(),
+                                Description = d["Description"].ToString(),
+
+                            }
+                        );
+                    }
+
+
+
+
+                    projects.Add(project);
+                    serviceTask.project = project;
+
+
+            }
+
+
+
+                serviceTask.problem = new STProblem();
+                foreach (DataRow b in dtb.Select("TaskId='" + serviceTask.TaskId + "'"))
+                {
+                    var stproblem = new STProblem();
+                    stproblem.UpdUser = b["UpdUser"].ToString();
+                    stproblem.ProblemId = b["ProblemId"].ToString();
+                    stproblem.ReceiveDate = b["ReceiveDate"].ToString();
+                    stproblem.CustomerCode = b["CustomerCode"].ToString();
+                    stproblem.ContactName = b["ContactName"].ToString();
+                    stproblem.ProblemDetails = b["ProblemDetails"].ToString();
+                    stproblem.ReceiveTime = b["ReceiveTime"].ToString();
+                    stproblem.ProblemType = b["ProblemType"].ToString();
+                    stproblem.CustBranchName = b["CustBranchName"].ToString();
+                    stproblem.CmpId = b["CmpId"].ToString();
+                    stproblem.CustomerName = b["CustomerName"].ToString();
+                    stproblem.RequestBy = b["RequestBy"].ToString();
+
+                    stproblem.ProvinceId = b["ProvinceId"].ToString();
+                    stproblem.Status = b["Status"].ToString();
+                    stproblem.Priority = b["Priority"].ToString();
+                    stproblem.GrpId = b["GrpId"].ToString();
+                    stproblem.TaskNo = b["TaskNo"].ToString();
+                    stproblem.attachfile = new List<STProblem_File>();
+
+                    foreach (DataRow f in dtf.Select("ProblemId='" + stproblem.ProblemId + "'"))
+                    {
+                        var attachfile = new STProblem_File();
+                        attachfile.UpdUser = f["UpdUser"].ToString();
+                        attachfile.ProblemId = f["ProblemId"].ToString();
+                        attachfile.Seq = Convert.ToInt32(f["Seq"].ToString());
+                        attachfile.FileName = f["FileName"].ToString();
+                        attachfile.FilePath = f["FilePath"].ToString();
+                        attachfile.CmpId = f["CmpId"].ToString();
+                        stproblem.attachfile.Add(attachfile);
+
+
+                    }
+
+
+                    stproblem.assign = new List<STProblem_Assign>();
+                    foreach (DataRow f in dta.Select("ProblemId='" + stproblem.ProblemId + "'"))
+                    {
+                        var assign = new STProblem_Assign();
+                        assign.UpdUser = f["UpdUser"].ToString();
+                        assign.ProblemId = f["ProblemId"].ToString(); 
+                        assign.UserFullName = f["UserFullName"].ToString();
+                        assign.ImgPath = f["ImgPath"].ToString();
+                        assign.Permission = f["Permission"].ToString();
+                        assign.RouteId = f["RouteId"].ToString();
+                        assign.RemindId = f["RemindId"].ToString();
+                        assign.UserId = f["UserId"].ToString();
+                        assign.CmpId = f["CmpId"].ToString();
+                        stproblem.assign.Add(assign);
+
+
+                    }
+                     stproblem.action = new STServiceActions();
+                    foreach (DataRow f in dtba.Select("ProblemId='" + stproblem.ProblemId + "'"))
+                    {
+                        var action = new STServiceActions();
+                        action.UpdUser = f["UpdUser"].ToString();
+                        action.ProblemId = f["ProblemId"].ToString();
+                        action.ServiceActionId = f["ServiceActionId"].ToString();
+                        action.ServiceType = Convert.ToInt32(f["ServiceType"].ToString());
+                        action.ActionDetails = f["ActionDetails"].ToString();
+                        action.FinishDate = f["FinishDate"].ToString();
+                        action.FinishTime = f["FinishTime"].ToString();
+                        action.CmpId = f["CmpId"].ToString();
+
+                        action.ActionBy = new List<STServiceActions_Assign>();
+
+                        foreach (DataRow ac in dtbb.Select("ServiceActionId='" + action.ServiceActionId + "'"))
+                        {
+                            var assign = new STServiceActions_Assign();
+                            assign.UpdUser = ac["UpdUser"].ToString();
+                            assign.ServiceActionId = ac["ServiceActionId"].ToString();
+                            assign.UserFullName = ac["UserFullName"].ToString();
+                            assign.ImgPath = ac["ImgPath"].ToString();
+                            assign.Permission = ac["Permission"].ToString();
+                            assign.RouteId = ac["RouteId"].ToString();
+                            assign.RemindId = ac["RemindId"].ToString();
+                            assign.UserId = ac["UserId"].ToString();
+                            assign.CmpId = ac["CmpId"].ToString();
+                            action.ActionBy.Add(assign);
+
+                        }
+
+
+                        action.Attachfile = new List<STServiceActions_File>();
+
+                        foreach (DataRow fa in dtbf.Select("ServiceActionId='" + action.ServiceActionId + "'"))
+                        {
+                            var attachfile = new STServiceActions_File();
+                            attachfile.UpdUser = fa["UpdUser"].ToString();
+                            attachfile.ServiceActionId = fa["ServiceActionId"].ToString();
+                            attachfile.Seq = Convert.ToInt32(fa["Seq"].ToString());
+                            attachfile.FileName = fa["FileName"].ToString();
+                            attachfile.FilePath = fa["FilePath"].ToString();
+                            attachfile.CmpId = fa["CmpId"].ToString();
+                            action.Attachfile.Add(attachfile);
+
+
+                        }
+
+
+                        stproblem.action = action;
+                    }
+
+                    serviceTask.problem = stproblem;
+
+                }
+               
+               
+               
+                serviceTasks.Add(serviceTask);
+
+
+
+
+
+            }
+
+        return Ok(serviceTasks);
+        }
+
+
+
+    [HttpGet("[action]")]
+        public ActionResult getServiceTaskKanban([FromQuery] string CmpId, [FromQuery] string user)
+        {
+            string _cmd;
+            DataTable dtystemroute = new DataTable();
+            _cmd = "exec dbo.sp_getsystemroute @CmpId='" + CmpId + "', @System='Project'";
+            dtystemroute = DB.DBConn.GetDataTable(_cmd);
+
+
+            _cmd = "exec dbo.GetServiceTaskAll @CmpId='" + CmpId + "' , @User='" + user + "'";
+            DataTable dtTaskAll = DB.DBConn.GetDataTable(_cmd);
+
+            _cmd = "exec dbo.GetProjectKanbanAll @CmpId='" + CmpId + "' , @User='" + user + "'";
+            DataTable dt = DB.DBConn.GetDataTable(_cmd);
+
+            _cmd = "exec dbo.GetProjectItemAll @CmpId='" + CmpId + "' ";
+            DataTable dtItem = DB.DBConn.GetDataTable(_cmd);
+
+            _cmd = "exec dbo.GetProjecttaskAll @CmpId='" + CmpId + "' ";
+            DataTable dtTask = DB.DBConn.GetDataTable(_cmd);
+
+             _cmd = "exec dbo.GetProjecttaskSubAll @CmpId='" + CmpId + "' ";
+            DataTable dtTaskSub = DB.DBConn.GetDataTable(_cmd);
+
+            _cmd = "exec dbo.GetProjectInstalltaskAll @CmpId='" + CmpId + "'  ";
+            DataTable dtInstall = DB.DBConn.GetDataTable(_cmd);
+
+            _cmd = "exec dbo.getProjectCostAll @CmpId='" + CmpId + "'";
+            DataTable dtCost = DB.DBConn.GetDataTable(_cmd);
+
+            _cmd = "exec dbo.GetProjecttask_resourceAll @CmpId='" + CmpId + "'";
+            DataTable dtResource = DB.DBConn.GetDataTable(_cmd);
+
+            _cmd = "exec dbo.GetProjectFileAll @CmpId='" + CmpId + "'";
+            DataTable dtfiles = DB.DBConn.GetDataTable(_cmd);
+
+            _cmd = "exec dbo.GetProjectHistoryAll @CmpId='" + CmpId + "'";
+            DataTable dtHis = DB.DBConn.GetDataTable(_cmd);
+
+            _cmd = "exec dbo.GetProjectTimelineAll @CmpId='" + CmpId + "'";
+            DataTable dtTime = DB.DBConn.GetDataTable(_cmd);
+
+            _cmd = "exec dbo.getCustomer @CmpId='" + CmpId + "' , @Type='0'";
+            DataTable dtcust = DB.DBConn.GetDataTable(_cmd);
+
+            _cmd = "exec dbo.getContact @CmpId='" + CmpId + "'";
+            DataTable dtContact = DB.DBConn.GetDataTable(_cmd);
+
+
+            _cmd = "exec dbo.[getProblem] @CmpId=" + CmpId + " ,  @User='" + user + "'";
+            DataTable dtb = DB.DBConn.GetDataTable(_cmd);
+
+
+            _cmd = "exec dbo.[getProblem_Assign] @CmpId=" + CmpId + " ,  @User='" + user + "'";
+            DataTable dta = DB.DBConn.GetDataTable(_cmd);
+
+
+            _cmd = "exec dbo.[getProblem_File] @CmpId=" + CmpId + " ,  @User='" + user + "'";
+            DataTable dtf = DB.DBConn.GetDataTable(_cmd);
+
+         _cmd = "exec dbo.[getProblemActions_All] @CmpId=" + CmpId + " ,  @User='" + user + "'";
+           DataTable dtba = DB.DBConn.GetDataTable(_cmd);
+
+          _cmd = "exec dbo.[getProblemActions_Actions_All] @CmpId=" + CmpId + " ,  @User='" + user + "'";
+           DataTable dtbb = DB.DBConn.GetDataTable(_cmd);
+
+          _cmd = "exec dbo.[getProblemActions_Files_All] @CmpId=" + CmpId + " ,  @User='" + user + "'";
+           DataTable dtbf = DB.DBConn.GetDataTable(_cmd);
+
+
+
+            string _DocType = "customer";
+
+            List<Project> projects = new List<Project>();
+
+            List<Models.Route> routes = new List<Models.Route>();
+            var columns = new List<object>();
+            var tasks = new Dictionary<string, List<object>>();
+            foreach (DataRow rt in dtystemroute.Rows)
+            {
+                var route = new Models.Route();
+                route.CmpId = rt["CmpId"].ToString();
+                route.RouteId = rt["RouteId"].ToString();
+                route.RouteName = rt["RouteName"].ToString();
+                route.Department = rt["Department"].ToString();
+                route.completepercent = double.Parse(rt["completepercent"].ToString());
+                route.Seq = int.Parse(rt["Seq"].ToString());
+
+                columns.Add(route);
+
+                tasks[route.RouteId] = new List<object>();
+
+                foreach (DataRow tx in dtTaskAll.Select("RouteId='" + route.RouteId + "'"))
+                {
+                    var serviceTask = new ServiceTask();
+                    serviceTask.UpdUser = tx["UpdUser"].ToString();
+                    serviceTask.TaskNo = tx["TaskNo"].ToString();
+                    serviceTask.TaskId = tx["TaskId"].ToString();
+                    serviceTask.CmpId = tx["CmpId"].ToString();
+                    serviceTask.CustCode = tx["CustCode"].ToString();
+                    serviceTask.Priority = tx["Priority"].ToString();
+                    serviceTask.DueDate = tx["DueDate"].ToString();
+                    serviceTask.RouteId = tx["RouteId"].ToString();
+                    serviceTask.TaskStatus = tx["TaskStatus"].ToString();
+                    serviceTask.DocRef = tx["DocRef"].ToString();
+                    serviceTask.TaskDate = tx["TaskDate"].ToString();
+                    serviceTask.TaskTime = tx["TaskTime"].ToString();
+                    serviceTask.RequestBy = tx["RequestBy"].ToString();
+                    serviceTask.Type = tx["Type"].ToString();
+                    serviceTask.Title = tx["Title"].ToString();
+                    serviceTask.customer = new CustomerList();
+
+                    foreach (DataRow d in dtcust.Select("CustomerCode='" + serviceTask.CustCode + "'"))
+                    {
+                        var customer = new CustomerList();
+
+                        customer.UpdUser = d["UpdUser"].ToString();
+                        customer.CustomerCode = d["CustomerCode"].ToString();
+                        customer.CustomerName = d["CustomerName"].ToString();
+                        customer.CustomerAddress = d["CustomerAddress"].ToString();
+                        customer.CustomerTaxNo = d["CustomerTaxNo"].ToString();
+                        customer.CustomerBranch = d["CustomerBranch"].ToString();
+                        customer.CustomerBranchCode = d["CustomerBranchCode"].ToString();
+                        customer.CustomerBranchName = d["CustomerBranchName"].ToString();
+                        customer.ContactName = d["ContactName"].ToString();
+                        customer.ContactEmail = d["ContactEmail"].ToString();
+                        customer.ContactPhone = d["ContactPhone"].ToString();
+                        customer.ContactName1 = d["ContactName1"].ToString();
+                        customer.ContactEmail1 = d["ContactEmail1"].ToString();
+                        customer.ContactPhone1 = d["ContactPhone1"].ToString();
+                        customer.CreditDay = Convert.ToInt32(d["CreditDay"]);
+                        customer.PhoneOffice = d["PhoneOffice"].ToString();
+                        customer.FaxOffice = d["FaxOffice"].ToString();
+                        customer.Website = d["Website"].ToString();
+                        customer.AddressShip = d["AddressShip"].ToString();
+                        customer.Remark = d["Remark"].ToString();
+                        customer.CmpId = d["CmpId"].ToString();
+                        customer.ContactName2 = d["ContactName2"].ToString();
+                        customer.ContactEmail2 = d["ContactEmail2"].ToString();
+                        customer.ContactPhone2 = d["ContactPhone2"].ToString();
+                        customer.ContactPosition2 = d["ContactPosition2"].ToString();
+                        customer.ContactPosition1 = d["ContactPosition1"].ToString();
+                        customer.ContactPosition = d["ContactPosition"].ToString();
+                        customer.AddrSubDistrict = d["AddrSubDistrict"].ToString();
+                        customer.AddrDistrict = d["AddrDistrict"].ToString();
+                        customer.AddrProvince = d["AddrProvince"].ToString();
+                        customer.AddrPostCode = d["AddrPostCode"].ToString();
+                        customer.ImgPath = d["ImgPath"].ToString();
+                        customer.CreditAccId = Convert.ToInt32(d["CreditAccId"]);
+                        customer.DebitAccId = Convert.ToInt32(d["DebitAccId"]);
+                        customer.BusinessGrpCode = d["BusinessGrpCode"].ToString();
+                        customer.StateCustomer = d["StateCustomer"].ToString();
+                        customer.StateVendor = d["StateVendor"].ToString();
+
+                        customer.contacts = new List<ContactList>();
+
+                        foreach (
+                            DataRow c in dtContact.Select(
+                                "DocType='" + _DocType + "' and DocNo='" + customer.CustomerCode + "'"
+                            )
+                        )
+                        {
+                            var item = new ContactList();
+                            item.UpdUser = c["UpdUser"].ToString();
+                            item.ContactName = c["ContactName"].ToString();
+                            item.ContactPhone = c["ContactPhone"].ToString();
+                            item.ContactEmail = c["ContactEmail"].ToString();
+                            item.ContactPosition = c["ContactPosition"].ToString();
+                            item.ContactLineId = c["ContactLineId"].ToString();
+                            item.Remark = c["Remark"].ToString();
+                            item.CmpId = c["CmpId"].ToString();
+                            item.ContactId = c["ContactId"].ToString();
+                            item.ImgPath = c["ImgPath"].ToString();
+                            item.DocNo = c["DocNo"].ToString();
+                            item.DocType = c["DocType"].ToString();
+
+                            customer.contacts.Add(item);
+                        }
+
+                        serviceTask.customer = customer;
+                    }
+
+
+
+                    serviceTask.project = new Project();
+
+
+                    foreach (DataRow r in dt.Select("TaskId='" + serviceTask.TaskId + "'"))
+                    {
+                        var project = new Project();
+                        project.UpdUser = r["UpdUser"].ToString();
+                        project.ProjectNo = r["ProjectNo"].ToString();
+                        project.CustomerCode = r["CustCode"].ToString();
+                        project.CustomerName = r["CustomerName"].ToString();
+                        project.Description = r["Description"].ToString();
+                        project.CmpId = r["CmpId"].ToString();
+                        project.PurchaseNo = r["PurchaseNo"].ToString();
+                        project.QuotationNo = r["QuotationNo"].ToString();
+                        project.ReferCode = r["ReferCode"].ToString();
+                        project.StateActive = r["StateActive"].ToString();
+                        project.ProjectDueDate = r["ProjectDueDate"].ToString();
+                        project.ProjectDate = r["ProjectDate"].ToString();
+                        project.SaleOrderNo = r["SaleOrderNo"].ToString();
+                        project.Title = r["Title"].ToString();
+                        project.Priority = r["Priority"].ToString();
+                        project.RouteId = r["RouteId"].ToString();
+                        project.Labels = r["Labels"].ToString();
+                        project.RouteName = r["RouteName"].ToString();
+                        project.TaskName = r["ProdDescription"].ToString();
+                        project.TaskNo = r["TaskNo"].ToString();
+                        project.TaskId = r["TaskId"].ToString();
+                        project.CustomerContactName = r["CustomerContactName"].ToString();
+
+                        project.items = new List<Project_Detail>();
+                        project.Seq = int.Parse(r["Seq"].ToString());
+                        project.TotalQty = dtItem
+                            .Select("ProjectNo='" + project.ProjectNo + "' and Seq=" + project.Seq + "")
+                            .Length;
+
+
+
+                        foreach (DataRow d in dtItem.Select("ProjectNo='" + project.ProjectNo + "' and Seq=" + project.Seq))
+                        {
+                            project.items.Add(
+                                new Project_Detail
+                                {
+                                    UpdUser = d["UpdUser"].ToString(),
+                                    ProjectNo = d["ProjectNo"].ToString(),
+                                    Seq = Convert.ToInt32(d["Seq"]),
+                                    ProdCode = d["ProdCode"].ToString(),
+                                    ProdDescription = d["ProdDescription"].ToString(),
+                                    Qty = Convert.ToDecimal(d["Qty"]),
+                                    UnitCode = d["UnitCode"].ToString(),
+                                    UnitPrice = Convert.ToDecimal(d["UnitPrice"]),
+                                    Amt = Convert.ToDecimal(d["Amt"]),
+                                    DisPer = Convert.ToDecimal(d["DisPer"]),
+                                    DisAmt = Convert.ToDecimal(d["DisAmt"]),
+                                    NetAmt = Convert.ToDecimal(d["NetAmt"]),
+                                    PricePur = Convert.ToDecimal(d["PricePur"]),
+                                    CostAmt = Convert.ToDecimal(d["CostAmt"]),
+                                    ProfitAmt = Convert.ToDecimal(d["ProfitAmt"]),
+                                    GroupCaption1 = d["GroupCaption1"].ToString(),
+                                    GroupCaption2 = d["GroupCaption2"].ToString(),
+                                    GroupCaption3 = d["GroupCaption3"].ToString(),
+                                    PurchaseNo = d["PurchaseNo"].ToString(),
+                                    DeliveryDate = d["DeliveryDate"].ToString(),
+                                    RevNo = Convert.ToInt32(d["RevNo"]),
+                                    imgpath = d["imgpath"].ToString(),
+                                    CmpId = d["CmpId"].ToString(),
+                                    type = d["type"].ToString(),
+                                    QuotationNo = d["QuotationNo"].ToString(),
+                                    SaleOrderNo = d["SaleOrderNo"].ToString(),
+                                    BarcodeNo = d["BarcodeNo"].ToString(),
+                                }
+                            );
+                        }
+
+                        project.tasks = new List<Project_Task>();
+                        foreach (DataRow d in dtTask.Select("ProjectNo='" + project.ProjectNo + "' and Seq=" + project.Seq))
+                        {
+                            project.tasks.Add(
+                                new Project_Task
+                                {
+                                    UpdUser = d["UpdUser"].ToString(),
+                                    ProjectNo = d["ProjectNo"].ToString(),
+                                    Seq = Convert.ToInt32(d["Seq"]),
+                                    Description = d["Description"].ToString(),
+                                    Qty = Convert.ToDecimal(d["Qty"]),
+                                    UnitCode = d["UnitCode"].ToString(),
+                                    UnitPrice = Convert.ToDecimal(d["UnitPrice"]),
+                                    Amt = Convert.ToDecimal(d["Amt"]),
+                                    DayQty = Convert.ToDecimal(d["DayQty"]),
+                                    Time = Convert.ToDecimal(d["Time"]),
+                                    StartDate = d["StartDate"].ToString(),
+                                    StartTime = d["StartTime"].ToString(),
+                                    EndDate = d["EndDate"].ToString(),
+                                    EndTime = d["EndTime"].ToString(),
+                                    InstallDescription = d["InstallDescription"].ToString(),
+                                    CmpId = d["CmpId"].ToString(),
+                                    TaskNo = d["TaskNo"].ToString(),
+                                    TaskId = d["TaskId"].ToString(),
+                                    Resource = d["Resource"]
+                                        .ToString()
+                                        .Split(',')
+                                        .ToList() // Assuming resources are comma-separated
+                                    ,
+                                }
+                            );
+                        }
+
+                        project.installs = new List<Project_TaskInstall>();
+                        foreach (DataRow d in dtInstall.Select("ProjectNo='" + project.ProjectNo + "' and Seq=" + project.Seq))
+                        {
+                            project.installs.Add(
+                                new Project_TaskInstall
+                                {
+                                    UpdUser = d["UpdUser"].ToString(),
+                                    ProjectNo = d["ProjectNo"].ToString(),
+                                    Seq = Convert.ToInt32(d["Seq"]),
+                                    InstallResource = d["InstallResource"]
+                                        .ToString()
+                                        .Split(',')
+                                        .ToList(), // Assuming resources are comma-separated
+                                    InstallQty = Convert.ToDecimal(d["InstallQty"]),
+                                    InstallStartDate = d["InstallStartDate"].ToString(),
+                                    InstallStartTime = d["InstallStartTime"].ToString(),
+                                    InstallEndDate = d["InstallEndDate"].ToString(),
+                                    InstallEndTime = d["InstallEndTime"].ToString(),
+                                    InstallDescription = d["InstallDescription"].ToString(),
+                                    CmpId = d["CmpId"].ToString(),
+                                }
+                            );
+                        }
+
+                        project.attachfile = new List<Project_File>();
+                        foreach (DataRow d in dtfiles.Select("ProjectNo='" + project.ProjectNo + "'"))
+                        {
+                            project.attachfile.Add(
+                                new Project_File
+                                {
+                                    UpdUser = d["UpdUser"].ToString(),
+                                    ProjectNo = d["ProjectNo"].ToString(),
+                                    Seq = Convert.ToInt32(d["Seq"]),
+                                    FileName = d["FileName"].ToString(),
+                                    FilePath = d["FilePath"].ToString(),
+                                    TaskId = d["TaskId"].ToString(),
+                                    CmpId = d["CmpId"].ToString()
+                                    ,
+                                }
+                            );
+                        }
+
+                        project.costs = new List<ProjectCost>();
+                        foreach (DataRow d in dtCost.Select("ProjectNo='" + project.ProjectNo + "'"))
+                        {
+                            project.costs.Add(
+                                new ProjectCost
+                                {
+                                    UpdUser = d["UpdUser"].ToString(),
+                                    ProjectNo = d["ProjectNo"].ToString(),
+                                    Seq = Convert.ToInt32(d["Seq"]),
+                                    CostDescription = d["CostDescription"].ToString(),
+                                    CostAmt = Convert.ToDecimal(d["CostAmt"]),
+                                    AttachFile = d["AttachFile"].ToString(),
+                                    CmpId = d["CmpId"].ToString(),
+                                }
+                            );
+                        }
+
+                        project.history = new ProjectHistory();
+                        foreach (DataRow d in dtHis.Select("ProjectNo='" + project.ProjectNo + "'"))
+                        {
+                            var hist = new ProjectHistory();
+                            hist.ProjectNo = d["ProjectNo"].ToString();
+                            hist.ProjectTime = d["ProjectTime"].ToString();
+                            hist.PaymentTime = d["PaymentTime"].ToString();
+                            hist.DeliveryTime = d["DeliveryTime"].ToString();
+                            hist.CompletionTime = d["CompletionTime"].ToString();
+                            hist.CmpId = d["CmpId"].ToString();
+
+                            hist.timeline = new List<ProjectTimeline>();
+                            foreach (
+                                DataRow x in dtTime.Select("ProjectNo='" + project.ProjectNo + "'")
+                            )
+                            {
+                                hist.timeline.Add(
+                                    new ProjectTimeline
+                                    {
+                                        ProjectNo = x["ProjectNo"].ToString(),
+                                        Title = x["Title"].ToString(),
+                                        Time = DateTime.Parse(x["Time"].ToString()),
+                                        CmpId = x["CmpId"].ToString(),
+                                    }
+                                );
+                            }
+
+                            project.history = hist;
+                        }
+
+                        project.customer = new CustomerList();
+
+                        foreach (DataRow d in dtcust.Select("CustomerCode='" + project.CustomerCode + "'"))
+                        {
+                            var customer = new CustomerList();
+
+                            customer.UpdUser = d["UpdUser"].ToString() ?? string.Empty;
+                            customer.CustomerCode = d["CustomerCode"].ToString() ?? string.Empty;
+                            customer.CustomerName = d["CustomerName"].ToString() ?? string.Empty;
+                            customer.CustomerAddress = d["CustomerAddress"].ToString() ?? string.Empty;
+                            customer.CustomerTaxNo = d["CustomerTaxNo"].ToString() ?? string.Empty;
+                            customer.CustomerBranch = d["CustomerBranch"].ToString() ?? string.Empty;
+                            customer.CustomerBranchCode = d["CustomerBranchCode"].ToString() ?? string.Empty;
+                            customer.CustomerBranchName = d["CustomerBranchName"].ToString() ?? string.Empty;
+                            customer.ContactName = d["ContactName"].ToString() ?? string.Empty;
+                            customer.ContactEmail = d["ContactEmail"].ToString() ?? string.Empty;
+                            customer.ContactPhone = d["ContactPhone"].ToString() ?? string.Empty;
+                            customer.ContactName1 = d["ContactName1"].ToString() ?? string.Empty;
+                            customer.ContactEmail1 = d["ContactEmail1"].ToString() ?? string.Empty;
+                            customer.ContactPhone1 = d["ContactPhone1"].ToString() ?? string.Empty;
+                            customer.CreditDay = Convert.ToInt32(d["CreditDay"]);
+                            customer.PhoneOffice = d["PhoneOffice"].ToString() ?? string.Empty;
+                            customer.FaxOffice = d["FaxOffice"].ToString() ?? string.Empty;
+                            customer.Website = d["Website"].ToString() ?? string.Empty;
+                            customer.AddressShip = d["AddressShip"].ToString() ?? string.Empty;
+                            customer.Remark = d["Remark"].ToString() ?? string.Empty;
+                            customer.CmpId = d["CmpId"].ToString() ?? string.Empty;
+                            customer.ContactName2 = d["ContactName2"].ToString() ?? string.Empty;
+                            customer.ContactEmail2 = d["ContactEmail2"].ToString() ?? string.Empty;
+                            customer.ContactPhone2 = d["ContactPhone2"].ToString() ?? string.Empty;
+                            customer.ContactPosition2 = d["ContactPosition2"].ToString() ?? string.Empty;
+                            customer.ContactPosition1 = d["ContactPosition1"].ToString() ?? string.Empty;
+                            customer.ContactPosition = d["ContactPosition"].ToString() ?? string.Empty;
+                            customer.AddrSubDistrict = d["AddrSubDistrict"].ToString() ?? string.Empty;
+                            customer.AddrDistrict = d["AddrDistrict"].ToString() ?? string.Empty;
+                            customer.AddrProvince = d["AddrProvince"].ToString() ?? string.Empty;
+                            customer.AddrPostCode = d["AddrPostCode"].ToString() ?? string.Empty;
+                            customer.ImgPath = d["ImgPath"].ToString() ?? string.Empty;
+                            customer.CreditAccId = Convert.ToInt32(d["CreditAccId"]);
+                            customer.DebitAccId = Convert.ToInt32(d["DebitAccId"]);
+                            customer.BusinessGrpCode = d["BusinessGrpCode"].ToString() ?? string.Empty;
+                            customer.StateCustomer = d["StateCustomer"].ToString() ?? string.Empty;
+                            customer.StateVendor = d["StateVendor"].ToString() ?? string.Empty;
+
+                            customer.contacts = new List<ContactList>();
+
+                            foreach (
+                                DataRow c in dtContact.Select(
+                                    "DocType='"
+                                        + _DocType
+                                        + "' and DocNo='"
+                                        + customer.CustomerCode
+                                        + "'"
+                                )
+                            )
+                            {
+                                var item = new ContactList();
+                                item.UpdUser = c["UpdUser"].ToString();
+                                item.ContactName = c["ContactName"].ToString();
+                                item.ContactPhone = c["ContactPhone"].ToString();
+                                item.ContactEmail = c["ContactEmail"].ToString();
+                                item.ContactPosition = c["ContactPosition"].ToString();
+                                item.ContactLineId = c["ContactLineId"].ToString();
+                                item.Remark = c["Remark"].ToString();
+                                item.CmpId = c["CmpId"].ToString() ?? string.Empty;
+                                item.ContactId = c["ContactId"].ToString();
+                                item.ImgPath = c["ImgPath"].ToString();
+                                item.DocNo = c["DocNo"].ToString();
+                                item.DocType = c["DocType"].ToString();
+
+                                customer.contacts.Add(item);
+                            }
+
+                            project.customer = customer;
+                        }
+
+                        project.Assign = new List<Project_Assign>();
+
+                        foreach (DataRow d in dtResource.Select("TaskId='" + project.TaskId + "'"))
+                        {
+                            project.Assign.Add(
+                                new Project_Assign
+                                {
+                                    UpdUser = d["UpdUser"].ToString(),
+                                    ProjectNo = d["ProjectNo"].ToString(),
+                                    Seq = Convert.ToInt32(d["Seq"]),
+
+                                    CmpId = d["CmpId"].ToString(),
+                                    UserId = d["UserId"].ToString(),
+                                    UserFullName = d["UserFullName"].ToString(),
+                                    ImgPath = d["ImgPath"].ToString(),
+                                    Permission = d["Permission"].ToString(),
+                                    RouteId = d["RouteId"].ToString(),
+                                    RemindId = d["RemindId"].ToString(),
+                                }
+                            );
+                        }
+
+
+                        project.SubTaskItem = new List<ServiceTaskItem>();
+                        foreach (DataRow d in dtTaskSub.Select("TaskId='" + project.TaskId + "'"))
+                        {
+                            project.SubTaskItem.Add(
+                                new ServiceTaskItem
+                                {
+                                    UpdUser = d["UpdUser"].ToString(),
+                                    TaskId = d["TaskId"].ToString(),
+                                    Seq = Convert.ToInt32(d["Seq"]),
+                                    StateFinish = d["StateFinish"].ToString(),
+
+                                    CmpId = d["CmpId"].ToString(),
+                                    Description = d["Description"].ToString(),
+
+                                }
+                            );
+                        }
+
+                        projects.Add(project);
+
+                        serviceTask.project = project;
+                    }
+
+
+
+                    serviceTask.problem = new STProblem();
+                    foreach (DataRow b in dtb.Select("TaskId='" + serviceTask.TaskId + "'"))
+                    {
+                        var stproblem = new STProblem();
+                        stproblem.UpdUser = b["UpdUser"].ToString();
+                        stproblem.ProblemId = b["ProblemId"].ToString();
+                        stproblem.ReceiveDate = b["ReceiveDate"].ToString();
+                        stproblem.CustomerCode = b["CustomerCode"].ToString();
+                        stproblem.ContactName = b["ContactName"].ToString();
+                        stproblem.ProblemDetails = b["ProblemDetails"].ToString();
+                        stproblem.ReceiveTime = b["ReceiveTime"].ToString();
+                        stproblem.ProblemType = b["ProblemType"].ToString();
+                        stproblem.CustBranchName = b["CustBranchName"].ToString();
+                        stproblem.CmpId = b["CmpId"].ToString();
+                        stproblem.CustomerName = b["CustomerName"].ToString();
+                        stproblem.RequestBy = b["RequestBy"].ToString();
+
+                        stproblem.ProvinceId = b["ProvinceId"].ToString();
+                        stproblem.Status = b["Status"].ToString();
+                        stproblem.Priority = b["Priority"].ToString();
+                        stproblem.GrpId = b["GrpId"].ToString();
+                        stproblem.TaskNo = b["TaskNo"].ToString();
+                        stproblem.attachfile = new List<STProblem_File>();
+
+                        foreach (DataRow f in dtf.Select("ProblemId='" + stproblem.ProblemId + "'"))
+                        {
+                            var attachfile = new STProblem_File();
+                            attachfile.UpdUser = f["UpdUser"].ToString();
+                            attachfile.ProblemId = f["ProblemId"].ToString();
+                            attachfile.Seq = Convert.ToInt32(f["Seq"].ToString());
+                            attachfile.FileName = f["FileName"].ToString();
+                            attachfile.FilePath = f["FilePath"].ToString();
+                            attachfile.CmpId = f["CmpId"].ToString();
+                            stproblem.attachfile.Add(attachfile);
+
+
+                        }
+
+
+                        stproblem.assign = new List<STProblem_Assign>();
+                        foreach (DataRow f in dta.Select("ProblemId='" + stproblem.ProblemId + "'"))
+                        {
+                            var assign = new STProblem_Assign();
+                            assign.UpdUser = f["UpdUser"].ToString();
+                            assign.ProblemId = f["ProblemId"].ToString();
+                            assign.UserFullName = f["UserFullName"].ToString();
+                            assign.ImgPath = f["ImgPath"].ToString();
+                            assign.Permission = f["Permission"].ToString();
+                            assign.RouteId = f["RouteId"].ToString();
+                            assign.RemindId = f["RemindId"].ToString();
+                            assign.UserId = f["UserId"].ToString();
+                            assign.CmpId = f["CmpId"].ToString();
+                            stproblem.assign.Add(assign);
+
+
+                        }
+
+
+                        stproblem.action = new STServiceActions();
+                        foreach (DataRow f in dtba.Select("ProblemId='" + stproblem.ProblemId + "'"))
+                        {
+                            var action = new STServiceActions();
+                            action.UpdUser = f["UpdUser"].ToString();
+                            action.ProblemId = f["ProblemId"].ToString();
+                            action.ServiceActionId = f["ServiceActionId"].ToString();
+                            action.ServiceType = Convert.ToInt32(f["ServiceType"].ToString());
+                            action.ActionDetails = f["ActionDetails"].ToString();
+                            action.FinishDate = f["FinishDate"].ToString();
+                            action.FinishTime = f["FinishTime"].ToString();
+                            action.CmpId = f["CmpId"].ToString();
+
+                            action.ActionBy = new List<STServiceActions_Assign>();
+
+                            foreach (DataRow ac in dtbb.Select("ServiceActionId='" + action.ServiceActionId + "'"))
+                            {
+                                var assign = new STServiceActions_Assign();
+                                assign.UpdUser = ac["UpdUser"].ToString();
+                                assign.ServiceActionId = ac["ServiceActionId"].ToString();
+                                assign.UserFullName = ac["UserFullName"].ToString();
+                                assign.ImgPath = ac["ImgPath"].ToString();
+                                assign.Permission = ac["Permission"].ToString();
+                                assign.RouteId = ac["RouteId"].ToString();
+                                assign.RemindId = ac["RemindId"].ToString();
+                                assign.UserId = ac["UserId"].ToString();
+                                assign.CmpId = ac["CmpId"].ToString();
+                                action.ActionBy.Add(assign);
+
+                            }
+
+
+                            action.Attachfile = new List<STServiceActions_File>();
+
+                            foreach (DataRow fa in dtbf.Select("ServiceActionId='" + action.ServiceActionId + "'"))
+                            {
+                                var attachfile = new STServiceActions_File();
+                                attachfile.UpdUser = fa["UpdUser"].ToString();
+                                attachfile.ServiceActionId = fa["ServiceActionId"].ToString();
+                                attachfile.Seq = Convert.ToInt32(fa["Seq"].ToString());
+                                attachfile.FileName = fa["FileName"].ToString();
+                                attachfile.FilePath = fa["FilePath"].ToString();
+                                attachfile.CmpId = fa["CmpId"].ToString();
+                                action.Attachfile.Add(attachfile);
+
+
+                            }
+
+
+                            stproblem.action = action;
+                        }
+
+
+                        serviceTask.problem = stproblem;
+
+                    }
+               
+               
+
+
+                    tasks[route.RouteId].Add(serviceTask);
+
+                }
+            }
+
+            var response = new { board = new { tasks, columns } };
+            return Ok(response);
+        }
+
+
+
+
 
         // POST: api/Project
 

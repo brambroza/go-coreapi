@@ -12,6 +12,7 @@ using Google.Apis.Sheets.v4;
 using Google.Apis.Sheets.v4.Data;
 using Google;
 using System.Text.Json;
+using System.Net.Http.Headers;
 
 
 namespace goalongapi.Controllers
@@ -22,6 +23,7 @@ namespace goalongapi.Controllers
     public class LineMessageController : ControllerBase
     {
 
+        private readonly HttpClient _httpClient;
         private readonly IWebHostEnvironment webHostEnvironment;
         static readonly string[] Scopes = { SheetsService.Scope.SpreadsheetsReadonly };
         static readonly string ApplicationName = "GoogleSheetsWeb";
@@ -29,11 +31,14 @@ namespace goalongapi.Controllers
         static readonly string SheetRange = "Sheet1!A2:A101";  // Adjust the range based on your data
 
 
-        public LineMessageController(IWebHostEnvironment webHostEnvironment)
+        public LineMessageController(IWebHostEnvironment webHostEnvironment , HttpClient httpClient)
         {
 
             this.webHostEnvironment = webHostEnvironment;
+             _httpClient = httpClient;
         }
+
+        private const string LineApiUrl = "https://api.line.me/v2/bot/message/push";
 
 
 
@@ -185,7 +190,7 @@ namespace goalongapi.Controllers
                     msg.text = d["text"].ToString();
                     msg.type = d["type"].ToString();
                     msg.timestamp = Convert.ToDateTime(d["TimeStamp"]);
-  
+
                     if (msg.type == "image")
                     {
                         var imagePath = await DownloadImageAsync(msg.id, "zHOdhlkJkcfWa4Hzm4nFQORzqCogEKj9PDUttOurALA2KjMdl0l9cwhRVRdXhYSFlIVOmrP1vP7DCA3aIt5u4B6CtsrNSW3Gj1Ud8BX5BWKiq1MbJS9GpadBBFBjImJOslCyMGHihEcgq0deVVXmHQdB04t89/1O/w1cDnyilFU=");
@@ -262,7 +267,7 @@ namespace goalongapi.Controllers
         [HttpPost("send")]
         public async Task<IActionResult> SendMessage(LineMessageRequest request)
         {
-           await SendMessage(request.UserId, request.Message, request.ChanelLineToken);
+            await SendMessage(request.UserId, request.Message, request.ChanelLineToken);
 
             string _cmd;
             _cmd = "exec  dbo.setLineChatMessage";
@@ -348,14 +353,14 @@ namespace goalongapi.Controllers
             try
             {
 
-                
+
                 response.EnsureSuccessStatusCode();
             }
-             catch (Exception)
+            catch (Exception)
             {
-                return "" ;
+                return "";
             }
-           
+
 
             // Save the image to a local path
             var pathto = $"{webHostEnvironment.WebRootPath}/images/chat";
@@ -476,7 +481,7 @@ namespace goalongapi.Controllers
                 var request = service.Spreadsheets.Values.Get(SpreadsheetId, SheetRange);
                 var response = request.Execute();
 
- 
+
                 string _cmd;
 
                 DB.DBConn.SqlConnectionOpen();
@@ -493,7 +498,7 @@ namespace goalongapi.Controllers
 
 
                     EventData eventData = Newtonsoft.Json.JsonConvert.DeserializeObject<EventData>(jsond);
- 
+
 
                     _cmd = "exec  dbo.setLineChatMessage";
                     _cmd += " @CmpId  ='230015'";
@@ -514,7 +519,8 @@ namespace goalongapi.Controllers
                         DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
                         DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
                         return null;
-                    };
+                    }
+                    ;
 
 
 
@@ -593,11 +599,60 @@ namespace goalongapi.Controllers
         }
 
 
+ 
+
+        [HttpPost("send-flex")]
+        public async Task<IActionResult> SendFlex([FromBody] LineFlexRequest request)
+        {
+            try
+            {
+                // สร้าง JSON object สำหรับ Flex
+                var flexContent = Newtonsoft.Json.JsonConvert.DeserializeObject<object>(request.FlexJson);
+
+                var payload = new
+                {
+                    to = request.UserId,
+                    messages = new[]
+                    {
+                    new
+                    {
+                        type = "flex",
+                        altText = "มีข้อความใหม่จากระบบ",
+                        contents = flexContent
+                    }
+                }
+                };
+
+                var httpRequest = new HttpRequestMessage(HttpMethod.Post, LineApiUrl)
+                {
+                    Content = new StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(payload), Encoding.UTF8, "application/json")
+                };
+
+                httpRequest.Headers.Authorization = new AuthenticationHeaderValue("Bearer", request.ChannelAccessToken);
+
+                var response = await _httpClient.SendAsync(httpRequest);
+                var responseContent = await response.Content.ReadAsStringAsync();
+
+                if (response.IsSuccessStatusCode)
+                    return Ok(new { success = true });
+
+                return StatusCode((int)response.StatusCode, new { success = false, error = responseContent });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, error = ex.Message });
+            }
+        }
 
 
-
+        public class LineFlexRequest
+        {
+            public string UserId { get; set; }
+            public string FlexJson { get; set; } // JSON string ของ flex message
+            
+            public string ChannelAccessToken { get; set; }
+        }
     }
-
 
 }
 

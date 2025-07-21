@@ -66,7 +66,7 @@ namespace goalongapi.Controllers
         public IActionResult getSocialChannel([FromQuery] string cmpid, [FromQuery] string user)
         {
             string _cmd;
-            _cmd = "exec dbo.getCompanySocailChannel @CmpId='" + cmpid + "' , @User='" + user + "'";
+            _cmd = "exec dbo.getCompanySocialChannel @CmpId='" + cmpid + "' , @User='" + user + "'";
             DataTable dt = DB.DBConn.GetDataTable(_cmd);
 
             List<cmpSocialChannel> cmpSocialChannels = new List<cmpSocialChannel>();
@@ -85,6 +85,7 @@ namespace goalongapi.Controllers
                     AccessToken = r["AccessToken"].ToString(),
                     PageId = r["PageId"].ToString(),
                     PhoneNumber = r["PhoneNumber"].ToString(),
+                    Name = r["Name"].ToString(),
                 };
 
                 cmpSocialChannels.Add(cmpSocialChannel);

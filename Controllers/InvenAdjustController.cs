@@ -325,15 +325,7 @@ namespace goalongapi.Controllers
 
 
         }
-
-
-
-
-
-
-
-
-
+  
         [HttpGet("[action]")]
         public IActionResult getCheckBarcodeNoForAdjust([FromQuery] string CmpId )
         {

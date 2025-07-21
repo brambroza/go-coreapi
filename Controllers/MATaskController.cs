@@ -54,11 +54,6 @@ namespace goalongapi.Controllers
             _cmd = "exec dbo.[getProblem] @User='" + userlogin + "', @cmpid='" + cmpid + "'";
             dttask = DB.DBConn.GetDataTable(_cmd);
 
-
-            
-
-
-
             List<MAGrp> crm = new List<MAGrp>();
 
             foreach (DataRow r in dt.Rows)

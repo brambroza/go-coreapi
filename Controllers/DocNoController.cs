@@ -273,6 +273,65 @@ namespace goalongapi.Controllers
                         }
                         break;
 
+
+                      case "prob":
+                        _cmd =
+                            "Select Top 1  ProblemId  FROM  dbo.STProblem  where  ProblemId='"
+                            + DocNo
+                            + "'  ";
+                        dt = DB.DBConn.GetDataTable(_cmd);
+                        if (dt.Rows.Count > 0)
+                        {
+                            try
+                            {
+                                _docnew = dt.Rows[0][0].ToString();
+                            }
+                            catch
+                            {
+                                _docnew = "";
+                            }
+                        }
+
+                        if ((_docnew.ToString() == "") || (_docnew.ToLower() == "null"))
+                        {
+                            
+                                 _cmd =
+                                "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo.ProblemId      select  @Runno   "; 
+                            dt = DB.DBConn.GetDataTable(_cmd);
+                        }
+                        break;
+
+
+                       case "action":
+                        _cmd =
+                            "Select Top 1  ServiceActionId  FROM  dbo.STServiceActions  where  ServiceActionId='"
+                            + DocNo
+                            + "'  ";
+                        dt = DB.DBConn.GetDataTable(_cmd);
+                        if (dt.Rows.Count > 0)
+                        {
+                            try
+                            {
+                                _docnew = dt.Rows[0][0].ToString();
+                            }
+                            catch
+                            {
+                                _docnew = "";
+                            }
+                        }
+
+                        if ((_docnew.ToString() == "") || (_docnew.ToLower() == "null"))
+                        {
+                            
+                                 _cmd =
+                                "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo.ProblemActionId      select  @Runno   "; 
+                            dt = DB.DBConn.GetDataTable(_cmd);
+                        }
+                        break;
+
+
+
+
                     case "rcv":
                         _cmd =
                             "Select Top 1  ReceiveNo  FROM  Inven.Receive  where  ReceiveNo='"
@@ -1197,6 +1256,71 @@ namespace goalongapi.Controllers
                             dt = DB.DBConn.GetDataTable(_cmd);
                         }
                         break;
+
+
+                     case "prob":
+                        _cmd =
+                            "Select Top 1  ProblemId  FROM  dbo.STProblem  where  ProblemId='"
+                            + DocNo
+                            + "' and  CmpId ='"
+                            + cmpid
+                            + "'";
+                        dt = DB.DBConn.GetDataTable(_cmd);
+                        if (dt.Rows.Count > 0)
+                        {
+                            try
+                            {
+                                _docnew = dt.Rows[0][0].ToString();
+                            }
+                            catch
+                            {
+                                _docnew = "";
+                            }
+                        }
+
+                        if ((_docnew.ToString() == "") || (_docnew.ToLower() == "null"))
+                        {
+                            _cmd =
+                                "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo."
+                                + cmpid
+                                + "-ProblemId      select ''+@Runno   "; // + cmpid  ;
+                            dt = DB.DBConn.GetDataTable(_cmd);
+                        }
+                        break;
+
+                     case "action":
+                        _cmd =
+                            "Select Top 1  ServiceActionId  FROM  dbo.STServiceActions  where  ServiceActionId='"
+                              + DocNo
+                            + "' and  CmpId ='"
+                            + cmpid
+                            + "'";
+                        dt = DB.DBConn.GetDataTable(_cmd);
+                        if (dt.Rows.Count > 0)
+                        {
+                            try
+                            {
+                                _docnew = dt.Rows[0][0].ToString();
+                            }
+                            catch
+                            {
+                                _docnew = "";
+                            }
+                        }
+
+                        if ((_docnew.ToString() == "") || (_docnew.ToLower() == "null"))
+                        {
+                            
+                              _cmd =
+                                "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo."
+                                + cmpid
+                                + "-ProblemActionId      select ''+@Runno   ";
+
+                            dt = DB.DBConn.GetDataTable(_cmd);
+                        }
+                        break;
+
+
 
                     case "rcv":
                         _cmd =

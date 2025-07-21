@@ -272,7 +272,16 @@ namespace goalongapi.Models
         public string Title { get; set; }
         public string DueDate { get; set; }
         public string RouteId { get; set; }
-        public string TaskStatus { get; set; }
+        public string TaskStatus { get; set; } 
+        public string? TaskDate { get; set; }
+        public string? TaskTime { get; set; }
+        public string? DocRef { get; set; }
+        public string? RequestBy { get; set; }
+        public string? Type { get; set; }
+        public CustomerList? customer { get; set; }
+
+        public Project? project { get; set; }
+        public STProblem? problem { get; set;}
 
     }
 

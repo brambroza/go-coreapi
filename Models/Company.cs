@@ -60,6 +60,7 @@ namespace goalongapi.Models
         public string PageId { get; set; }
         public string PhoneNumber { get; set; }
         public string ChannelId { get; set; }
+        public string? Name { get; set; }
     }
 
     public class cmpinfo

@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "I1AaLlD/UWNuZFUE9m37CJWSxVPg1hSGOZJek2ySM5E=",
+  "Hash": "d5yfN5d0V2zpbYRzYcQAK0P/M2NAraFYSeKlO/MLBME=",
   "Source": "goalongapi",
   "BasePath": "_content/goalongapi",
   "Mode": "Default",
@@ -2220,6 +2220,237 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot/230015/saleorder/SO-2500305/test20250411.pdf"
+    },
+    {
+      "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/serviceproblem/2500018/lineidton.jpg",
+      "SourceId": "goalongapi",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/",
+      "BasePath": "_content/goalongapi",
+      "RelativePath": "230015/serviceproblem/2500018/lineidton#[.{fingerprint}]?.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "ucs598u8b6",
+      "Integrity": "MjjHXHZasa74kvmlxV7yk/qDTHgqmztF1Yjtoja8kfY=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/230015/serviceproblem/2500018/lineidton.jpg"
+    },
+    {
+      "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/serviceproblem/2500019/lineidton.jpg",
+      "SourceId": "goalongapi",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/",
+      "BasePath": "_content/goalongapi",
+      "RelativePath": "230015/serviceproblem/2500019/lineidton#[.{fingerprint}]?.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "ucs598u8b6",
+      "Integrity": "MjjHXHZasa74kvmlxV7yk/qDTHgqmztF1Yjtoja8kfY=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/230015/serviceproblem/2500019/lineidton.jpg"
+    },
+    {
+      "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/serviceproblem/2500019/test20250411.pdf",
+      "SourceId": "goalongapi",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/",
+      "BasePath": "_content/goalongapi",
+      "RelativePath": "230015/serviceproblem/2500019/test20250411#[.{fingerprint}]?.pdf",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "hcmbo72pxo",
+      "Integrity": "H8ZiZQmRp93rvJjzQ7ybZIMTsSAUCA9JmhfWa5IR1So=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/230015/serviceproblem/2500019/test20250411.pdf"
+    },
+    {
+      "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/serviceproblem/2500020/lineidton.jpg",
+      "SourceId": "goalongapi",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/",
+      "BasePath": "_content/goalongapi",
+      "RelativePath": "230015/serviceproblem/2500020/lineidton#[.{fingerprint}]?.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "ucs598u8b6",
+      "Integrity": "MjjHXHZasa74kvmlxV7yk/qDTHgqmztF1Yjtoja8kfY=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/230015/serviceproblem/2500020/lineidton.jpg"
+    },
+    {
+      "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/serviceproblem/2500020/test20250411.pdf",
+      "SourceId": "goalongapi",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/",
+      "BasePath": "_content/goalongapi",
+      "RelativePath": "230015/serviceproblem/2500020/test20250411#[.{fingerprint}]?.pdf",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "hcmbo72pxo",
+      "Integrity": "H8ZiZQmRp93rvJjzQ7ybZIMTsSAUCA9JmhfWa5IR1So=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/230015/serviceproblem/2500020/test20250411.pdf"
+    },
+    {
+      "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/serviceproblem/2500021/lineidton.jpg",
+      "SourceId": "goalongapi",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/",
+      "BasePath": "_content/goalongapi",
+      "RelativePath": "230015/serviceproblem/2500021/lineidton#[.{fingerprint}]?.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "ucs598u8b6",
+      "Integrity": "MjjHXHZasa74kvmlxV7yk/qDTHgqmztF1Yjtoja8kfY=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/230015/serviceproblem/2500021/lineidton.jpg"
+    },
+    {
+      "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/serviceproblem/2500021/test20250411.pdf",
+      "SourceId": "goalongapi",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/",
+      "BasePath": "_content/goalongapi",
+      "RelativePath": "230015/serviceproblem/2500021/test20250411#[.{fingerprint}]?.pdf",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "hcmbo72pxo",
+      "Integrity": "H8ZiZQmRp93rvJjzQ7ybZIMTsSAUCA9JmhfWa5IR1So=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/230015/serviceproblem/2500021/test20250411.pdf"
+    },
+    {
+      "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/serviceproblem/2500022/lineidton.jpg",
+      "SourceId": "goalongapi",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/",
+      "BasePath": "_content/goalongapi",
+      "RelativePath": "230015/serviceproblem/2500022/lineidton#[.{fingerprint}]?.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "ucs598u8b6",
+      "Integrity": "MjjHXHZasa74kvmlxV7yk/qDTHgqmztF1Yjtoja8kfY=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/230015/serviceproblem/2500022/lineidton.jpg"
+    },
+    {
+      "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/serviceproblem/2500022/test20250411.pdf",
+      "SourceId": "goalongapi",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/",
+      "BasePath": "_content/goalongapi",
+      "RelativePath": "230015/serviceproblem/2500022/test20250411#[.{fingerprint}]?.pdf",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "hcmbo72pxo",
+      "Integrity": "H8ZiZQmRp93rvJjzQ7ybZIMTsSAUCA9JmhfWa5IR1So=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/230015/serviceproblem/2500022/test20250411.pdf"
+    },
+    {
+      "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/serviceproblemaction/2500002/lineidton.jpg",
+      "SourceId": "goalongapi",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/",
+      "BasePath": "_content/goalongapi",
+      "RelativePath": "230015/serviceproblemaction/2500002/lineidton#[.{fingerprint}]?.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "ucs598u8b6",
+      "Integrity": "MjjHXHZasa74kvmlxV7yk/qDTHgqmztF1Yjtoja8kfY=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/230015/serviceproblemaction/2500002/lineidton.jpg"
+    },
+    {
+      "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/serviceproblemaction/2500006/lineidton.jpg",
+      "SourceId": "goalongapi",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/",
+      "BasePath": "_content/goalongapi",
+      "RelativePath": "230015/serviceproblemaction/2500006/lineidton#[.{fingerprint}]?.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "ucs598u8b6",
+      "Integrity": "MjjHXHZasa74kvmlxV7yk/qDTHgqmztF1Yjtoja8kfY=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/230015/serviceproblemaction/2500006/lineidton.jpg"
     },
     {
       "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/servicetask/72F8F281-0917-49F3-9D2B-F9831A22CDE2/250067/lineidton.jpg",
@@ -18291,6 +18522,908 @@
         {
           "Name": "integrity",
           "Value": "sha256-H8ZiZQmRp93rvJjzQ7ybZIMTsSAUCA9JmhfWa5IR1So="
+        }
+      ]
+    },
+    {
+      "Route": "230015/serviceproblem/2500018/lineidton.jpg",
+      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/serviceproblem/2500018/lineidton.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "153492"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"MjjHXHZasa74kvmlxV7yk/qDTHgqmztF1Yjtoja8kfY=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 16 Jul 2025 15:41:06 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-MjjHXHZasa74kvmlxV7yk/qDTHgqmztF1Yjtoja8kfY="
+        }
+      ]
+    },
+    {
+      "Route": "230015/serviceproblem/2500018/lineidton.ucs598u8b6.jpg",
+      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/serviceproblem/2500018/lineidton.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "153492"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"MjjHXHZasa74kvmlxV7yk/qDTHgqmztF1Yjtoja8kfY=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 16 Jul 2025 15:41:06 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "ucs598u8b6"
+        },
+        {
+          "Name": "label",
+          "Value": "230015/serviceproblem/2500018/lineidton.jpg"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-MjjHXHZasa74kvmlxV7yk/qDTHgqmztF1Yjtoja8kfY="
+        }
+      ]
+    },
+    {
+      "Route": "230015/serviceproblem/2500019/lineidton.jpg",
+      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/serviceproblem/2500019/lineidton.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "153492"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"MjjHXHZasa74kvmlxV7yk/qDTHgqmztF1Yjtoja8kfY=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Thu, 17 Jul 2025 01:29:51 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-MjjHXHZasa74kvmlxV7yk/qDTHgqmztF1Yjtoja8kfY="
+        }
+      ]
+    },
+    {
+      "Route": "230015/serviceproblem/2500019/lineidton.ucs598u8b6.jpg",
+      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/serviceproblem/2500019/lineidton.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "153492"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"MjjHXHZasa74kvmlxV7yk/qDTHgqmztF1Yjtoja8kfY=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Thu, 17 Jul 2025 01:29:51 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "ucs598u8b6"
+        },
+        {
+          "Name": "label",
+          "Value": "230015/serviceproblem/2500019/lineidton.jpg"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-MjjHXHZasa74kvmlxV7yk/qDTHgqmztF1Yjtoja8kfY="
+        }
+      ]
+    },
+    {
+      "Route": "230015/serviceproblem/2500019/test20250411.hcmbo72pxo.pdf",
+      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/serviceproblem/2500019/test20250411.pdf",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "3761449"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/pdf"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"H8ZiZQmRp93rvJjzQ7ybZIMTsSAUCA9JmhfWa5IR1So=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Thu, 17 Jul 2025 01:29:51 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "hcmbo72pxo"
+        },
+        {
+          "Name": "label",
+          "Value": "230015/serviceproblem/2500019/test20250411.pdf"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-H8ZiZQmRp93rvJjzQ7ybZIMTsSAUCA9JmhfWa5IR1So="
+        }
+      ]
+    },
+    {
+      "Route": "230015/serviceproblem/2500019/test20250411.pdf",
+      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/serviceproblem/2500019/test20250411.pdf",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "3761449"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/pdf"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"H8ZiZQmRp93rvJjzQ7ybZIMTsSAUCA9JmhfWa5IR1So=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Thu, 17 Jul 2025 01:29:51 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-H8ZiZQmRp93rvJjzQ7ybZIMTsSAUCA9JmhfWa5IR1So="
+        }
+      ]
+    },
+    {
+      "Route": "230015/serviceproblem/2500020/lineidton.jpg",
+      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/serviceproblem/2500020/lineidton.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "153492"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"MjjHXHZasa74kvmlxV7yk/qDTHgqmztF1Yjtoja8kfY=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Thu, 17 Jul 2025 02:15:08 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-MjjHXHZasa74kvmlxV7yk/qDTHgqmztF1Yjtoja8kfY="
+        }
+      ]
+    },
+    {
+      "Route": "230015/serviceproblem/2500020/lineidton.ucs598u8b6.jpg",
+      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/serviceproblem/2500020/lineidton.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "153492"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"MjjHXHZasa74kvmlxV7yk/qDTHgqmztF1Yjtoja8kfY=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Thu, 17 Jul 2025 02:15:08 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "ucs598u8b6"
+        },
+        {
+          "Name": "label",
+          "Value": "230015/serviceproblem/2500020/lineidton.jpg"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-MjjHXHZasa74kvmlxV7yk/qDTHgqmztF1Yjtoja8kfY="
+        }
+      ]
+    },
+    {
+      "Route": "230015/serviceproblem/2500020/test20250411.hcmbo72pxo.pdf",
+      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/serviceproblem/2500020/test20250411.pdf",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "3761449"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/pdf"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"H8ZiZQmRp93rvJjzQ7ybZIMTsSAUCA9JmhfWa5IR1So=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Thu, 17 Jul 2025 02:15:08 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "hcmbo72pxo"
+        },
+        {
+          "Name": "label",
+          "Value": "230015/serviceproblem/2500020/test20250411.pdf"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-H8ZiZQmRp93rvJjzQ7ybZIMTsSAUCA9JmhfWa5IR1So="
+        }
+      ]
+    },
+    {
+      "Route": "230015/serviceproblem/2500020/test20250411.pdf",
+      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/serviceproblem/2500020/test20250411.pdf",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "3761449"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/pdf"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"H8ZiZQmRp93rvJjzQ7ybZIMTsSAUCA9JmhfWa5IR1So=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Thu, 17 Jul 2025 02:15:08 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-H8ZiZQmRp93rvJjzQ7ybZIMTsSAUCA9JmhfWa5IR1So="
+        }
+      ]
+    },
+    {
+      "Route": "230015/serviceproblem/2500021/lineidton.jpg",
+      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/serviceproblem/2500021/lineidton.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "153492"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"MjjHXHZasa74kvmlxV7yk/qDTHgqmztF1Yjtoja8kfY=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Thu, 17 Jul 2025 02:25:31 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-MjjHXHZasa74kvmlxV7yk/qDTHgqmztF1Yjtoja8kfY="
+        }
+      ]
+    },
+    {
+      "Route": "230015/serviceproblem/2500021/lineidton.ucs598u8b6.jpg",
+      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/serviceproblem/2500021/lineidton.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "153492"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"MjjHXHZasa74kvmlxV7yk/qDTHgqmztF1Yjtoja8kfY=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Thu, 17 Jul 2025 02:25:31 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "ucs598u8b6"
+        },
+        {
+          "Name": "label",
+          "Value": "230015/serviceproblem/2500021/lineidton.jpg"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-MjjHXHZasa74kvmlxV7yk/qDTHgqmztF1Yjtoja8kfY="
+        }
+      ]
+    },
+    {
+      "Route": "230015/serviceproblem/2500021/test20250411.hcmbo72pxo.pdf",
+      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/serviceproblem/2500021/test20250411.pdf",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "3761449"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/pdf"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"H8ZiZQmRp93rvJjzQ7ybZIMTsSAUCA9JmhfWa5IR1So=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Thu, 17 Jul 2025 02:25:31 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "hcmbo72pxo"
+        },
+        {
+          "Name": "label",
+          "Value": "230015/serviceproblem/2500021/test20250411.pdf"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-H8ZiZQmRp93rvJjzQ7ybZIMTsSAUCA9JmhfWa5IR1So="
+        }
+      ]
+    },
+    {
+      "Route": "230015/serviceproblem/2500021/test20250411.pdf",
+      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/serviceproblem/2500021/test20250411.pdf",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "3761449"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/pdf"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"H8ZiZQmRp93rvJjzQ7ybZIMTsSAUCA9JmhfWa5IR1So=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Thu, 17 Jul 2025 02:25:31 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-H8ZiZQmRp93rvJjzQ7ybZIMTsSAUCA9JmhfWa5IR1So="
+        }
+      ]
+    },
+    {
+      "Route": "230015/serviceproblem/2500022/lineidton.jpg",
+      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/serviceproblem/2500022/lineidton.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "153492"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"MjjHXHZasa74kvmlxV7yk/qDTHgqmztF1Yjtoja8kfY=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Thu, 17 Jul 2025 02:47:25 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-MjjHXHZasa74kvmlxV7yk/qDTHgqmztF1Yjtoja8kfY="
+        }
+      ]
+    },
+    {
+      "Route": "230015/serviceproblem/2500022/lineidton.ucs598u8b6.jpg",
+      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/serviceproblem/2500022/lineidton.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "153492"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"MjjHXHZasa74kvmlxV7yk/qDTHgqmztF1Yjtoja8kfY=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Thu, 17 Jul 2025 02:47:25 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "ucs598u8b6"
+        },
+        {
+          "Name": "label",
+          "Value": "230015/serviceproblem/2500022/lineidton.jpg"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-MjjHXHZasa74kvmlxV7yk/qDTHgqmztF1Yjtoja8kfY="
+        }
+      ]
+    },
+    {
+      "Route": "230015/serviceproblem/2500022/test20250411.hcmbo72pxo.pdf",
+      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/serviceproblem/2500022/test20250411.pdf",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "3761449"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/pdf"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"H8ZiZQmRp93rvJjzQ7ybZIMTsSAUCA9JmhfWa5IR1So=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Thu, 17 Jul 2025 02:47:25 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "hcmbo72pxo"
+        },
+        {
+          "Name": "label",
+          "Value": "230015/serviceproblem/2500022/test20250411.pdf"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-H8ZiZQmRp93rvJjzQ7ybZIMTsSAUCA9JmhfWa5IR1So="
+        }
+      ]
+    },
+    {
+      "Route": "230015/serviceproblem/2500022/test20250411.pdf",
+      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/serviceproblem/2500022/test20250411.pdf",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "3761449"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/pdf"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"H8ZiZQmRp93rvJjzQ7ybZIMTsSAUCA9JmhfWa5IR1So=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Thu, 17 Jul 2025 02:47:25 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-H8ZiZQmRp93rvJjzQ7ybZIMTsSAUCA9JmhfWa5IR1So="
+        }
+      ]
+    },
+    {
+      "Route": "230015/serviceproblemaction/2500002/lineidton.jpg",
+      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/serviceproblemaction/2500002/lineidton.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "153492"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"MjjHXHZasa74kvmlxV7yk/qDTHgqmztF1Yjtoja8kfY=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 18 Jul 2025 04:10:43 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-MjjHXHZasa74kvmlxV7yk/qDTHgqmztF1Yjtoja8kfY="
+        }
+      ]
+    },
+    {
+      "Route": "230015/serviceproblemaction/2500002/lineidton.ucs598u8b6.jpg",
+      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/serviceproblemaction/2500002/lineidton.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "153492"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"MjjHXHZasa74kvmlxV7yk/qDTHgqmztF1Yjtoja8kfY=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 18 Jul 2025 04:10:43 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "ucs598u8b6"
+        },
+        {
+          "Name": "label",
+          "Value": "230015/serviceproblemaction/2500002/lineidton.jpg"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-MjjHXHZasa74kvmlxV7yk/qDTHgqmztF1Yjtoja8kfY="
+        }
+      ]
+    },
+    {
+      "Route": "230015/serviceproblemaction/2500006/lineidton.jpg",
+      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/serviceproblemaction/2500006/lineidton.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "153492"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"MjjHXHZasa74kvmlxV7yk/qDTHgqmztF1Yjtoja8kfY=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 18 Jul 2025 04:42:49 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-MjjHXHZasa74kvmlxV7yk/qDTHgqmztF1Yjtoja8kfY="
+        }
+      ]
+    },
+    {
+      "Route": "230015/serviceproblemaction/2500006/lineidton.ucs598u8b6.jpg",
+      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/serviceproblemaction/2500006/lineidton.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "153492"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"MjjHXHZasa74kvmlxV7yk/qDTHgqmztF1Yjtoja8kfY=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 18 Jul 2025 04:42:49 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "ucs598u8b6"
+        },
+        {
+          "Name": "label",
+          "Value": "230015/serviceproblemaction/2500006/lineidton.jpg"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-MjjHXHZasa74kvmlxV7yk/qDTHgqmztF1Yjtoja8kfY="
         }
       ]
     },
