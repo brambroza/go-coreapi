@@ -74,6 +74,9 @@ namespace goalongapi.Controllers
                 stproblem.GrpId = b["GrpId"].ToString();
                 stproblem.TaskNo = b["TaskNo"].ToString();
                 stproblem.TaskId = b["TaskId"].ToString();
+                stproblem.UserLineId = b["UserLineId"].ToString();
+                stproblem.OALineId = b["OALineId"].ToString();
+
                 stproblem.attachfile = new List<STProblem_File>();
 
                 foreach (DataRow f in dtf.Select("ProblemId='" + stproblem.ProblemId + "'"))

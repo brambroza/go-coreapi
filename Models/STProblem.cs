@@ -26,6 +26,9 @@ namespace goalongapi.Models
         public string? TaskNo { get; set; }
         public string? TaskId  { get; set; }
 
+        public string? UserLineId { get; set; }
+        public string? OALineId  { get; set; }
+ 
         public List<STProblem_File>? attachfile { get; set; }
         public List<STProblem_Assign>? assign { get; set; }
 
