@@ -63,6 +63,32 @@ namespace goalongapi.Controllers
         }
 
         [HttpGet("[action]")]
+        public IActionResult getSocialChannelLiffApp([FromQuery] string cmpid, [FromQuery] string user)
+        {
+            string _cmd;
+            _cmd = "exec dbo.getCompanySocialChannel_LiffApp @CmpId='" + cmpid + "' , @User='" + user + "'";
+            DataTable dt = DB.DBConn.GetDataTable(_cmd);
+
+            List<cmpSocialChannel_LiffApp> cmpSocialChannels = new List<cmpSocialChannel_LiffApp>();
+
+            foreach (DataRow r in dt.Rows)
+            {
+                var cmpSocialChannel = new cmpSocialChannel_LiffApp()
+                { 
+                    CmpId = r["CmpId"].ToString(), 
+                    ChannelId = r["ChannelId"].ToString(),
+                    LiffId = r["LiffId"].ToString(),
+                    AppName = r["AppName"].ToString(),
+                };
+
+                cmpSocialChannels.Add(cmpSocialChannel);
+            }
+
+            return Ok(cmpSocialChannels);
+        }
+
+
+        [HttpGet("[action]")]
         public IActionResult getSocialChannel([FromQuery] string cmpid, [FromQuery] string user)
         {
             string _cmd;
