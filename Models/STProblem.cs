@@ -28,6 +28,9 @@ namespace goalongapi.Models
 
         public string? UserLineId { get; set; }
         public string? OALineId  { get; set; }
+
+        public int? FeedbackRating { get; set; }
+        public string? FeedbackDate { get; set; }
  
         public List<STProblem_File>? attachfile { get; set; }
         public List<STProblem_Assign>? assign { get; set; }
