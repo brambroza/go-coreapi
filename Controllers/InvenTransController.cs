@@ -119,6 +119,82 @@ namespace goalongapi.Controllers
         }
 
 
+   [HttpPost("[action]")]
+        public void setInvenTransSerial(List<InvenTransModelSerial> Inven)
+        {
+
+
+            DB.DBConn.SqlConnectionOpen();
+            DB.DBConn.Cmd = DB.DBConn.Cnn.CreateCommand();
+            DB.DBConn.Tran = DB.DBConn.Cnn.BeginTransaction();
+
+            try
+            {
+
+                string _cmd;
+                if (Inven.Count > 0)
+                {
+                    _cmd = "Delete From Inven.InvenTrans_Serial  where DocNo='" + Inven[0].DocNo + "'";
+                    _cmd += "   and CmpId='" + Inven[0].CmpId + "'";
+
+                    DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran);
+                }
+
+                for (int i = 0; i < Inven.Count; i++)
+                {
+
+                    _cmd = "exec  dbo.Inven_setInvenTransSerial";
+                    _cmd += " @UpdUser  ='" + Inven[i].UpdUser + "'";
+                    _cmd += ",@Seq =" + Inven[i].Seq;
+                    _cmd += ",@DocNo  ='" + Inven[i].DocNo + "'";
+                    _cmd += ",@TransDate ='" + Inven[i].TransDate + "'"; ;
+                    _cmd += ",@SysWHId =" + Inven[i].SysWHId;
+                    _cmd += ",@SysWHLocId =" + Inven[i].SysWHLocId;
+                    _cmd += ",@BarcodeNo  ='" + Inven[i].BarcodeNo + "'";
+                    _cmd += ",@ProductCode  ='" + Inven[i].ProductCode + "'";
+                    _cmd += ",@StatusInStock ='" +   (string.IsNullOrEmpty(Inven[i].StatusInStock) ? "1" : Inven[i].StatusInStock) + "'";
+                    _cmd += ",@Qty =" + Inven[i].Qty;
+                    _cmd += ",@UnitCode ='" + Inven[i].UnitCode + "'"; ;
+                    _cmd += ",@SerialNumber  ='" + Inven[i].SerialNumber + "'";
+                    _cmd += ",@MACAddress ='" + Inven[i].MACAddress + "'"; ;
+                    _cmd += ",@WarrantyStartDate ='" + Inven[i].WarrantyStartDate + "'"; ;
+                    _cmd += ",@WarrantyEndDate ='" + Inven[i].WarrantyEndDate + "'"; ;
+                    _cmd += ",@WarrantyPeriod ='" + Inven[i].WarrantyPeriod + "'"; ;
+                    _cmd += ",@TransType ='" + Inven[i].TransType + "'";
+                    _cmd += ", @CmpId='" + Inven[i].CmpId + "'";
+                     _cmd += ",@MainSeq =" + Inven[i].MainSeq;
+                    if (DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran) <= 0)
+                    {
+                        DB.DBConn.Tran.Rollback();
+                        DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
+                        DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
+                        return;
+                    }
+                    
+
+                }
+
+                DB.DBConn.Tran.Commit();
+                DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
+                DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
+
+            }
+            catch (Exception ex)
+            {
+                DB.DBConn.Tran.Rollback();
+                DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
+                DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
+
+            }
+
+
+
+
+        }
+
+
+
+
 
         [HttpPost("[action]")]
         public IActionResult setInvenAdjApp(AdjustModel adjust)
@@ -260,27 +336,12 @@ namespace goalongapi.Controllers
                 _cmd = "exec dbo.[inven_getstockcard_list] @CmpId='" + CmpId + "'";
                 dt2 = DB.DBConn.GetDataTable(_cmd);
 
+                 DataTable dt3 = new DataTable();
+                _cmd = "exec dbo.[inven_getonhand_Serial_list] @CmpId='" + CmpId + "'";
+                dt3 = DB.DBConn.GetDataTable(_cmd);
+
                 string JSONString = string.Empty;
                 JSONString = JsonConvert.SerializeObject(dt);
-
-                /*  var prodlist = new List<Dictionary<string, object>>();
-                 foreach (DataRow row in dt.Rows)
-                 {
-                     var eventObj = new Dictionary<string, object>();
-                     foreach (DataColumn column in dt.Columns)
-                     {
-                         string lowercaseColumnName =
-                             char.ToLowerInvariant(column.ColumnName[0])
-                             + column.ColumnName.Substring(1);
-
-                         eventObj[lowercaseColumnName] = row[column];
-                     }
-
-                     prodlist.Add(eventObj);
-                 }
-
-
-                     return Ok(new { products = prodlist }); */
 
                 var stockcardLookup = new Dictionary<string, List<Dictionary<string, object>>>();
 
@@ -300,6 +361,28 @@ namespace goalongapi.Controllers
                         stockcardLookup[productCode] = new List<Dictionary<string, object>>();
                     }
                     stockcardLookup[productCode].Add(stockcardItem);
+                }
+
+                /* stock seial */
+
+                var stockSerialLookup = new Dictionary<string, List<Dictionary<string, object>>>();
+
+                foreach (DataRow row in dt3.Rows)
+                {
+                    var stockcardItem = new Dictionary<string, object>();
+                    foreach (DataColumn column in dt3.Columns)
+                    {
+                        string lower = char.ToLowerInvariant(column.ColumnName[0]) + column.ColumnName.Substring(1);
+                        stockcardItem[lower] = row[column];
+                    }
+
+
+                    string productCode = row["ProductCode"].ToString();
+                    if (!stockSerialLookup.ContainsKey(productCode))
+                    {
+                        stockSerialLookup[productCode] = new List<Dictionary<string, object>>();
+                    }
+                    stockSerialLookup[productCode].Add(stockcardItem);
                 }
 
 
@@ -323,6 +406,18 @@ namespace goalongapi.Controllers
                     {
                         productItem["stockcards"] = new List<Dictionary<string, object>>();
                     }
+
+                     // Add stockSerial
+                    string serial = row["ProductCode"].ToString();
+                    if (stockSerialLookup.TryGetValue(serial, out var stockserial))
+                    {
+                        productItem["serials"] = stockserial;
+                    }
+                    else
+                    {
+                        productItem["serials"] = new List<Dictionary<string, object>>();
+                    }
+
 
                     prodlist.Add(productItem);
                 }

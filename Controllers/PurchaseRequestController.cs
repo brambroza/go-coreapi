@@ -70,7 +70,7 @@ namespace goalongapi.Controllers
                 purchase.ContactName = r["ContactName"].ToString();
                 purchase.SignaturePath = r["SignaturePath"].ToString();
                 purchase.FullName = r["FullName"].ToString();
-
+                purchase.TicketId = r["TicketId"].ToString();
                 purchase.items = new List<Purchase_Detail>();
                 foreach (
                     DataRow d in dtItem.Select(
@@ -107,7 +107,8 @@ namespace goalongapi.Controllers
                     item.CmpId = d["CmpId"].ToString();
                     item.SupplierCode = d["SupplierCode"].ToString();
                     item.PurchaseNoRef = d["PurchaseNoRef"].ToString();
-
+                    item.PurchaseReqNo = d["PurchaseNo"].ToString();
+                    item.TicketId = d["TicketId"].ToString();
                     purchase.items.Add(item);
                 }
 
@@ -214,6 +215,7 @@ namespace goalongapi.Controllers
                 _cmd += " ,@RevNo =" + po.RevNo;
                 _cmd += " ,@ProjectNo  ='" + po.ProjectNo + "'";
                 _cmd += " , @ContactName='" + po.ContactName + "'";
+                _cmd += " , @TicketId='" + po.TicketId + "'";
 
                 if (DB.DBConn.ExecuteOnly(_cmd))
                 {
@@ -303,6 +305,7 @@ namespace goalongapi.Controllers
                     _cmd += ",@GroupCaption2  ='" + po[i].GroupCaption2 + "'";
                     _cmd += ",@GroupCaption3  ='" + po[i].GroupCaption3 + "'";
                     _cmd += ",@CmpId  ='" + po[i].CmpId + "'";
+                    _cmd += ",@TicketId  ='" + po[i].TicketId + "'";
 
                     if (DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran) <= 0)
                     {

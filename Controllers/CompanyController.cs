@@ -120,6 +120,47 @@ namespace goalongapi.Controllers
             return Ok(cmpSocialChannels);
         }
 
+
+        [HttpPost("[action]")]
+        public IActionResult setLiffApp([FromBody] cmpSocialChannel_LiffApp cmp)
+        {
+            MsgReturn msgretrun = new MsgReturn();
+
+            try
+            {
+                string _cmd = "";
+
+                _cmd = "exec  dbo.setLiffApp";
+                _cmd += " @UpdUser  ='" + cmp.UpdUser + "'";
+                _cmd += ",@CmpId  ='" + cmp.CmpId + "'"; 
+                _cmd += ",@AppName  ='" + cmp.AppName + "'";
+                _cmd += ",@ChannelId  ='" + cmp.ChannelId + "'";
+                _cmd += ",@LiffId  ='" + cmp.LiffId + "'";
+                _cmd += ",@ChannelId  ='" + cmp.ChannelId + "'"; 
+
+                if (DB.DBConn.ExecuteOnly(_cmd))
+                {
+                    msgretrun.ReturnCode = "200";
+                    msgretrun.Msg = "Save Success !!";
+                    return Ok(msgretrun);
+                }
+                else
+                {
+                    msgretrun.ReturnCode = "400";
+                    msgretrun.Msg = "Error !!";
+                    return StatusCode(400, new { Message = msgretrun.Msg, Error = msgretrun.Msg });
+                }
+            }
+            catch
+            {
+                msgretrun.ReturnCode = "400";
+                msgretrun.Msg = "Error !!";
+                return StatusCode(400, new { Message = msgretrun.Msg, Error = msgretrun.Msg });
+            }
+        }
+
+
+
         [HttpPost("[action]")]
         public IActionResult setSocialChannel([FromBody] cmpSocialChannel cmp)
         {

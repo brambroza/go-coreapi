@@ -2739,7 +2739,7 @@ namespace goalongapi.Controllers
                     ",@CustomerPODate  ='"
                     + (project.CustomerPODate.Length <= 0 ? project.CustomerPODate.ToString() : DateTime
                         .Parse(project.CustomerPODate.ToString())
-                        .ToString("yyyy-MM-dd HH:mm", thaiCulture))
+                        .ToString("yyyy-MM-dd", thaiCulture))
                     + "'";
                 _cmd += " , @Shipping='" + project.Shipping + "'";
 

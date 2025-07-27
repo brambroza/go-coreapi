@@ -31,6 +31,9 @@ namespace goalongapi.Controllers
             _cmd = "exec dbo.[Inven_getTransAll] @CmpId='" +  CmpId  + "' , @User='" + user + "' ";
             DataTable dtItem = DB.DBConn.GetDataTable(_cmd);
 
+             _cmd = "exec dbo.[Inven_getTransSerialAll] @CmpId='" +  CmpId  + "' , @User='" + user + "' ";
+            DataTable dtItemSerial = DB.DBConn.GetDataTable(_cmd);
+
             List<ReceiveModel> receives = new List<ReceiveModel>();
 
             foreach (DataRow r in dt.Rows)
@@ -98,8 +101,53 @@ namespace goalongapi.Controllers
                     item.QCBy = d["QCBy"].ToString();
                     item.TransType = d["TransType"].ToString();
                     item.CmpId = d["CmpId"].ToString();
+                    item.serials = new List<InvenTransModelSerial>();
+
+                    if (dtItemSerial.Rows.Count > 0)
+                    {
+                        foreach (
+                              DataRow rd in dtItemSerial.Select(
+                                  "DocNo ='"
+                                       + d["DocNo"].ToString()
+                                      + "'  and CmpId='"
+                                      + d["CmpId"] + "'"
+                                       + "  and ProductCode='"
+                                      + d["ProductCode"] + "'"
+                                       + "  and MainSeq="
+                                      +  item.Seq + ""
+                              )
+                          )
+                        {
+                            var serial = new InvenTransModelSerial();
+
+                            serial.DocNo = rd["DocNo"].ToString();
+                            serial.UpdUser = rd["UpdUser"].ToString();
+                            serial.Seq = Convert.ToInt32(rd["Seq"]);
+                            serial.TransDate = rd["TransDate"].ToString();
+                            serial.SysWHId = Convert.ToInt32(rd["SysWHId"]);
+                            serial.SysWHLocId = Convert.ToInt32(rd["SysWHLocId"]);
+                            serial.BarcodeNo = rd["BarcodeNo"].ToString();
+
+                            serial.ProductCode = rd["ProductCode"].ToString();
+                            serial.Qty = Convert.ToDecimal(rd["Qty"]);
+                            serial.UnitCode = rd["UnitCode"].ToString();
+                            serial.SerialNumber = rd["SerialNumber"].ToString();
+                            serial.MACAddress = rd["MACAddress"].ToString();
+                            serial.WarrantyStartDate = rd["WarrantyStartDate"].ToString();
+                            serial.WarrantyEndDate = rd["WarrantyEndDate"].ToString();
+                            serial.WarrantyPeriod = rd["WarrantyPeriod"].ToString();
+                            serial.TransType = rd["TransType"].ToString();
+                            serial.StatusInStock =  rd["StatusInStock"].ToString();
+                            serial.MainSeq = Convert.ToInt32(rd["MainSeq"]);
+                            serial.CmpId = rd["CmpId"].ToString();
 
 
+                            item.serials.Add(serial);
+
+
+                        }
+
+                    }
  
                     receive.items.Add(item);
                 }

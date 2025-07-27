@@ -67,7 +67,7 @@ namespace goalongapi.Controllers
                 purchase.ContactName = r["ContactName"].ToString();
                 purchase.SignaturePath = r["SignaturePath"].ToString();
                 purchase.FullName = r["FullName"].ToString();
-
+                purchase.TicketId = r["TicketId"].ToString();
                 purchase.items = new List<Purchase_Detail>();
                 foreach (
                     DataRow d in dtItem.Select(
@@ -102,8 +102,8 @@ namespace goalongapi.Controllers
                     item.GroupCaption2 = d["GroupCaption2"].ToString();
                     item.GroupCaption3 = d["GroupCaption3"].ToString();
                     item.CmpId = d["CmpId"].ToString();
-                    item.PurchaseReqNo = d["PurchaseReqNo"].ToString(); 
-
+                    item.PurchaseReqNo = d["PurchaseReqNo"].ToString();
+                    item.TicketId = d["TicketId"].ToString();
                     purchase.items.Add(item);
                 }
 
@@ -281,6 +281,7 @@ namespace goalongapi.Controllers
                 _cmd += " ,@RevNo =" + po.RevNo;
                 _cmd += " ,@ProjectNo  ='" + po.ProjectNo + "'";
                 _cmd += " , @ContactName='" + po.ContactName + "'";
+                _cmd += " , @TicketId='" + po.TicketId + "'";
 
                 if (DB.DBConn.ExecuteOnly(_cmd))
                 {
@@ -371,7 +372,7 @@ namespace goalongapi.Controllers
                     _cmd += ",@GroupCaption3  ='" + po[i].GroupCaption3 + "'";
                     _cmd += ",@CmpId  ='" + po[i].CmpId + "'";
                     _cmd += ",@PurchaseReqNo='" + po[i].PurchaseReqNo + "'";
-
+                    _cmd += ",@TicketId='" + po[i].TicketId + "'";
                     if (DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran) <= 0)
                     {
                         DB.DBConn.Tran.Rollback();
@@ -890,5 +891,106 @@ namespace goalongapi.Controllers
 
             return Ok(bomList);
         }
+
+
+
+        [HttpGet("[action]")]
+        public IActionResult getPurchaseTracklist([FromQuery] string cmpid, [FromQuery] string user)
+        {
+            string _cmd;
+            _cmd = "exec dbo.getPurchaseTrackAll @CmpId='" + cmpid + "'";
+            DataTable dt = DB.DBConn.GetDataTable(_cmd);
+
+            _cmd = "exec dbo.getPurchaseTrackItemAll @CmpId='" + cmpid + "'";
+            DataTable dtItem = DB.DBConn.GetDataTable(_cmd);
+
+            List<Purchase> purchases = new List<Purchase>();
+
+            foreach (DataRow r in dt.Rows)
+            {
+                var purchase = new Purchase();
+                purchase.UpdUser = r["UpdUser"].ToString();
+                purchase.PurchaseNo = r["PurchaseNo"].ToString();
+                purchase.PurchaseDate = r["PurchaseDate"].ToString();
+                purchase.PurchaseBy = r["PurchaseBy"].ToString();
+                purchase.PurchaseState = r["PurchaseState"].ToString();
+                purchase.SupplierCode = r["SupplierCode"].ToString();
+                purchase.CreditType = Convert.ToInt32(r["CreditType"]);
+                purchase.CreditDate = Convert.ToInt32(r["CreditDate"]);
+                purchase.ProjectName = r["ProjectName"].ToString();
+                purchase.ReferCode = r["ReferCode"].ToString();
+                purchase.VatType = Convert.ToInt32(r["VatType"]);
+                purchase.Remark = r["Remark"].ToString();
+                purchase.Note = r["Note"].ToString();
+                purchase.PurchaseAmt = Convert.ToDecimal(r["PurchaseAmt"]);
+                purchase.PurchaseDisPer = Convert.ToDecimal(r["PurchaseDisPer"]);
+                purchase.PurchaseDisAmt = Convert.ToDecimal(r["PurchaseDisAmt"]);
+                purchase.PurchaseNetAmt = Convert.ToDecimal(r["PurchaseNetAmt"]);
+                purchase.PurchaseVatAmt = Convert.ToDecimal(r["PurchaseVatAmt"]);
+                purchase.PurchaseVatPer = Convert.ToDecimal(r["PurchaseVatPer"]);
+                purchase.PurchaseGrandAmt = Convert.ToDecimal(r["PurchaseGrandAmt"]);
+                purchase.PurchaseGrandAmtTHB = r["PurchaseGrandAmtTHB"].ToString();
+                purchase.PurchaseGrandAmtENB = r["PurchaseGrandAmtENB"].ToString();
+                purchase.WithholdingTaxState = Convert.ToInt32(r["WithholdingTaxState"]);
+                purchase.ShowSignatureState = Convert.ToInt32(r["ShowSignatureState"]);
+                purchase.CmpId = r["CmpId"].ToString();
+                purchase.DocState = Convert.ToInt32(r["DocState"]);
+                purchase.PriceStand = r["PriceStand"].ToString();
+                purchase.PaymentDue = r["PaymentDue"].ToString();
+                purchase.Shipping = r["Shipping"].ToString();
+                purchase.RevNo = Convert.ToInt32(r["RevNo"]);
+                purchase.ProjectNo = r["ProjectNo"].ToString();
+                purchase.SupplierName = r["SupplierName"].ToString();
+                purchase.ContactName = r["ContactName"].ToString();
+                purchase.SignaturePath = r["SignaturePath"].ToString();
+                purchase.FullName = r["FullName"].ToString();
+                purchase.TicketId = r["TicketId"].ToString();
+                purchase.items = new List<Purchase_Detail>();
+                foreach (
+                    DataRow d in dtItem.Select(
+                        "PurchaseNo ='"
+                             + r["PurchaseNo"].ToString()
+                            + "'  and RevNo="
+                            + Convert.ToInt32(r["RevNo"])
+                    )
+                )
+                {
+                    var item = new Purchase_Detail();
+                    item.PurchaseNo = d["PurchaseNo"].ToString();
+                    item.UpdUser = d["UpdUser"].ToString();
+                    item.Seq = Convert.ToInt32(d["Seq"]);
+                    item.ProdCode = d["ProdCode"].ToString();
+                    item.ProdDescription = d["ProdDescription"].ToString();
+                    item.Qty = Convert.ToDecimal(d["Qty"]);
+
+                    item.UnitCode = d["UnitCode"].ToString();
+                    item.UnitPrice = Convert.ToDecimal(d["UnitPrice"]);
+                    item.Amt = Convert.ToDecimal(d["Amt"]);
+                    item.DisPer = Convert.ToDecimal(d["DisPer"]);
+                    item.DisAmt = Convert.ToDecimal(d["DisAmt"]);
+                    item.NetAmt = Convert.ToDecimal(d["NetAmt"]);
+
+                    item.PricePur = Convert.ToDecimal(d["PricePur"]);
+                    item.CostAmt = Convert.ToDecimal(d["CostAmt"]);
+                    item.ProfitAmt = Convert.ToDecimal(d["ProfitAmt"]);
+
+                    item.RevNo = Convert.ToInt32(d["RevNo"]);
+                    item.GroupCaption1 = d["GroupCaption1"].ToString();
+                    item.GroupCaption2 = d["GroupCaption2"].ToString();
+                    item.GroupCaption3 = d["GroupCaption3"].ToString();
+                    item.CmpId = d["CmpId"].ToString();
+                    item.PurchaseReqNo = d["PurchaseReqNo"].ToString();
+                    item.TicketId = d["TicketId"].ToString();
+                    purchase.items.Add(item);
+                }
+
+                purchases.Add(purchase);
+            }
+
+            return Ok(purchases);
+        }
+
+
+
     }
 }

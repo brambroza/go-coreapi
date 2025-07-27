@@ -58,7 +58,35 @@ namespace goalongapi.Models
         public string TransType { get; set; }
         public string CmpId { get; set; }
         public string? ProdDescription { get; set; }
+        public List<InvenTransModelSerial>? serials { get; set; }
     }
+
+
+
+    public class InvenTransModelSerial
+    {
+        public string UpdUser { get; set; }
+        public int Seq { get; set; }
+        public string DocNo { get; set; }
+        public string TransDate { get; set; }
+        public int SysWHId { get; set; }
+        public int SysWHLocId { get; set; }
+        public string BarcodeNo { get; set; }
+        public string ProductCode { get; set; }
+        public decimal Qty { get; set; }
+        public string UnitCode { get; set; }
+        public string WarrantyStartDate { get; set; }
+        public string WarrantyEndDate { get; set; }
+        public string WarrantyPeriod { get; set; }
+        public string SerialNumber { get; set; }
+        public string MACAddress { get; set; }
+        public string TransType { get; set; }
+        public string CmpId { get; set; }
+        public string? StatusInStock { get; set; }
+        public string? ProdDescription { get; set; }
+        public int MainSeq { get; set; }
+    }
+
 
 
 
@@ -68,10 +96,10 @@ namespace goalongapi.Models
         public string AdjustNo { get; set; }
         public string AdjustDate { get; set; }
         public string AdjustBy { get; set; }
-       
+
         public string CmpId { get; set; }
         public string Remark { get; set; }
-      
+
         public int SysWHId { get; set; }
         public int SysWHLocId { get; set; }
         public int AdjustType { get; set; }
@@ -81,7 +109,7 @@ namespace goalongapi.Models
 
         public string StateSend { get; set; }
         public string SendAppBy { get; set; }
- 
+
         public string? WareHouseName { get; set; }
         public string? WareHouseLocName { get; set; }
         public string? Status { get; set; }

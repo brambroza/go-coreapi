@@ -13,6 +13,7 @@ namespace goalongapi.Models
         public string WareHouseDescription { get; set; }
         public int StateActive { get; set; }
         public string CmpId { get; set; }
+        public int StateReserve { get; set; }
     }
     public class WareHouseLocation
     {

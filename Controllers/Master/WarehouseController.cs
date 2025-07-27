@@ -35,7 +35,7 @@ namespace goalongapi.Controllers.Master
                 wh.StateActive = int.Parse(r["StateActive"].ToString());
                 wh.WareHouseDescription = r["WareHouseDescription"].ToString();
                 wh.WareHouseName = r["WareHouseName"].ToString();
-
+                wh.StateReserve = int.Parse(r["StateReserve"].ToString());
                 whs.Add(wh);
             }
 
@@ -57,6 +57,8 @@ namespace goalongapi.Controllers.Master
                 _cmd += ",@WareHouseDescription  ='" + wh.WareHouseDescription + "'";
                 _cmd += ",@StateActive =" + wh.StateActive;
                 _cmd += ",@CmpId ='" + wh.CmpId + "'";
+                _cmd += ",@StateReserve =" + wh.StateReserve;
+
                 if (DB.DBConn.ExecuteOnly(_cmd))
                 {
                     msgretrun.ReturnCode = "200";

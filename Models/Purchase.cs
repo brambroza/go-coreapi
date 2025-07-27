@@ -45,6 +45,7 @@ namespace goalongapi.Models
         public string? FullName { get; set; }
 
         public List<Purchase_Detail> items { get; set; }
+         public string? TicketId { get; set; }
     }
 
     public class Purchase_Detail
@@ -73,6 +74,7 @@ namespace goalongapi.Models
         public string? SupplierCode { get; set; }
         public string? PurchaseReqNo { get; set; }
         public string? PurchaseNoRef { get; set; }
+         public string? TicketId { get; set; }
     }
 
     public class TicketPurchase

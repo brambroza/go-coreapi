@@ -97,6 +97,7 @@ namespace goalongapi.Models
         public int? StateSendApprove { get; set; }
 
         public string? StateApproveType { get; set; }  
+       
         
         public List<ServiceTaskItem>? SubTaskItem { get; set; }
 
