@@ -112,6 +112,7 @@ namespace goalongapi.Controllers
                     PageId = r["PageId"].ToString(),
                     PhoneNumber = r["PhoneNumber"].ToString(),
                     Name = r["Name"].ToString(),
+                    LineId = r["LineId"].ToString(),
                 };
 
                 cmpSocialChannels.Add(cmpSocialChannel);
@@ -181,6 +182,7 @@ namespace goalongapi.Controllers
                 _cmd += ",@AccessToken  ='" + cmp.AccessToken + "'";
                 _cmd += ",@PageId  ='" + cmp.PageId + "'";
                 _cmd += ",@PhoneNumber  ='" + cmp.PhoneNumber + "'";
+                _cmd += ",@LineId='" + cmp.LineId + "'";
 
                 if (DB.DBConn.ExecuteOnly(_cmd))
                 {
