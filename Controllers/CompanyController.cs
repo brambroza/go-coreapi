@@ -74,11 +74,13 @@ namespace goalongapi.Controllers
             foreach (DataRow r in dt.Rows)
             {
                 var cmpSocialChannel = new cmpSocialChannel_LiffApp()
-                { 
-                    CmpId = r["CmpId"].ToString(), 
+                {
+                    CmpId = r["CmpId"].ToString(),
                     ChannelId = r["ChannelId"].ToString(),
                     LiffId = r["LiffId"].ToString(),
                     AppName = r["AppName"].ToString(),
+                    LineOAName = r["LineOAName"].ToString(),
+                    Seq  = int.Parse(r["Seq"].ToString()),
                 };
 
                 cmpSocialChannels.Add(cmpSocialChannel);
@@ -86,6 +88,32 @@ namespace goalongapi.Controllers
 
             return Ok(cmpSocialChannels);
         }
+
+         [HttpGet("[action]")]
+        public IActionResult getSocialChannelLiffAppUrl([FromQuery] string cmpid, [FromQuery] string user)
+        {
+            string _cmd;
+            _cmd = "exec dbo.getCompanySocialChannel_LiffAppUrl @CmpId='" + cmpid + "' , @User='" + user + "'";
+            DataTable dt = DB.DBConn.GetDataTable(_cmd);
+
+            List<cmpSocialChannel_LiffAppUrl> cmpSocialChannels = new List<cmpSocialChannel_LiffAppUrl>();
+
+            foreach (DataRow r in dt.Rows)
+            {
+                var cmpSocialChannel = new cmpSocialChannel_LiffAppUrl()
+                {
+                    CmpId = r["CmpId"].ToString(),
+                    Url = r["Url"].ToString(), 
+                    AppName = r["AppName"].ToString(),
+                    Description = r["Description"].ToString(),
+                };
+
+                cmpSocialChannels.Add(cmpSocialChannel);
+            }
+
+            return Ok(cmpSocialChannels);
+        }
+
 
 
         [HttpGet("[action]")]
@@ -137,7 +165,7 @@ namespace goalongapi.Controllers
                 _cmd += ",@AppName  ='" + cmp.AppName + "'";
                 _cmd += ",@ChannelId  ='" + cmp.ChannelId + "'";
                 _cmd += ",@LiffId  ='" + cmp.LiffId + "'";
-                _cmd += ",@ChannelId  ='" + cmp.ChannelId + "'"; 
+               
 
                 if (DB.DBConn.ExecuteOnly(_cmd))
                 {
@@ -205,6 +233,10 @@ namespace goalongapi.Controllers
             }
         }
 
+ 
+
+
+
         [HttpDelete("[action]")]
         public IActionResult delSocialChannel([FromQuery] string cmpid, [FromQuery] int id)
         {
@@ -238,6 +270,44 @@ namespace goalongapi.Controllers
                 return StatusCode(400, new { Message = msgretrun.Msg, Error = msgretrun.Msg });
             }
         }
+
+
+
+        [HttpDelete("[action]")]
+        public IActionResult delSocialChannelLiff([FromQuery] string cmpid, [FromQuery] int id)
+        {
+            MsgReturn msgretrun = new MsgReturn();
+
+            try
+            {
+                string _cmd = "";
+
+                _cmd = "exec  dbo.delCompanySocialChannelLiff";
+                _cmd += " @CmpId  ='" + cmpid + "'";
+                _cmd += ",@Seq =" + id;
+
+                if (DB.DBConn.ExecuteOnly(_cmd))
+                {
+                    msgretrun.ReturnCode = "200";
+                    msgretrun.Msg = "Delete Success !!";
+                    return Ok(msgretrun);
+                }
+                else
+                {
+                    msgretrun.ReturnCode = "400";
+                    msgretrun.Msg = "Error !!";
+                    return StatusCode(400, new { Message = msgretrun.Msg, Error = msgretrun.Msg });
+                }
+            }
+            catch
+            {
+                msgretrun.ReturnCode = "400";
+                msgretrun.Msg = "Error !!";
+                return StatusCode(400, new { Message = msgretrun.Msg, Error = msgretrun.Msg });
+            }
+        }
+
+
 
         [HttpGet("images/{fileName}")]
         public IActionResult GetImage(string fileName)
