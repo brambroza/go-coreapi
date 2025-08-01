@@ -17,17 +17,7 @@ namespace goalongapi.Controllers
     [Authorize]
     public class QuaHController : ControllerBase
     {
-
-         private readonly IDbConnection _db;
-
-        public QuaHController(IDbConnection db)
-        {
-            _db = db;
-        }
-
-
-
-
+ 
         [HttpGet("[action]")]
         public ActionResult getQuaH([FromQuery] string id, [FromQuery] string user)
         {
@@ -219,8 +209,6 @@ namespace goalongapi.Controllers
 
             _cmd = "exec dbo.getQuotationAll @CmpId='" + id + "', @User='" + user + "'";
             DataTable datatable = DB.DBConn.GetDataTable(_cmd);
- 
-
 
 
 
