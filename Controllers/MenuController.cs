@@ -49,18 +49,44 @@ namespace goalongapi.Controllers
                 menus.to = r["to"].ToString();
                 menus.link = r["to"].ToString();
                 menus.icon = r["icon"].ToString();
+                
+
+
                 foreach (DataRow xr in sdt.Select("MenuMainId=" + Convert.ToInt32(r["MenuId"])))
                 {
-                    
+
                     var sub = new MenuChildren();
-                    
+
                     sub.title = xr["title"].ToString();
                     sub.to = xr["to"].ToString();
                     sub.link = xr["to"].ToString();
                     sub.icon = xr["icon"].ToString();
                     sub.MenuId = Convert.ToInt32(xr["MenuId"]);
+
+                    if (sdt.Select("MenuMainId=" + Convert.ToInt32(xr["MenuId"])).Length > 0)
+                    {
+                        sub.children = new List<MenuChildren>();
+
+                        foreach (DataRow sb in sdt.Select("MenuMainId=" + Convert.ToInt32(xr["MenuId"])))
+                        {
+                            var submenu = new MenuChildren();
+
+                            submenu.title = sb["title"].ToString();
+                            submenu.to = sb["to"].ToString();
+                            submenu.link = sb["to"].ToString();
+                            submenu.icon = sb["icon"].ToString();
+                            submenu.MenuId = Convert.ToInt32(sb["MenuId"]);
+
+
+                            sub.children.Add(submenu);
+                        }
+
+
+                    }  
+
+
                     menus.children.Add(sub);
-                   
+
                 }
               if (sdt.Select("MenuMainId=" + Convert.ToInt32(r["MenuId"])).Length > 0 || r["to"].ToString() != "")
                 {

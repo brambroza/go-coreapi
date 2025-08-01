@@ -23,5 +23,6 @@ namespace goalongapi.Models
         public int StateActive { get; set; }
 
         public List<MenuChildren> children { get; set; }
+
     }
 }
