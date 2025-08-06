@@ -26,7 +26,7 @@ namespace goalongapi.Controllers
             JSONString = JsonConvert.SerializeObject(dt);
 
             return Ok(JSONString);
-        } 
+        }
 
         [HttpGet("[action]")]
         public IActionResult getPaymentMethod([FromQuery] string cmpid, [FromQuery] string user)
@@ -80,7 +80,7 @@ namespace goalongapi.Controllers
                     LiffId = r["LiffId"].ToString(),
                     AppName = r["AppName"].ToString(),
                     LineOAName = r["LineOAName"].ToString(),
-                    Seq  = int.Parse(r["Seq"].ToString()),
+                    Seq = int.Parse(r["Seq"].ToString()),
                 };
 
                 cmpSocialChannels.Add(cmpSocialChannel);
@@ -89,7 +89,7 @@ namespace goalongapi.Controllers
             return Ok(cmpSocialChannels);
         }
 
-         [HttpGet("[action]")]
+        [HttpGet("[action]")]
         public IActionResult getSocialChannelLiffAppUrl([FromQuery] string cmpid, [FromQuery] string user)
         {
             string _cmd;
@@ -103,7 +103,7 @@ namespace goalongapi.Controllers
                 var cmpSocialChannel = new cmpSocialChannel_LiffAppUrl()
                 {
                     CmpId = r["CmpId"].ToString(),
-                    Url = r["Url"].ToString(), 
+                    Url = r["Url"].ToString(),
                     AppName = r["AppName"].ToString(),
                     Description = r["Description"].ToString(),
                 };
@@ -161,11 +161,11 @@ namespace goalongapi.Controllers
 
                 _cmd = "exec  dbo.setLiffApp";
                 _cmd += " @UpdUser  ='" + cmp.UpdUser + "'";
-                _cmd += ",@CmpId  ='" + cmp.CmpId + "'"; 
+                _cmd += ",@CmpId  ='" + cmp.CmpId + "'";
                 _cmd += ",@AppName  ='" + cmp.AppName + "'";
                 _cmd += ",@ChannelId  ='" + cmp.ChannelId + "'";
                 _cmd += ",@LiffId  ='" + cmp.LiffId + "'";
-               
+
 
                 if (DB.DBConn.ExecuteOnly(_cmd))
                 {
@@ -233,7 +233,7 @@ namespace goalongapi.Controllers
             }
         }
 
- 
+
 
 
 
@@ -590,5 +590,117 @@ namespace goalongapi.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
+
+
+
+
+
+        [HttpGet("[action]")]
+        public IActionResult getDepartment([FromQuery] string CmpId, [FromQuery] string User)
+        {
+            string _cmd;
+            _cmd = "exec dbo.getDepartment @CmpId='" + CmpId + "' , @User='" + User + "' ";
+            DataTable dt = DB.DBConn.GetDataTable(_cmd);
+
+
+            var prodlist = new List<Dictionary<string, object>>();
+            foreach (DataRow row in dt.Rows)
+            {
+                var eventObj = new Dictionary<string, object>();
+                foreach (DataColumn column in dt.Columns)
+                {
+                    string lowercaseColumnName =
+                        char.ToLowerInvariant(column.ColumnName[0])
+                        + column.ColumnName.Substring(1);
+
+                    eventObj[lowercaseColumnName] = row[column];
+                }
+
+                prodlist.Add(eventObj);
+            }
+
+
+            return Ok(prodlist);
+        }
+
+
+
+        [HttpPost("[action]")]
+        public IActionResult setDepartment(Department pm)
+        {
+            MsgReturn msgretrun = new MsgReturn();
+
+            try
+            {
+                string _cmd = "";
+
+                _cmd = "exec  dbo.setDepartment";
+                _cmd += " @UpdUser  ='" + pm.UpdUser + "'";
+                _cmd += ",@CmpId  ='" + pm.CmpId + "'";
+                _cmd += ",@DepartmentNo  ='" + pm.DepartmentNo + "'";
+                _cmd += ",@DepartmentName  ='" + pm.DepartmentName + "'";
+                _cmd += ",@StateActive  ='" + pm.StateActive + "'";
+
+                if (DB.DBConn.ExecuteOnly(_cmd))
+                {
+                    msgretrun.ReturnCode = "200";
+                    msgretrun.Msg = "Save Success !!";
+                    return Ok(msgretrun);
+                }
+                else
+                {
+                    msgretrun.ReturnCode = "400";
+                    msgretrun.Msg = "Error !!";
+                    return StatusCode(400, new { Message = msgretrun.Msg, Error = msgretrun.Msg });
+                }
+            }
+            catch
+            {
+                msgretrun.ReturnCode = "400";
+                msgretrun.Msg = "Error !!";
+                return StatusCode(400, new { Message = msgretrun.Msg, Error = msgretrun.Msg });
+            }
+        }
+
+
+        [HttpDelete("[action]")]
+        public IActionResult delDepartment([FromQuery] string CmpId, [FromQuery] string id)
+        {
+            MsgReturn msgretrun = new MsgReturn();
+
+            try
+            {
+                string _cmd = "";
+
+                _cmd = "exec  dbo.delDepartment";
+                _cmd += " @CmpId  ='" + CmpId + "'";
+                _cmd += ",@DepartmentNo  ='" + id + "'";
+
+                if (DB.DBConn.ExecuteOnly(_cmd))
+                {
+                    msgretrun.ReturnCode = "200";
+                    msgretrun.Msg = "Delete Success !!";
+                    return Ok(msgretrun);
+                }
+                else
+                {
+                    msgretrun.ReturnCode = "400";
+                    msgretrun.Msg = "Error !!";
+                    return StatusCode(400, new { Message = msgretrun.Msg, Error = msgretrun.Msg });
+                }
+            }
+            catch
+            {
+                msgretrun.ReturnCode = "400";
+                msgretrun.Msg = "Error !!";
+                return StatusCode(400, new { Message = msgretrun.Msg, Error = msgretrun.Msg });
+            }
+        }
+
+        
+
+        
+
+
     }
 }

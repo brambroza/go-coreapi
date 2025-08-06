@@ -20,7 +20,7 @@ namespace goalongapi.Entities
         public int stateEmailConfirm { get; set; } = 1;
 
         public virtual Role Role { get; set; } = null!;
-        public string imgPath { get; set; }
+        public string imgPath { get; set; } = "";
 
         public string? ResetToken {get;set;}
         public DateTime? ResetTokenExpiry {get;set;}

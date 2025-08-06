@@ -96,10 +96,13 @@ namespace goalongapi.Models
         public int? StateApprve { get; set; }
         public int? StateSendApprove { get; set; }
 
-        public string? StateApproveType { get; set; }  
-       
-        
+        public string? StateApproveType { get; set; }
+
+
         public List<ServiceTaskItem>? SubTaskItem { get; set; }
+        
+        public   Dictionary<string, object>? costExpense { get; set; }
+
 
     }
 
@@ -273,7 +276,7 @@ namespace goalongapi.Models
         public string Title { get; set; }
         public string DueDate { get; set; }
         public string RouteId { get; set; }
-        public string TaskStatus { get; set; } 
+        public string TaskStatus { get; set; }
         public string? TaskDate { get; set; }
         public string? TaskTime { get; set; }
         public string? DocRef { get; set; }
@@ -282,8 +285,9 @@ namespace goalongapi.Models
         public CustomerList? customer { get; set; }
 
         public Project? project { get; set; }
-        public STProblem? problem { get; set;}
-
+        public STProblem? problem { get; set; }
+        
+      
     }
 
 

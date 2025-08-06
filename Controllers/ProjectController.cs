@@ -1140,6 +1140,16 @@ namespace goalongapi.Controllers
             return Ok(JSONString);
         }
 
+     private Dictionary<string, object> RowToDictionary(DataRow row)
+        {
+            return row.Table.Columns.Cast<DataColumn>()
+                      .ToDictionary(
+                          col => char.ToLowerInvariant(col.ColumnName[0]) + col.ColumnName.Substring(1),
+                          col => row[col] == DBNull.Value ? null : row[col]
+                      );
+        }
+
+
         [HttpGet("[action]")]
         public ActionResult getProjectDetail([FromQuery] string CmpId, [FromQuery] string docno)
         {
@@ -1277,7 +1287,7 @@ namespace goalongapi.Controllers
           _cmd = "exec dbo.[getProblemActions_Files_All] @CmpId=" + CmpId + " ,  @User='" + user + "'";
            DataTable dtbf = DB.DBConn.GetDataTable(_cmd);
 
-
+         
 
 
             string _DocType = "customer";
@@ -1287,6 +1297,37 @@ namespace goalongapi.Controllers
             List<ServiceTask> serviceTasks = new List<ServiceTask>();
 
  
+             _cmd = "exec dbo.getCostExpense @CmpId='" + CmpId + "' , @User='" + User + "' ";
+            DataTable dtce = DB.DBConn.GetDataTable(_cmd);
+
+            _cmd = "exec dbo.[getCostExpense_File] @CmpId=" + CmpId + " ,  @User='" + User + "'";
+           DataTable  dtecf = DB.DBConn.GetDataTable(_cmd);
+
+
+     
+
+            var filesLookup = dtecf.AsEnumerable()
+            .GroupBy(r => r["ExpenseNo"].ToString())
+            .ToDictionary(
+                g => g.Key,
+                g => g.Select(RowToDictionary).ToList()
+            );
+
+ 
+             var prodlist = dtce.AsEnumerable()
+            .GroupBy(r => r["ProjectNo"].ToString())
+            .ToDictionary(
+                g => g.Key,
+                g => g.Select(row =>
+                {
+                    var dict = RowToDictionary(row); // ใช้ helper method ที่แปลง DataRow → Dictionary
+                    var expenseNo = row["ExpenseNo"].ToString();
+                    dict["attachments"] = filesLookup.ContainsKey(expenseNo)
+                        ? filesLookup[expenseNo]
+                        : new List<Dictionary<string, object>>();
+                    return dict;
+                }).ToList()
+            );
 
 
 
@@ -1310,74 +1351,74 @@ namespace goalongapi.Controllers
                 serviceTask.customer = new CustomerList();
 
                 foreach (DataRow d in dtcust.Select("CustomerCode='" + serviceTask.CustCode + "'"))
-                    {
-                        var customer = new CustomerList();
+                {
+                    var customer = new CustomerList();
 
-                        customer.UpdUser = d["UpdUser"].ToString();
-                        customer.CustomerCode = d["CustomerCode"].ToString();
-                        customer.CustomerName = d["CustomerName"].ToString();
-                        customer.CustomerAddress = d["CustomerAddress"].ToString();
-                        customer.CustomerTaxNo = d["CustomerTaxNo"].ToString();
-                        customer.CustomerBranch = d["CustomerBranch"].ToString();
-                        customer.CustomerBranchCode = d["CustomerBranchCode"].ToString();
-                        customer.CustomerBranchName = d["CustomerBranchName"].ToString();
-                        customer.ContactName = d["ContactName"].ToString();
-                        customer.ContactEmail = d["ContactEmail"].ToString();
-                        customer.ContactPhone = d["ContactPhone"].ToString();
-                        customer.ContactName1 = d["ContactName1"].ToString();
-                        customer.ContactEmail1 = d["ContactEmail1"].ToString();
-                        customer.ContactPhone1 = d["ContactPhone1"].ToString();
-                        customer.CreditDay = Convert.ToInt32(d["CreditDay"]);
-                        customer.PhoneOffice = d["PhoneOffice"].ToString();
-                        customer.FaxOffice = d["FaxOffice"].ToString();
-                        customer.Website = d["Website"].ToString();
-                        customer.AddressShip = d["AddressShip"].ToString();
-                        customer.Remark = d["Remark"].ToString();
-                        customer.CmpId = d["CmpId"].ToString();
-                        customer.ContactName2 = d["ContactName2"].ToString();
-                        customer.ContactEmail2 = d["ContactEmail2"].ToString();
-                        customer.ContactPhone2 = d["ContactPhone2"].ToString();
-                        customer.ContactPosition2 = d["ContactPosition2"].ToString();
-                        customer.ContactPosition1 = d["ContactPosition1"].ToString();
-                        customer.ContactPosition = d["ContactPosition"].ToString();
-                        customer.AddrSubDistrict = d["AddrSubDistrict"].ToString();
-                        customer.AddrDistrict = d["AddrDistrict"].ToString();
-                        customer.AddrProvince = d["AddrProvince"].ToString();
-                        customer.AddrPostCode = d["AddrPostCode"].ToString();
-                        customer.ImgPath = d["ImgPath"].ToString();
-                        customer.CreditAccId = Convert.ToInt32(d["CreditAccId"]);
-                        customer.DebitAccId = Convert.ToInt32(d["DebitAccId"]);
-                        customer.BusinessGrpCode = d["BusinessGrpCode"].ToString();
-                        customer.StateCustomer = d["StateCustomer"].ToString();
-                        customer.StateVendor = d["StateVendor"].ToString();
+                    customer.UpdUser = d["UpdUser"].ToString();
+                    customer.CustomerCode = d["CustomerCode"].ToString();
+                    customer.CustomerName = d["CustomerName"].ToString();
+                    customer.CustomerAddress = d["CustomerAddress"].ToString();
+                    customer.CustomerTaxNo = d["CustomerTaxNo"].ToString();
+                    customer.CustomerBranch = d["CustomerBranch"].ToString();
+                    customer.CustomerBranchCode = d["CustomerBranchCode"].ToString();
+                    customer.CustomerBranchName = d["CustomerBranchName"].ToString();
+                    customer.ContactName = d["ContactName"].ToString();
+                    customer.ContactEmail = d["ContactEmail"].ToString();
+                    customer.ContactPhone = d["ContactPhone"].ToString();
+                    customer.ContactName1 = d["ContactName1"].ToString();
+                    customer.ContactEmail1 = d["ContactEmail1"].ToString();
+                    customer.ContactPhone1 = d["ContactPhone1"].ToString();
+                    customer.CreditDay = Convert.ToInt32(d["CreditDay"]);
+                    customer.PhoneOffice = d["PhoneOffice"].ToString();
+                    customer.FaxOffice = d["FaxOffice"].ToString();
+                    customer.Website = d["Website"].ToString();
+                    customer.AddressShip = d["AddressShip"].ToString();
+                    customer.Remark = d["Remark"].ToString();
+                    customer.CmpId = d["CmpId"].ToString();
+                    customer.ContactName2 = d["ContactName2"].ToString();
+                    customer.ContactEmail2 = d["ContactEmail2"].ToString();
+                    customer.ContactPhone2 = d["ContactPhone2"].ToString();
+                    customer.ContactPosition2 = d["ContactPosition2"].ToString();
+                    customer.ContactPosition1 = d["ContactPosition1"].ToString();
+                    customer.ContactPosition = d["ContactPosition"].ToString();
+                    customer.AddrSubDistrict = d["AddrSubDistrict"].ToString();
+                    customer.AddrDistrict = d["AddrDistrict"].ToString();
+                    customer.AddrProvince = d["AddrProvince"].ToString();
+                    customer.AddrPostCode = d["AddrPostCode"].ToString();
+                    customer.ImgPath = d["ImgPath"].ToString();
+                    customer.CreditAccId = Convert.ToInt32(d["CreditAccId"]);
+                    customer.DebitAccId = Convert.ToInt32(d["DebitAccId"]);
+                    customer.BusinessGrpCode = d["BusinessGrpCode"].ToString();
+                    customer.StateCustomer = d["StateCustomer"].ToString();
+                    customer.StateVendor = d["StateVendor"].ToString();
 
-                        customer.contacts = new List<ContactList>();
+                    customer.contacts = new List<ContactList>();
 
-                        foreach (
-                            DataRow c in dtContact.Select(
-                                "DocType='" + _DocType + "' and DocNo='" + customer.CustomerCode + "'"
-                            )
+                    foreach (
+                        DataRow c in dtContact.Select(
+                            "DocType='" + _DocType + "' and DocNo='" + customer.CustomerCode + "'"
                         )
-                        {
-                            var item = new ContactList();
-                            item.UpdUser = c["UpdUser"].ToString();
-                            item.ContactName = c["ContactName"].ToString();
-                            item.ContactPhone = c["ContactPhone"].ToString();
-                            item.ContactEmail = c["ContactEmail"].ToString();
-                            item.ContactPosition = c["ContactPosition"].ToString();
-                            item.ContactLineId = c["ContactLineId"].ToString();
-                            item.Remark = c["Remark"].ToString();
-                            item.CmpId = c["CmpId"].ToString();
-                            item.ContactId = c["ContactId"].ToString();
-                            item.ImgPath = c["ImgPath"].ToString();
-                            item.DocNo = c["DocNo"].ToString();
-                            item.DocType = c["DocType"].ToString();
+                    )
+                    {
+                        var item = new ContactList();
+                        item.UpdUser = c["UpdUser"].ToString();
+                        item.ContactName = c["ContactName"].ToString();
+                        item.ContactPhone = c["ContactPhone"].ToString();
+                        item.ContactEmail = c["ContactEmail"].ToString();
+                        item.ContactPosition = c["ContactPosition"].ToString();
+                        item.ContactLineId = c["ContactLineId"].ToString();
+                        item.Remark = c["Remark"].ToString();
+                        item.CmpId = c["CmpId"].ToString();
+                        item.ContactId = c["ContactId"].ToString();
+                        item.ImgPath = c["ImgPath"].ToString();
+                        item.DocNo = c["DocNo"].ToString();
+                        item.DocType = c["DocType"].ToString();
 
-                            customer.contacts.Add(item);
-                        }
-
-                        serviceTask.customer = customer;
+                        customer.contacts.Add(item);
                     }
+
+                    serviceTask.customer = customer;
+                }
 
 
 
@@ -1692,12 +1733,24 @@ namespace goalongapi.Controllers
 
 
 
+                  
+                     string projectNo = r["ProjectNo"].ToString();
+                    if (prodlist.TryGetValue(projectNo, out var costExpenses))
+                    {
+                        // ✅ Dynamic Attachments inside costExpense
+                        project.costExpense = costExpenses[0]  ;
+                    }
+                    else
+                    {
+                        project.costExpense = new Dictionary<string, object> ();
+                    }
+
 
                     projects.Add(project);
                     serviceTask.project = project;
 
 
-            }
+                }
 
 
 
@@ -1728,7 +1781,7 @@ namespace goalongapi.Controllers
                     stproblem.OALineId = b["OALineId"].ToString();
                     stproblem.FeedbackRating = Convert.ToInt32(b["FeedbackRating"].ToString());
                     stproblem.FeedbackDate = b["FeedbackDate"].ToString();
-                    
+
                     stproblem.attachfile = new List<STProblem_File>();
 
                     foreach (DataRow f in dtf.Select("ProblemId='" + stproblem.ProblemId + "'"))
@@ -1751,7 +1804,7 @@ namespace goalongapi.Controllers
                     {
                         var assign = new STProblem_Assign();
                         assign.UpdUser = f["UpdUser"].ToString();
-                        assign.ProblemId = f["ProblemId"].ToString(); 
+                        assign.ProblemId = f["ProblemId"].ToString();
                         assign.UserFullName = f["UserFullName"].ToString();
                         assign.ImgPath = f["ImgPath"].ToString();
                         assign.Permission = f["Permission"].ToString();
@@ -1763,7 +1816,7 @@ namespace goalongapi.Controllers
 
 
                     }
-                     stproblem.action = new STServiceActions();
+                    stproblem.action = new STServiceActions();
                     foreach (DataRow f in dtba.Select("ProblemId='" + stproblem.ProblemId + "'"))
                     {
                         var action = new STServiceActions();
@@ -1818,9 +1871,12 @@ namespace goalongapi.Controllers
                     serviceTask.problem = stproblem;
 
                 }
-               
-               
-               
+
+
+
+
+
+
                 serviceTasks.Add(serviceTask);
 
 

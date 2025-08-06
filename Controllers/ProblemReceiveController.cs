@@ -28,25 +28,25 @@ namespace goalongapi.Controllers
             DataTable dtf = new System.Data.DataTable();
 
             string _cmd;
-            _cmd = "exec dbo.[getProblem] @CmpId=" + cmpid + " ,  @User='" + username + "'";
+            _cmd = "exec dbo.[getProblem] @CmpId='" + cmpid + "' ,  @User='" + username + "'";
             dt = DB.DBConn.GetDataTable(_cmd);
 
 
-            _cmd = "exec dbo.[getProblem_Assign] @CmpId=" + cmpid + " ,  @User='" + username + "'";
+            _cmd = "exec dbo.[getProblem_Assign] @CmpId='" + cmpid + "' ,  @User='" + username + "'";
             dta = DB.DBConn.GetDataTable(_cmd);
 
 
-            _cmd = "exec dbo.[getProblem_File] @CmpId=" + cmpid + " ,  @User='" + username + "'";
+            _cmd = "exec dbo.[getProblem_File] @CmpId='" + cmpid + "' ,  @User='" + username + "'";
             dtf = DB.DBConn.GetDataTable(_cmd);
 
 
-          _cmd = "exec dbo.[getProblemActions_All] @CmpId=" + cmpid + " ,  @User='" + username + "'";
+          _cmd = "exec dbo.[getProblemActions_All] @CmpId='" + cmpid + "' ,  @User='" + username + "'";
            DataTable dtba = DB.DBConn.GetDataTable(_cmd);
 
-          _cmd = "exec dbo.[getProblemActions_Actions_All] @CmpId=" + cmpid + " ,  @User='" + username + "'";
+          _cmd = "exec dbo.[getProblemActions_Actions_All] @CmpId='" + cmpid + "' ,  @User='" + username + "'";
            DataTable dtbb = DB.DBConn.GetDataTable(_cmd);
 
-          _cmd = "exec dbo.[getProblemActions_Files_All] @CmpId=" + cmpid + " ,  @User='" + username + "'";
+          _cmd = "exec dbo.[getProblemActions_Files_All] @CmpId='" + cmpid + "' ,  @User='" + username + "'";
            DataTable dtbf = DB.DBConn.GetDataTable(_cmd);
 
 

@@ -17,6 +17,18 @@ namespace goalongapi.Models
         public string teloffice { get; set; }
     }
 
+
+    public class Department
+    {
+        public string CmpId { get; set; }
+        public string DepartmentNo { get; set; }
+        public string DepartmentName { get; set; }
+        public string StateActive { get; set; }
+        public string UpdUser { get; set; }
+    
+    }
+ 
+
     public class UserAccouter
     {
         public Int64 AccountID { get; set; }
