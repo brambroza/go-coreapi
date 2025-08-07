@@ -66,8 +66,15 @@ namespace goalongapi.Controllers
                 _cmd += " @cmpid  ='" + cmp.cmpid + "'";
                 _cmd += " ,@email  ='" + cmp.email + "'";
 
+                goalongapi.DB.DBConn.ExecuteOnly(_cmd);
+                   if (!goalongapi.DB.DBConn.ExecuteOnly(_cmd))
+                    {
+                        msgretrun.ReturnCode = "400";
+                        msgretrun.Msg = "Error !!";
+                    return BadRequest(msgretrun);
+                    }
 
-
+                _cmd  = " exec dbo.System_Create_NewCustomer_Company @cmpid  ='" + cmp.cmpid + "'";
 
                 if (goalongapi.DB.DBConn.ExecuteOnly(_cmd))
                 {
@@ -79,7 +86,7 @@ namespace goalongapi.Controllers
                 {
                     msgretrun.ReturnCode = "400";
                     msgretrun.Msg = "Error !!";
-                    return Ok(msgretrun);
+                    return BadRequest(msgretrun);
                 }
 
             }
@@ -87,7 +94,7 @@ namespace goalongapi.Controllers
             {
                 msgretrun.ReturnCode = "400";
                 msgretrun.Msg = "Error !!";
-                return Ok(msgretrun);
+                return BadRequest(msgretrun);
             }
 
         }

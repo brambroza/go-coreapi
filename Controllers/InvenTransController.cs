@@ -122,7 +122,10 @@ namespace goalongapi.Controllers
    [HttpPost("[action]")]
         public void setInvenTransSerial(List<InvenTransModelSerial> Inven)
         {
-
+            if (Inven.Count == 0)
+            {
+                return;
+            }
 
             DB.DBConn.SqlConnectionOpen();
             DB.DBConn.Cmd = DB.DBConn.Cnn.CreateCommand();
@@ -177,14 +180,14 @@ namespace goalongapi.Controllers
                 DB.DBConn.Tran.Commit();
                 DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
                 DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
-
+            return;
             }
             catch (Exception ex)
             {
                 DB.DBConn.Tran.Rollback();
                 DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
                 DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
-
+                return;
             }
 
 

@@ -30,6 +30,15 @@ namespace goalongapi.Models
         public string? WareHouseLocName { get; set; }
         public string? SupplierName { get; set; }
         public string? PurchaseDate { get; set; }
+        public decimal VatType { get; set; }
+        public decimal ReceiveAmt { get; set; }
+        public decimal ReceiveDisPer { get; set; }
+        public decimal ReceiveDisAmt { get; set; }
+        public decimal ReceiveNetAmt { get; set; }
+        public decimal ReceiveVatAmt { get; set; }
+        public decimal ReceiveGrandAmt { get; set; }
+        public string ReceiveGrandAmtTHB { get; set; }
+        public string ReceiveGrandAmtENB { get; set; }
         public List<InvenTransModel> items { get; set; }
 
     }

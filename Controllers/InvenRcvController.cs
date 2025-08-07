@@ -47,7 +47,7 @@ namespace goalongapi.Controllers
                     PurchaseNo = r["PurChaseNo"].ToString(),
                     InvoiceNo = r["InvoiceNo"].ToString(),
                     InvoiceDate = r["InvoiceDate"].ToString(),
-                    ReceiveType =  r["ReceiveType"].ToString() ,
+                    ReceiveType = r["ReceiveType"].ToString(),
                     CmpId = r["CmpId"].ToString(),
                     Remark = r["Remark"].ToString(),
                     StateApp = r["StateApp"].ToString(),
@@ -60,6 +60,15 @@ namespace goalongapi.Controllers
                     WareHouseLocName = r["WareHouseLocName"].ToString(),
                     SupplierName = r["SupplierName"].ToString(),
                     PurchaseDate = r["PurchaseDate"].ToString(),
+                    VatType = decimal.Parse(r["VatType"].ToString()) ,
+                    ReceiveAmt = decimal.Parse(r["ReceiveAmt"].ToString()) ,
+                    ReceiveDisPer = decimal.Parse(r["ReceiveDisPer"].ToString()) ,
+                    ReceiveDisAmt = decimal.Parse(r["ReceiveDisAmt"].ToString()) ,
+                    ReceiveNetAmt = decimal.Parse(r["ReceiveNetAmt"].ToString()) ,
+                    ReceiveVatAmt = decimal.Parse(r["ReceiveVatAmt"].ToString()) ,
+                    ReceiveGrandAmt = decimal.Parse(r["ReceiveGrandAmt"].ToString()) ,
+                    ReceiveGrandAmtTHB = r["ReceiveGrandAmtTHB"].ToString(),
+                    ReceiveGrandAmtENB = r["ReceiveGrandAmtENB"].ToString(),
 
                 };
 
@@ -181,6 +190,15 @@ namespace goalongapi.Controllers
                 _cmd += ",@SupplierCode  ='" + receive.SupplierCode + "'";
                 _cmd += ",@WHId =" + receive.SysWHId;
                 _cmd += ",@WHLocId =" + receive.SysWHLocId;
+                _cmd += ",@VatType =" + receive.VatType;
+                _cmd += ",@ReceiveAmt =" + receive.ReceiveAmt;
+                _cmd += ",@ReceiveDisPer =" + receive.ReceiveDisPer;
+                _cmd += ",@ReceiveDisAmt =" + receive.ReceiveDisAmt;
+                _cmd += ",@ReceiveNetAmt =" + receive.ReceiveNetAmt;
+                _cmd += ",@ReceiveVatAmt =" + receive.ReceiveVatAmt;
+                _cmd += ",@ReceiveGrandAmt =" + receive.ReceiveGrandAmt;
+                _cmd += ",@ReceiveGrandAmtTHB ='" + receive.ReceiveGrandAmtTHB + "'";
+                _cmd += ",@ReceiveGrandAmtENB ='" + receive.ReceiveGrandAmtENB + "'";
 
                 if (DB.DBConn.ExecuteOnly(_cmd))
                 {

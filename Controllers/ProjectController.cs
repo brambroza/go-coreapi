@@ -2622,9 +2622,12 @@ namespace goalongapi.Controllers
             }
             catch
             {
-                msgretrun.ReturnCode = "400";
-                msgretrun.Msg = "Error !!";
-                return Ok(msgretrun);
+                  DB.DBConn.Tran.Rollback();
+                    DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
+                    DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
+                    msgretrun.ReturnCode = "400";
+                    msgretrun.Msg = "Error !!";
+                    return Ok(msgretrun);
             }
         }
 

@@ -62,14 +62,18 @@ namespace goalongapi.Controllers
                     // ✅ 3. สร้าง Response Object
                     var response = new
                     {
-                        languages = langs,
-                        data = pivotTable.AsEnumerable().Select(row => new
-                        {
-                            key = row["Key"].ToString()!,
-                            @namespace = row["Namespace"].ToString()!,
-                            values = langs.ToDictionary(lang => lang, lang => row[lang]?.ToString() ?? string.Empty)
-                        }).ToList()
-                    };
+                            languages = langs,
+                            data = pivotTable.AsEnumerable().Select(row => new
+                            {
+                                key = row["Key"].ToString()!,
+                                @namespace = row["Namespace"].ToString()!,
+                                values = langs.Select(lang => new
+                                {
+                                    lang = lang,
+                                    value = row[lang]?.ToString() ?? string.Empty
+                                }).ToList()
+                            }).ToList()
+                        };
 
                     return Ok(response);
                 }
@@ -78,41 +82,55 @@ namespace goalongapi.Controllers
 
 
         // ✅ เพิ่มคำแปลใหม่
-        [HttpPost]
-        public async Task<IActionResult> setTranslation([FromBody] Translation tran)
+        [HttpPost("[action]")]
+        public async Task<IActionResult> setTranslation([FromBody] TranslationItem tran)
         {
              MsgReturn msgretrun = new MsgReturn();
+
+            DB.DBConn.SqlConnectionOpen();
+            DB.DBConn.Cmd = DB.DBConn.Cnn.CreateCommand();
+            DB.DBConn.Tran = DB.DBConn.Cnn.BeginTransaction();
 
 
             try
             {
                 string _cmd = "";
-                _cmd = "exec  dbo.setLang ";
-                _cmd += " @Id  =" + tran.Id + "";
-                _cmd += ",@Key  ='" + tran.Key + "'";
-                _cmd += ",@Lang ='" + tran.Lang + "'";
-                _cmd += ",@Namespace ='" + tran.Namespace + "'";
-                _cmd += " , @Value='" + tran.Value + "'";
-             
-               if (DB.DBConn.ExecuteOnly(_cmd))
-                {
-                    msgretrun.ReturnCode = "200";
-                    msgretrun.Msg = "Save Success !!";
-                    return Ok(msgretrun);
-                }
-                else
-                {
-                    msgretrun.ReturnCode = "400";
-                    msgretrun.Msg = "Error !!";
-                    return BadRequest(msgretrun);
-                }
 
+                for (int i = 0; i < tran.Values.Count; i++)
+                {
+                    _cmd = "exec  dbo.setLang ";
+                    _cmd += " @key  ='" + tran.Key + "'";
+                    _cmd += ",@lang ='" + tran.Values[i].Lang + "'";
+                    _cmd += ",@namespace ='" + tran.Namespace + "'";
+                    _cmd += " , @value=N'" + tran.Values[i].Value + "'";
+                    if (DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran) <= 0)
+                    {
+                        DB.DBConn.Tran.Rollback();
+                        DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
+                        DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
+                        msgretrun.ReturnCode = "400";
+                        msgretrun.Msg = "Error !!";
+                        return Ok(msgretrun);
+                    }
+                }
+ 
+
+                DB.DBConn.Tran.Commit();
+                DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
+                DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
+                msgretrun.ReturnCode = "200";
+                msgretrun.Msg = "Save Success !!";
+                return Ok(msgretrun);
+                
             }
             catch
             {
-                msgretrun.ReturnCode = "400";
-                msgretrun.Msg = "Error !!";
-                return BadRequest(msgretrun);
+                 DB.DBConn.Tran.Rollback();
+                    DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
+                    DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
+                    msgretrun.ReturnCode = "400";
+                    msgretrun.Msg = "Error !!";
+                    return Ok(msgretrun);
             }
 
 
