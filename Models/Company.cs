@@ -83,8 +83,9 @@ namespace goalongapi.Models
         public int? Seq { get; set; }
         public string AppName { get; set; }
         public string LiffId { get; set; }
-        public string ChannelId { get; set; } 
+        public string ChannelId { get; set; }
         public string? LineOAName { get; set; }
+        public string? LineId { get; set; }
     }
 
       public class cmpSocialChannel_LiffAppUrl

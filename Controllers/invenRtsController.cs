@@ -51,8 +51,11 @@ namespace goalongapi.Controllers
                     WareHouseLocName = r["WareHouseLocName"].ToString(),
                     SupplierName = r["SupplierName"].ToString(),
                     PurchaseDate = r["PurchaseDate"].ToString(),
-                     StateApp = r["StateApp"].ToString(),
+                    StateApp = r["StateApp"].ToString(),
                     AppBy = r["AppBy"].ToString(),
+
+
+
 
                 };
 
@@ -130,8 +133,6 @@ namespace goalongapi.Controllers
                 _cmd += ",@WHId =" + rts.SysWHId; 
                 _cmd += ",@WHLocId =" + rts.SysWHLocId; 
               
-
-
                 if (DB.DBConn.ExecuteOnly(_cmd))
                 {
                     msgretrun.ReturnCode = "200";

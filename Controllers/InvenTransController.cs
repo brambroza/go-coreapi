@@ -119,7 +119,7 @@ namespace goalongapi.Controllers
         }
 
 
-   [HttpPost("[action]")]
+        [HttpPost("[action]")]
         public void setInvenTransSerial(List<InvenTransModelSerial> Inven)
         {
             if (Inven.Count == 0)
@@ -155,7 +155,7 @@ namespace goalongapi.Controllers
                     _cmd += ",@SysWHLocId =" + Inven[i].SysWHLocId;
                     _cmd += ",@BarcodeNo  ='" + Inven[i].BarcodeNo + "'";
                     _cmd += ",@ProductCode  ='" + Inven[i].ProductCode + "'";
-                    _cmd += ",@StatusInStock ='" +   (string.IsNullOrEmpty(Inven[i].StatusInStock) ? "1" : Inven[i].StatusInStock) + "'";
+                    _cmd += ",@StatusInStock ='" + (string.IsNullOrEmpty(Inven[i].StatusInStock) ? "1" : Inven[i].StatusInStock) + "'";
                     _cmd += ",@Qty =" + Inven[i].Qty;
                     _cmd += ",@UnitCode ='" + Inven[i].UnitCode + "'"; ;
                     _cmd += ",@SerialNumber  ='" + Inven[i].SerialNumber + "'";
@@ -165,7 +165,7 @@ namespace goalongapi.Controllers
                     _cmd += ",@WarrantyPeriod ='" + Inven[i].WarrantyPeriod + "'"; ;
                     _cmd += ",@TransType ='" + Inven[i].TransType + "'";
                     _cmd += ", @CmpId='" + Inven[i].CmpId + "'";
-                     _cmd += ",@MainSeq =" + Inven[i].MainSeq;
+                    _cmd += ",@MainSeq =" + Inven[i].MainSeq;
                     if (DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran) <= 0)
                     {
                         DB.DBConn.Tran.Rollback();
@@ -173,14 +173,14 @@ namespace goalongapi.Controllers
                         DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
                         return;
                     }
-                    
+
 
                 }
 
                 DB.DBConn.Tran.Commit();
                 DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
                 DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
-            return;
+                return;
             }
             catch (Exception ex)
             {
@@ -339,7 +339,7 @@ namespace goalongapi.Controllers
                 _cmd = "exec dbo.[inven_getstockcard_list] @CmpId='" + CmpId + "'";
                 dt2 = DB.DBConn.GetDataTable(_cmd);
 
-                 DataTable dt3 = new DataTable();
+                DataTable dt3 = new DataTable();
                 _cmd = "exec dbo.[inven_getonhand_Serial_list] @CmpId='" + CmpId + "'";
                 dt3 = DB.DBConn.GetDataTable(_cmd);
 
@@ -410,7 +410,7 @@ namespace goalongapi.Controllers
                         productItem["stockcards"] = new List<Dictionary<string, object>>();
                     }
 
-                     // Add stockSerial
+                    // Add stockSerial
                     string serial = row["ProductCode"].ToString();
                     if (stockSerialLookup.TryGetValue(serial, out var stockserial))
                     {
@@ -493,6 +493,49 @@ namespace goalongapi.Controllers
             {
                 DataTable dt = new System.Data.DataTable();
                 string _cmd = "exec dbo.[inven_check_barcode_returnsupl] @CmpId='" + CmpId + "' , @BarcodeNo='" + BarcodeNo + "'";
+                dt = DB.DBConn.GetDataTable(_cmd);
+
+
+
+                string JSONString = string.Empty;
+                JSONString = JsonConvert.SerializeObject(dt);
+
+                var prodlist = new List<Dictionary<string, object>>();
+                foreach (DataRow row in dt.Rows)
+                {
+                    var eventObj = new Dictionary<string, object>();
+                    foreach (DataColumn column in dt.Columns)
+                    {
+                        string lowercaseColumnName =
+                            char.ToLowerInvariant(column.ColumnName[0])
+                            + column.ColumnName.Substring(1);
+
+                        eventObj[lowercaseColumnName] = row[column];
+                    }
+
+                    prodlist.Add(eventObj);
+                }
+
+
+                return Ok(prodlist);
+
+
+
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = "An error occurred while fetching products.", Details = ex.Message });
+            }
+        }
+        
+
+         [HttpGet("[action]")]
+        public IActionResult getCheckBarcodeNoForReturnStock([FromQuery] string CmpId, [FromQuery] string BarcodeNo)
+        {
+            try
+            {
+                DataTable dt = new System.Data.DataTable();
+                string _cmd = "exec dbo.[inven_check_barcode_returnstock] @CmpId='" + CmpId + "' , @BarcodeNo='" + BarcodeNo + "'";
                 dt = DB.DBConn.GetDataTable(_cmd);
 
 

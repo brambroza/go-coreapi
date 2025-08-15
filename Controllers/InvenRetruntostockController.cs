@@ -1,33 +1,99 @@
 ﻿using goalongapi.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Data;
 
 namespace goalongapi.Controllers
 {
-    [ApiController]
     [Route("api/[controller]")]
-    public class InvenRetruntostockController : ControllerBase
+    [ApiController]
+    [Authorize]
+    public class InvenReturntostockController : ControllerBase
     {
-        [HttpGet("InvenRtc")]
-        public ActionResult<DataTable> Get(string CmpId, string user)
+        [HttpGet("[action]")]
+        public IActionResult getInventReturnStock( [FromQuery] string CmpId, [FromQuery] string user)
         {
-            try 
-            {
-                string _cmd = $"exec dbo.Inven_getRctAll @CmpId={Convert.ToInt16(CmpId)}, @User='{user}'";
-                DataTable datatable = DB.DBConn.GetDataTable(_cmd);
+           string _cmd;
+            _cmd = "exec dbo.[Inven_getRctAll] @CmpId='" +   CmpId  + "' , @User='" + user + "'";
+           DataTable dt = DB.DBConn.GetDataTable(_cmd);
 
-                if (datatable.Rows.Count == 0)
+            _cmd = "exec dbo.[Inven_getTransAll] @CmpId='" +  CmpId  + "' , @User='" + user + "' ";
+            DataTable dtItem = DB.DBConn.GetDataTable(_cmd);
+
+            List<ReturnToStock> receives = new List<ReturnToStock>();
+
+            foreach (DataRow r in dt.Rows)
+            {
+                var receive = new ReturnToStock()
                 {
-                    return NotFound(new { Message = "No records found." });
+                    UpdUser = r["UpdUser"].ToString(),
+                    ReturnToStockNo = r["ReturnToStockNo"].ToString(),
+                    ReturnToStockDate = r["ReturnToStockDate"].ToString(),
+                    ReturnToStockBy = r["ReturnToStockBy"].ToString(),
+                    IssueNo = r["IssueNo"].ToString(), 
+                    CmpId = r["CmpId"].ToString(),
+                    Remark = r["Remark"].ToString(),
+                    SysWHId = int.Parse(r["SysWHId"].ToString()),
+                    SysWHLocId = int.Parse(r["SysWHLocId"].ToString()),
+                    WareHouseName = r["WareHouseName"].ToString(),
+                    WareHouseLocName = r["WareHouseLocName"].ToString(),
+                    IssueDate = r["IssueDate"].ToString(), 
+                    StateApp = r["StateApp"].ToString(),
+                    AppBy = r["AppBy"].ToString(),
+                    
+                };
+
+                receive.items = new List<InvenTransModel>();
+
+                foreach (
+                    DataRow d in dtItem.Select(
+                        "DocNo ='"
+                             + r["ReturnToStockNo"].ToString()
+                            + "'  and CmpId='"
+                            + r["CmpId"] + "'"
+                    )
+                )
+                {
+                    var item = new InvenTransModel();
+                    item.DocNo = d["DocNo"].ToString();
+                    item.UpdUser = d["UpdUser"].ToString();
+                    item.Seq = Convert.ToInt32(d["Seq"]);
+                    item.TransDate = d["TransDate"].ToString();
+                    item.SysWHId = Convert.ToInt32(d["SysWHId"]);
+                    item.SysWHLocId = Convert.ToInt32(d["SysWHLocId"]);
+                    item.BarcodeNo = d["BarcodeNo"].ToString();
+
+                    item.ProductCode = d["ProductCode"].ToString();
+                    item.UnitPrice = Convert.ToDecimal(d["UnitPrice"]);
+                    item.UnitCode = d["UnitCode"].ToString();
+                    item.Qty = Convert.ToDecimal(d["Qty"]);
+                    item.PurchaseNo = d["PurchaseNo"].ToString();
+
+                    item.StateReserve = Convert.ToInt32(d["StateReserve"]);
+
+                    item.ProdDescription = d["ProdDescription"].ToString();
+                    item.BatchNo = d["BatchNo"].ToString();
+                    item.Grade = d["Grade"].ToString();
+                    item.DateExpire = d["DateExpire"].ToString();
+
+                    item.StateQC = Convert.ToInt32(d["StateQC"]);
+
+                    item.QCBy = d["QCBy"].ToString();
+                    item.TransType = d["TransType"].ToString();
+                    item.CmpId = d["CmpId"].ToString();
+
+
+ 
+                    receive.items.Add(item);
                 }
 
-                return Ok(datatable);
+                receives.Add(receive);
             }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { Message = "An error occurred.", Details = ex.Message });
-            }
+            var response = new { receives };
+            return Ok(response);
+
+           
         }
 
         [HttpPost("InvenRtc")]

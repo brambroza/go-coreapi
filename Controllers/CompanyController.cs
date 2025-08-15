@@ -81,6 +81,7 @@ namespace goalongapi.Controllers
                     AppName = r["AppName"].ToString(),
                     LineOAName = r["LineOAName"].ToString(),
                     Seq = int.Parse(r["Seq"].ToString()),
+                    LineId = r["LineId"].ToString(),
                 };
 
                 cmpSocialChannels.Add(cmpSocialChannel);

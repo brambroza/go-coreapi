@@ -247,10 +247,17 @@ namespace goalongapi.Models
         public string ReturnToStockDate { get; set; }
         public string ReturnToStockBy { get; set; }
         public string IssueNo { get; set; }
-        public int CmpId { get; set; }
+        public string CmpId { get; set; }
         public string Remark { get; set; }
         public int SysWHId { get; set; }
         public int SysWHLocId { get; set; }
+        public string? WareHouseName { get; set; }
+        public string? WareHouseLocName { get; set; }
+        public string? IssueDate { get; set; }
+        public string StateApp { get; set; }
+        public string? AppBy { get; set; }
+        public List<InvenTransModel> items { get; set; }
+        
     }
 
     public class invenAppModel
