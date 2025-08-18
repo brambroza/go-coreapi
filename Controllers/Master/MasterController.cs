@@ -26,7 +26,7 @@ namespace goalongapi.Controllers.Master
             JSONString = JsonConvert.SerializeObject(datatable);
             return Ok(JSONString);
         }
- 
+
         [Route("districts")]
         [HttpGet]
         public IActionResult getDistricts()
@@ -309,5 +309,92 @@ namespace goalongapi.Controllers.Master
                 return StatusCode(400, new { Message = msgretrun.Msg, Error = msgretrun.Msg });
             }
         }
+
+
+
+        /* source customer  */
+
+        [Route("sourcelist")]
+        [HttpGet]
+        public IActionResult getsource([FromQuery] string CmpId)
+        {
+            string _cmd;
+            _cmd = "exec dbo.sp_getmsource @CmpId='" + CmpId + "'";
+            DataTable dt = DB.DBConn.GetDataTable(_cmd);
+             string JSONString = string.Empty;
+                JSONString = JsonConvert.SerializeObject(dt);
+
+                var prodlist = new List<Dictionary<string, object>>();
+                foreach (DataRow row in dt.Rows)
+                {
+                    var eventObj = new Dictionary<string, object>();
+                    foreach (DataColumn column in dt.Columns)
+                    {
+                        string lowercaseColumnName =
+                            char.ToLowerInvariant(column.ColumnName[0])
+                            + column.ColumnName.Substring(1);
+
+                        eventObj[lowercaseColumnName] = row[column];
+                    }
+
+                    prodlist.Add(eventObj);
+                }
+
+
+                return Ok(prodlist);
+        }
+
+        [Route("delsource")]
+        [HttpDelete]
+        public IActionResult delsource([FromQuery] string CmpId, [FromQuery] string id)
+        {
+            string _cmd;
+            _cmd =
+                " delete from   msb.mCustomerSource  where CmpId='"
+                + CmpId
+                + "' and SourceCode='"
+                + id
+                + "'";
+
+            DB.DBConn.ExecuteOnly(_cmd);
+            return Ok();
+        }
+
+        [HttpPost("[action]")]
+        public IActionResult setsource(mSource bk)
+        {
+            MsgReturn msgretrun = new MsgReturn();
+
+            try
+            {
+                string _cmd = "";
+                _cmd = "exec  dbo.sp_SetCustomerSource";
+                _cmd += "  @UpdUser  ='" + bk.UpdUser + "'";
+                _cmd += " ,@SourceCode ='" + bk.SourceCode + "'";
+                _cmd += " ,@SourceName ='" + bk.SourceName + "'"; 
+                _cmd += " ,@StateActive =" + bk.StateActive + "";
+                _cmd += " ,@CmpId ='" + bk.CmpId + "'";
+
+                if (DB.DBConn.ExecuteOnly(_cmd))
+                {
+                    msgretrun.ReturnCode = "200";
+                    msgretrun.Msg = "Save Success !!";
+                    return Ok(msgretrun);
+                }
+                else
+                {
+                    msgretrun.ReturnCode = "400";
+                    msgretrun.Msg = "Error !!";
+                    return StatusCode(400, new { Message = msgretrun.Msg, Error = msgretrun.Msg });
+                }
+            }
+            catch
+            {
+                msgretrun.ReturnCode = "400";
+                msgretrun.Msg = "Error !!";
+                return StatusCode(400, new { Message = msgretrun.Msg, Error = msgretrun.Msg });
+            }
+        }
+        
     }
 }

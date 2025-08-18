@@ -273,6 +273,7 @@ namespace goalongapi.Controllers
                 quotaion.LineQRCodePath = r["LineQRCodePath"].ToString();
                 quotaion.TicketIdRef = r["TicketIdRef"].ToString();
                 quotaion.StateNotification = r["StateNotification"].ToString();
+                quotaion.StateNotificationList = r["StateNotificationList"].ToString();
                 if (
                     datatableDetail
                         .Select(

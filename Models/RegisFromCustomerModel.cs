@@ -96,6 +96,7 @@ namespace goalongapi.Models
         public int? TodoStatus { get; set; } = 0;
         public string? Labels { get; set; } = "";
         public decimal? GrandAmt { get; set; } = 0;
+        public string? StateNotificationList { get; set; }
     }
 
     public class ReqFromCustRemoveItem

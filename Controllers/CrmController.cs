@@ -146,6 +146,7 @@ namespace goalongapi.Controllers
                 crm.TodoStatus = int.Parse(r["TodoStatus"].ToString());
                 crm.Labels = r["Labels"].ToString();
                 crm.GrandAmt = decimal.Parse(r["GrandAmt"].ToString());
+                crm.StateNotificationList = r["StateNotificationList"].ToString();
 
 
                 crm.ReqRoute = new List<CustomerReqTicketRoute>();

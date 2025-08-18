@@ -176,6 +176,16 @@ namespace goalongapi.Models
         public string CmpId { get; set; }
     }
 
+     public class mSource
+    {
+        public string UpdUser { get; set; }
+        public string SourceCode { get; set; }
+        public string SourceName { get; set; } 
+        public int StateActive { get; set; }
+        public string CmpId { get; set; }
+    }
+
+
     public class paymentmethod
     {
         public string UpdUser { get; set; }

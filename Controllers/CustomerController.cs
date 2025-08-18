@@ -85,6 +85,7 @@ namespace goalongapi.Controllers
                 customer.BusinessGrpCode = r["BusinessGrpCode"].ToString();
                 customer.StateCustomer = r["StateCustomer"].ToString();
                 customer.StateVendor = r["StateVendor"].ToString();
+                customer.SourceCode = r["SourceCode"].ToString();
                 customer.contacts = new List<ContactList>();
 
                 foreach (
@@ -210,6 +211,7 @@ namespace goalongapi.Controllers
                 _cmd += " , @BusinessGrpCode='" + customer.BusinessGrpCode + "'";
                 _cmd += " , @StateCustomer=" + customer.StateCustomer + "";
                 _cmd += " , @StateVendor=" + customer.StateVendor + "";
+                _cmd += ", @SourceCode='" + customer.SourceCode + "'";
 
                 if (DB.DBConn.ExecuteOnly(_cmd))
                 {

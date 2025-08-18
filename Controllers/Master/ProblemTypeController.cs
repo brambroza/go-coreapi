@@ -62,6 +62,7 @@ namespace goalongapi.Controllers.Master
                 _cmd += ",@Descriptions  ='" + jt.Descriptions + "'";
                 _cmd += ",@CmpId  ='" + jt.CmpId + "'";
                 _cmd += ",@StateActive =" + jt.StateActive;
+                 _cmd += ",@Severity  ='" + jt.Severity + "'";
 
 
                 if (DB.DBConn.ExecuteOnly(_cmd))
