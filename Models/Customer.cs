@@ -44,7 +44,7 @@ namespace goalongapi.Models
         public string BusinessGrpCode { get; set; }
         public string StateCustomer { get; set; }
         public string StateVendor { get; set; }
-        public string SourceCode { get; set;   }
+        public string? SourceCode { get; set;   }
     }
 
     public class CustomerList
@@ -84,7 +84,7 @@ namespace goalongapi.Models
         public int CreditAccId { get; set; }
         public int DebitAccId { get; set; }
         public string BusinessGrpCode { get; set; }
-        public string SourceCode { get; set; }
+        public string? SourceCode { get; set; }
 
         public List<ContactList>? contacts { get; set; } = null;
 
