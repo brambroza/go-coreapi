@@ -57,6 +57,65 @@ namespace goalongapi.Controllers
                         }
 
                         break;
+
+                     case "emp":
+                        _cmd =
+                            "Select Top 1  EmployeeNo  as FTDocNo FROM  hr.Employee  where   CmpId ="
+                            + cmpid
+                            + " and  EmployeeNo='"
+                            + DocNo
+                            + "'";
+                        dt = DB.DBConn.GetDataTable(_cmd);
+                        if (dt.Rows.Count > 0)
+                        {
+                            try
+                            {
+                                _docnew = dt.Rows[0][0].ToString();
+                            }
+                            catch
+                            {
+                                _docnew = "";
+                            }
+                        }
+
+                        if ((_docnew.ToString() == "") || (_docnew.ToLower() == "null"))
+                        {
+                            _cmd =
+                                "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo.emprun   set @Runno  =   @Runno  select @Runno   "; // + cmpid  ;
+                            dt = DB.DBConn.GetDataTable(_cmd);
+                        }
+
+                        break;
+
+                    case "empid":
+                        _cmd =
+                            "Select Top 1  EmployeeId  as FTDocNo FROM  hr.Employee  where   CmpId ="
+                            + cmpid
+                            + " and  EmployeeId='"
+                            + DocNo
+                            + "'";
+                        dt = DB.DBConn.GetDataTable(_cmd);
+                        if (dt.Rows.Count > 0)
+                        {
+                            try
+                            {
+                                _docnew = dt.Rows[0][0].ToString();
+                            }
+                            catch
+                            {
+                                _docnew = "";
+                            }
+                        }
+
+                        if ((_docnew.ToString() == "") || (_docnew.ToLower() == "null"))
+                        {
+                            _cmd =
+                                "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo.empidrun   set @Runno  =   @Runno  select @Runno   "; // + cmpid  ;
+                            dt = DB.DBConn.GetDataTable(_cmd);
+                        }
+
+                        break;
+
                     case "saleman":
 
                         _cmd =
@@ -1006,6 +1065,38 @@ namespace goalongapi.Controllers
 
                         break;
 
+                case "position":
+
+                        _cmd =
+                            "Select Top 1  PositionNo  as FTDocNo FROM  dbo.Position  where   CmpId ='"
+                            + cmpid
+                            + "' and  PositionNo='"
+                            + DocNo
+                            + "'";
+                        dt = DB.DBConn.GetDataTable(_cmd);
+                        if (dt.Rows.Count > 0)
+                        {
+                            try
+                            {
+                                _docnew = dt.Rows[0][0].ToString();
+                            }
+                            catch
+                            {
+                                _docnew = "";
+                            }
+                        }
+
+                        if ((_docnew.ToString() == "") || (_docnew.ToLower() == "null"))
+                        {
+                             _cmd =
+                            "declare @Runno varchar(30)   Select  @Runno =NEXT VALUE FOR  dbo.positionrun   set @Runno  =  @Runno  select @Runno   "; // + cmpid  ;
+                        dt = DB.DBConn.GetDataTable(_cmd);
+
+                        }
+
+                        break;
+
+
 
                     case "costcenter":
                     _cmd =
@@ -1125,6 +1216,71 @@ namespace goalongapi.Controllers
                         }
 
                         break;
+
+                      case "emp":
+                        _cmd =
+                            "Select Top 1  EmployeeNo  as FTDocNo FROM  hr.Employee  where   CmpId ="
+                            + cmpid
+                            + " and  EmployeeNo='"
+                            + DocNo
+                            + "'";
+                        dt = DB.DBConn.GetDataTable(_cmd);
+                        if (dt.Rows.Count > 0)
+                        {
+                            try
+                            {
+                                _docnew = dt.Rows[0][0].ToString();
+                            }
+                            catch
+                            {
+                                _docnew = "";
+                            }
+                        }
+
+                        if ((_docnew.ToString() == "") || (_docnew.ToLower() == "null"))
+                        {
+                          _cmd =
+                                "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo.["
+                                + cmpid
+                                + "-emprun]   set @Runno  =  @Runno  select @Runno   "; // + cmpid  ;
+                            dt = DB.DBConn.GetDataTable(_cmd);
+                        }
+
+                        break;
+
+                    case "empid":
+                        _cmd =
+                            "Select Top 1  EmployeeId  as FTDocNo FROM  hr.Employee  where   CmpId ="
+                            + cmpid
+                            + " and  EmployeeId='"
+                            + DocNo
+                            + "'";
+                        dt = DB.DBConn.GetDataTable(_cmd);
+                        if (dt.Rows.Count > 0)
+                        {
+                            try
+                            {
+                                _docnew = dt.Rows[0][0].ToString();
+                            }
+                            catch
+                            {
+                                _docnew = "";
+                            }
+                        }
+
+                        if ((_docnew.ToString() == "") || (_docnew.ToLower() == "null"))
+                        {
+                          _cmd =
+                                "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo.["
+                                + cmpid
+                                + "-empidrun]   set @Runno  =  @Runno  select @Runno   "; // + cmpid  ;
+                            dt = DB.DBConn.GetDataTable(_cmd);
+                        }
+
+                        break;
+
+
+
                     case "saleman":
 
                         _cmd =
@@ -2253,7 +2409,40 @@ namespace goalongapi.Controllers
 
                         break;
 
-                    case "roleid":
+                case "position":
+
+                        _cmd =
+                            "Select Top 1  PositionNo  as FTDocNo FROM  dbo.Position  where   CmpId ='"
+                            + cmpid
+                            + "' and  PositionNo='"
+                            + DocNo
+                            + "'";
+                        dt = DB.DBConn.GetDataTable(_cmd);
+                        if (dt.Rows.Count > 0)
+                        {
+                            try
+                            {
+                                _docnew = dt.Rows[0][0].ToString();
+                            }
+                            catch
+                            {
+                                _docnew = "";
+                            }
+                        }
+
+                        if ((_docnew.ToString() == "") || (_docnew.ToLower() == "null"))
+                        {
+                             _cmd =
+                            "declare @Runno varchar(30)   Select  @Runno =NEXT VALUE FOR  dbo.["
+                                + cmpid
+                                + "-positionrun]   set @Runno  =  @Runno  select @Runno   "; // + cmpid  ;
+                        dt = DB.DBConn.GetDataTable(_cmd);
+
+                        }
+
+                        break;
+
+                case "roleid":
 
                         _cmd =
                             "declare @Runno int  Select  @Runno =NEXT VALUE FOR  dbo.roleid   set @Runno  =  @Runno  select @Runno   "; // + cmpid  ;
@@ -2308,6 +2497,70 @@ namespace goalongapi.Controllers
                     }
 
                     break;
+                 case "emp":
+                        _cmd =
+                            "Select Top 1  EmployeeNo  as FTDocNo FROM  hr.Employee  where   CmpId ="
+                            + cmpid
+                            + " and  EmployeeNo='"
+                            + DocNo
+                            + "'";
+                        dt = DB.DBConn.GetDataTable(_cmd);
+                        if (dt.Rows.Count > 0)
+                        {
+                            try
+                            {
+                                _docnew = dt.Rows[0][0].ToString();
+                            }
+                            catch
+                            {
+                                _docnew = "";
+                            }
+                        }
+
+                        if ((_docnew.ToString() == "") || (_docnew.ToLower() == "null"))
+                        {
+                          _cmd =
+                                "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo.["
+                               
+                                + "emprun]   set @Runno  =  @Runno  select @Runno   "; // + cmpid  ;
+                            dt = DB.DBConn.GetDataTable(_cmd);
+                        }
+
+                        break;
+
+                 case "empid":
+                        _cmd =
+                            "Select Top 1  EmployeeId  as FTDocNo FROM  hr.Employee  where   CmpId ="
+                            + cmpid
+                            + " and  EmployeeId='"
+                            + DocNo
+                            + "'";
+                        dt = DB.DBConn.GetDataTable(_cmd);
+                        if (dt.Rows.Count > 0)
+                        {
+                            try
+                            {
+                                _docnew = dt.Rows[0][0].ToString();
+                            }
+                            catch
+                            {
+                                _docnew = "";
+                            }
+                        }
+
+                        if ((_docnew.ToString() == "") || (_docnew.ToLower() == "null"))
+                        {
+                          _cmd =
+                                "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo.["
+                               
+                                + "empidrun]   set @Runno  =  @Runno  select @Runno   "; // + cmpid  ;
+                            dt = DB.DBConn.GetDataTable(_cmd);
+                        }
+
+                        break;
+
+
+
                 case "saleman":
 
                     _cmd =
@@ -3063,6 +3316,32 @@ namespace goalongapi.Controllers
                     {
                         _cmd =
                             "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo.[deptrun]      select @Runno   "; // + cmpid  ;
+                        dt = DB.DBConn.GetDataTable(_cmd);
+                    }
+                    break;
+
+                  case "position":
+                    _cmd =
+                        "Select Top 1  PositionNo  FROM  dbo.Position where  PositionNo='"
+                        + DocNo
+                        + "'";
+                    dt = DB.DBConn.GetDataTable(_cmd);
+                    if (dt.Rows.Count > 0)
+                    {
+                        try
+                        {
+                            _docnew = dt.Rows[0][0].ToString();
+                        }
+                        catch
+                        {
+                            _docnew = "";
+                        }
+                    }
+
+                    if ((_docnew.ToString() == "") || (_docnew.ToLower() == "null"))
+                    {
+                        _cmd =
+                            "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo.[positionrun]      select @Runno   "; // + cmpid  ;
                         dt = DB.DBConn.GetDataTable(_cmd);
                     }
                     break;

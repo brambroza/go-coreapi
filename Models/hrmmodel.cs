@@ -22,6 +22,11 @@ namespace goalongapi.Models
         public string? TerminationDate { get; set; }
         public string StateActive { get; set; }
         public string Prefix { get; set; }
+        public string Email { get; set; }
+        public EmployeePersonal? personal { get; set; }
+        public EmployeeContact? contact { get; set; }
+        public List<EmployeeSalary>? salary { get; set; }
+        public List<EmployeePosition>? positions { get; set; }
     }
 
     public class EmployeePersonal
@@ -35,6 +40,7 @@ namespace goalongapi.Models
         public string? Nationality { get; set; }
         public string? EmergencyContactName { get; set; }
         public string? EmergencyContactPhone { get; set; }
+        
     }
 
 
@@ -50,6 +56,8 @@ namespace goalongapi.Models
         public string? EndDate { get; set; }
         public string? IsCurrent { get; set; }
         public int Seq { get; set; }
+        public string? DepartmentName { get; set; }
+        public string? PositionName { get; set; }
     }
 
     public class EmployeeContact
@@ -82,13 +90,6 @@ namespace goalongapi.Models
 
 
 
-    public class Position
-    {
-        public string? UpdUser { get; set; }
-        public string CmpId { get; set; }
-        public string PositionNo { get; set; }
-        public string PositionName { get; set; }
-
-    }
+     
     
 }

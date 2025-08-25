@@ -698,9 +698,117 @@ namespace goalongapi.Controllers
             }
         }
 
+
+
+
+
+        /* position */
         
 
-        
+        [HttpGet("[action]")]
+        public IActionResult getPosition([FromQuery] string CmpId, [FromQuery] string User)
+        {
+            string _cmd;
+            _cmd = "exec dbo.getPosition @CmpId='" + CmpId + "' , @User='" + User + "' ";
+            DataTable dt = DB.DBConn.GetDataTable(_cmd);
+
+
+            var prodlist = new List<Dictionary<string, object>>();
+            foreach (DataRow row in dt.Rows)
+            {
+                var eventObj = new Dictionary<string, object>();
+                foreach (DataColumn column in dt.Columns)
+                {
+                    string lowercaseColumnName =
+                        char.ToLowerInvariant(column.ColumnName[0])
+                        + column.ColumnName.Substring(1);
+
+                    eventObj[lowercaseColumnName] = row[column];
+                }
+
+                prodlist.Add(eventObj);
+            }
+
+
+            return Ok(prodlist);
+        }
+
+
+
+        [HttpPost("[action]")]
+        public IActionResult setPosition(Position pm)
+        {
+            MsgReturn msgretrun = new MsgReturn();
+
+            try
+            {
+                string _cmd = "";
+
+                _cmd = "exec  dbo.setPosition";
+                _cmd += " @UpdUser  ='" + pm.UpdUser + "'";
+                _cmd += ",@CmpId  ='" + pm.CmpId + "'";
+                _cmd += ",@PositionNo  ='" + pm.PositionNo + "'";
+                _cmd += ",@PositionName  ='" + pm.PositionName + "'";
+                _cmd += ",@StateActive  ='" + pm.StateActive + "'";
+
+                if (DB.DBConn.ExecuteOnly(_cmd))
+                {
+                    msgretrun.ReturnCode = "200";
+                    msgretrun.Msg = "Save Success !!";
+                    return Ok(msgretrun);
+                }
+                else
+                {
+                    msgretrun.ReturnCode = "400";
+                    msgretrun.Msg = "Error !!";
+                    return StatusCode(400, new { Message = msgretrun.Msg, Error = msgretrun.Msg });
+                }
+            }
+            catch
+            {
+                msgretrun.ReturnCode = "400";
+                msgretrun.Msg = "Error !!";
+                return StatusCode(400, new { Message = msgretrun.Msg, Error = msgretrun.Msg });
+            }
+        }
+
+
+        [HttpDelete("[action]")]
+        public IActionResult delPosition([FromQuery] string CmpId, [FromQuery] string id)
+        {
+            MsgReturn msgretrun = new MsgReturn();
+
+            try
+            {
+                string _cmd = "";
+
+                _cmd = "exec  dbo.delPosition";
+                _cmd += " @CmpId  ='" + CmpId + "'";
+                _cmd += ",@PositionNo  ='" + id + "'";
+
+                if (DB.DBConn.ExecuteOnly(_cmd))
+                {
+                    msgretrun.ReturnCode = "200";
+                    msgretrun.Msg = "Delete Success !!";
+                    return Ok(msgretrun);
+                }
+                else
+                {
+                    msgretrun.ReturnCode = "400";
+                    msgretrun.Msg = "Error !!";
+                    return StatusCode(400, new { Message = msgretrun.Msg, Error = msgretrun.Msg });
+                }
+            }
+            catch
+            {
+                msgretrun.ReturnCode = "400";
+                msgretrun.Msg = "Error !!";
+                return StatusCode(400, new { Message = msgretrun.Msg, Error = msgretrun.Msg });
+            }
+        }
+
+
+        /* end position */
 
 
     }

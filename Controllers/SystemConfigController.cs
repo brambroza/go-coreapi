@@ -224,6 +224,10 @@ namespace goalongapi.Controllers
                 case "adjustreason":
                     _cmd = "exec dbo.get_AdjustReason @CmpId='" + cmpid + "'";
                     break;
+
+                 case "salaryreason":
+                    _cmd = "exec dbo.get_SalaryReason @CmpId='" + cmpid + "'";
+                    break;
                 default:
                     _cmd = "exec dbo.get_ShippingMethod @CmpId='" + cmpid + "'";
                     break;
@@ -288,6 +292,9 @@ namespace goalongapi.Controllers
                      case "adjustreason":
                         _cmd = "exec dbo.set_AdjustReason  ";
                         break;
+                    case "salaryreason":
+                        _cmd = "exec dbo.set_SalaryReason  ";
+                        break;
                     default:
                         _cmd = "exec dbo.set_ShippingMethod ";
                         break;
@@ -348,6 +355,9 @@ namespace goalongapi.Controllers
                         break;
                     case "adjustreason":
                         _cmd = "delete from [inven].[AdjustReason]  ";
+                        break;
+                    case "salaryreason":
+                        _cmd = "delete from [hr].[Salary_Increase_Reason]  ";
                         break;
                     default:
                         _cmd = "delete from  dbo.ShippingMethod ";

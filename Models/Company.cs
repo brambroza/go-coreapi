@@ -27,6 +27,18 @@ namespace goalongapi.Models
         public string UpdUser { get; set; }
     
     }
+  public class Position
+    {
+        public string CmpId { get; set; }
+        public string PositionNo { get; set; }
+        public string PositionName { get; set; }
+        public string? StateActive { get; set; }
+        public string? UpdUser { get; set; }
+    
+    }
+
+
+
  
 
     public class UserAccouter
