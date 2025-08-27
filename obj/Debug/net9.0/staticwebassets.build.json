@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "gRqiS+vdNVKPS1YFYd3jslCXXYN/nOTwS6hg95bX0AA=",
+  "Hash": "nVX3mLk7FLQYpQ12ZMwT0eqmZAyCyiCxaUeXTtIcv1E=",
   "Source": "goalongapi",
   "BasePath": "_content/goalongapi",
   "Mode": "Default",
@@ -2325,6 +2325,48 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot/230015/saleorder/SO-2500305/test20250411.pdf"
+    },
+    {
+      "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/saleorder/SO-2500510/DELL EMC PowerEdge T350.jpg",
+      "SourceId": "goalongapi",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/",
+      "BasePath": "_content/goalongapi",
+      "RelativePath": "230015/saleorder/SO-2500510/DELL EMC PowerEdge T350#[.{fingerprint}]?.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "x3zx6dy03f",
+      "Integrity": "A5a0X7GOFlrS4tvbzlMlIaI7t3DKC6b9WsmswNwFgVk=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/230015/saleorder/SO-2500510/DELL EMC PowerEdge T350.jpg"
+    },
+    {
+      "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/saleorder/SO-2500510/test20250411.pdf",
+      "SourceId": "goalongapi",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/",
+      "BasePath": "_content/goalongapi",
+      "RelativePath": "230015/saleorder/SO-2500510/test20250411#[.{fingerprint}]?.pdf",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "hcmbo72pxo",
+      "Integrity": "H8ZiZQmRp93rvJjzQ7ybZIMTsSAUCA9JmhfWa5IR1So=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/230015/saleorder/SO-2500510/test20250411.pdf"
     },
     {
       "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/serviceproblem/2500018/lineidton.jpg",
@@ -9549,27 +9591,6 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot/reqfromcust/fileall/de77a680-6614-4abe-b610-058912bcb75e.xlsx"
-    },
-    {
-      "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/reqfromcust/fileall/DELL EMC PowerEdge T350.jpg",
-      "SourceId": "goalongapi",
-      "SourceType": "Discovered",
-      "ContentRoot": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/",
-      "BasePath": "_content/goalongapi",
-      "RelativePath": "reqfromcust/fileall/DELL EMC PowerEdge T350#[.{fingerprint}]?.jpg",
-      "AssetKind": "All",
-      "AssetMode": "All",
-      "AssetRole": "Primary",
-      "AssetMergeBehavior": "",
-      "AssetMergeSource": "",
-      "RelatedAsset": "",
-      "AssetTraitName": "",
-      "AssetTraitValue": "",
-      "Fingerprint": "x3zx6dy03f",
-      "Integrity": "A5a0X7GOFlrS4tvbzlMlIaI7t3DKC6b9WsmswNwFgVk=",
-      "CopyToOutputDirectory": "Never",
-      "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot/reqfromcust/fileall/DELL EMC PowerEdge T350.jpg"
     },
     {
       "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/reqfromcust/fileall/e13f8efb-4c24-4c57-b3dd-8bd5492b989b.jpg",
@@ -19027,6 +19048,170 @@
         {
           "Name": "Last-Modified",
           "Value": "Mon, 05 May 2025 04:50:07 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-H8ZiZQmRp93rvJjzQ7ybZIMTsSAUCA9JmhfWa5IR1So="
+        }
+      ]
+    },
+    {
+      "Route": "230015/saleorder/SO-2500510/DELL EMC PowerEdge T350.jpg",
+      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/saleorder/SO-2500510/DELL EMC PowerEdge T350.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "27759"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"A5a0X7GOFlrS4tvbzlMlIaI7t3DKC6b9WsmswNwFgVk=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 25 Aug 2025 09:22:41 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-A5a0X7GOFlrS4tvbzlMlIaI7t3DKC6b9WsmswNwFgVk="
+        }
+      ]
+    },
+    {
+      "Route": "230015/saleorder/SO-2500510/DELL EMC PowerEdge T350.x3zx6dy03f.jpg",
+      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/saleorder/SO-2500510/DELL EMC PowerEdge T350.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "27759"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"A5a0X7GOFlrS4tvbzlMlIaI7t3DKC6b9WsmswNwFgVk=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 25 Aug 2025 09:22:41 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "x3zx6dy03f"
+        },
+        {
+          "Name": "label",
+          "Value": "230015/saleorder/SO-2500510/DELL EMC PowerEdge T350.jpg"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-A5a0X7GOFlrS4tvbzlMlIaI7t3DKC6b9WsmswNwFgVk="
+        }
+      ]
+    },
+    {
+      "Route": "230015/saleorder/SO-2500510/test20250411.hcmbo72pxo.pdf",
+      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/saleorder/SO-2500510/test20250411.pdf",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "3761449"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/pdf"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"H8ZiZQmRp93rvJjzQ7ybZIMTsSAUCA9JmhfWa5IR1So=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 25 Aug 2025 08:21:35 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "hcmbo72pxo"
+        },
+        {
+          "Name": "label",
+          "Value": "230015/saleorder/SO-2500510/test20250411.pdf"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-H8ZiZQmRp93rvJjzQ7ybZIMTsSAUCA9JmhfWa5IR1So="
+        }
+      ]
+    },
+    {
+      "Route": "230015/saleorder/SO-2500510/test20250411.pdf",
+      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/saleorder/SO-2500510/test20250411.pdf",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "3761449"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/pdf"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"H8ZiZQmRp93rvJjzQ7ybZIMTsSAUCA9JmhfWa5IR1So=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 25 Aug 2025 08:21:35 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -47677,88 +47862,6 @@
         {
           "Name": "integrity",
           "Value": "sha256-MLcMq/Rh0xPnjWUEMPNEvBbCBvWO0rsoMAVBWNLYRg8="
-        }
-      ]
-    },
-    {
-      "Route": "reqfromcust/fileall/DELL EMC PowerEdge T350.jpg",
-      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/reqfromcust/fileall/DELL EMC PowerEdge T350.jpg",
-      "Selectors": [],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "27759"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "image/jpeg"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"A5a0X7GOFlrS4tvbzlMlIaI7t3DKC6b9WsmswNwFgVk=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Mon, 03 Mar 2025 08:02:17 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "max-age=3600, must-revalidate"
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "integrity",
-          "Value": "sha256-A5a0X7GOFlrS4tvbzlMlIaI7t3DKC6b9WsmswNwFgVk="
-        }
-      ]
-    },
-    {
-      "Route": "reqfromcust/fileall/DELL EMC PowerEdge T350.x3zx6dy03f.jpg",
-      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/reqfromcust/fileall/DELL EMC PowerEdge T350.jpg",
-      "Selectors": [],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "27759"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "image/jpeg"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"A5a0X7GOFlrS4tvbzlMlIaI7t3DKC6b9WsmswNwFgVk=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Mon, 03 Mar 2025 08:02:17 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "max-age=31536000, immutable"
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "fingerprint",
-          "Value": "x3zx6dy03f"
-        },
-        {
-          "Name": "label",
-          "Value": "reqfromcust/fileall/DELL EMC PowerEdge T350.jpg"
-        },
-        {
-          "Name": "integrity",
-          "Value": "sha256-A5a0X7GOFlrS4tvbzlMlIaI7t3DKC6b9WsmswNwFgVk="
         }
       ]
     },

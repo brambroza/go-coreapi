@@ -2897,7 +2897,7 @@ namespace goalongapi.Controllers
                         _cmd += ",@ProjectNo  ='" + project[i].ProjectNo + "'";
                         _cmd += ",@Seq =" + project[i].Seq;
                         _cmd += ",@ProdCode  ='" + project[i].ProdCode + "'";
-                        _cmd += ",@ProdDescription  ='" + project[i].ProdDescription + "'";
+                        _cmd += ",@ProdDescription  ='" + Tool.Tool.validateStr( project[i].ProdDescription ) + "'";
                         _cmd += ",@Qty =" + project[i].Qty;
                         _cmd += ",@UnitCode ='" + project[i].UnitCode + "'";
                         _cmd += ",@UnitPrice =" + project[i].UnitPrice;

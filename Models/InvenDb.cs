@@ -132,31 +132,31 @@ namespace goalongapi.Models
 
     }
 
-        public class AdjustItem
-        {
-            public string UpdUser { get; set; }
-            public int Seq { get; set; }
-            public string DocNo { get; set; }
-            public int SysWHId { get; set; }
-            public int SysWHLocId { get; set; }
-            public string BarcodeNo { get; set; }
-            public string ProductCode { get; set; }
-            public decimal UnitPrice { get; set; }
-            public decimal QtySystem { get; set; }
-            public decimal QtyCounted { get; set; }
-            public decimal AdjustQty { get; set; }
-            public decimal QtyAfter { get; set; }
-            public string UnitCode { get; set; }
-            public string? BatchNo { get; set; }
-            public string? Grade { get; set; }
-            public string? DateExpire { get; set; }
-            public int StateQC { get; set; }
-            public string TransType { get; set; }
-            public string CmpId { get; set; }
-            public string ProdDescription { get; set; }
-            public decimal Amt { get; set; }
-            public string? Imgpath { get; set; }
-        }
+    public class AdjustItem
+    {
+        public string UpdUser { get; set; }
+        public int Seq { get; set; }
+        public string DocNo { get; set; }
+        public int SysWHId { get; set; }
+        public int SysWHLocId { get; set; }
+        public string BarcodeNo { get; set; }
+        public string ProductCode { get; set; }
+        public decimal UnitPrice { get; set; }
+        public decimal QtySystem { get; set; }
+        public decimal QtyCounted { get; set; }
+        public decimal AdjustQty { get; set; }
+        public decimal QtyAfter { get; set; }
+        public string UnitCode { get; set; }
+        public string? BatchNo { get; set; }
+        public string? Grade { get; set; }
+        public string? DateExpire { get; set; }
+        public int StateQC { get; set; }
+        public string TransType { get; set; }
+        public string CmpId { get; set; }
+        public string ProdDescription { get; set; }
+        public decimal Amt { get; set; }
+        public string? Imgpath { get; set; }
+    }
 
 
 
@@ -231,8 +231,8 @@ namespace goalongapi.Models
         public string? WareHouseLocName { get; set; }
         public string? SupplierName { get; set; }
         public string? PurchaseDate { get; set; }
-         public string StateApp { get; set; }
-      
+        public string StateApp { get; set; }
+
         public string? AppBy { get; set; }
 
         public List<InvenTransModel> items { get; set; }
@@ -257,7 +257,7 @@ namespace goalongapi.Models
         public string StateApp { get; set; }
         public string? AppBy { get; set; }
         public List<InvenTransModel> items { get; set; }
-        
+
     }
 
     public class invenAppModel
@@ -274,7 +274,7 @@ namespace goalongapi.Models
         public string TransferWHNo { get; set; }
         public string TransferWHDate { get; set; }
         public string TransferWHBy { get; set; }
-        public string  CmpId { get; set; }
+        public string CmpId { get; set; }
         public string Remark { get; set; }
         public string DocRef { get; set; }
         public int SysWHId { get; set; }
@@ -288,9 +288,9 @@ namespace goalongapi.Models
         public string? ToWareHouseName { get; set; }
         public string? WareHouseLocName { get; set; }
         public string? ToWareHouseLocName { get; set; }
-        public string? Status { get; set;   }
+        public string? Status { get; set; }
 
-         public List<InvenTransItemModel> items { get; set; }
+        public List<InvenTransItemModel> items { get; set; }
     }
 
 
@@ -325,7 +325,7 @@ namespace goalongapi.Models
         public string? ToWareHouseName { get; set; }
         public string? WareHouseLocName { get; set; }
         public string? ToWareHouseLocName { get; set; }
-        
+
     }
 
 
@@ -341,6 +341,72 @@ namespace goalongapi.Models
         public int WHId { get; set; }
         public int WHLocId { get; set; }
     }
+
+        public class DeliveryNote
+        {
+            public string? UpdUser { get; set; } 
+            public string DeliveryNodeNo { get; set; }   
+            public string? DeliveryNodeDate { get; set; }  
+            public string? DeliveryNodeBy { get; set; }
+            public string CmpId { get; set; }  
+            public string? Remark { get; set; }
+            public string? ShipDate { get; set; }
+            public string? CustomerCode { get; set; }
+            public string? StateApp { get; set; }
+            public string? AppDate { get; set; }   
+            public string? AppTime { get; set; }    
+            public string? AppBy { get; set; }
+            public int? SysWHId { get; set; }
+            public int? SysWHLocId { get; set; }
+            public string? SaleOrderNo { get; set; }
+            public string? WareHouseName { get; set; }
+            public string? WareHouseLocName { get; set; }
+            public string? CustomerName { get; set; }
+             public List<DeliveryNoteItem> Items { get; set; }  
+        }
+
+
+        public class DeliveryNoteItem
+        {
+            public string? UpdUser { get; set; } 
+            public int Seq { get; set; }        
+            public string DeliveryNodeNo { get; set; } 
+            public string? TransDate { get; set; }
+            public int? SysWHId { get; set; }
+            public int? SysWHLocId { get; set; }
+            public string? BarcodeNo { get; set; }
+            public string? ProductCode { get; set; }
+            public decimal? UnitPrice { get; set; }             // numeric(18,5)
+            public decimal? Qty { get; set; }   
+            public string? UnitCode { get; set; }
+         
+            public string? TransType { get; set; }
+        
+            public string CmpId { get; set; } = null!;
+        
+           
+        }
+
+
+    public class PackingList
+    {
+        public string? UpdUser { get; set; }
+        public string PackingListNo { get; set; }
+        public string DeliveryNodeNo { get; set; }
+        public string? PackingListDate { get; set; }
+        public string? PackingListBy { get; set; }
+        public string CmpId { get; set; }
+        public string? Remark { get; set; }
+        public string? StateApp { get; set; }
+        public string? AppDate { get; set; }
+        public string? AppTime { get; set; }
+        public string? AppBy { get; set; }
+        public int? SysWHId { get; set; }
+        public int? SysWHLocId { get; set; } 
+        public List<InvenTransItemModel> items { get; set; }
+        }
+
+
 
 
 }

@@ -429,6 +429,14 @@
       "PackagePath": "staticwebassets/230015/saleorder/SO-2500305/test20250411.pdf"
     },
     {
+      "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/saleorder/SO-2500510/DELL EMC PowerEdge T350.jpg",
+      "PackagePath": "staticwebassets/230015/saleorder/SO-2500510/DELL EMC PowerEdge T350.jpg"
+    },
+    {
+      "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/saleorder/SO-2500510/test20250411.pdf",
+      "PackagePath": "staticwebassets/230015/saleorder/SO-2500510/test20250411.pdf"
+    },
+    {
       "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/serviceproblem/2500018/lineidton.jpg",
       "PackagePath": "staticwebassets/230015/serviceproblem/2500018/lineidton.jpg"
     },
@@ -1619,10 +1627,6 @@
     {
       "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/reqfromcust/fileall/9ddeee7b-2b1b-4ce9-8f47-9fd8f1abc89a.pdf",
       "PackagePath": "staticwebassets/reqfromcust/fileall/9ddeee7b-2b1b-4ce9-8f47-9fd8f1abc89a.pdf"
-    },
-    {
-      "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/reqfromcust/fileall/DELL EMC PowerEdge T350.jpg",
-      "PackagePath": "staticwebassets/reqfromcust/fileall/DELL EMC PowerEdge T350.jpg"
     },
     {
       "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/reqfromcust/fileall/GO-ALONG-8.png",
