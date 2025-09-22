@@ -63,11 +63,11 @@ namespace goalongapi.Controllers
         }
 
 
- [      HttpGet("[action]")]
+        [HttpGet("[action]")]
         public IActionResult getContactSocialById([FromQuery] string userId)
         {
             string _cmd;
-            _cmd = "exec dbo.[getSocailContactById] @cmpid='" + userId + "'";
+            _cmd = "exec dbo.[getSocailContactById] @userId='" + userId + "'";
             DataTable dt = DB.DBConn.GetDataTable(_cmd);
               string JSONString = string.Empty;
                 JSONString = JsonConvert.SerializeObject(dt);
