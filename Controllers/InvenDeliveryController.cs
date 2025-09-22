@@ -40,24 +40,35 @@ namespace goalongapi.Controllers
                 var receive = new DeliveryNote()
                 {
                     UpdUser = r["UpdUser"].ToString(),
-                    DeliveryNodeNo = r["DeliveryNodeNo"].ToString(),
-                    DeliveryNodeDate = r["DeliveryNodeDate"].ToString(),
-                    DeliveryNodeBy = r["DeliveryNodeBy"].ToString(),
+                    DeliveryNoteNo = r["DeliveryNoteNo"].ToString(),
+                    DeliveryNoteDate = r["DeliveryNoteDate"].ToString(),
+                    DeliveryNoteBy = r["DeliveryNoteBy"].ToString(),
                     CmpId = r["CmpId"].ToString(),
                     Remark = r["Remark"].ToString(),
                     ShipDate = r["ShipDate"].ToString(),
-                    CustomerCode = r["CustomerCode"].ToString(), 
+                    CustomerCode = r["CustomerCode"].ToString(),
                     StateApp = r["StateApp"].ToString(),
                     AppBy = r["AppBy"].ToString(),
                     AppDate = r["AppDate"].ToString(),
-                    AppTime = r["AppTime"].ToString(), 
+                    AppTime = r["AppTime"].ToString(),
                     SysWHId = int.Parse(r["SysWHId"].ToString()),
                     SysWHLocId = int.Parse(r["SysWHLocId"].ToString()),
                     SaleOrderNo = r["SaleOrderNo"].ToString(),
                     CustomerName = r["CustomerName"].ToString(),
-                    
+
                     WareHouseName = r["WareHouseName"].ToString(),
                     WareHouseLocName = r["WareHouseLocName"].ToString(),
+                    
+                    VatPer = decimal.Parse(r["VatPer"].ToString()) ,
+                    VatType = decimal.Parse(r["VatType"].ToString()) ,
+                    Amt = decimal.Parse(r["Amt"].ToString()) ,
+                    DisPer = decimal.Parse(r["DisPer"].ToString()) ,
+                    DisAmt = decimal.Parse(r["DisAmt"].ToString()) ,
+                    NetAmt = decimal.Parse(r["NetAmt"].ToString()) ,
+                    VatAmt = decimal.Parse(r["VatAmt"].ToString()) ,
+                    GrandAmt = decimal.Parse(r["GrandAmt"].ToString()) ,
+                    GrandAmtTHB = r["GrandAmtTHB"].ToString(),
+                    GrandAmtENB = r["GrandAmtENB"].ToString(),
                    
 
                 };
@@ -66,15 +77,15 @@ namespace goalongapi.Controllers
 
                 foreach (
                     DataRow d in dtItem.Select(
-                        "DeliveryNodeNo ='"
-                             + r["DeliveryNodeNo"].ToString()
+                        "DeliveryNoteNo ='"
+                             + r["DeliveryNoteNo"].ToString()
                             + "'  and CmpId='"
                             + r["CmpId"] + "'"
                     )
                 )
                 {
                     var item = new DeliveryNoteItem();
-                    item.DeliveryNodeNo = d["DeliveryNodeNo"].ToString();
+                    item.DeliveryNoteNo = d["DeliveryNoteNo"].ToString();
                     item.UpdUser = d["UpdUser"].ToString();
                     item.Seq = Convert.ToInt32(d["Seq"]);
                     item.TransDate = d["TransDate"].ToString();
@@ -89,8 +100,9 @@ namespace goalongapi.Controllers
 
                     item.TransType = d["TransType"].ToString();
                     item.CmpId = d["CmpId"].ToString();
-                  
-                    
+                    item.ProdDescription = d["ProdDescription"].ToString();
+
+                    receive.Items.Add(item);
   
                 }
 
@@ -117,9 +129,9 @@ namespace goalongapi.Controllers
                 string _cmd = "";
                 _cmd = "exec  dbo.Inven_setDeliveryNote";
                 _cmd += " @UpdUser  ='" + receive.UpdUser + "'";
-                _cmd += ",@DeliveryNodeNo  ='" + receive.DeliveryNodeNo + "'";
-                _cmd += ",@DeliveryNodeDate  ='" + receive.DeliveryNodeDate + "'";
-                _cmd += ",@DeliveryNodeBy  ='" + receive.DeliveryNodeBy + "'";
+                _cmd += ",@DeliveryNoteNo  ='" + receive.DeliveryNoteNo + "'";
+                _cmd += ",@DeliveryNoteDate  ='" + receive.DeliveryNoteDate + "'";
+                _cmd += ",@DeliveryNoteBy  ='" + receive.DeliveryNoteBy + "'";
                 _cmd += ",@ShipDate  ='" + receive.ShipDate + "'";
                 _cmd += ",@CustomerCode  ='" + receive.CustomerCode + "'";
                 _cmd += ",@SaleOrderNo  ='" + receive.SaleOrderNo + "'";
@@ -127,6 +139,18 @@ namespace goalongapi.Controllers
                 _cmd += ",@Remark  ='" + receive.Remark + "'";
                 _cmd += ",@WHId =" + receive.SysWHId;
                 _cmd += ",@WHLocId =" + receive.SysWHLocId;
+                _cmd += ",@VatType =" + receive.VatType;
+                _cmd += ",@Amt =" + receive.Amt; 
+                _cmd += ",@DisPer =" + receive.DisPer;
+                _cmd += ",@DisAmt =" + receive.DisAmt;
+                _cmd += ",@NetAmt =" + receive.NetAmt;
+                _cmd += ",@VatAmt =" + receive.VatAmt;
+                _cmd += ",@VatPer =" + receive.VatPer;
+                _cmd += ",@GrandAmt =" + receive.GrandAmt;
+                _cmd += ",@GrandAmtTHB ='" + receive.GrandAmtTHB + "'";
+                _cmd += ",@GrandAmtENB ='" + receive.GrandAmtENB + "'";
+
+
 
                 if (DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran) <= 0)
                 {
@@ -143,7 +167,7 @@ namespace goalongapi.Controllers
                     _cmd = "exec  dbo.Inven_setDeliveryNoteItem";
                     _cmd += " @UpdUser  ='" + receive.Items[i].UpdUser + "'";
                     _cmd += ",@Seq =" + receive.Items[i].Seq;
-                    _cmd += ",@DeliveryNodeNo  ='" + receive.Items[i].DeliveryNodeNo + "'";
+                    _cmd += ",@DeliveryNoteNo  ='" + receive.Items[i].DeliveryNoteNo + "'";
                     _cmd += ",@TransDate ='" + receive.Items[i].TransDate + "'"; ;
                     _cmd += ",@SysWHId =" + receive.Items[i].SysWHId;
                     _cmd += ",@SysWHLocId =" + receive.Items[i].SysWHLocId;
@@ -153,7 +177,7 @@ namespace goalongapi.Controllers
                     _cmd += ",@Qty =" + receive.Items[i].Qty;
                     _cmd += ",@UnitCode ='" + receive.Items[i].UnitCode + "'"; ;  
                     _cmd += ", @CmpId='" + receive.Items[i].CmpId + "'";
-                     _cmd += ", @TransType='DN'";
+                    _cmd += ", @TransType='DN'";
                     if (DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran) <= 0)
                     {
                         DB.DBConn.Tran.Rollback();

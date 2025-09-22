@@ -44,7 +44,7 @@ namespace goalongapi.Models
         public string BusinessGrpCode { get; set; }
         public string StateCustomer { get; set; }
         public string StateVendor { get; set; }
-        public string? SourceCode { get; set;   }
+        public string? SourceCode { get; set; }
     }
 
     public class CustomerList
@@ -145,5 +145,16 @@ namespace goalongapi.Models
         public string subDistrict { get; set; }
         public string district { get; set; }
         public string province { get; set; }
+    }
+
+
+    public class CustomerAssignEmp
+    {
+        // CustomerCode, CmpId, AccountID, Priority
+        public string CustomerCode { get; set; }
+        public string CmpId { get; set; }
+        public Int64 AccountID { get; set; }
+        public int Priority { get; set; }
+        public string UpdUser { get; set; }
     }
 }

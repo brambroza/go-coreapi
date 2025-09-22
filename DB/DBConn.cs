@@ -19,16 +19,19 @@ namespace goalongapi.DB
  
         public static void SqlConnectionOpen()
         {
+            if (DBConn.Cnn != null)
+            {
+                DBConn.Cnn.Dispose();
+            }
             if (DBConn.Cnn == null)
             {
                 DBConn.Cnn = new SqlConnection();
             }
-            ;
+             
             if (DBConn.Cnn.State == ConnectionState.Open)
             {
                 DBConn.Cnn.Close();
-            }
-            ;
+            } 
             DBConn.Cnn.ConnectionString = SystemConfig._ConnectionString;
             DBConn.Cnn.Open();
         }

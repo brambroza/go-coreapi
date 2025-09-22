@@ -169,7 +169,7 @@ namespace goalongapi.Models
         public string ReplaceProdCode { get; set; }
         public string Remark { get; set; }
 
-        public string Vendor { get; set; } = "";
+        public string VendorCode { get; set; } = "";
         public string VendorName { get; set; } = "";
 
         public List<SalesBom_Price_Item> bomitemPrice { get; set; }

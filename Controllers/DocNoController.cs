@@ -87,7 +87,39 @@ namespace goalongapi.Controllers
 
                         break;
 
-                     case "emp":
+                    
+                    case "packinglist":
+                        _cmd =
+                            "Select Top 1  PackingListNo  as FTDocNo FROM  inven.PackingList where   CmpId ="
+                            + cmpid
+                            + " and  PackingListNo='"
+                            + DocNo
+                            + "'";
+                        dt = DB.DBConn.GetDataTable(_cmd);
+                        if (dt.Rows.Count > 0)
+                        {
+                            try
+                            {
+                                _docnew = dt.Rows[0][0].ToString();
+                            }
+                            catch
+                            {
+                                _docnew = "";
+                            }
+                        }
+
+                        if ((_docnew.ToString() == "") || (_docnew.ToLower() == "null"))
+                        {
+                            _cmd =
+                                "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo.packinglistrun   set @Runno  = 'PL-'+@Runno  select @Runno   "; // + cmpid  ;
+                            dt = DB.DBConn.GetDataTable(_cmd);
+                        }
+
+                        break;
+
+
+
+                    case "emp":
                         _cmd =
                             "Select Top 1  EmployeeNo  as FTDocNo FROM  hr.Employee  where   CmpId ="
                             + cmpid
@@ -1278,6 +1310,42 @@ namespace goalongapi.Controllers
                         }
 
                         break;
+
+                    
+                    case "packinglist":
+                        _cmd =
+                            "Select Top 1  PackingListNo  as FTDocNo FROM  inven.PackingList where   CmpId ="
+                            + cmpid
+                            + " and  PackingListNo='"
+                            + DocNo
+                            + "'";
+                        dt = DB.DBConn.GetDataTable(_cmd);
+                        if (dt.Rows.Count > 0)
+                        {
+                            try
+                            {
+                                _docnew = dt.Rows[0][0].ToString();
+                            }
+                            catch
+                            {
+                                _docnew = "";
+                            }
+                        }
+
+                        if ((_docnew.ToString() == "") || (_docnew.ToLower() == "null"))
+                        {
+
+                             _cmd =
+                                "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo.["
+                                + cmpid
+                                + "-packinglistrun]   set @Runno  = 'PL-'+@Runno  select @Runno   ";
+                         
+
+                             dt = DB.DBConn.GetDataTable(_cmd);
+                        }
+
+                        break;
+
 
 
 
@@ -2592,7 +2660,40 @@ namespace goalongapi.Controllers
 
                         break;
 
-                 case "emp":
+
+                case "packinglist":
+                        _cmd =
+                            "Select Top 1  PackingListNo  as FTDocNo FROM  inven.PackingList where   CmpId ="
+                            + cmpid
+                            + " and  PackingListNo='"
+                            + DocNo
+                            + "'";
+                        dt = DB.DBConn.GetDataTable(_cmd);
+                        if (dt.Rows.Count > 0)
+                        {
+                            try
+                            {
+                                _docnew = dt.Rows[0][0].ToString();
+                            }
+                            catch
+                            {
+                                _docnew = "";
+                            }
+                        }
+
+                        if ((_docnew.ToString() == "") || (_docnew.ToLower() == "null"))
+                        {
+
+                             
+                            _cmd =
+                                "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo.packinglistrun   set @Runno  = 'PL-'+@Runno  select @Runno   "; // + cmpid  ;
+                            dt = DB.DBConn.GetDataTable(_cmd);
+
+
+                             dt = DB.DBConn.GetDataTable(_cmd);
+                        }
+                    break;
+                case "emp":
                         _cmd =
                             "Select Top 1  EmployeeNo  as FTDocNo FROM  hr.Employee  where   CmpId ="
                             + cmpid

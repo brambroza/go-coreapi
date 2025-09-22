@@ -28,7 +28,7 @@ namespace goalongapi.Controllers
             string _cmd;
             _cmd = "exec dbo.getCustomer @CmpId='" + cmpid + "' , @Type='" + type + "'";
             dt = DB.DBConn.GetDataTable(_cmd);
- 
+
             _cmd = "exec dbo.getContact @CmpId='" + cmpid + "'";
             dtContact = DB.DBConn.GetDataTable(_cmd);
 
@@ -247,5 +247,164 @@ namespace goalongapi.Controllers
                 + "'";
             DB.DBConn.ExecuteOnly(_cmd);
         }
+
+
+        // get // customer assign employee
+        [HttpGet]
+        [Route("CustomerAssignEmp")]
+        public IActionResult GetCustomerAssignEmp(
+            [FromQuery] string cmpid,
+            [FromQuery] string empid,
+            [FromQuery] string custcode)
+        {
+            DataTable dt = new System.Data.DataTable();
+            string _cmd;
+            _cmd = "exec dbo.getCustomerAssignEmp @CmpId='" + cmpid + "' , @AccoutID='" + empid + "' , @CustomerCode='" + custcode + "'";
+            dt = DB.DBConn.GetDataTable(_cmd);
+
+            var prodlist = new List<Dictionary<string, object>>();
+            foreach (DataRow row in dt.Rows)
+            {
+                var eventObj = new Dictionary<string, object>();
+                foreach (DataColumn column in dt.Columns)
+                {
+                    string lowercaseColumnName =
+                        char.ToLowerInvariant(column.ColumnName[0])
+                        + column.ColumnName.Substring(1);
+
+                    eventObj[lowercaseColumnName] = row[column];
+                }
+
+                prodlist.Add(eventObj);
+            }
+
+
+            return Ok(prodlist);
+
+
+
+        }
+
+
+        // post // customer assign employee
+        [HttpPost]
+        [Route("CustomerAssignEmp")]
+        public IActionResult PostCustomerAssignEmp([FromBody] CustomerAssignEmp customerAssignEmp)
+        {
+            MsgReturn msgretrun = new MsgReturn();
+            try
+            {
+                string _cmd = "";
+                _cmd = "exec  dbo.setCustomerAssignEmp";
+                _cmd += " @UpdUser  ='" + customerAssignEmp.UpdUser + "'";
+                _cmd += ",@AccountID  =" + customerAssignEmp.AccountID + "";
+                _cmd += ",@CustomerCode  ='" + customerAssignEmp.CustomerCode + "'";
+                _cmd += ",@Priority  =" + customerAssignEmp.Priority + "";
+                _cmd += ",@CmpId ='" + customerAssignEmp.CmpId + "'";
+                if (DB.DBConn.ExecuteOnly(_cmd))
+                {
+                    msgretrun.ReturnCode = "200";
+                    msgretrun.Msg = "Save Success !!";
+                    return Ok(msgretrun);
+                }
+                else
+                {
+                    msgretrun.ReturnCode = "400";
+                    msgretrun.Msg = "Error !!";
+                    return BadRequest(msgretrun);
+                }
+            }
+            catch
+            {
+                msgretrun.ReturnCode = "400";
+                msgretrun.Msg = "Error !!";
+                return BadRequest(msgretrun);
+            }
+        }
+
+        // post // customer assign update priority employee
+        [HttpPost]
+        [Route("CustomerAssignEmpUpdatePriority")]
+        public IActionResult CustomerAssignEmpUpdatePriority(List<CustomerAssignEmp> customerAssignEmp)
+        {
+            MsgReturn msgretrun = new MsgReturn();
+          
+            try
+            {
+                string _cmd = "";
+                foreach (var item in customerAssignEmp)
+                {
+                    _cmd += " exec  dbo.setCustomerAssignEmp";
+                    _cmd += " @UpdUser  ='" + item.UpdUser + "'";
+                    _cmd += ",@AccountID  =" + item.AccountID + "";
+                    _cmd += ",@CustomerCode  ='" + item.CustomerCode + "'";
+                    _cmd += ",@Priority  =" + item.Priority + "";
+                    _cmd += ",@CmpId ='" + item.CmpId + "'";
+                    
+
+                }
+
+
+                 if (DB.DBConn.ExecuteOnly(_cmd) && _cmd != "")
+                {
+                    msgretrun.ReturnCode = "200";
+                    msgretrun.Msg = "Save Success !!";
+                    return Ok(msgretrun);
+                }
+                else
+                {
+                    msgretrun.ReturnCode = "400";
+                    msgretrun.Msg = "Error !!";
+                    return BadRequest(msgretrun);
+                }
+                 
+
+            }
+            catch
+            {
+                
+                msgretrun.ReturnCode = "400";
+                msgretrun.Msg = "Error !!";
+                return BadRequest(msgretrun);
+            }
+        }
+
+        // delete // customer assign employee
+        [HttpDelete]
+        [Route("CustomerAssignEmp")]
+        public IActionResult DeleteCustomerAssignEmp([FromQuery] string cmpid, [FromQuery] string custcode, [FromQuery] Int64 accountid)
+        {
+            MsgReturn msgretrun = new MsgReturn();
+            try
+            {
+                string _cmd = "";
+                _cmd = "exec  dbo.delCustomerAssignEmp";
+                _cmd += " @AccountID  =" + accountid + "";
+                _cmd += ",@CustomerCode  ='" + custcode + "'";
+                _cmd += ",@CmpId ='" + cmpid + "'";
+                if (DB.DBConn.ExecuteOnly(_cmd))
+                {
+                    msgretrun.ReturnCode = "200";
+                    msgretrun.Msg = "Delete Success !!";
+                    return Ok(msgretrun);
+
+                }
+                else
+                {
+                    msgretrun.ReturnCode = "400";
+                    msgretrun.Msg = "Error !!";
+                    return BadRequest(msgretrun);
+                }
+
+            }
+            catch
+            {
+                msgretrun.ReturnCode = "400";
+                msgretrun.Msg = "Error !!";
+                return BadRequest(msgretrun);
+            }
+        }
+
+
     }
 }

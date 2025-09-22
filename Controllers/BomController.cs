@@ -85,7 +85,7 @@ namespace goalongapi.Controllers
                     item.Amt = Convert.ToDecimal(x["Amt"]);
                     item.CmpId = x["CmpId"].ToString();
                     item.ReplaceStatus = Convert.ToInt32(x["ReplaceStatus"]);
-                    item.Vendor = "";
+                    item.VendorCode = "";
                     item.VendorName = "";
                     item.Remark = x["Remark"].ToString();
                     item.OutofstockStatus = Convert.ToInt32(x["OutofstockStatus"]);
@@ -318,7 +318,7 @@ namespace goalongapi.Controllers
                     item.Amt = Convert.ToDecimal(x["Amt"]);
                     item.CmpId = x["CmpId"].ToString();
                     item.ReplaceStatus = Convert.ToInt32(x["ReplaceStatus"]);
-                    item.Vendor = "";
+                    item.VendorCode = "";
                     item.VendorName = "";
                     item.Remark = x["Remark"].ToString();
                     item.OutofstockStatus = Convert.ToInt32(x["OutofstockStatus"]);

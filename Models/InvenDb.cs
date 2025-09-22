@@ -345,9 +345,9 @@ namespace goalongapi.Models
         public class DeliveryNote
         {
             public string? UpdUser { get; set; } 
-            public string DeliveryNodeNo { get; set; }   
-            public string? DeliveryNodeDate { get; set; }  
-            public string? DeliveryNodeBy { get; set; }
+            public string DeliveryNoteNo { get; set; }   
+            public string? DeliveryNoteDate { get; set; }  
+            public string? DeliveryNoteBy { get; set; }
             public string CmpId { get; set; }  
             public string? Remark { get; set; }
             public string? ShipDate { get; set; }
@@ -362,6 +362,17 @@ namespace goalongapi.Models
             public string? WareHouseName { get; set; }
             public string? WareHouseLocName { get; set; }
             public string? CustomerName { get; set; }
+ 
+            public decimal VatType { get; set; }
+            public decimal Amt { get; set; }
+            public decimal DisPer { get; set; }
+            public decimal DisAmt { get; set; }
+            public decimal NetAmt { get; set; }
+            public decimal VatAmt { get; set; }
+            public decimal VatPer { get; set; }
+            public decimal GrandAmt { get; set; }
+            public string GrandAmtTHB { get; set; }
+            public string GrandAmtENB { get; set; }
              public List<DeliveryNoteItem> Items { get; set; }  
         }
 
@@ -370,7 +381,7 @@ namespace goalongapi.Models
         {
             public string? UpdUser { get; set; } 
             public int Seq { get; set; }        
-            public string DeliveryNodeNo { get; set; } 
+            public string DeliveryNoteNo { get; set; } 
             public string? TransDate { get; set; }
             public int? SysWHId { get; set; }
             public int? SysWHLocId { get; set; }
@@ -381,6 +392,8 @@ namespace goalongapi.Models
             public string? UnitCode { get; set; }
          
             public string? TransType { get; set; }
+
+            public string? ProdDescription { get; set; }
         
             public string CmpId { get; set; } = null!;
         
