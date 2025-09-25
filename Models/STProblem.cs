@@ -21,21 +21,24 @@ namespace goalongapi.Models
         public string CmpId { get; set; }
         public string ProvinceId { get; set; }
         public string? Status { get; set; }
-        public string? Priority  { get; set; }
+        public string? Priority { get; set; }
         public string GrpId { get; set; } = "2300005";
         public string? TaskNo { get; set; }
-        public string? TaskId  { get; set; }
+        public string? TaskId { get; set; }
 
         public string? UserLineId { get; set; }
-        public string? OALineId  { get; set; }
+        public string? OALineId { get; set; }
 
         public int? FeedbackRating { get; set; }
         public string? FeedbackDate { get; set; }
- 
+
         public List<STProblem_File>? attachfile { get; set; }
         public List<STProblem_Assign>? assign { get; set; }
 
         public STServiceActions? action { get; set; }
+        
+        public string? StartDate { get; set; }
+        public string? StartTime { get; set; }
     }
 
    public class STProblem_File
