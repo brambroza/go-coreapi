@@ -1782,6 +1782,9 @@ namespace goalongapi.Controllers
                     stproblem.FeedbackRating = Convert.ToInt32(b["FeedbackRating"].ToString());
                     stproblem.FeedbackDate = b["FeedbackDate"].ToString();
 
+                    stproblem.StartDate = b["StartDate"].ToString();
+                    stproblem.StartTime = b["StartTime"].ToString();
+
                     stproblem.attachfile = new List<STProblem_File>();
 
                     foreach (DataRow f in dtf.Select("ProblemId='" + stproblem.ProblemId + "'"))
@@ -2421,6 +2424,10 @@ namespace goalongapi.Controllers
                        
                         stproblem.FeedbackRating = Convert.ToInt32(b["FeedbackRating"].ToString());
                         stproblem.FeedbackDate = b["FeedbackDate"].ToString();
+
+
+                        stproblem.StartDate = b["StartDate"].ToString();
+                        stproblem.StartTime = b["StartTime"].ToString();
 
                         stproblem.attachfile = new List<STProblem_File>();
 
