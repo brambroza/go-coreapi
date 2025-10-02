@@ -17,25 +17,26 @@ builder.Services.AddCors(p =>
         "_MyAllowSpecificOrigins",
         builder =>
         {
-            /*  builder.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();   */
-          
-              
-             builder
-                  .WithOrigins(
-                     "https://erp.nisolution.co.th" , "https://app.nisolution.co.th", 
-                     "http://nisolution.fortiddns.com:8284",
-                     "http://localhost:8080",  "http://192.168.1.179:8080",
-                     "http://192.168.55.219:8285", "http://10.0.2.2:8000",
-                     "http://127.0.0.1:51052" , "https://liff.line.me"
-                 )
+           /*   builder.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();   */ 
+
+
+              builder
+                 .WithOrigins(
+                    "https://erp.nisolution.co.th", "https://app.nisolution.co.th",
+                    "http://nisolution.fortiddns.com:8284",
+                    "http://localhost:8080", "http://192.168.1.179:8080",
+                    "http://192.168.55.219:8285", "http://10.0.2.2:8000",
+                    "http://127.0.0.1:51052", "https://liff.line.me",
+                    "http://127.0.0.1:65060" , "http://127.0.0.1:9101" // simulator ios 
+                )
+                    
                  .AllowAnyMethod()
                  .AllowAnyHeader()
                  .AllowCredentials();    
         }
     )
 );
-
-// Add services to the container.
+ // Add services to the container.
 builder.Services.InstallServiceInAssembly(builder.Configuration);
 
 builder.Services.AddSingleton<RabbitMQService>();
