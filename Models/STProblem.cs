@@ -36,9 +36,11 @@ namespace goalongapi.Models
         public List<STProblem_Assign>? assign { get; set; }
 
         public STServiceActions? action { get; set; }
-        
+
         public string? StartDate { get; set; }
         public string? StartTime { get; set; }
+        
+        public int? IsUnReadMsgCount { get; set; }
     }
 
    public class STProblem_File

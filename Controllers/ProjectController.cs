@@ -1784,6 +1784,7 @@ namespace goalongapi.Controllers
 
                     stproblem.StartDate = b["StartDate"].ToString();
                     stproblem.StartTime = b["StartTime"].ToString();
+                     stproblem.IsUnReadMsgCount =  Convert.ToInt32(b["IsUnReadMsgCount"].ToString());
 
                     stproblem.attachfile = new List<STProblem_File>();
 
@@ -2428,7 +2429,8 @@ namespace goalongapi.Controllers
 
                         stproblem.StartDate = b["StartDate"].ToString();
                         stproblem.StartTime = b["StartTime"].ToString();
-
+                         stproblem.IsUnReadMsgCount =  Convert.ToInt32(b["IsUnReadMsgCount"].ToString());
+        
                         stproblem.attachfile = new List<STProblem_File>();
 
                         foreach (DataRow f in dtf.Select("ProblemId='" + stproblem.ProblemId + "'"))
