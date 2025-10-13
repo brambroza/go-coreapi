@@ -293,6 +293,7 @@ namespace goalongapi.Models
         public string CustomerContactName { get; set; }
         public string JobType { get; set; }
         public string QuotationNo { get; set; }
+        public string? QuotationBy { get; set; }
         public string CustomerPONo { get; set; }
 
         public List<SaleOrderItem> items { get; set; }

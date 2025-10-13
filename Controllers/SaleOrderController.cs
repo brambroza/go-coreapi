@@ -75,6 +75,7 @@ namespace goalongapi.Controllers
                     CustomerContactName = r["CustomerContactName"].ToString(),
                     JobType = r["JobType"].ToString(),
                     QuotationNo = r["QuotationNo"].ToString(),
+                    QuotationBy = r["QuotationBy"].ToString(),
                     CustomerPONo = r["CustomerPONo"].ToString(),
                     TicketId = r["TicketId"].ToString(),
                     StateShipAddr = r["StateShipAddr"].ToString(),
