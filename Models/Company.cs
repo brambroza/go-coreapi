@@ -98,6 +98,7 @@ namespace goalongapi.Models
         public string ChannelId { get; set; }
         public string? LineOAName { get; set; }
         public string? LineId { get; set; }
+        public string? AccessToken { get; set; }
     }
 
       public class cmpSocialChannel_LiffAppUrl

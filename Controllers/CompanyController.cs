@@ -82,6 +82,8 @@ namespace goalongapi.Controllers
                     LineOAName = r["LineOAName"].ToString(),
                     Seq = int.Parse(r["Seq"].ToString()),
                     LineId = r["LineId"].ToString(),
+                    AccessToken = r["AccessToken"].ToString(),
+
                 };
 
                 cmpSocialChannels.Add(cmpSocialChannel);

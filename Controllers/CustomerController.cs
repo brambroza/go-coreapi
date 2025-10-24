@@ -86,6 +86,9 @@ namespace goalongapi.Controllers
                 customer.StateCustomer = r["StateCustomer"].ToString();
                 customer.StateVendor = r["StateVendor"].ToString();
                 customer.SourceCode = r["SourceCode"].ToString();
+                customer.StateGenQRCode = Convert.ToInt32(r["StateGenQRCode"].ToString());
+
+
                 customer.contacts = new List<ContactList>();
 
                 foreach (
@@ -233,6 +236,48 @@ namespace goalongapi.Controllers
                 return Ok(msgretrun);
             }
         }
+
+        [HttpPost]
+        [Route("setupdateqrcode")]
+        public IActionResult setUpdateQRCode([FromBody] Customer customer)
+        {
+           
+
+
+            MsgReturn msgretrun = new MsgReturn();
+            try
+            {
+                string _cmd = "";
+                _cmd = "exec  dbo.CustomerListTrans_UpdateQRCodeState";
+                _cmd += " @UpdUser  ='" + customer.UpdUser + "'";
+                _cmd += ",@CustomerCode  ='" + customer.CustomerCode + "'";
+                _cmd += ",@CmpId ='" + customer.CmpId + "'"; 
+                _cmd += ",@StateGenQRCode =" + customer.StateGenQRCode;
+            
+
+                if (DB.DBConn.ExecuteOnly(_cmd))
+                {
+                    msgretrun.ReturnCode = "200";
+                    msgretrun.Msg = "Save Success !!";
+                    return Ok(msgretrun);
+                }
+                else
+                {
+                    msgretrun.ReturnCode = "400";
+                    msgretrun.Msg = "Error !!";
+                    return Ok(msgretrun);
+                }
+            }
+            catch
+            {
+                msgretrun.ReturnCode = "400";
+                msgretrun.Msg = "Error !!";
+                return Ok(msgretrun);
+            }
+        }
+
+
+
 
         [HttpDelete]
         [Route("Customer")]

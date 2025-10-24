@@ -63,16 +63,20 @@ public class ProductsController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<Product>> AddProductAsync([FromForm] ProductRequest productRequest)
     {
+ 
+            (string errorMessage, string imageName) = await productService.UploadImage(productRequest.FormFiles);
+            if (!String.IsNullOrEmpty(errorMessage))
+            {
+                return BadRequest();
+            }
 
-        (string errorMessage, string imageName) = await productService.UploadImage(productRequest.FormFiles);
-        if (!String.IsNullOrEmpty(errorMessage)){
-            return BadRequest();
-        }
+            var product = productRequest.Adapt<Product>();
+            product.Image = imageName;
+            await productService.Create(product);
+            return StatusCode((int)HttpStatusCode.Created, product);
 
-        var product = productRequest.Adapt<Product>();
-        product.Image = imageName;
-        await productService.Create(product);        
-        return StatusCode((int)HttpStatusCode.Created, product);
+        
+   
     }
 
 
@@ -90,13 +94,24 @@ public class ProductsController : ControllerBase
             return NotFound();
         }
 
-        (string errorMessage, string imageName) = await productService.UploadImage(productRequest.FormFiles);
+        if (productRequest.FormFiles != null && productRequest.FormFiles.Any())
+        {
+            (string errorMessage, string imageName) = await productService.UploadImage(productRequest.FormFiles);
+            if (!string.IsNullOrEmpty(errorMessage))
+                return BadRequest();
+
+            if (!string.IsNullOrEmpty(imageName))
+                product.Image = imageName;
+        }
+
+
+      /*   (string errorMessage, string imageName) = await productService.UploadImage(productRequest.FormFiles);
         if (!String.IsNullOrEmpty(errorMessage)){
             return BadRequest();
         }
         if (!String.IsNullOrEmpty(imageName)){
             product.Image = imageName;
-        }
+        } */
         
         productRequest.Adapt(product);
         var result = productService.Update(product);        
