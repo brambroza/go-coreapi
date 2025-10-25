@@ -38,7 +38,7 @@ namespace goalongapi.Models
         public string AddrDistrict { get; set; }
         public string AddrProvince { get; set; }
         public string AddrPostCode { get; set; }
-        public string ImgPath { get; set; }
+        public string? ImgPath { get; set; }
         public int CreditAccId { get; set; }
         public int DebitAccId { get; set; }
         public string BusinessGrpCode { get; set; }
