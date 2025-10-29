@@ -31,6 +31,7 @@ namespace goalongapi.Models
 
         public int? FeedbackRating { get; set; }
         public string? FeedbackDate { get; set; }
+         public string? FeedbackDescription { get; set; }
 
         public List<STProblem_File>? attachfile { get; set; }
         public List<STProblem_Assign>? assign { get; set; }

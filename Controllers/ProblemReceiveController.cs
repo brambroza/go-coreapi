@@ -81,7 +81,8 @@ namespace goalongapi.Controllers
 
                 stproblem.FeedbackRating = Convert.ToInt32(b["FeedbackRating"].ToString());
                 stproblem.FeedbackDate = b["FeedbackDate"].ToString();
-                stproblem.IsUnReadMsgCount =  Convert.ToInt32(b["IsUnReadMsgCount"].ToString());
+                stproblem.IsUnReadMsgCount = Convert.ToInt32(b["IsUnReadMsgCount"].ToString());
+                stproblem.FeedbackDescription = b["FeedbackDescription"].ToString();
                 
                 stproblem.attachfile = new List<STProblem_File>();
 
