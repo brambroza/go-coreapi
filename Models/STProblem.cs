@@ -42,6 +42,9 @@ namespace goalongapi.Models
         public string? StartTime { get; set; }
         
         public int? IsUnReadMsgCount { get; set; }
+        public string? requestPhone { get; set; }
+        public string? requestEmail { get; set; }
+        public string? requestPosition { get; set; }
     }
 
    public class STProblem_File

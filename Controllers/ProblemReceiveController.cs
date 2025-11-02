@@ -83,7 +83,12 @@ namespace goalongapi.Controllers
                 stproblem.FeedbackDate = b["FeedbackDate"].ToString();
                 stproblem.IsUnReadMsgCount = Convert.ToInt32(b["IsUnReadMsgCount"].ToString());
                 stproblem.FeedbackDescription = b["FeedbackDescription"].ToString();
+                stproblem.requestEmail = b["RequestEmail"].ToString();
+                stproblem.requestPhone = b["RequestPhone"].ToString();
+                stproblem.requestPosition = b["RequestPosition"].ToString();
                 
+
+
                 stproblem.attachfile = new List<STProblem_File>();
 
                 foreach (DataRow f in dtf.Select("ProblemId='" + stproblem.ProblemId + "'"))
