@@ -239,6 +239,7 @@ namespace goalongapi.Controllers
                         _cmd += " @ProblemId='" + pr.ProblemId + "'";
                         _cmd += " ,@UserId='" + pr.assign[i].UserId + "'";
                         _cmd += " ,@CmpId='" + pr.assign[i].CmpId + "'";
+                        _cmd += " ,@StateOwner='" + pr.assign[i].StateOwner + "'";
                       if (DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran) <= 0)
                         {
                             DB.DBConn.Tran.Rollback();
