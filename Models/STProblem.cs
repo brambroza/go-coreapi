@@ -44,8 +44,7 @@ namespace goalongapi.Models
         public int? IsUnReadMsgCount { get; set; }
         public string? requestPhone { get; set; }
         public string? requestEmail { get; set; }
-        public string? requestPosition { get; set; }
-        public string TaskOwnUserID { get; set; }
+        public string? requestPosition { get; set; } 
     }
 
    public class STProblem_File
@@ -73,6 +72,7 @@ namespace goalongapi.Models
         public string Permission { get; set; }
         public string RouteId { get; set; }
         public string RemindId { get; set; }
+        public string StateOwner { get; set; }
 
 
     }

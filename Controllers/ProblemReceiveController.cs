@@ -85,8 +85,7 @@ namespace goalongapi.Controllers
                 stproblem.FeedbackDescription = b["FeedbackDescription"].ToString();
                 stproblem.requestEmail = b["RequestEmail"].ToString();
                 stproblem.requestPhone = b["RequestPhone"].ToString();
-                stproblem.requestPosition = b["RequestPosition"].ToString();
-                stproblem.TaskOwnUserID = b["TaskOwnUserID"].ToString();
+                stproblem.requestPosition = b["RequestPosition"].ToString(); 
                 
 
 
@@ -120,6 +119,7 @@ namespace goalongapi.Controllers
                     assign.RemindId = f["RemindId"].ToString();
                     assign.UserId = f["UserId"].ToString();
                     assign.CmpId = f["CmpId"].ToString();
+                    assign.StateOwner = f["StateOwner"].ToString();
                     stproblem.assign.Add(assign);
 
 
