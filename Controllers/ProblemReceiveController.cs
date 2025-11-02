@@ -86,6 +86,7 @@ namespace goalongapi.Controllers
                 stproblem.requestEmail = b["RequestEmail"].ToString();
                 stproblem.requestPhone = b["RequestPhone"].ToString();
                 stproblem.requestPosition = b["RequestPosition"].ToString();
+                stproblem.TaskOwnUserID = b["TaskOwnUserID"].ToString();
                 
 
 
