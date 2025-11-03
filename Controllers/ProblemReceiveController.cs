@@ -257,6 +257,12 @@ namespace goalongapi.Controllers
 
                 }
 
+
+                _cmd = " exec dbo.STProblem_Trans_File_Delete ";
+                _cmd += " @ProblemId='" + pr.ProblemId + "'";
+                _cmd += " ,@CmpId='" + pr.CmpId + "'";
+                DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran);
+
                 if (pr.attachfile.Count > 0)
                 {
                     for (int i = 0; i < pr.attachfile.Count; i++)
