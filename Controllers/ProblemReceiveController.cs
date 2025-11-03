@@ -40,14 +40,14 @@ namespace goalongapi.Controllers
             dtf = DB.DBConn.GetDataTable(_cmd);
 
 
-          _cmd = "exec dbo.[getProblemActions_All] @CmpId='" + cmpid + "' ,  @User='" + username + "'";
-           DataTable dtba = DB.DBConn.GetDataTable(_cmd);
+            _cmd = "exec dbo.[getProblemActions_All] @CmpId='" + cmpid + "' ,  @User='" + username + "'";
+            DataTable dtba = DB.DBConn.GetDataTable(_cmd);
 
-          _cmd = "exec dbo.[getProblemActions_Actions_All] @CmpId='" + cmpid + "' ,  @User='" + username + "'";
-           DataTable dtbb = DB.DBConn.GetDataTable(_cmd);
+            _cmd = "exec dbo.[getProblemActions_Actions_All] @CmpId='" + cmpid + "' ,  @User='" + username + "'";
+            DataTable dtbb = DB.DBConn.GetDataTable(_cmd);
 
-          _cmd = "exec dbo.[getProblemActions_Files_All] @CmpId='" + cmpid + "' ,  @User='" + username + "'";
-           DataTable dtbf = DB.DBConn.GetDataTable(_cmd);
+            _cmd = "exec dbo.[getProblemActions_Files_All] @CmpId='" + cmpid + "' ,  @User='" + username + "'";
+            DataTable dtbf = DB.DBConn.GetDataTable(_cmd);
 
 
             List<STProblem> problems = new List<STProblem>();
@@ -85,8 +85,9 @@ namespace goalongapi.Controllers
                 stproblem.FeedbackDescription = b["FeedbackDescription"].ToString();
                 stproblem.requestEmail = b["RequestEmail"].ToString();
                 stproblem.requestPhone = b["RequestPhone"].ToString();
-                stproblem.requestPosition = b["RequestPosition"].ToString(); 
-                
+                stproblem.requestPosition = b["RequestPosition"].ToString();
+                stproblem.Remark = b["Remark"].ToString();
+
 
 
                 stproblem.attachfile = new List<STProblem_File>();
@@ -153,35 +154,35 @@ namespace goalongapi.Controllers
                         assign.RouteId = ac["RouteId"].ToString();
                         assign.RemindId = ac["RemindId"].ToString();
                         assign.UserId = ac["UserId"].ToString();
-                        assign.CmpId =ac["CmpId"].ToString();
-                        action.ActionBy.Add(assign);  
+                        assign.CmpId = ac["CmpId"].ToString();
+                        action.ActionBy.Add(assign);
 
                     }
 
 
                     action.Attachfile = new List<STServiceActions_File>();
 
-                        foreach (DataRow fa in dtbf.Select("ServiceActionId='" + action.ServiceActionId  + "'"))
-                        {
-                            var attachfile = new STServiceActions_File();
-                            attachfile.UpdUser = fa["UpdUser"].ToString();
-                            attachfile.ServiceActionId = fa["ServiceActionId"].ToString();
-                            attachfile.Seq = Convert.ToInt32(fa["Seq"].ToString());
-                            attachfile.FileName = fa["FileName"].ToString();
-                            attachfile.FilePath = fa["FilePath"].ToString();
-                            attachfile.CmpId = fa["CmpId"].ToString();
-                            action.Attachfile.Add(attachfile);
+                    foreach (DataRow fa in dtbf.Select("ServiceActionId='" + action.ServiceActionId + "'"))
+                    {
+                        var attachfile = new STServiceActions_File();
+                        attachfile.UpdUser = fa["UpdUser"].ToString();
+                        attachfile.ServiceActionId = fa["ServiceActionId"].ToString();
+                        attachfile.Seq = Convert.ToInt32(fa["Seq"].ToString());
+                        attachfile.FileName = fa["FileName"].ToString();
+                        attachfile.FilePath = fa["FilePath"].ToString();
+                        attachfile.CmpId = fa["CmpId"].ToString();
+                        action.Attachfile.Add(attachfile);
 
 
-                        }
+                    }
 
 
-                    stproblem.action = action; 
-                } 
+                    stproblem.action = action;
+                }
                 problems.Add(stproblem);
 
-                }  
-                return Ok(problems);
+            }
+            return Ok(problems);
 
         }
 
@@ -219,7 +220,8 @@ namespace goalongapi.Controllers
                 _cmd += " ,@TaskId='" + pr.TaskId + "'";
                 _cmd += " , @StartDate='" + pr.StartDate + "'";
                 _cmd += " , @StartTime='" + pr.StartTime + "'";
- 
+                _cmd += " , @Remark='" + pr.Remark + "'";
+
                 if (DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran) <= 0)
                 {
                     DB.DBConn.Tran.Rollback();
@@ -240,7 +242,7 @@ namespace goalongapi.Controllers
                         _cmd += " ,@UserId='" + pr.assign[i].UserId + "'";
                         _cmd += " ,@CmpId='" + pr.assign[i].CmpId + "'";
                         _cmd += " ,@StateOwner='" + pr.assign[i].StateOwner + "'";
-                      if (DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran) <= 0)
+                        if (DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran) <= 0)
                         {
                             DB.DBConn.Tran.Rollback();
                             DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
@@ -255,18 +257,18 @@ namespace goalongapi.Controllers
 
                 }
 
-                 if (pr.attachfile.Count > 0)
+                if (pr.attachfile.Count > 0)
                 {
                     for (int i = 0; i < pr.attachfile.Count; i++)
                     {
                         _cmd = " exec dbo.STProblem_Trans_File ";
                         _cmd += " @ProblemId='" + pr.ProblemId + "'";
-                         _cmd += " ,@UpdUser='" + pr.attachfile[i].UpdUser + "'";
+                        _cmd += " ,@UpdUser='" + pr.attachfile[i].UpdUser + "'";
                         _cmd += " ,@Seq='" + pr.attachfile[i].Seq + "'";
                         _cmd += " ,@FilePath='" + pr.attachfile[i].FilePath + "'";
                         _cmd += " ,@FileName='" + pr.attachfile[i].FileName + "'";
                         _cmd += " ,@CmpId='" + pr.attachfile[i].CmpId + "'";
-                      if (DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran) <= 0)
+                        if (DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran) <= 0)
                         {
                             DB.DBConn.Tran.Rollback();
                             DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
@@ -371,10 +373,10 @@ namespace goalongapi.Controllers
         {
             string _cmd = "";
             _cmd = "delete from dbo.STProblem where  ProblemId='" + docno + "'  and cmpid='" + cmpid + "'";
-           
+
             _cmd += "delete from dbo.STProblem_File where  ProblemId='" + docno + "'  and cmpid='" + cmpid + "'";
             _cmd += "delete from dbo.STProblem_Assign where  ProblemId='" + docno + "'  and cmpid='" + cmpid + "'";
-            
+
             DB.DBConn.ExecuteOnly(_cmd);
             return Ok();
         }
@@ -389,19 +391,19 @@ namespace goalongapi.Controllers
             string _cmd;
             _cmd = "exec dbo.[getProblemActions] @CmpId=" + cmpid + " ,  @User='" + username + "'";
             dt = DB.DBConn.GetDataTable(_cmd);
-             string qdetail = string.Empty;
+            string qdetail = string.Empty;
             qdetail = JsonConvert.SerializeObject(dt);
             return Ok(qdetail);
 
         }
 
-     
+
 
         // POST: api/ActionService
         [HttpPost("[action]")]
         public IActionResult setactionservice(STServiceActions pr)
         {
-             DB.DBConn.SqlConnectionOpen();
+            DB.DBConn.SqlConnectionOpen();
             DB.DBConn.Cmd = DB.DBConn.Cnn.CreateCommand();
             DB.DBConn.Tran = DB.DBConn.Cnn.BeginTransaction();
 
@@ -418,17 +420,17 @@ namespace goalongapi.Controllers
                 _cmd += ",@FinishDate  ='" + pr.FinishDate + "'";
                 _cmd += ",@FinishTime  ='" + pr.FinishTime + "'";
                 _cmd += ",@CmpId  ='" + pr.CmpId + "'";
-             
+
 
                 if (DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran) <= 0)
-                        {
-                            DB.DBConn.Tran.Rollback();
-                            DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
-                            DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
-                            msgretrun.ReturnCode = "400";
-                            msgretrun.Msg = "Error !!";
-                            return BadRequest(msgretrun);
-                        }
+                {
+                    DB.DBConn.Tran.Rollback();
+                    DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
+                    DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
+                    msgretrun.ReturnCode = "400";
+                    msgretrun.Msg = "Error !!";
+                    return BadRequest(msgretrun);
+                }
 
 
                 if (pr.ActionBy.Count > 0)
@@ -439,7 +441,7 @@ namespace goalongapi.Controllers
                         _cmd += " @ServiceActionId='" + pr.ServiceActionId + "'";
                         _cmd += " ,@UserId='" + pr.ActionBy[i].UserId + "'";
                         _cmd += " ,@CmpId='" + pr.ActionBy[i].CmpId + "'";
-                      if (DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran) <= 0)
+                        if (DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran) <= 0)
                         {
                             DB.DBConn.Tran.Rollback();
                             DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
@@ -454,18 +456,18 @@ namespace goalongapi.Controllers
 
                 }
 
-                 if (pr.Attachfile.Count > 0)
+                if (pr.Attachfile.Count > 0)
                 {
                     for (int i = 0; i < pr.Attachfile.Count; i++)
                     {
                         _cmd = " exec dbo.STServiceActions_Trans_File ";
                         _cmd += " @ServiceActionId='" + pr.ServiceActionId + "'";
-                         _cmd += " ,@UpdUser='" + pr.Attachfile[i].UpdUser + "'";
+                        _cmd += " ,@UpdUser='" + pr.Attachfile[i].UpdUser + "'";
                         _cmd += " ,@Seq='" + pr.Attachfile[i].Seq + "'";
                         _cmd += " ,@FilePath='" + pr.Attachfile[i].FilePath + "'";
                         _cmd += " ,@FileName='" + pr.Attachfile[i].FileName + "'";
                         _cmd += " ,@CmpId='" + pr.Attachfile[i].CmpId + "'";
-                      if (DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran) <= 0)
+                        if (DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran) <= 0)
                         {
                             DB.DBConn.Tran.Rollback();
                             DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
@@ -506,13 +508,13 @@ namespace goalongapi.Controllers
 
 
         }
-      
+
 
         [HttpDelete("[action]")]
-        public IActionResult deleteactionservice( [FromQuery] string cmpid , [FromQuery] int id)
+        public IActionResult deleteactionservice([FromQuery] string cmpid, [FromQuery] int id)
         {
             string _cmd = "";
-            _cmd = "delete from dbo.STServiceActions where  ServiceActionId='" + id + "' and CmpId='" + cmpid + "'" ;
+            _cmd = "delete from dbo.STServiceActions where  ServiceActionId='" + id + "' and CmpId='" + cmpid + "'";
             DB.DBConn.ExecuteOnly(_cmd);
             return Ok();
         }

@@ -45,6 +45,7 @@ namespace goalongapi.Models
         public string? requestPhone { get; set; }
         public string? requestEmail { get; set; }
         public string? requestPosition { get; set; } 
+        public string? Remark { get; set; }
     }
 
    public class STProblem_File
