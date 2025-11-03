@@ -527,7 +527,7 @@ namespace goalongapi.Controllers
         public IActionResult removeattachfile([FromQuery] string cmpid, [FromQuery] string docno, [FromQuery] string fileName)
         {
             string _cmd = "";
-            _cmd = "delete from dbo.STProblem_File where  ProblemId='" + docno + "' and Seq='" + fileName + "' and CmpId='" + cmpid + "'";
+            _cmd = "delete from dbo.STProblem_File where  ProblemId='" + docno + "' and FileName='" + fileName + "' and CmpId='" + cmpid + "'";
             DB.DBConn.ExecuteOnly(_cmd);
             return Ok();
         }
