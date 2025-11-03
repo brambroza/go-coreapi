@@ -258,10 +258,7 @@ namespace goalongapi.Controllers
                 }
 
 
-                _cmd = " exec dbo.STProblem_Trans_File_Delete ";
-                _cmd += " @ProblemId='" + pr.ProblemId + "'";
-                _cmd += " ,@CmpId='" + pr.CmpId + "'";
-                DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran);
+        
 
                 if (pr.attachfile.Count > 0)
                 {
@@ -521,6 +518,16 @@ namespace goalongapi.Controllers
         {
             string _cmd = "";
             _cmd = "delete from dbo.STServiceActions where  ServiceActionId='" + id + "' and CmpId='" + cmpid + "'";
+            DB.DBConn.ExecuteOnly(_cmd);
+            return Ok();
+        }
+
+
+        [HttpDelete("[action]")]
+        public IActionResult removeattachfile([FromQuery] string cmpid, [FromQuery] string docno, [FromQuery] string fileName)
+        {
+            string _cmd = "";
+            _cmd = "delete from dbo.STProblem_File where  ProblemId='" + docno + "' and Seq='" + fileName + "' and CmpId='" + cmpid + "'";
             DB.DBConn.ExecuteOnly(_cmd);
             return Ok();
         }
