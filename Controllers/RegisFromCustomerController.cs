@@ -157,6 +157,15 @@ namespace goalongapi.Controllers
             return Ok(url);
         }
 
+
+        [HttpPost("sendReqOtherFromGoalongFileReplaceName")]
+        public async Task<IActionResult> sendReqOtherFromGoalongFileReplaceName(List<IFormFile> formFiles)
+        {
+            var url = await UploadFilesAsynReplaceName(formFiles);
+            return Ok(url);
+        }
+
+
         [HttpPost("sendReqOtherFromGoalong")]
         public async Task<IActionResult> ReqOtherFromGoalong(ReqFromCustList request)
         {
@@ -672,6 +681,33 @@ namespace goalongapi.Controllers
             }
         }
 
+
+
+
+        private async Task<List<string>> UploadFilesAsynReplaceName(List<IFormFile> formFiles)
+        {
+            if (formFiles == null || formFiles.Count == 0)
+            {
+                return null;
+            }
+
+            try
+            {
+                (string errorMessage, List<string> imageName) =
+                    await productService.UploadMultiFilesReqReplaceName(formFiles);
+                if (!String.IsNullOrEmpty(errorMessage))
+                {
+                    return null;
+                }
+
+                return imageName;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
         [HttpPost("setReqStatus")]
         public async Task<IActionResult> ReqUpdateStatus(ReqUpdateStatus data)
         {
@@ -786,7 +822,7 @@ namespace goalongapi.Controllers
                 /*    var url = await UploadFilesAsyn(formFiles); */
 
                 string _cmd;
-            
+
 
 
                 _cmd = "exec  dbo.[setReqOtherFromGoAlong_RemoveItem]";

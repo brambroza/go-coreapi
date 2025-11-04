@@ -19,5 +19,9 @@ namespace goalongapi.Interfaces
         Task<(string errorMessage, List<string> imageName)> UploadMultiFilesReq(
             List<IFormFile> formFiles
         );
+
+        Task<(string errorMessage, List<string> imageName)> UploadMultiFilesReqReplaceName(
+          List<IFormFile> formFiles
+      );
     }
 }

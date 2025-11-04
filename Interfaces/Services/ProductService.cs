@@ -108,6 +108,23 @@ namespace goalongapi.Services
             return (errorMesage, imageName);
         }
 
+        public async Task<(string errorMessage, List<string> imageName)> UploadMultiFilesReqReplaceName(
+            List<IFormFile> formFiles
+        )
+        {
+            string errorMesage = String.Empty;
+            List<string> imageName = new List<string>();
+            if (uploadFileService.IsUpload(formFiles))
+            {
+                errorMesage = uploadFileService.Validation(formFiles);
+                if (String.IsNullOrEmpty(errorMesage))
+                {
+                    imageName = await uploadFileService.UploadFileReqReplaceName(formFiles);
+                }
+            }
+            return (errorMesage, imageName);
+        }
+
         public async Task<(string errorMessage, string filenames)> uploadallfile(
             List<IFormFile> formFiles
         )
