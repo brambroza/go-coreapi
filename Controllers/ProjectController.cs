@@ -375,7 +375,7 @@ namespace goalongapi.Controllers
             _cmd = "exec dbo.GetProjecttaskAll @CmpId='" + CmpId + "' ";
             DataTable dtTask = DB.DBConn.GetDataTable(_cmd);
 
-             _cmd = "exec dbo.GetProjecttaskSubAll @CmpId='" + CmpId + "' ";
+            _cmd = "exec dbo.GetProjecttaskSubAll @CmpId='" + CmpId + "' ";
             DataTable dtTaskSub = DB.DBConn.GetDataTable(_cmd);
 
             _cmd = "exec dbo.GetProjectInstalltaskAll @CmpId='" + CmpId + "'  ";
@@ -455,7 +455,7 @@ namespace goalongapi.Controllers
                         .Select("ProjectNo='" + project.ProjectNo + "' and Seq=" + project.Seq + "")
                         .Length;
 
-                 
+
 
                     foreach (DataRow d in dtItem.Select("ProjectNo='" + project.ProjectNo + "' and Seq=" + project.Seq))
                     {
@@ -725,11 +725,11 @@ namespace goalongapi.Controllers
                                 UpdUser = d["UpdUser"].ToString(),
                                 TaskId = d["TaskId"].ToString(),
                                 Seq = Convert.ToInt32(d["Seq"]),
-                                StateFinish =   d["StateFinish"].ToString() ,
+                                StateFinish = d["StateFinish"].ToString(),
 
                                 CmpId = d["CmpId"].ToString(),
                                 Description = d["Description"].ToString(),
-                                
+
                             }
                         );
                     }
@@ -1087,23 +1087,23 @@ namespace goalongapi.Controllers
                 }
 
 
-                 project.SubTaskItem = new List<ServiceTaskItem>();
-                    foreach (DataRow d in dtTaskSub.Select("TaskId='" + project.TaskId + "'"))
-                    {
-                        project.SubTaskItem.Add(
-                            new ServiceTaskItem
-                            {
-                                UpdUser = d["UpdUser"].ToString(),
-                                TaskId = d["TaskId"].ToString(),
-                                Seq = Convert.ToInt32(d["Seq"]),
-                                StateFinish =   d["StateFinish"].ToString() ,
+                project.SubTaskItem = new List<ServiceTaskItem>();
+                foreach (DataRow d in dtTaskSub.Select("TaskId='" + project.TaskId + "'"))
+                {
+                    project.SubTaskItem.Add(
+                        new ServiceTaskItem
+                        {
+                            UpdUser = d["UpdUser"].ToString(),
+                            TaskId = d["TaskId"].ToString(),
+                            Seq = Convert.ToInt32(d["Seq"]),
+                            StateFinish = d["StateFinish"].ToString(),
 
-                                CmpId = d["CmpId"].ToString(),
-                                Description = d["Description"].ToString(),
-                                
-                            }
-                        );
-                    }
+                            CmpId = d["CmpId"].ToString(),
+                            Description = d["Description"].ToString(),
+
+                        }
+                    );
+                }
 
 
 
@@ -1140,7 +1140,7 @@ namespace goalongapi.Controllers
             return Ok(JSONString);
         }
 
-     private Dictionary<string, object> RowToDictionary(DataRow row)
+        private Dictionary<string, object> RowToDictionary(DataRow row)
         {
             return row.Table.Columns.Cast<DataColumn>()
                       .ToDictionary(
@@ -1225,7 +1225,7 @@ namespace goalongapi.Controllers
         [HttpGet("[action]")]
         public ActionResult getServiceTasklist([FromQuery] string CmpId, [FromQuery] string user)
         {
-              string _cmd;
+            string _cmd;
 
             _cmd = "exec dbo.GetServiceTaskAll @CmpId='" + CmpId + "' , @User='" + user + "'";
             DataTable dtTaskAll = DB.DBConn.GetDataTable(_cmd);
@@ -1267,7 +1267,7 @@ namespace goalongapi.Controllers
             DataTable dtContact = DB.DBConn.GetDataTable(_cmd);
 
 
-             _cmd = "exec dbo.[getProblem] @CmpId=" + CmpId + " ,  @User='" + user + "'";
+            _cmd = "exec dbo.[getProblem] @CmpId=" + CmpId + " ,  @User='" + user + "'";
             DataTable dtb = DB.DBConn.GetDataTable(_cmd);
 
 
@@ -1278,16 +1278,16 @@ namespace goalongapi.Controllers
             _cmd = "exec dbo.[getProblem_File] @CmpId=" + CmpId + " ,  @User='" + user + "'";
             DataTable dtf = DB.DBConn.GetDataTable(_cmd);
 
-          _cmd = "exec dbo.[getProblemActions_All] @CmpId=" + CmpId + " ,  @User='" + user + "'";
-           DataTable dtba = DB.DBConn.GetDataTable(_cmd);
+            _cmd = "exec dbo.[getProblemActions_All] @CmpId=" + CmpId + " ,  @User='" + user + "'";
+            DataTable dtba = DB.DBConn.GetDataTable(_cmd);
 
-          _cmd = "exec dbo.[getProblemActions_Actions_All] @CmpId=" + CmpId + " ,  @User='" + user + "'";
-           DataTable dtbb = DB.DBConn.GetDataTable(_cmd);
+            _cmd = "exec dbo.[getProblemActions_Actions_All] @CmpId=" + CmpId + " ,  @User='" + user + "'";
+            DataTable dtbb = DB.DBConn.GetDataTable(_cmd);
 
-          _cmd = "exec dbo.[getProblemActions_Files_All] @CmpId=" + CmpId + " ,  @User='" + user + "'";
-           DataTable dtbf = DB.DBConn.GetDataTable(_cmd);
+            _cmd = "exec dbo.[getProblemActions_Files_All] @CmpId=" + CmpId + " ,  @User='" + user + "'";
+            DataTable dtbf = DB.DBConn.GetDataTable(_cmd);
 
-         
+
 
 
             string _DocType = "customer";
@@ -1296,15 +1296,15 @@ namespace goalongapi.Controllers
 
             List<ServiceTask> serviceTasks = new List<ServiceTask>();
 
- 
-             _cmd = "exec dbo.getCostExpense @CmpId='" + CmpId + "' , @User='" + User + "' ";
+
+            _cmd = "exec dbo.getCostExpense @CmpId='" + CmpId + "' , @User='" + User + "' ";
             DataTable dtce = DB.DBConn.GetDataTable(_cmd);
 
             _cmd = "exec dbo.[getCostExpense_File] @CmpId=" + CmpId + " ,  @User='" + User + "'";
-           DataTable  dtecf = DB.DBConn.GetDataTable(_cmd);
+            DataTable dtecf = DB.DBConn.GetDataTable(_cmd);
 
 
-     
+
 
             var filesLookup = dtecf.AsEnumerable()
             .GroupBy(r => r["ExpenseNo"].ToString())
@@ -1313,21 +1313,21 @@ namespace goalongapi.Controllers
                 g => g.Select(RowToDictionary).ToList()
             );
 
- 
-             var prodlist = dtce.AsEnumerable()
-            .GroupBy(r => r["ProjectNo"].ToString())
-            .ToDictionary(
-                g => g.Key,
-                g => g.Select(row =>
-                {
-                    var dict = RowToDictionary(row); // ใช้ helper method ที่แปลง DataRow → Dictionary
-                    var expenseNo = row["ExpenseNo"].ToString();
-                    dict["attachments"] = filesLookup.ContainsKey(expenseNo)
-                        ? filesLookup[expenseNo]
-                        : new List<Dictionary<string, object>>();
-                    return dict;
-                }).ToList()
-            );
+
+            var prodlist = dtce.AsEnumerable()
+           .GroupBy(r => r["ProjectNo"].ToString())
+           .ToDictionary(
+               g => g.Key,
+               g => g.Select(row =>
+               {
+                   var dict = RowToDictionary(row); // ใช้ helper method ที่แปลง DataRow → Dictionary
+                   var expenseNo = row["ExpenseNo"].ToString();
+                   dict["attachments"] = filesLookup.ContainsKey(expenseNo)
+                       ? filesLookup[expenseNo]
+                       : new List<Dictionary<string, object>>();
+                   return dict;
+               }).ToList()
+           );
 
 
 
@@ -1733,16 +1733,16 @@ namespace goalongapi.Controllers
 
 
 
-                  
-                     string projectNo = r["ProjectNo"].ToString();
+
+                    string projectNo = r["ProjectNo"].ToString();
                     if (prodlist.TryGetValue(projectNo, out var costExpenses))
                     {
                         // ✅ Dynamic Attachments inside costExpense
-                        project.costExpense = costExpenses[0]  ;
+                        project.costExpense = costExpenses[0];
                     }
                     else
                     {
-                        project.costExpense = new Dictionary<string, object> ();
+                        project.costExpense = new Dictionary<string, object>();
                     }
 
 
@@ -1784,7 +1784,14 @@ namespace goalongapi.Controllers
 
                     stproblem.StartDate = b["StartDate"].ToString();
                     stproblem.StartTime = b["StartTime"].ToString();
-                     stproblem.IsUnReadMsgCount =  Convert.ToInt32(b["IsUnReadMsgCount"].ToString());
+                    stproblem.IsUnReadMsgCount = Convert.ToInt32(b["IsUnReadMsgCount"].ToString());
+
+                    stproblem.Remark = b["Remark"].ToString();
+                    stproblem.FeedbackDescription = b["FeedbackDescription"].ToString();
+                    stproblem.requestEmail = b["RequestEmail"].ToString();
+                    stproblem.requestPhone = b["RequestPhone"].ToString();
+                    stproblem.requestPosition = b["RequestPosition"].ToString();
+
 
                     stproblem.attachfile = new List<STProblem_File>();
 
@@ -1889,12 +1896,12 @@ namespace goalongapi.Controllers
 
             }
 
-        return Ok(serviceTasks);
+            return Ok(serviceTasks);
         }
 
 
 
-    [HttpGet("[action]")]
+        [HttpGet("[action]")]
         public ActionResult getServiceTaskKanban([FromQuery] string CmpId, [FromQuery] string user)
         {
             string _cmd;
@@ -1915,7 +1922,7 @@ namespace goalongapi.Controllers
             _cmd = "exec dbo.GetProjecttaskAll @CmpId='" + CmpId + "' ";
             DataTable dtTask = DB.DBConn.GetDataTable(_cmd);
 
-             _cmd = "exec dbo.GetProjecttaskSubAll @CmpId='" + CmpId + "' ";
+            _cmd = "exec dbo.GetProjecttaskSubAll @CmpId='" + CmpId + "' ";
             DataTable dtTaskSub = DB.DBConn.GetDataTable(_cmd);
 
             _cmd = "exec dbo.GetProjectInstalltaskAll @CmpId='" + CmpId + "'  ";
@@ -1954,14 +1961,14 @@ namespace goalongapi.Controllers
             _cmd = "exec dbo.[getProblem_File] @CmpId=" + CmpId + " ,  @User='" + user + "'";
             DataTable dtf = DB.DBConn.GetDataTable(_cmd);
 
-         _cmd = "exec dbo.[getProblemActions_All] @CmpId=" + CmpId + " ,  @User='" + user + "'";
-           DataTable dtba = DB.DBConn.GetDataTable(_cmd);
+            _cmd = "exec dbo.[getProblemActions_All] @CmpId=" + CmpId + " ,  @User='" + user + "'";
+            DataTable dtba = DB.DBConn.GetDataTable(_cmd);
 
-          _cmd = "exec dbo.[getProblemActions_Actions_All] @CmpId=" + CmpId + " ,  @User='" + user + "'";
-           DataTable dtbb = DB.DBConn.GetDataTable(_cmd);
+            _cmd = "exec dbo.[getProblemActions_Actions_All] @CmpId=" + CmpId + " ,  @User='" + user + "'";
+            DataTable dtbb = DB.DBConn.GetDataTable(_cmd);
 
-          _cmd = "exec dbo.[getProblemActions_Files_All] @CmpId=" + CmpId + " ,  @User='" + user + "'";
-           DataTable dtbf = DB.DBConn.GetDataTable(_cmd);
+            _cmd = "exec dbo.[getProblemActions_Files_All] @CmpId=" + CmpId + " ,  @User='" + user + "'";
+            DataTable dtbf = DB.DBConn.GetDataTable(_cmd);
 
 
 
@@ -2422,15 +2429,22 @@ namespace goalongapi.Controllers
                         stproblem.TaskId = b["TaskId"].ToString();
                         stproblem.UserLineId = b["UserLineId"].ToString();
                         stproblem.OALineId = b["OALineId"].ToString();
-                       
+
                         stproblem.FeedbackRating = Convert.ToInt32(b["FeedbackRating"].ToString());
                         stproblem.FeedbackDate = b["FeedbackDate"].ToString();
 
 
                         stproblem.StartDate = b["StartDate"].ToString();
                         stproblem.StartTime = b["StartTime"].ToString();
-                         stproblem.IsUnReadMsgCount =  Convert.ToInt32(b["IsUnReadMsgCount"].ToString());
-        
+                        stproblem.IsUnReadMsgCount = Convert.ToInt32(b["IsUnReadMsgCount"].ToString());
+
+                        stproblem.Remark = b["Remark"].ToString();
+                        stproblem.FeedbackDescription = b["FeedbackDescription"].ToString();
+                        stproblem.requestEmail = b["RequestEmail"].ToString();
+                        stproblem.requestPhone = b["RequestPhone"].ToString();
+                        stproblem.requestPosition = b["RequestPosition"].ToString();
+
+
                         stproblem.attachfile = new List<STProblem_File>();
 
                         foreach (DataRow f in dtf.Select("ProblemId='" + stproblem.ProblemId + "'"))
@@ -2523,8 +2537,8 @@ namespace goalongapi.Controllers
                         serviceTask.problem = stproblem;
 
                     }
-               
-               
+
+
 
 
                     tasks[route.RouteId].Add(serviceTask);
@@ -2631,12 +2645,12 @@ namespace goalongapi.Controllers
             }
             catch
             {
-                  DB.DBConn.Tran.Rollback();
-                    DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
-                    DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
-                    msgretrun.ReturnCode = "400";
-                    msgretrun.Msg = "Error !!";
-                    return Ok(msgretrun);
+                DB.DBConn.Tran.Rollback();
+                DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
+                DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
+                msgretrun.ReturnCode = "400";
+                msgretrun.Msg = "Error !!";
+                return Ok(msgretrun);
             }
         }
 
@@ -2906,7 +2920,7 @@ namespace goalongapi.Controllers
                         _cmd += ",@ProjectNo  ='" + project[i].ProjectNo + "'";
                         _cmd += ",@Seq =" + project[i].Seq;
                         _cmd += ",@ProdCode  ='" + project[i].ProdCode + "'";
-                        _cmd += ",@ProdDescription  ='" + Tool.Tool.validateStr( project[i].ProdDescription ) + "'";
+                        _cmd += ",@ProdDescription  ='" + Tool.Tool.validateStr(project[i].ProdDescription) + "'";
                         _cmd += ",@Qty =" + project[i].Qty;
                         _cmd += ",@UnitCode ='" + project[i].UnitCode + "'";
                         _cmd += ",@UnitPrice =" + project[i].UnitPrice;
@@ -3021,9 +3035,9 @@ namespace goalongapi.Controllers
         {
             MsgReturn msgretrun = new MsgReturn();
 
-             System.Globalization.CultureInfo thaiCulture = new System.Globalization.CultureInfo(
-                "th-TH"
-            );
+            System.Globalization.CultureInfo thaiCulture = new System.Globalization.CultureInfo(
+               "th-TH"
+           );
             thaiCulture.DateTimeFormat.Calendar = new System.Globalization.GregorianCalendar();
 
 
@@ -3036,17 +3050,17 @@ namespace goalongapi.Controllers
                 try
                 {
                     string _cmd;
-                     if (project.Count > 0)
+                    if (project.Count > 0)
                     {
-                         
-                        _cmd  =
+
+                        _cmd =
                             "  delete from dbo.[Project_Task_Resource]  where ProjectNo  ='"
                             + project[0].ProjectNo
                             + "' and ";
-                            _cmd += " TaskId ='" + project[0].TaskId + "'";
-                            _cmd += " and CmpId ='" + project[0].CmpId + "'";
+                        _cmd += " TaskId ='" + project[0].TaskId + "'";
+                        _cmd += " and CmpId ='" + project[0].CmpId + "'";
                         DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran);
-                    }  
+                    }
                     int il = 0;
                     for (int i = 0; i < project.Count; i++)
                     {
@@ -3067,7 +3081,7 @@ namespace goalongapi.Controllers
                         _cmd += ",@StartDate ='" + project[i].StartDate + "'";
                         _cmd += ",@StartTime ='" + project[i].StartTime + "'";
                         _cmd += ",@EndDate ='" + project[i].EndDate + "'";
-                        _cmd += ",@EndTime ='" + (project[i].EndTime.Length >= 8 ? project[i].EndTime.Substring(project[i].EndTime.Length - 8) :  project[i].EndTime )+ "'";
+                        _cmd += ",@EndTime ='" + (project[i].EndTime.Length >= 8 ? project[i].EndTime.Substring(project[i].EndTime.Length - 8) : project[i].EndTime) + "'";
                         _cmd += ",@InstallDescription  ='" + project[i].InstallDescription + "'";
                         _cmd += ",@CmpId='" + project[i].CmpId + "'";
                         _cmd += ",@TaskNo ='" + project[i].TaskNo + "'";
@@ -3090,20 +3104,21 @@ namespace goalongapi.Controllers
                         {
                             for (int r = 0; r < project[i].Resource.Count; r++)
                             {
-                                if (project[i].Resource[r] != "") {
-                                _cmd = "exec  dbo.setProject_Task_Resource";
-                                _cmd += " @UpdUser  ='" + project[i].UpdUser + "'";
-                                _cmd += ",@ProjectNo  ='" + project[i].ProjectNo + "'";
-                                _cmd += " ,@Username ='" + project[i].Resource[r] + "'";
-                                _cmd += " ,@Seq =" + x;
-                                _cmd += " ,@TaskSeq =" + il;
-                                _cmd += " ,@TaskId ='" + project[i].TaskId + "'";
-                                _cmd += ", @CmpId='" + project[i].CmpId + "'";
+                                if (project[i].Resource[r] != "")
+                                {
+                                    _cmd = "exec  dbo.setProject_Task_Resource";
+                                    _cmd += " @UpdUser  ='" + project[i].UpdUser + "'";
+                                    _cmd += ",@ProjectNo  ='" + project[i].ProjectNo + "'";
+                                    _cmd += " ,@Username ='" + project[i].Resource[r] + "'";
+                                    _cmd += " ,@Seq =" + x;
+                                    _cmd += " ,@TaskSeq =" + il;
+                                    _cmd += " ,@TaskId ='" + project[i].TaskId + "'";
+                                    _cmd += ", @CmpId='" + project[i].CmpId + "'";
 
-                                DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran);
+                                    DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran);
                                 }
-                             
-                            
+
+
                             }
                         }
                         catch { }
@@ -3423,10 +3438,10 @@ namespace goalongapi.Controllers
                 string _cmd = "";
                 _cmd = "exec  dbo.setServiceTask_Item";
                 _cmd += " @UpdUser  ='" + project.UpdUser + "'";
-                _cmd += " ,@TaskId  ='" + project.TaskId + "'"; 
+                _cmd += " ,@TaskId  ='" + project.TaskId + "'";
                 _cmd += " ,@CmpId ='" + project.CmpId + "'";
                 _cmd += " ,@Description='" + project.Description + "'";
-                
+
 
                 if (DB.DBConn.ExecuteOnly(_cmd))
                 {
@@ -3452,10 +3467,10 @@ namespace goalongapi.Controllers
 
 
         [HttpPost("[action]")]
-        public IActionResult setServiceTaskItemFinish([FromBody]  ServiceTaskItem task)
+        public IActionResult setServiceTaskItemFinish([FromBody] ServiceTaskItem task)
         {
             MsgReturn msgretrun = new MsgReturn();
- 
+
             DB.DBConn.SqlConnectionOpen();
             DB.DBConn.Cmd = DB.DBConn.Cnn.CreateCommand();
             DB.DBConn.Tran = DB.DBConn.Cnn.BeginTransaction();
@@ -3473,7 +3488,7 @@ namespace goalongapi.Controllers
                 _cmd += " , @UpdUser='" + task.UpdUser + "'";
                 _cmd += " , @Seq =" + task.Seq;
 
-               if (DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran) <= 0)
+                if (DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran) <= 0)
                 {
                     DB.DBConn.Tran.Rollback();
                     DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
@@ -3482,7 +3497,7 @@ namespace goalongapi.Controllers
                     msgretrun.Msg = "Error !!";
                     return Ok(msgretrun);
                 }
-             
+
                 DB.DBConn.Tran.Commit();
                 DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
                 DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
@@ -3502,15 +3517,15 @@ namespace goalongapi.Controllers
                 return Ok(msgretrun);
             }
         }
-        
+
 
 
         [HttpDelete("[action]")]
-        public IActionResult delServiceTaskItem(  [FromQuery] string TaskId,
-            [FromQuery] string cmpid,[FromQuery] string Seq)
+        public IActionResult delServiceTaskItem([FromQuery] string TaskId,
+            [FromQuery] string cmpid, [FromQuery] string Seq)
         {
             MsgReturn msgretrun = new MsgReturn();
- 
+
             DB.DBConn.SqlConnectionOpen();
             DB.DBConn.Cmd = DB.DBConn.Cnn.CreateCommand();
             DB.DBConn.Tran = DB.DBConn.Cnn.BeginTransaction();
@@ -3524,10 +3539,10 @@ namespace goalongapi.Controllers
                     + TaskId
                     + "'";
                 _cmd += "  and Seq='" + Seq + "'";
-                _cmd += "  and CmpId='" +  cmpid + "'";
-              
+                _cmd += "  and CmpId='" + cmpid + "'";
 
-               if (DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran) <= 0)
+
+                if (DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran) <= 0)
                 {
                     DB.DBConn.Tran.Rollback();
                     DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
@@ -3536,7 +3551,7 @@ namespace goalongapi.Controllers
                     msgretrun.Msg = "Error !!";
                     return Ok(msgretrun);
                 }
-             
+
                 DB.DBConn.Tran.Commit();
                 DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
                 DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
@@ -3556,7 +3571,7 @@ namespace goalongapi.Controllers
                 return Ok(msgretrun);
             }
         }
-        
+
 
 
 
@@ -3589,7 +3604,7 @@ namespace goalongapi.Controllers
                         "Exec dbo.SetProject_File @ProjectNo='"
                         + Quotation[i].ProjectNo
                         + "'";
-                    _cmd += " ,@Seq=" +  i + 1;
+                    _cmd += " ,@Seq=" + i + 1;
                     _cmd += " , @CmpId='" + Quotation[i].CmpId + "'";
                     _cmd += " , @FileName='" + Quotation[i].FileName + "'";
                     _cmd += " , @UpdUser='" + Quotation[i].UpdUser + "'";
@@ -3672,7 +3687,7 @@ namespace goalongapi.Controllers
         }
 
         [HttpPost("[action]")]
-        public IActionResult setTaskSplit([FromBody]  ProjectSplit task)
+        public IActionResult setTaskSplit([FromBody] ProjectSplit task)
         {
             MsgReturn msgretrun = new MsgReturn();
 
@@ -3687,121 +3702,17 @@ namespace goalongapi.Controllers
 
             try
             {
-                string _cmd = ""; 
-                    _cmd =
-                        "Exec dbo.setProjectTask_Split @TaskId='"
-                        + task.TaskId
-                        + "'";
-                    _cmd += " ,@TaskIdNew='" + task.TaskIdNew + "'";
-                    _cmd += " , @CmpId='" + task.CmpId + "'";
-                    _cmd += " , @TaskNoNew='" + task.TaskNoNew + "'";
-                    _cmd += " , @UpdUser='" + task.UpdUser + "'"; 
+                string _cmd = "";
+                _cmd =
+                    "Exec dbo.setProjectTask_Split @TaskId='"
+                    + task.TaskId
+                    + "'";
+                _cmd += " ,@TaskIdNew='" + task.TaskIdNew + "'";
+                _cmd += " , @CmpId='" + task.CmpId + "'";
+                _cmd += " , @TaskNoNew='" + task.TaskNoNew + "'";
+                _cmd += " , @UpdUser='" + task.UpdUser + "'";
 
-                    if (DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran) <= 0)
-                    {
-                        DB.DBConn.Tran.Rollback();
-                        DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
-                        DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
-                        msgretrun.ReturnCode = "400";
-                        msgretrun.Msg = "Error !!";
-                        return Ok(msgretrun);
-                    }
-             
-                DB.DBConn.Tran.Commit();
-                DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
-                DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
-
-                msgretrun.ReturnCode = "200";
-                msgretrun.Msg = "Save Success !!";
-                return Ok(msgretrun);
-            }
-            catch
-            {
-                DB.DBConn.Tran.Rollback();
-                DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
-                DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
-
-                msgretrun.ReturnCode = "400";
-                msgretrun.Msg = "Error !!";
-                return Ok(msgretrun);
-            }
-        }
-        
-
-        [HttpPost("[action]")]
-        public IActionResult setProjectApprove([FromBody]  ProjectApprove task)
-        {
-            MsgReturn msgretrun = new MsgReturn();
- 
-            DB.DBConn.SqlConnectionOpen();
-            DB.DBConn.Cmd = DB.DBConn.Cnn.CreateCommand();
-            DB.DBConn.Tran = DB.DBConn.Cnn.BeginTransaction();
-
-            try
-            {
-                string _cmd = ""; 
-                
-                    _cmd =
-                        "Exec dbo.SetProject_Approve @ProjectNo='"
-                        + task.ProjectNo
-                        + "'";
-                    _cmd += " ,@StateApp='" + task.State + "'";
-                    _cmd += " , @CmpId='" + task.CmpId + "'"; 
-                    _cmd += " , @UpdUser='" + task.UpdUser + "'"; 
-
-                    if (DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran) <= 0)
-                    {
-                        DB.DBConn.Tran.Rollback();
-                        DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
-                        DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
-                        msgretrun.ReturnCode = "400";
-                        msgretrun.Msg = "Error !!";
-                        return Ok(msgretrun);
-                    }
-             
-                DB.DBConn.Tran.Commit();
-                DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
-                DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
-
-                msgretrun.ReturnCode = "200";
-                msgretrun.Msg = "Save Success !!";
-                return Ok(msgretrun);
-            }
-            catch
-            {
-                DB.DBConn.Tran.Rollback();
-                DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
-                DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
-
-                msgretrun.ReturnCode = "400";
-                msgretrun.Msg = "Error !!";
-                return Ok(msgretrun);
-            }
-        }
-        
-        [HttpPost("[action]")]
-        public IActionResult setProjectSendApprove([FromBody]  ProjectApprove task)
-        {
-            MsgReturn msgretrun = new MsgReturn();
- 
-            DB.DBConn.SqlConnectionOpen();
-            DB.DBConn.Cmd = DB.DBConn.Cnn.CreateCommand();
-            DB.DBConn.Tran = DB.DBConn.Cnn.BeginTransaction();
-
-            try
-            {
-                string _cmd = ""; 
-                
-                    _cmd =
-                        "Exec dbo.SetProject_SendApprove @ProjectNo='"
-                        + task.ProjectNo
-                        + "'";
-                    _cmd += " ,@StateApp='" + task.State + "'";
-                    _cmd += " , @CmpId='" + task.CmpId + "'"; 
-                    _cmd += " , @UpdUser='" + task.UpdUser + "'"; 
-                    _cmd += " , @UserTo='" + task.UserTo + "'"; 
-
-                    if (DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran) <= 0)
+                if (DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran) <= 0)
                 {
                     DB.DBConn.Tran.Rollback();
                     DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
@@ -3810,7 +3721,7 @@ namespace goalongapi.Controllers
                     msgretrun.Msg = "Error !!";
                     return Ok(msgretrun);
                 }
-             
+
                 DB.DBConn.Tran.Commit();
                 DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
                 DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
@@ -3830,7 +3741,111 @@ namespace goalongapi.Controllers
                 return Ok(msgretrun);
             }
         }
-        
+
+
+        [HttpPost("[action]")]
+        public IActionResult setProjectApprove([FromBody] ProjectApprove task)
+        {
+            MsgReturn msgretrun = new MsgReturn();
+
+            DB.DBConn.SqlConnectionOpen();
+            DB.DBConn.Cmd = DB.DBConn.Cnn.CreateCommand();
+            DB.DBConn.Tran = DB.DBConn.Cnn.BeginTransaction();
+
+            try
+            {
+                string _cmd = "";
+
+                _cmd =
+                    "Exec dbo.SetProject_Approve @ProjectNo='"
+                    + task.ProjectNo
+                    + "'";
+                _cmd += " ,@StateApp='" + task.State + "'";
+                _cmd += " , @CmpId='" + task.CmpId + "'";
+                _cmd += " , @UpdUser='" + task.UpdUser + "'";
+
+                if (DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran) <= 0)
+                {
+                    DB.DBConn.Tran.Rollback();
+                    DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
+                    DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
+                    msgretrun.ReturnCode = "400";
+                    msgretrun.Msg = "Error !!";
+                    return Ok(msgretrun);
+                }
+
+                DB.DBConn.Tran.Commit();
+                DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
+                DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
+
+                msgretrun.ReturnCode = "200";
+                msgretrun.Msg = "Save Success !!";
+                return Ok(msgretrun);
+            }
+            catch
+            {
+                DB.DBConn.Tran.Rollback();
+                DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
+                DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
+
+                msgretrun.ReturnCode = "400";
+                msgretrun.Msg = "Error !!";
+                return Ok(msgretrun);
+            }
+        }
+
+        [HttpPost("[action]")]
+        public IActionResult setProjectSendApprove([FromBody] ProjectApprove task)
+        {
+            MsgReturn msgretrun = new MsgReturn();
+
+            DB.DBConn.SqlConnectionOpen();
+            DB.DBConn.Cmd = DB.DBConn.Cnn.CreateCommand();
+            DB.DBConn.Tran = DB.DBConn.Cnn.BeginTransaction();
+
+            try
+            {
+                string _cmd = "";
+
+                _cmd =
+                    "Exec dbo.SetProject_SendApprove @ProjectNo='"
+                    + task.ProjectNo
+                    + "'";
+                _cmd += " ,@StateApp='" + task.State + "'";
+                _cmd += " , @CmpId='" + task.CmpId + "'";
+                _cmd += " , @UpdUser='" + task.UpdUser + "'";
+                _cmd += " , @UserTo='" + task.UserTo + "'";
+
+                if (DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran) <= 0)
+                {
+                    DB.DBConn.Tran.Rollback();
+                    DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
+                    DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
+                    msgretrun.ReturnCode = "400";
+                    msgretrun.Msg = "Error !!";
+                    return Ok(msgretrun);
+                }
+
+                DB.DBConn.Tran.Commit();
+                DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
+                DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
+
+                msgretrun.ReturnCode = "200";
+                msgretrun.Msg = "Save Success !!";
+                return Ok(msgretrun);
+            }
+            catch
+            {
+                DB.DBConn.Tran.Rollback();
+                DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
+                DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
+
+                msgretrun.ReturnCode = "400";
+                msgretrun.Msg = "Error !!";
+                return Ok(msgretrun);
+            }
+        }
+
 
     }
 }

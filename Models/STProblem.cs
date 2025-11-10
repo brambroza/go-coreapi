@@ -31,7 +31,7 @@ namespace goalongapi.Models
 
         public int? FeedbackRating { get; set; }
         public string? FeedbackDate { get; set; }
-         public string? FeedbackDescription { get; set; }
+        public string? FeedbackDescription { get; set; }
 
         public List<STProblem_File>? attachfile { get; set; }
         public List<STProblem_Assign>? assign { get; set; }
@@ -40,21 +40,21 @@ namespace goalongapi.Models
 
         public string? StartDate { get; set; }
         public string? StartTime { get; set; }
-        
+
         public int? IsUnReadMsgCount { get; set; }
         public string? requestPhone { get; set; }
         public string? requestEmail { get; set; }
-        public string? requestPosition { get; set; } 
+        public string? requestPosition { get; set; }
         public string? Remark { get; set; }
     }
 
-   public class STProblem_File
+    public class STProblem_File
     {
         public string UpdUser { get; set; }
         public string ProblemId { get; set; }
         public int Seq { get; set; }
         public string FileName { get; set; }
-        public string FilePath { get; set; } 
+        public string FilePath { get; set; }
         public string CmpId { get; set; }
 
     }
@@ -65,7 +65,7 @@ namespace goalongapi.Models
     {
         public string UpdUser { get; set; }
         public string ProblemId { get; set; }
-       
+
         public string UserId { get; set; }
         public string CmpId { get; set; }
         public string UserFullName { get; set; }
