@@ -50,6 +50,11 @@ namespace goalongapi.Models
         public string SaleOrderNo { get; set; }
         public string TicketId { get; set; }
         public int RevNo { get; set; }
+        public string SignaturePath { get; set; }
+        public string? LineQRCodePath { get; set; }
+        public string FullName { get; set; }
+        public string PhoneNo { get; set; } = "";
+        public string LineId { get; set; } = "";
 
 
         public List<Invoice_detail> items { get; set; }

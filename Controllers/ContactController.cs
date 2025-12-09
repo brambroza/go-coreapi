@@ -24,7 +24,7 @@ namespace goalongapi.Controllers
             foreach (DataRow r in dt.Rows)
             {
                 var contactList = new ContactList();
- 
+
                 contactList.UpdUser = r["UpdUser"].ToString();
                 contactList.ContactName = r["ContactName"].ToString();
                 contactList.ContactPhone = r["ContactPhone"].ToString();
@@ -100,5 +100,49 @@ namespace goalongapi.Controllers
                 + "'";
             DB.DBConn.ExecuteOnly(_cmd);
         }
+
+
+
+        [HttpPost]
+        [Route("ContactSocail")]
+        public IActionResult Post([FromBody] ContactSocail customer)
+        {
+            MsgReturn msgretrun = new MsgReturn();
+            try
+            {
+                string _cmd = "";
+                _cmd = "exec  dbo.setContactFormLiffEdit";
+                _cmd += " @SocialId  ='" + customer.SocialId + "'";
+                _cmd += ",@CmpId  ='" + customer.CmpId + "'";
+                _cmd += ",@Name  ='" + customer.Name + "'";
+                _cmd += ",@Branch  ='" + customer.Branch + "'";
+                _cmd += ",@Phone  ='" + customer.PhoneNo + "'";
+                _cmd += ",@Position  ='" + customer.Position + "'";
+                _cmd += ",@Surname  ='" + customer.Surname + "'";
+                _cmd += ",@Nickname  ='" + customer.Nickname + "'";
+                _cmd += ",@Email  ='" + customer.Email + "'";
+
+                if (DB.DBConn.ExecuteOnly(_cmd))
+                {
+                    msgretrun.ReturnCode = "200";
+                    msgretrun.Msg = "Save Success !!";
+                    return Ok(msgretrun);
+                }
+                else
+                {
+                    msgretrun.ReturnCode = "400";
+                    msgretrun.Msg = "Error !!";
+                    return Ok(msgretrun);
+                }
+            }
+            catch
+            {
+                msgretrun.ReturnCode = "400";
+                msgretrun.Msg = "Error !!";
+                return Ok(msgretrun);
+            }
+        }
+
+
     }
 }

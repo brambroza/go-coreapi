@@ -71,13 +71,21 @@ namespace goalongapi.Controllers
                     Shipping = r["Shipping"].ToString(),
                     StateApprove = Convert.ToInt32(r["StateApprove"]),
                     CustomerContactName = r["CustomerContactName"].ToString(),
-                    JobType =  r["JobType"].ToString(),
+                    JobType = r["JobType"].ToString(),
                     StateSendApprove = Convert.ToInt32(r["StateSendApprove"]),
                     QuotationNo = r["QuotationNo"].ToString(),
                     CustomerPONo = r["CustomerPONo"].ToString(),
                     SaleOrderNo = r["SaleOrderNo"].ToString(),
                     RevNo = Convert.ToInt32(r["RevNo"]),
-                    TicketId = r["TicketId"].ToString()
+                    TicketId = r["TicketId"].ToString(),
+                    SignaturePath = r["SignaturePath"].ToString(),
+                    FullName = r["FullName"].ToString(),
+                    LineQRCodePath = r["LineQRCodePath"].ToString(),
+                    PhoneNo = r["PhoneNo"].ToString(),
+                    LineId = r["LineId"].ToString(),
+
+
+
                 };
 
                 invoice.items = new List<Invoice_detail>();
@@ -167,7 +175,7 @@ namespace goalongapi.Controllers
                 _cmd += ",@StateApprove =" + inv.StateApprove;
 
                 _cmd += ",@CustomerContactName ='" + inv.CustomerContactName + "'";
-                _cmd += ",@JobType ='" + inv.JobType+"'";
+                _cmd += ",@JobType ='" + inv.JobType + "'";
                 _cmd += ",@StateSendApprove =" + inv.StateSendApprove;
 
                 _cmd += ",@QuotationNo ='" + inv.QuotationNo + "'";
