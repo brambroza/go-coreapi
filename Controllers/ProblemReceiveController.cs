@@ -87,6 +87,7 @@ namespace goalongapi.Controllers
                 stproblem.requestPhone = b["RequestPhone"].ToString();
                 stproblem.requestPosition = b["RequestPosition"].ToString();
                 stproblem.Remark = b["Remark"].ToString();
+                stproblem.IsReadMenu = b["IsReadMenu"].ToString();
 
 
 

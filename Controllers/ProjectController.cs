@@ -1792,6 +1792,8 @@ namespace goalongapi.Controllers
                     stproblem.requestPhone = b["RequestPhone"].ToString();
                     stproblem.requestPosition = b["RequestPosition"].ToString();
 
+                    stproblem.IsReadMenu = b["IsReadMenu"].ToString();
+
 
                     stproblem.attachfile = new List<STProblem_File>();
 
@@ -2443,6 +2445,8 @@ namespace goalongapi.Controllers
                         stproblem.requestEmail = b["RequestEmail"].ToString();
                         stproblem.requestPhone = b["RequestPhone"].ToString();
                         stproblem.requestPosition = b["RequestPosition"].ToString();
+
+                        stproblem.IsReadMenu = b["IsReadMenu"].ToString();
 
 
                         stproblem.attachfile = new List<STProblem_File>();
