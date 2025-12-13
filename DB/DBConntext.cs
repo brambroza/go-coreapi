@@ -5,11 +5,12 @@ using System.Linq;
 using System.Web;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
+using Microsoft.Data.SqlClient;
 
 namespace goalongapi.DB
 {
     public class DBConntext
-    { 
+    {
         public string getConnectionString()
         {
             string appset = "appsettings.json";
@@ -45,6 +46,25 @@ namespace goalongapi.DB
             //   strcon = "Server=192.168.1.105,1433;user id=sa; password=1234; Database=goalongdatabase; TrustServerCertificate=true;";
             //create new sqlconnection and connection to database by using connection string from web.config file
             return connectionString;
+        }
+    }
+
+    public class DbConnectionFactory
+    {
+        private readonly string _connectionString;
+
+        public DbConnectionFactory(IConfiguration configuration)
+        {
+            // ใช้ชื่อเดียวกับใน appsettings.json
+            _connectionString = configuration.GetConnectionString("ConnectionSQLServer")
+                                ?? throw new InvalidOperationException(
+                                    "Connection string 'ConnectionSQLServer' not found.");
+        }
+
+        public SqlConnection CreateConnection()
+        {
+            // ที่เหลือให้คนเรียกเป็นคน open/close เอง
+            return new SqlConnection(_connectionString);
         }
     }
 }

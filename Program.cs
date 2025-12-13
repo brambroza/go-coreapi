@@ -4,6 +4,8 @@ using Autofac.Extensions.DependencyInjection;
 using goalongapi.Hubs;
 using goalongapi.Data;
 using goalongapi.Installers;
+using goalongapi.DB;
+
 
 System.Net.ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolType.Tls12;
 
@@ -36,6 +38,9 @@ builder.Services.AddCors(p =>
         }
     )
 );
+
+builder.Services.AddScoped<DbConnectionFactory>();
+
  // Add services to the container.
 builder.Services.InstallServiceInAssembly(builder.Configuration);
 
