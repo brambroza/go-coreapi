@@ -83,8 +83,7 @@ namespace goalongapi.Controllers
                 ";
 
                 await using var cmd = new SqlCommand(sql, conn);
-                cmd.Parameters.Add(new SqlParameter("@CmpId", SqlDbType.VarChar, 50) { Value = cmpId });
-                cmd.Parameters.Add(new SqlParameter("@AccountId", SqlDbType.Int) { Value = accountId });
+                cmd.Parameters.Add(new SqlParameter("@CmpId", SqlDbType.VarChar, 50) { Value = cmpId }); 
 
                 await using var reader = await cmd.ExecuteReaderAsync(cancellationToken);
 
