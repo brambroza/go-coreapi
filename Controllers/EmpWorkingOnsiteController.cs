@@ -56,22 +56,7 @@ namespace goalongapi.Controllers
                 return BadRequest("cmpId is required.");
             }
 
-            int accountId;
-
-            // ถ้ามี JWT แล้วฝัง account_id ไว้ ให้ดึงจาก token ก่อน
-            var claim = User.FindFirst("account_id") ?? User.FindFirst("sub");
-            if (claim != null && int.TryParse(claim.Value, out var accountIdFromToken))
-            {
-                accountId = accountIdFromToken;
-            }
-            else if (userLogin.HasValue)
-            {
-                accountId = userLogin.Value;
-            }
-            else
-            {
-                return BadRequest("userLogin is required or must be present in token.");
-            }
+            
 
             try
             {
@@ -94,7 +79,6 @@ namespace goalongapi.Controllers
                         EmployeeCode
                     FROM [hr].[EmpWorkingOnsite]
                     WHERE CmpId = @CmpId
-                      AND AccountId = @AccountId
                     ORDER BY TransDate DESC, StartTime DESC;
                 ";
 
