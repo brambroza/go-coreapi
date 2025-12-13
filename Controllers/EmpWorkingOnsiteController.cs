@@ -48,7 +48,7 @@ namespace goalongapi.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<EmpWorkingOnsite>>> GetList(
             [FromQuery] string cmpId,
-            [FromQuery(Name = "userLogin")] int? userLogin,
+            [FromQuery(Name = "userLogin")] string userLogin,
             CancellationToken cancellationToken)
         {
             if (string.IsNullOrWhiteSpace(cmpId))
