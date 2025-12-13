@@ -47,16 +47,14 @@ namespace goalongapi.Controllers
         // --------------------------------------------------------------------
         [HttpGet]
         public async Task<ActionResult<IEnumerable<EmpWorkingOnsite>>> GetList(
-            [FromQuery] string cmpId,
-            [FromQuery(Name = "userLogin")] string userLogin,
-            CancellationToken cancellationToken)
+     [FromQuery] string cmpId,
+     [FromQuery(Name = "userLogin")] string? userLogin,  // ยังรับไว้เผื่ออนาคต แม้ตอนนี้ไม่ได้ใช้
+     CancellationToken cancellationToken)
         {
             if (string.IsNullOrWhiteSpace(cmpId))
             {
                 return BadRequest("cmpId is required.");
             }
-
-            
 
             try
             {
@@ -66,25 +64,25 @@ namespace goalongapi.Controllers
                 await conn.OpenAsync(cancellationToken);
 
                 const string sql = @"
-                    SELECT 
-                        UpdUser,
-                        CmpId,
-                        AccountId,
-                        Customer,
-                        SiteName,
-                        [Description],
-                        CONVERT(varchar(10), TransDate, 23) AS TransDate,
-                        CONVERT(varchar(8), StartTime, 108) AS StartTime,
-                        CONVERT(varchar(8), EndTime, 108) AS EndTime,
-                        EmployeeCode
-                    FROM [hr].[EmpWorkingOnsite]
-                    WHERE CmpId = @CmpId
-                    ORDER BY TransDate DESC, StartTime DESC;
-                ";
+            SELECT 
+                UpdUser,
+                CmpId,
+                AccountId,
+                Customer,
+                SiteName,
+                [Description],
+                CONVERT(varchar(10), TransDate, 23) AS TransDate,
+                CONVERT(varchar(8), StartTime, 108) AS StartTime,
+                CONVERT(varchar(8), EndTime, 108) AS EndTime,
+                EmployeeCode
+            FROM [hr].[EmpWorkingOnsite]
+            WHERE CmpId = @CmpId
+            ORDER BY TransDate DESC, StartTime DESC;
+        ";
 
                 await using var cmd = new SqlCommand(sql, conn);
-                cmd.Parameters.Add(new SqlParameter("@CmpId", SqlDbType.VarChar, 50) { Value = cmpId }); 
- 
+                cmd.Parameters.Add(new SqlParameter("@CmpId", SqlDbType.VarChar, 50) { Value = cmpId });
+
                 await using var reader = await cmd.ExecuteReaderAsync(cancellationToken);
 
                 while (await reader.ReadAsync(cancellationToken))
@@ -108,12 +106,17 @@ namespace goalongapi.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex,
-                    "Error in GetList for CmpId {CmpId}, AccountId {AccountId}", cmpId, accountId);
+                _logger.LogError(
+                    ex,
+                    "Error in GetList for CmpId {CmpId}, UserLogin {UserLogin}",
+                    cmpId,
+                    userLogin
+                );
 
                 return StatusCode(500, "An error occurred while retrieving data.");
             }
         }
+
 
         // --------------------------------------------------------------------
         // GET: api/EmpWorkingOnsite/{cmpId}/{accountId}/{transDate}/{startTime}
