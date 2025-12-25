@@ -90,7 +90,7 @@ namespace goalongapi.Services
             foreach (var formFile in formFiles)
             {
                 string fileName = Guid.NewGuid().ToString() + Path.GetExtension(formFile.FileName);
-                
+
                 string fullPath = uploadPath + fileName;
                 if (System.IO.File.Exists(fullPath))
                 {
@@ -175,6 +175,7 @@ namespace goalongapi.Services
                 ".docx",
                 ".jpeg",
                 ".webp",
+                ".mp4",
             };
             var ext = Path.GetExtension(fileName).ToLowerInvariant();
             if (String.IsNullOrEmpty(ext) || !permittedExtensions.Contains(ext))
