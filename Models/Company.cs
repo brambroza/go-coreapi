@@ -48,8 +48,8 @@ namespace goalongapi.Models
         public string FullName { get; set; }
         public string CmpId { get; set; }
         public string imgPath { get; set; }
-        public string SignaturePath { get; set; }
-        public string LineQRCodePath { get; set; }
+        public string? SignaturePath { get; set; }
+        public string? LineQRCodePath { get; set; }
         public string MobileNo { get; set; }
         public string LineId { get; set; }
         public string Address { get; set; }
