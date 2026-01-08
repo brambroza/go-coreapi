@@ -21,12 +21,12 @@ namespace goalongapi.Controllers
     {
         [HttpGet]
         [Route("Customer")]
-        public IActionResult Get([FromQuery] string cmpid, [FromQuery] string type)
+        public IActionResult Get([FromQuery] string cmpid, [FromQuery] string type , [FromQuery] string? user)
         {
             DataTable dt = new System.Data.DataTable();
             DataTable dtContact = new System.Data.DataTable();
             string _cmd;
-            _cmd = "exec dbo.getCustomer @CmpId='" + cmpid + "' , @Type='" + type + "'";
+            _cmd = "exec dbo.getCustomer @CmpId='" + cmpid + "' , @Type='" + type + "' , @User='" + user + "'";
             dt = DB.DBConn.GetDataTable(_cmd);
 
             _cmd = "exec dbo.getContact @CmpId='" + cmpid + "'";
