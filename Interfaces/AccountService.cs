@@ -10,6 +10,10 @@ using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using static goalongapi.Installers.JwtInstaller;
+using goalongapi.Models;
+using goalongapi.Hubs;
+using Microsoft.AspNetCore.SignalR;
+
 
 namespace goalongapi.Interfaces
 {
@@ -17,11 +21,13 @@ namespace goalongapi.Interfaces
     {
         private readonly DatabaseContext databaseContext;
         private readonly JwtSettings jwtSettings;
+        private readonly IHubContext<SessionHub> hub;
 
-        public AccountService(DatabaseContext databaseContext, JwtSettings jwtSettings)
+        public AccountService(DatabaseContext databaseContext, JwtSettings jwtSettings, IHubContext<SessionHub> hub)
         {
             this.jwtSettings = jwtSettings;
             this.databaseContext = databaseContext;
+            this.hub = hub;
         }
 
         public async Task Register(Account account)
@@ -91,9 +97,12 @@ namespace goalongapi.Interfaces
                 return account;
             }
 
-             
-         return null;  
+
+            return null;
         }
+
+
+
 
         public async Task<Account?> LoginNewUser(string username, string password)
         {
@@ -176,27 +185,43 @@ namespace goalongapi.Interfaces
             return passwordHashed == hashed;
         }
 
-        public string GenerateToken(Account account)
+        public string GenerateToken(Account account )
+        {
+            var claims = new[]
+            {
+                new Claim(JwtRegisteredClaimNames.Sub, account.Username),
+                new Claim("role", account.Role.Name),
+                new Claim("additional", "todo"), 
+            };
+
+            return BuildToken(claims);
+        }
+
+
+        public string GenerateTokenSession(Account account, AccountSession session)
         {
             var claims = new[]
             {
                 new Claim(JwtRegisteredClaimNames.Sub, account.Username),
                 new Claim("role", account.Role.Name),
                 new Claim("additional", "todo"),
+                new Claim("aid", account.AccountId.ToString()),
+                new Claim("sid", session.SessionId.ToString()),
             };
 
             return BuildToken(claims);
         }
 
+
         public string GenerateRefreshToken(Account account)
         {
-             var refreshToken = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
+            var refreshToken = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
             account.refreshToken = refreshToken;
             account.refreshTokenExpiry = DateTime.UtcNow.AddDays(7);
             databaseContext.Entry(account).State = EntityState.Modified;
             databaseContext.SaveChanges();
             return refreshToken;
-         
+
         }
 
 
@@ -286,7 +311,7 @@ namespace goalongapi.Interfaces
 
             return account;
         }
- 
+
 
         public Account GetInfo(string accessToken)
         {
@@ -300,7 +325,7 @@ namespace goalongapi.Interfaces
             {
                 Username = username,
                 Role = new Role { Name = role },
-                
+
             };
 
             return account;
@@ -349,8 +374,6 @@ namespace goalongapi.Interfaces
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
- 
-
 
         public bool ValidateToken(string token, out SecurityToken validatedToken)
         {
@@ -378,6 +401,116 @@ namespace goalongapi.Interfaces
                 return false;
             }
         }
+
+        private static byte[] HashToken(string token)
+        {
+            return SHA256.HashData(Encoding.UTF8.GetBytes(token));
+        }
+
+
+
+        public async Task<IssueTokenResult> IssueSessionTokens(
+        Account account,
+        string deviceId,
+        string? deviceName,
+        string? userAgent,
+        string? ipAddress,
+        bool force
+        )
+        {
+            // หา active session เดิม
+            var active = await databaseContext.AccountSessions
+                .Where(x => x.AccountID == account.AccountId && x.IsActive)
+                .SingleOrDefaultAsync();
+
+            if (active != null && !force)
+            {
+                // แจ้งเครื่องเดิมว่า "มีการพยายาม login"
+                await hub.Clients.Group($"session:{active.SessionId}")
+                    .SendAsync("login_attempted", new
+                    {
+                        at = DateTime.UtcNow,
+                        fromDeviceName = deviceName,
+                        fromIp = ipAddress,
+                        fromUserAgent = userAgent
+                    });
+
+                return new IssueTokenResult
+                {
+                    Status = "ALREADY_LOGGED_IN",
+                    ActiveSession = new
+                    {
+                        deviceName = active.DeviceName,
+                        ipAddress = active.IpAddress,
+                        lastSeenAt = active.LastSeenAt
+                    }
+                };
+            }
+
+            // force takeover: revoke session เดิม
+            if (active != null && force)
+            {
+                active.IsActive = false;
+                active.RevokedAt = DateTime.UtcNow;
+                active.RevokedReason = "REPLACED";
+            }
+
+            var newSessionId = Guid.NewGuid();
+
+            // refresh token ใหม่ + เก็บ hash
+            var refreshToken = GenerateRefreshToken(account);
+
+            var now = DateTime.UtcNow;
+
+            var session = new AccountSession
+            {
+                SessionId = newSessionId,
+                AccountID = account.AccountId,
+                DeviceId = deviceId,
+                DeviceName = deviceName,
+                UserAgent = userAgent,
+                IpAddress = ipAddress,
+
+                CreatedAt = now,
+                LastSeenAt = now,
+
+                ExpiresAt = now.AddDays(7),
+                RefreshTokenHash = HashToken(refreshToken),
+                RefreshTokenExpiry = now.AddDays(30),
+
+                IsActive = true
+            };
+
+            databaseContext.AccountSessions.Add(session);
+            await databaseContext.SaveChangesAsync();
+
+            // ถ้า force takeover แจ้งเครื่องเดิมว่าโดน sign out
+            if (active != null && force)
+            {
+                active.ReplacedBySessionId = newSessionId;
+                await databaseContext.SaveChangesAsync();
+
+                await hub.Clients.Group($"session:{active.SessionId}")
+                    .SendAsync("session_revoked", new
+                    {
+                        reason = "REPLACED",
+                        byDeviceName = deviceName,
+                        at = DateTime.UtcNow
+                    });
+            }
+
+            // ออก JWT ที่มี sid=sessionId
+            var token = GenerateTokenSession(account, session);
+
+            return new IssueTokenResult
+            {
+                Status = "OK",
+                Token = token,
+                RefreshToken = refreshToken,
+                SessionId = newSessionId
+            };
+        }
+
 
 
 

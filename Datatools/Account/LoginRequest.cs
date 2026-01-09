@@ -9,8 +9,12 @@ namespace goalongapi.Datatools.Account
         public string Username { get; set; }
 
         [Required]
-        [MinLength(4)] 
+        [MinLength(4)]
         public string Password { get; set; }
+
+        public string DeviceId { get; set; } = default!;
+        public string? DeviceName { get; set; }
+        public bool Force { get; set; } = false;
     }
 
     public class LoginRequestGoogle

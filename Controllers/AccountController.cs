@@ -15,6 +15,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Newtonsoft.Json;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
+using goalongapi.Data;
+using System.Security.Claims;
+using System.Security.Cryptography;
 
 
 namespace goalongapi.Controllers
@@ -25,9 +30,16 @@ namespace goalongapi.Controllers
     {
 
         private readonly IAccountService accountService;
+        private readonly DatabaseContext databaseContext;
 
-        public AccountController(IAccountService accountService) =>
+
+        public AccountController(IAccountService accountService, DatabaseContext databaseContext)
+        {
             this.accountService = accountService;
+            this.databaseContext = databaseContext;
+        }
+
+
 
         [HttpPost("[action]")]
         public async Task<ActionResult> Register(RegisterRequest registerRequest)
@@ -173,30 +185,111 @@ namespace goalongapi.Controllers
             );
         }
 
+        /*   [HttpPost("[action]")]
+          public async Task<ActionResult> Login(LoginRequest loginRequest)
+          {
+              var account = await accountService.Login(loginRequest.Username, loginRequest.Password);
+              if (account == null)
+              {
+                  return Unauthorized();
+              }
+
+              return Ok(
+                  new
+                  {
+                      token = accountService.GenerateToken(account),
+                      refreshToken = accountService.GenerateRefreshToken(account),
+                      CmpId = account.CmpId,
+                      imgurl = account.imgPath,
+                  }
+              );
+          } */
+
+
         [HttpPost("[action]")]
         public async Task<ActionResult> Login(LoginRequest loginRequest)
         {
             var account = await accountService.Login(loginRequest.Username, loginRequest.Password);
-            if (account == null)
+            if (account == null) return Unauthorized();
+
+            var ip = HttpContext.Connection.RemoteIpAddress?.ToString();
+            var ua = Request.Headers.UserAgent.ToString();
+
+            var result = await accountService.IssueSessionTokens(
+                account,
+                loginRequest.DeviceId,
+                loginRequest.DeviceName,
+                ua,
+                ip,
+                loginRequest.Force
+            );
+
+            if (result.Status == "ALREADY_LOGGED_IN")
             {
-                return Unauthorized();
+                return Conflict(new
+                {
+                    code = "ALREADY_LOGGED_IN",
+                    activeSession = result.ActiveSession,
+                    canForce = true
+                });
             }
 
-            return Ok(
-                new
-                {
-                    token = accountService.GenerateToken(account),
-                    refreshToken = accountService.GenerateRefreshToken(account),
-                    CmpId = account.CmpId,
-                    imgurl = account.imgPath,
-                }
-            );
+            return Ok(new
+            {
+                token = result.Token,
+                refreshToken = result.RefreshToken,
+                sessionId = result.SessionId,
+                CmpId = account.CmpId,
+                imgurl = account.imgPath
+            });
         }
+
+
+        [Authorize]
+        [HttpPost("logout")]
+        public async Task<IActionResult> Logout()
+        {
+            var sidStr = User.FindFirst("sid")?.Value; 
+
+            // account id หาได้หลาย key (เลือกที่ token คุณมีจริง)
+            var aidStr =
+                User.FindFirst("aid")?.Value ??
+                User.FindFirst("AccountID")?.Value ??
+                User.FindFirst(ClaimTypes.NameIdentifier)?.Value ??
+                User.FindFirst("sub")?.Value;
+
+            if (string.IsNullOrWhiteSpace(sidStr))
+                return Ok(); // ไม่มี sid ก็ถือว่า logout สำเร็จในเชิง client
+
+            if (!Guid.TryParse(sidStr, out var sid))
+                return Ok();
+
+            // ปิด session ใน DB
+            var session = await databaseContext.AccountSessions
+                .SingleOrDefaultAsync(x => x.SessionId == sid && x.IsActive);
+
+            if (session != null)
+            {
+                // (optional) เช็ค aid ให้ตรงกัน
+                if (long.TryParse(aidStr, out var aid) && session.AccountID != aid)
+                    return Forbid();
+
+                session.IsActive = false;
+                session.RevokedAt = DateTime.UtcNow;
+                session.RevokedReason = "LOGOUT";
+                await databaseContext.SaveChangesAsync();
+            }
+
+            return Ok();
+        }
+
+
+
 
         [HttpPost("[action]")]
         public async Task<IActionResult> RefreshToken([FromBody] TokenModel model)
         {
-            Account account = await accountService.GetAccount(model.AccessToken); 
+            Account account = await accountService.GetAccount(model.AccessToken);
             if (account == null) return Unauthorized();
 
             if (account.refreshToken != model.RefreshToken || account.refreshTokenExpiry < DateTime.UtcNow)
@@ -205,7 +298,8 @@ namespace goalongapi.Controllers
             var newAccessToken = accountService.GenerateToken(account);
             var newRefreshToken = accountService.GenerateRefreshToken(account);
 
-            return Ok(new {
+            return Ok(new
+            {
                 token = newAccessToken,
                 refreshToken = newRefreshToken,
                 CmpId = account.CmpId,
@@ -214,7 +308,7 @@ namespace goalongapi.Controllers
         }
 
 
-     
+
 
 
         [HttpPost("validate")]

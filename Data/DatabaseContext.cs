@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 namespace goalongapi.Data
 {
     public partial class DatabaseContext : DbContext
-    { 
+    {
         public DatabaseContext() { }
 
         public DatabaseContext(DbContextOptions<DatabaseContext> options)
@@ -19,6 +19,8 @@ namespace goalongapi.Data
         public virtual DbSet<Product> Products { get; set; } = null!;
         public virtual DbSet<Role> Roles { get; set; } = null!;
         public virtual DbSet<LogSystemClick> LogSystemClick { get; set; } = null!;
+
+        public virtual DbSet<AccountSession> AccountSessions { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -81,6 +83,24 @@ namespace goalongapi.Data
 
                 entity.Property(e => e.Created).HasDefaultValueSql("(getdate())");
             });
+
+
+
+            modelBuilder.Entity<AccountSession>(e =>
+                {
+                    e.ToTable("AccountSessions");
+                    e.HasKey(x => x.SessionId);
+
+                    e.Property(x => x.DeviceId).HasMaxLength(64).IsRequired();
+                    e.Property(x => x.DeviceName).HasMaxLength(128);
+                    e.Property(x => x.UserAgent).HasMaxLength(512);
+                    e.Property(x => x.IpAddress).HasMaxLength(45);
+
+                    e.HasOne(x => x.Account)
+                        .WithMany()
+                        .HasForeignKey(x => x.AccountID);
+                });
+
 
             OnModelCreatingPartial(modelBuilder);
         }

@@ -5,6 +5,7 @@ using goalongapi.Hubs;
 using goalongapi.Data;
 using goalongapi.Installers;
 using goalongapi.DB;
+using Microsoft.EntityFrameworkCore;
 
 
 System.Net.ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolType.Tls12;
@@ -19,29 +20,29 @@ builder.Services.AddCors(p =>
         "_MyAllowSpecificOrigins",
         builder =>
         {
-           /*   builder.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();   */ 
+            /*   builder.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();   */
 
 
-              builder
-                 .WithOrigins(
-                    "https://erp.nisolution.co.th", "https://app.nisolution.co.th",
-                    "http://nisolution.fortiddns.com:8284",
-                    "http://localhost:8080", "http://192.168.1.179:8080",
-                    "http://192.168.55.219:8285", "http://10.0.2.2:8000",
-                    "http://127.0.0.1:51052", "https://liff.line.me",
-                    "http://127.0.0.1:65060" , "http://127.0.0.1:9101" // simulator ios 
-                )
-                    
-                 .AllowAnyMethod()
-                 .AllowAnyHeader()
-                 .AllowCredentials();    
+            builder
+               .WithOrigins(
+                  "https://erp.nisolution.co.th", "https://app.nisolution.co.th",
+                  "http://nisolution.fortiddns.com:8284",
+                  "http://localhost:8080", "http://192.168.1.179:8080",
+                  "http://192.168.55.219:8285", "http://10.0.2.2:8000",
+                  "http://127.0.0.1:51052", "https://liff.line.me",
+                  "http://127.0.0.1:65060", "http://127.0.0.1:9101" // simulator ios 
+              )
+
+               .AllowAnyMethod()
+               .AllowAnyHeader()
+               .AllowCredentials();
         }
     )
 );
 
 builder.Services.AddScoped<DbConnectionFactory>();
 
- // Add services to the container.
+// Add services to the container.
 builder.Services.InstallServiceInAssembly(builder.Configuration);
 
 builder.Services.AddSingleton<RabbitMQService>();
@@ -80,13 +81,15 @@ builder.Host.ConfigureContainer<ContainerBuilder>(builder =>
         .AsImplementedInterfaces();
 });
 
+
+
 var app = builder.Build();
 /* 
 app.UseMiddleware<DuplicateRouteNameMiddleware>(); */
 //if (app.Environment.IsDevelopment())
 //{
 
- 
+
 app.UseSwagger();
 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "goalong api"));
 
@@ -109,7 +112,11 @@ app.UseEndpoints(endpoints =>
     endpoints.MapHub<TicketTaskReplyHub>("/tickettaskreplyhub");
     endpoints.MapHub<TicketCommentHub>("/ticketcommenthub");
     endpoints.MapHub<ChatHub>("/chathub");
+    endpoints.MapHub<SessionHub>("/hubs/session");
 
 });
+
+
+
 
 app.Run();
