@@ -88,6 +88,8 @@ namespace goalongapi.Controllers
                 stproblem.requestPosition = b["RequestPosition"].ToString();
                 stproblem.Remark = b["Remark"].ToString();
                 stproblem.IsReadMenu = b["IsReadMenu"].ToString();
+                stproblem.ModifiedAt = b["ModifiedAt"].ToString();
+                stproblem.UpdatedAt = b["UpdatedAt"].ToString();
 
 
 
@@ -259,7 +261,7 @@ namespace goalongapi.Controllers
                 }
 
 
-        
+
 
                 if (pr.attachfile.Count > 0)
                 {
