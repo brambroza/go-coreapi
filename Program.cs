@@ -112,7 +112,7 @@ app.UseEndpoints(endpoints =>
     endpoints.MapHub<TicketTaskReplyHub>("/tickettaskreplyhub");
     endpoints.MapHub<TicketCommentHub>("/ticketcommenthub");
     endpoints.MapHub<ChatHub>("/chathub");
-    endpoints.MapHub<SessionHub>("/hubs/session");
+    endpoints.MapHub<SessionHub>("/sessionhub");
 
 });
 
