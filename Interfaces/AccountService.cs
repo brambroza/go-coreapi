@@ -185,13 +185,13 @@ namespace goalongapi.Interfaces
             return passwordHashed == hashed;
         }
 
-        public string GenerateToken(Account account )
+        public string GenerateToken(Account account)
         {
             var claims = new[]
             {
                 new Claim(JwtRegisteredClaimNames.Sub, account.Username),
                 new Claim("role", account.Role.Name),
-                new Claim("additional", "todo"), 
+                new Claim("additional", "todo"),
             };
 
             return BuildToken(claims);
@@ -423,13 +423,19 @@ namespace goalongapi.Interfaces
                 .Where(x => x.AccountID == account.AccountId && x.IsActive)
                 .SingleOrDefaultAsync();
 
+            var thaiTz = TimeZoneInfo.FindSystemTimeZoneById(
+                      OperatingSystem.IsWindows() ? "SE Asia Standard Time" : "Asia/Bangkok"
+                  );
+
+            var atThai = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, thaiTz);
+
             if (active != null && !force)
             {
                 // แจ้งเครื่องเดิมว่า "มีการพยายาม login"
                 await hub.Clients.Group($"session:{active.SessionId}")
                     .SendAsync("login_attempted", new
                     {
-                        at = DateTime.UtcNow,
+                        at = atThai,
                         fromDeviceName = deviceName,
                         fromIp = ipAddress,
                         fromUserAgent = userAgent
@@ -451,7 +457,7 @@ namespace goalongapi.Interfaces
             if (active != null && force)
             {
                 active.IsActive = false;
-                active.RevokedAt = DateTime.UtcNow;
+                active.RevokedAt = atThai;
                 active.RevokedReason = "REPLACED";
             }
 
@@ -460,7 +466,10 @@ namespace goalongapi.Interfaces
             // refresh token ใหม่ + เก็บ hash
             var refreshToken = GenerateRefreshToken(account);
 
-            var now = DateTime.UtcNow;
+
+
+
+
 
             var session = new AccountSession
             {
@@ -471,12 +480,12 @@ namespace goalongapi.Interfaces
                 UserAgent = userAgent,
                 IpAddress = ipAddress,
 
-                CreatedAt = now,
-                LastSeenAt = now,
+                CreatedAt = atThai,
+                LastSeenAt = atThai,
 
-                ExpiresAt = now.AddDays(7),
+                ExpiresAt = atThai.AddDays(7),
                 RefreshTokenHash = HashToken(refreshToken),
-                RefreshTokenExpiry = now.AddDays(30),
+                RefreshTokenExpiry = atThai.AddDays(30),
 
                 IsActive = true
             };
@@ -495,7 +504,7 @@ namespace goalongapi.Interfaces
                     {
                         reason = "REPLACED",
                         byDeviceName = deviceName,
-                        at = DateTime.UtcNow
+                        at = atThai
                     });
             }
 
