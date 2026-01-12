@@ -440,6 +440,7 @@ namespace goalongapi.Models
         public string? TicketIdRef { get; set; } = "";
         public string? StateNotification { get; set; } = "";
         public string? StateNotificationList { get; set; } = "";
+        public string? UpdatedAt { get; set; } = "";
     }
 
 
