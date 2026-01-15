@@ -22,6 +22,8 @@ namespace goalongapi.Data
 
         public virtual DbSet<AccountSession> AccountSessions { get; set; } = null!;
 
+        public DbSet<ReportTemplate> ReportTemplates => Set<ReportTemplate>();
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
@@ -101,6 +103,12 @@ namespace goalongapi.Data
                         .HasForeignKey(x => x.AccountID);
                 });
 
+            modelBuilder.Entity<ReportTemplate>()
+                       .HasIndex(x => new { x.TemplateCode, x.Version })
+                       .IsUnique();
+
+            modelBuilder.Entity<ReportTemplate>()
+                .HasIndex(x => new { x.TemplateCode, x.IsActive });
 
             OnModelCreatingPartial(modelBuilder);
         }

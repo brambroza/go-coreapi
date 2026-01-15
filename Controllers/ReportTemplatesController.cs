@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using ReportApi.Dtos;
-using ReportApi.Services;
+using goalongapi.Dtos;
+using goalongapi.Services;
 
 namespace goalongapi.Controllers;
 

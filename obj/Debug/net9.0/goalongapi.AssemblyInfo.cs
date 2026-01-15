@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("goalongapi")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5eab1363e843f03adfec516af205caf8f7ffa7f0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+dbb860b4549554d0475816a50c169baf5eb5a8b0")]
 [assembly: System.Reflection.AssemblyProductAttribute("goalongapi")]
 [assembly: System.Reflection.AssemblyTitleAttribute("goalongapi")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

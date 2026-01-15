@@ -1,4 +1,4 @@
-using ReportApi.Dtos;
+using goalongapi.Dtos;
 
 namespace goalongapi.Services;
 

@@ -1,15 +1,16 @@
 using Microsoft.EntityFrameworkCore;
-using ReportApi.Data;
-using ReportApi.Dtos;
-using ReportApi.Entities;
 using System.Text.Json;
+using goalongapi.Data;
+using goalongapi.Entities;
+using goalongapi.Interfaces; 
+using goalongapi.Dtos;
 
 namespace goalongapi.Services;
 
 public class ReportTemplateService : IReportTemplateService
-{
-    private readonly AppDbContext _db;
-    public ReportTemplateService(AppDbContext db) => _db = db;
+{ 
+    private readonly DatabaseContext _db;
+    public ReportTemplateService(DatabaseContext db) => _db = db;
 
     private static void ValidateJson(string json)
     {

@@ -1,4 +1,4 @@
-namespace ReportApi.Dtos;
+namespace goalongapi.Dtos;
 
 public record ReportTemplateListDto(
   Guid TemplateId,
