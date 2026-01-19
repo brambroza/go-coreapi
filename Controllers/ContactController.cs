@@ -144,5 +144,41 @@ namespace goalongapi.Controllers
         }
 
 
+        [HttpDelete]
+        [Route("delContactSocail")]
+        public IActionResult delContactSocail([FromBody] ContactSocail customer)
+        {
+            MsgReturn msgretrun = new MsgReturn();
+            try
+            {
+                string _cmd = "";
+                _cmd = "exec  dbo.delContactFormLiffEdit";
+                _cmd += " @SocialId  ='" + customer.SocialId + "'";
+                _cmd += ",@CmpId  ='" + customer.CmpId + "'";
+               
+
+                if (DB.DBConn.ExecuteOnly(_cmd))
+                {
+                    msgretrun.ReturnCode = "200";
+                    msgretrun.Msg = "Save Success !!";
+                    return Ok(msgretrun);
+                }
+                else
+                {
+                    msgretrun.ReturnCode = "400";
+                    msgretrun.Msg = "Error !!";
+                    return Ok(msgretrun);
+                }
+            }
+            catch
+            {
+                msgretrun.ReturnCode = "400";
+                msgretrun.Msg = "Error !!";
+                return Ok(msgretrun);
+            }
+        }
+
+
+
     }
 }
