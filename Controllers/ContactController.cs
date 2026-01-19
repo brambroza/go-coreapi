@@ -146,16 +146,17 @@ namespace goalongapi.Controllers
 
         [HttpDelete]
         [Route("delContactSocail")]
-        public IActionResult delContactSocail([FromBody] ContactSocail customer)
+        public IActionResult delContactSocail([FromQuery] string socialid,
+            [FromQuery] string cmpid)
         {
             MsgReturn msgretrun = new MsgReturn();
             try
             {
                 string _cmd = "";
                 _cmd = "exec  dbo.delContactFormLiffEdit";
-                _cmd += " @SocialId  ='" + customer.SocialId + "'";
-                _cmd += ",@CmpId  ='" + customer.CmpId + "'";
-               
+                _cmd += " @SocialId  ='" + socialid + "'";
+                _cmd += ",@CmpId  ='" + cmpid + "'";
+
 
                 if (DB.DBConn.ExecuteOnly(_cmd))
                 {
