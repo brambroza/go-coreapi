@@ -90,6 +90,7 @@ namespace goalongapi.Controllers
                 stproblem.IsReadMenu = b["IsReadMenu"].ToString();
                 stproblem.ModifiedAt = b["ModifiedAt"].ToString();
                 stproblem.UpdatedAt = b["UpdatedAt"].ToString();
+                stproblem.RequestByName = b["RequestByName"].ToString();
 
 
 

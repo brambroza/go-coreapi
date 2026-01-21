@@ -47,8 +47,9 @@ namespace goalongapi.Models
         public string? requestPosition { get; set; }
         public string? Remark { get; set; }
         public string? IsReadMenu { get; set; }
-        public string? ModifiedAt { get; set; } 
+        public string? ModifiedAt { get; set; }
         public string? UpdatedAt { get; set; }
+        public string? RequestByName { get; set; }
     }
 
     public class STProblem_File
