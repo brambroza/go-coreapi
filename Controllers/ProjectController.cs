@@ -2983,11 +2983,7 @@ namespace goalongapi.Controllers
         [HttpPost("[action]")]
         public ActionResult setProjectMoveRoute(TaskUpdate comment)
         {
-            System.Globalization.CultureInfo thaiCulture = new System.Globalization.CultureInfo(
-                "th-TH"
-            );
-            thaiCulture.DateTimeFormat.Calendar = new System.Globalization.GregorianCalendar();
-            /*    var url = await UploadFilesAsyn(formFiles); */
+           
             MsgReturn msgretrun = new MsgReturn();
             DB.DBConn.SqlConnectionOpen();
             DB.DBConn.Cmd = DB.DBConn.Cnn.CreateCommand();

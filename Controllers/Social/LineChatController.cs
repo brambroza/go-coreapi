@@ -34,7 +34,7 @@ namespace goalongapi.Controllers
 
 
         [HttpGet("[action]")]
-        public IActionResult getContactSocial([FromQuery] string cmpid)
+        public IActionResult getContactSocial([FromQuery] string cmpid , [FromQuery] string user)
         {
             string _cmd;
             _cmd = "exec dbo.[getSocailContact] @cmpid='" + cmpid + "'";
@@ -48,7 +48,7 @@ namespace goalongapi.Controllers
             DataTable dtContact = new System.Data.DataTable();
 
             string type = "0";
-            _cmd = "exec dbo.getCustomer @CmpId='" + cmpid + "' , @Type='" + type + "' , @StateGenQRCode=1";
+            _cmd = "exec dbo.getCustomer @CmpId='" + cmpid + "' , @Type='" + type + "' , @StateGenQRCode=1 , @user='" + user + "'";
             dt = DB.DBConn.GetDataTable(_cmd);
 
             _cmd = "exec dbo.getContact @CmpId='" + cmpid + "'";
