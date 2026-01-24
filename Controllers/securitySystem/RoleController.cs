@@ -7,6 +7,7 @@ using goalongapi.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System.Globalization;
 
 namespace goalongapi.Controllers
 {
@@ -14,7 +15,7 @@ namespace goalongapi.Controllers
     [ApiController]
     [Authorize]
     public class RoleController : ControllerBase
-    { 
+    {
 
         [HttpGet("[action]")]
         public IActionResult getRole([FromQuery] string cmpid, [FromQuery] string User)
@@ -34,9 +35,12 @@ namespace goalongapi.Controllers
                     RoleName = r["RoleName"].ToString(),
                     RoleDescription = r["RoleDescription"].ToString(),
                     CmpId = r["CmpId"].ToString(),
-                    JobDesc = Convert.ToInt32(r["JobDesc"]),
+                    JobDesc = r["JobDesc"].Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                                .Select(x => int.Parse(x, CultureInfo.InvariantCulture))
+                                .ToArray(),
                     StateManager = Convert.ToInt32(r["StateManager"]),
-                    JobDescFilter = r["JobDescFilter"].ToString(),
+                    JobDescFilter = r["JobDescFilter"].ToString().Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                          .ToArray(),
                 };
 
                 roleList.Add(role);

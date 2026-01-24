@@ -23,8 +23,10 @@ namespace goalongapi.Models
         public string RoleDescription { get; set; } 
         public string CmpId { get; set; }
         public int StateManager { get; set; }
-        public int JobDesc { get; set; }
-        public string JobDescFilter {get;set;}
+        public int[] JobDesc { get; set; }
+        public string[] JobDescFilter {get;set;}
+
+        
     }
 
     public class JobDesc
