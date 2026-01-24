@@ -91,6 +91,7 @@ namespace goalongapi.Controllers
                 stproblem.ModifiedAt = b["ModifiedAt"].ToString();
                 stproblem.UpdatedAt = b["UpdatedAt"].ToString();
                 stproblem.RequestByName = b["RequestByName"].ToString();
+                stproblem.AnydeskId = b["AnydeskId"].ToString();
 
 
 

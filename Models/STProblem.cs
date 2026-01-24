@@ -50,6 +50,7 @@ namespace goalongapi.Models
         public string? ModifiedAt { get; set; }
         public string? UpdatedAt { get; set; }
         public string? RequestByName { get; set; }
+        public string? AnydeskId { get; set; }
     }
 
     public class STProblem_File
