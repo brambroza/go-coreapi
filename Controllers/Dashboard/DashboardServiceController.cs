@@ -119,7 +119,7 @@ namespace goalongapi.Controllers
 
 
         [HttpGet]
-        [Route("getTopcaseproblem")]
+        [Route("getTopFixcase")]
         public IActionResult TopFixcase(
              [FromQuery] string cmpid,
              [FromQuery] string user,
