@@ -121,6 +121,7 @@ namespace goalongapi.Controllers
                 _cmd += ",@Surname  ='" + customer.Surname + "'";
                 _cmd += ",@Nickname  ='" + customer.Nickname + "'";
                 _cmd += ",@Email  ='" + customer.Email + "'";
+                _cmd += ",@AnydeskId  ='" + customer.AnydeskId + "'";
 
                 if (DB.DBConn.ExecuteOnly(_cmd))
                 {

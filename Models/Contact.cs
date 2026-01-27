@@ -49,6 +49,7 @@ namespace goalongapi.Models
 
         // @Email nvarchar(100)  = ''
         public string? Email { get; set; }
+        public string? AnydeskId { get; set; }
     }
 
 }

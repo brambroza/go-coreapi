@@ -81,6 +81,11 @@ builder.Host.ConfigureContainer<ContainerBuilder>(builder =>
         .AsImplementedInterfaces();
 });
 
+builder.Services.AddDbContext<HrDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("ConnectionSQLServer"))
+);
+
+ 
 
 
 var app = builder.Build();

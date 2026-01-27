@@ -27,6 +27,12 @@ namespace goalongapi.Models
         public EmployeeContact? contact { get; set; }
         public List<EmployeeSalary>? salary { get; set; }
         public List<EmployeePosition>? positions { get; set; }
+
+        public string? EmployeeFirstNameEN { get; set; }
+        public string? EmployeeLastNameEN { get; set; }
+        public string? EmployeeNickNameEN { get; set; }
+        public int DepartmentId { get; set; }
+
     }
 
     public class EmployeePersonal
@@ -40,7 +46,7 @@ namespace goalongapi.Models
         public string? Nationality { get; set; }
         public string? EmergencyContactName { get; set; }
         public string? EmergencyContactPhone { get; set; }
-        
+
     }
 
 
@@ -90,6 +96,6 @@ namespace goalongapi.Models
 
 
 
-     
-    
+
+
 }

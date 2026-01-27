@@ -56,11 +56,15 @@ namespace goalongapi.Controllers
                     TerminationDate = r["TerminationDate"].ToString(),
                     StateActive = r["StateActive"].ToString(),
                     Prefix = r["Prefix"].ToString(),
-                    Email = r["Email"].ToString(), 
+                    Email = r["Email"].ToString(),
                     personal = new EmployeePersonal(),
                     contact = new EmployeeContact(),
                     salary = new List<EmployeeSalary>(),
                     positions = new List<EmployeePosition>(),
+
+                    EmployeeFirstNameEN = r["EmployeeFirstNameEN"].ToString(),
+                    EmployeeLastNameEN = r["EmployeeLastNameEN"].ToString(),
+                    DepartmentId = int.Parse(r["DepartmentId"].ToString()),
 
 
 
@@ -128,7 +132,7 @@ namespace goalongapi.Controllers
                         ManagerId = rp["ManagerId"].ToString(),
                         StartDate = rp["StartDate"].ToString(),
                         EndDate = rp["EndDate"].ToString(),
-                         DepartmentName = rp["DepartmentName"].ToString(),
+                        DepartmentName = rp["DepartmentName"].ToString(),
                         PositionName = rp["PositionName"].ToString(),
 
                     };
@@ -172,7 +176,7 @@ namespace goalongapi.Controllers
 
             return Ok(employees);
         }
-        
+
 
         [HttpPost("[action]")]
         public IActionResult setEmployee([FromBody] Employee employee)
@@ -192,7 +196,7 @@ namespace goalongapi.Controllers
             {
                 string _cmd = "";
 
-                
+
 
                 _cmd = "exec  dbo.set_hrmEmployee @UpdUser='" + employee.UpdUser + "' ";
                 _cmd += ", @CmpId='" + employee.CmpId + "'";
@@ -206,10 +210,14 @@ namespace goalongapi.Controllers
 
                 _cmd += ", @DateOfBirth='" + employee.DateOfBirth + "'";
                 _cmd += ", @HireDate='" + employee.HireDate + "'";
-                 _cmd += ", @TerminationDate='" + employee.TerminationDate + "'";
+                _cmd += ", @TerminationDate='" + employee.TerminationDate + "'";
                 _cmd += ", @StateActive='" + employee.StateActive + "'";
-                 _cmd += ", @Prefix='" + employee.Prefix + "'";
+                _cmd += ", @Prefix='" + employee.Prefix + "'";
                 _cmd += ", @Email='" + employee.Email + "'";
+                _cmd += ", @EmployeeFirstNameEN='" + employee.EmployeeFirstNameEN + "'";
+                _cmd += ", @EmployeeLastNameEN='" + employee.EmployeeLastNameEN + "'";
+                _cmd += ", @EmployeeNickNameEN='" + employee.EmployeeNickNameEN + "'";
+                _cmd += ", @DepartmentId='" + employee.DepartmentId + "'";
 
                 if (DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran) <= 0)
                 {
@@ -236,9 +244,9 @@ namespace goalongapi.Controllers
                     _cmd += ",@SalaryAmount=" + employee.salary[i].SalaryAmount + "";
                     _cmd += ",@EndDate='" + employee.salary[i].EndDate + "'";
                     _cmd += ",@IsCurrent='" + employee.salary[i].IsCurrent + "'";
-                    _cmd += ",@Reason='" + employee.salary[i].Reason + "'"; 
-                    _cmd += ",@CmpId='" + employee.salary[i].CmpId + "'"; 
- 
+                    _cmd += ",@Reason='" + employee.salary[i].Reason + "'";
+                    _cmd += ",@CmpId='" + employee.salary[i].CmpId + "'";
+
 
                     if (DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran) <= 0)
                     {
@@ -263,11 +271,11 @@ namespace goalongapi.Controllers
 
                     _cmd += ",@DepartmentNo='" + employee.positions[i].DepartmentNo + "'";
                     _cmd += ",@PositionNo='" + employee.positions[i].PositionNo + "'";
-                    _cmd += ",@ManagerId='" + employee.positions[i].ManagerId + "'"; 
-                    _cmd += ",@StartDate='" + employee.positions[i].StartDate + "'"; 
+                    _cmd += ",@ManagerId='" + employee.positions[i].ManagerId + "'";
+                    _cmd += ",@StartDate='" + employee.positions[i].StartDate + "'";
                     _cmd += ",@EndDate='" + employee.positions[i].EndDate + "'";
                     _cmd += ",@IsCurrent='" + employee.positions[i].IsCurrent + "'";
-                     _cmd += ",@CmpId='" + employee.positions[i].CmpId + "'";
+                    _cmd += ",@CmpId='" + employee.positions[i].CmpId + "'";
 
 
                     if (DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran) <= 0)
@@ -278,17 +286,17 @@ namespace goalongapi.Controllers
                         msgretrun.ReturnCode = "400";
                         msgretrun.Msg = "Error !!";
                         return Ok(msgretrun);
-                 
+
                     }
                 }
 
 
-                 if (employee.personal is EmployeePersonal p)
+                if (employee.personal is EmployeePersonal p)
                 {
                     _cmd =
                         "Exec set_hrmEmployee_Personal @UpdUser='"
                         + p.UpdUser
-                        + "'"; 
+                        + "'";
                     _cmd += ",@EmployeeId=" + p.EmployeeId;
 
                     _cmd += ",@CmpId='" + p.CmpId + "'";
@@ -298,7 +306,7 @@ namespace goalongapi.Controllers
                     _cmd += ",@Nationality='" + p.Nationality + "'";
                     _cmd += ",@EmergencyContactName='" + p.EmergencyContactName + "'";
                     _cmd += ",@EmergencyContactPhone='" + p.EmergencyContactPhone + "'";
-                     
+
 
                     if (DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran) <= 0)
                     {
@@ -312,12 +320,12 @@ namespace goalongapi.Controllers
                 }
 
 
-                 if (employee.contact is EmployeeContact c)
+                if (employee.contact is EmployeeContact c)
                 {
                     _cmd =
                         "Exec set_hrmEmployee_Contact @UpdUser='"
                         + c.UpdUser
-                        + "'"; 
+                        + "'";
                     _cmd += ",@EmployeeId=" + c.EmployeeId;
 
                     _cmd += ",@CmpId='" + c.CmpId + "'";
@@ -328,7 +336,7 @@ namespace goalongapi.Controllers
                     _cmd += ",@AddrProvince='" + c.AddrProvince + "'";
                     _cmd += ",@AddrPostCode='" + c.AddrPostCode + "'";
                     _cmd += ",@Phone='" + c.Phone + "'";
-                     
+
 
                     if (DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran) <= 0)
                     {
@@ -346,7 +354,7 @@ namespace goalongapi.Controllers
 
 
 
-               
+
 
                 DB.DBConn.Tran.Commit();
                 DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);

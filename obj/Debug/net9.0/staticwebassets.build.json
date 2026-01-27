@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "nVX3mLk7FLQYpQ12ZMwT0eqmZAyCyiCxaUeXTtIcv1E=",
+  "Hash": "vr5AWvAClxv+l65b0ZcyvnjGeNZJuGpYbRztfHHssPs=",
   "Source": "goalongapi",
   "BasePath": "_content/goalongapi",
   "Mode": "Default",
@@ -771,6 +771,27 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot/230015/Employee/2500001/lineidton.jpg"
+    },
+    {
+      "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/Employee/2600002/1768830984786.jpg",
+      "SourceId": "goalongapi",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/",
+      "BasePath": "_content/goalongapi",
+      "RelativePath": "230015/Employee/2600002/1768830984786#[.{fingerprint}]?.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "ewzptbqxhl",
+      "Integrity": "/qpRfFh0OuA875VRZjQgE4W52VpxjAmSfvVgIa/3RJw=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/230015/Employee/2600002/1768830984786.jpg"
     },
     {
       "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/expense/1900-01-01T00:00:00/lineidton.jpg",
@@ -12990,6 +13011,88 @@
         {
           "Name": "integrity",
           "Value": "sha256-MjjHXHZasa74kvmlxV7yk/qDTHgqmztF1Yjtoja8kfY="
+        }
+      ]
+    },
+    {
+      "Route": "230015/Employee/2600002/1768830984786.ewzptbqxhl.jpg",
+      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/Employee/2600002/1768830984786.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "141562"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"/qpRfFh0OuA875VRZjQgE4W52VpxjAmSfvVgIa/3RJw=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 27 Jan 2026 08:33:32 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "ewzptbqxhl"
+        },
+        {
+          "Name": "label",
+          "Value": "230015/Employee/2600002/1768830984786.jpg"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-/qpRfFh0OuA875VRZjQgE4W52VpxjAmSfvVgIa/3RJw="
+        }
+      ]
+    },
+    {
+      "Route": "230015/Employee/2600002/1768830984786.jpg",
+      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/Employee/2600002/1768830984786.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "141562"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"/qpRfFh0OuA875VRZjQgE4W52VpxjAmSfvVgIa/3RJw=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 27 Jan 2026 08:33:32 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-/qpRfFh0OuA875VRZjQgE4W52VpxjAmSfvVgIa/3RJw="
         }
       ]
     },

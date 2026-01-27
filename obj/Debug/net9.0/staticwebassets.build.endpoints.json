@@ -2053,6 +2053,88 @@
       ]
     },
     {
+      "Route": "230015/Employee/2600002/1768830984786.ewzptbqxhl.jpg",
+      "AssetFile": "230015/Employee/2600002/1768830984786.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "141562"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"/qpRfFh0OuA875VRZjQgE4W52VpxjAmSfvVgIa/3RJw=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 27 Jan 2026 08:33:32 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "ewzptbqxhl"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-/qpRfFh0OuA875VRZjQgE4W52VpxjAmSfvVgIa/3RJw="
+        },
+        {
+          "Name": "label",
+          "Value": "230015/Employee/2600002/1768830984786.jpg"
+        }
+      ]
+    },
+    {
+      "Route": "230015/Employee/2600002/1768830984786.jpg",
+      "AssetFile": "230015/Employee/2600002/1768830984786.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "141562"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"/qpRfFh0OuA875VRZjQgE4W52VpxjAmSfvVgIa/3RJw=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 27 Jan 2026 08:33:32 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-/qpRfFh0OuA875VRZjQgE4W52VpxjAmSfvVgIa/3RJw="
+        }
+      ]
+    },
+    {
       "Route": "230015/NIS-2200153/attachfileProjectCost/089391c2-1383-482e-b06c-783378d8f055.g6i90pabhl.pdf",
       "AssetFile": "230015/NIS-2200153/attachfileProjectCost/089391c2-1383-482e-b06c-783378d8f055.pdf",
       "Selectors": [],
