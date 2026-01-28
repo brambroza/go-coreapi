@@ -243,7 +243,7 @@ namespace goalongapi.Controllers
 
                     _cmd = " exec dbo.STProblem_Trans_Assign_Remove ";
                     _cmd += " @ProblemId='" + pr.ProblemId + "'";
-                    _cmd += " ,@CmpId='" + pr.assign[i].CmpId + "'";
+                    _cmd += " ,@CmpId='" + pr.cmpId + "'";
                     DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran);
 
 
