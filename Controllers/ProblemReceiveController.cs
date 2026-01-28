@@ -240,6 +240,14 @@ namespace goalongapi.Controllers
 
                 if (pr.assign.Count > 0)
                 {
+
+                    _cmd = " exec dbo.STProblem_Trans_Assign_Remove ";
+                    _cmd += " @ProblemId='" + pr.ProblemId + "'";
+                    _cmd += " ,@CmpId='" + pr.assign[i].CmpId + "'";
+                    DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran);
+
+
+
                     for (int i = 0; i < pr.assign.Count; i++)
                     {
                         _cmd = " exec dbo.STProblem_Trans_Assign ";
