@@ -16,7 +16,7 @@ public class AttendanceDaily
     public int EarlyLeaveMin { get; set; }
     public int OTMinBeforeShift { get; set; }
     public int OTMinAfterShift { get; set; }
-    public int? OTMinTotal { get; set; }           // DDL: int nullable
+    public int? OTMinTotal { get; private set; }           // DDL: int nullable
 
     public string Status { get; set; } = "Unknown";
     public string? Note { get; set; }

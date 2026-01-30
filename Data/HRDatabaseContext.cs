@@ -25,6 +25,8 @@ public class HrDbContext : DbContext
     public DbSet<OTRequest> OTRequests => Set<OTRequest>();
 
     public DbSet<HolidayCalendar> HolidayCalendars => Set<HolidayCalendar>();
+    public DbSet<AttendanceRawLog> AttendanceRawLogs => Set<AttendanceRawLog>();
+
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -229,6 +231,16 @@ public class HrDbContext : DbContext
 
              e.Property(x => x.RowVer).IsRowVersion().IsConcurrencyToken();
 
+             // ✅ เพิ่มส่วนนี้: OTMinTotal เป็น computed column
+             e.Property(x => x.AttendanceId)
+            .HasColumnType("bigint")
+            .ValueGeneratedOnAdd();
+
+             var ot = e.Property(x => x.OTMinTotal)
+                 .HasComputedColumnSql("[OTMinBeforeShift] + [OTMinAfterShift]", stored: false)
+                 .ValueGeneratedOnAddOrUpdate();
+
+
              e.HasIndex(x => x.WorkDate).HasDatabaseName("IX_AttendanceDaily_WorkDate");
              e.HasIndex(x => x.Status).HasDatabaseName("IX_AttendanceDaily_Status");
              e.HasIndex(x => new { x.CmpId, x.EmployeeId, x.WorkDate });
@@ -325,9 +337,57 @@ public class HrDbContext : DbContext
              e.HasIndex(x => new { x.CmpId, x.HolidayDate });
          });
 
+        mb.Entity<AttendanceRawLog>(e =>
+         {
+             e.ToTable("AttendanceRawLogs", "hr");
+             e.HasKey(x => x.RawLogId);
+
+             e.Property(x => x.CmpId).HasColumnType("varchar(30)").IsRequired();
+
+             e.Property(x => x.UserCodeOnDevice).HasMaxLength(100);
+             e.Property(x => x.CardNo).HasMaxLength(100);
+             e.Property(x => x.DeviceTimezone).HasMaxLength(64);
+             e.Property(x => x.DeviceLogId).HasMaxLength(100);
+
+             e.Property(x => x.DeviceLogTimeLocal).HasColumnType("datetime2(0)").IsRequired();
+             e.Property(x => x.PunchTimeUtc).HasColumnType("datetimeoffset(0)");
+
+             e.Property(x => x.TimezoneUsed).HasMaxLength(64);
+             e.Property(x => x.VerifyMode).HasMaxLength(50);
+             e.Property(x => x.InOutState).HasMaxLength(20);
+             e.Property(x => x.WorkCode).HasMaxLength(50);
+
+             e.Property(x => x.Source).HasMaxLength(30).IsRequired()
+                 .HasDefaultValue("ZKTeco");
+
+             e.Property(x => x.ReceivedAt).HasColumnType("datetime2(0)")
+                 .HasDefaultValueSql("sysutcdatetime()");
+
+             e.Property(x => x.IngestStatus).HasMaxLength(30).IsRequired()
+                 .HasDefaultValue("New");
+
+             e.Property(x => x.IngestError).HasMaxLength(2000);
+
+             e.Property(x => x.UniqueHash).HasColumnType("varbinary(32)").IsRequired();
+
+             // JOIN ไปตารางเดิม (optional)
+             e.HasOne(x => x.Device)
+              .WithMany()
+              .HasForeignKey(x => x.DeviceId)
+              .OnDelete(DeleteBehavior.NoAction);
+
+             e.HasOne(x => x.DeviceUser)
+              .WithMany()
+              .HasForeignKey(x => x.DeviceUserId)
+              .OnDelete(DeleteBehavior.NoAction);
+
+             e.HasIndex(x => new { x.CmpId, x.DeviceId, x.DeviceLogTimeLocal });
+             e.HasIndex(x => new { x.CmpId, x.IngestStatus, x.ReceivedAt });
+         });
+
     }
 
- 
+
     public override int SaveChanges()
     {
         TouchTimestamps();

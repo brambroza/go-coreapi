@@ -14,7 +14,7 @@ namespace goalongapi.Controllers
     [ApiController]
     [Authorize]
     public class RoleController : ControllerBase
-    { 
+    {
 
         [HttpGet("[action]")]
         public IActionResult getRole([FromQuery] string cmpid, [FromQuery] string User)
@@ -37,6 +37,11 @@ namespace goalongapi.Controllers
                     JobDesc = Convert.ToInt32(r["JobDesc"]),
                     StateManager = Convert.ToInt32(r["StateManager"]),
                     JobDescFilter = r["JobDescFilter"].ToString(),
+                    JobDescName = (r["JobDescName"].ToString() ?? "")
+                        .Split(',', StringSplitOptions.RemoveEmptyEntries)
+                        .Select(x => x.Trim())
+                        .Where(x => x.Length > 0)
+                        .ToList(),
                 };
 
                 roleList.Add(role);
@@ -152,6 +157,7 @@ namespace goalongapi.Controllers
                 _cmd += ",@StateManager =" + roleset.StateManager;
                 _cmd += " ,@CmpId='" + roleset.CmpId + "'";
                 _cmd += ",@JobDesc =" + roleset.JobDesc;
+                _cmd += " ,@JobDescName='" + string.Join(",", roleset.JobDescName) + "'";
 
                 if (DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran) <= 0)
                 {

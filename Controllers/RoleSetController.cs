@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
 namespace goalongapi.Controllers
-{ 
+{
     [ApiController]
     [Authorize]
     public class RoleSetController : ControllerBase
@@ -133,7 +133,7 @@ namespace goalongapi.Controllers
                     _cmd += ",@RoleName ='" + roleset[i].RoleName + "'";
                     _cmd += ",@RoleDescription ='" + roleset[i].RoleDescription + "'";
                     _cmd += ",@MenuId =" + roleset[i].MenuId;
-                    _cmd += " , @CmpId='" + roleset[i].CmpId + "'";
+                    _cmd += " ,@CmpId='" + roleset[i].CmpId + "'"; 
 
                     if (DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran) <= 0)
                     {
@@ -234,7 +234,7 @@ namespace goalongapi.Controllers
                 DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
                 DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
             }
-            catch 
+            catch
             {
                 DB.DBConn.Tran.Rollback();
                 DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
@@ -287,7 +287,7 @@ namespace goalongapi.Controllers
                 DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
                 DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
             }
-            catch  
+            catch
             {
                 DB.DBConn.Tran.Rollback();
                 DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
@@ -340,7 +340,7 @@ namespace goalongapi.Controllers
                 DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
                 DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
             }
-            catch 
+            catch
             {
                 DB.DBConn.Tran.Rollback();
                 DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);

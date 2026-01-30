@@ -93,7 +93,7 @@ public class AttendanceDailyController : ControllerBase
             EarlyLeaveMin = dto.EarlyLeaveMin,
             OTMinBeforeShift = dto.OTMinBeforeShift,
             OTMinAfterShift = dto.OTMinAfterShift,
-            OTMinTotal = dto.OTMinTotal ?? (dto.OTMinBeforeShift + dto.OTMinAfterShift),
+            // OTMinTotal = dto.OTMinTotal ?? (dto.OTMinBeforeShift + dto.OTMinAfterShift),
 
             Status = string.IsNullOrWhiteSpace(dto.Status) ? "Unknown" : dto.Status.Trim(),
             Note = dto.Note,
@@ -130,7 +130,7 @@ public class AttendanceDailyController : ControllerBase
         entity.EarlyLeaveMin = dto.EarlyLeaveMin;
         entity.OTMinBeforeShift = dto.OTMinBeforeShift;
         entity.OTMinAfterShift = dto.OTMinAfterShift;
-        entity.OTMinTotal = dto.OTMinTotal ?? (dto.OTMinBeforeShift + dto.OTMinAfterShift);
+       // entity.OTMinTotal = dto.OTMinTotal ?? (dto.OTMinBeforeShift + dto.OTMinAfterShift);
 
         entity.Status = string.IsNullOrWhiteSpace(dto.Status) ? entity.Status : dto.Status.Trim();
         entity.Note = dto.Note;
