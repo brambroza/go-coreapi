@@ -226,6 +226,8 @@ namespace goalongapi.Controllers
                 _cmd += " , @StartDate='" + pr.StartDate + "'";
                 _cmd += " , @StartTime='" + pr.StartTime + "'";
                 _cmd += " , @Remark='" + pr.Remark + "'";
+                _cmd += " , @UserLineId='" + pr.UserLineId + "'";
+                _cmd += " , @OALineId='" + pr.OALineId + "'";
 
                 if (DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran) <= 0)
                 {
