@@ -92,8 +92,7 @@ namespace goalongapi.Controllers
                 stproblem.UpdatedAt = b["UpdatedAt"].ToString();
                 stproblem.RequestByName = b["RequestByName"].ToString();
                 stproblem.AnydeskId = b["AnydeskId"].ToString();
-
-
+                stproblem.ImgPath = b["ImgPath"].ToString();
 
                 stproblem.attachfile = new List<STProblem_File>();
 
