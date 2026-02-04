@@ -82,6 +82,7 @@ namespace goalongapi.Controllers
                     Shiptoother = r["Shiptoother"].ToString(),
                     CustomerPODate = DateTime.Parse(r["CustomerPODate"].ToString()),
                     ShipOfDay = Convert.ToInt32(r["ShipOfDay"]),
+                    ImgPath = r["ImgPath"].ToString(),
 
 
 
@@ -121,7 +122,7 @@ namespace goalongapi.Controllers
                         QuotationRevNo = Convert.ToInt32(itemRow["QuotationRevNo"]),
                         QuotationNo = itemRow["QuotationNo"].ToString(),
                         QuotationSeq = Convert.ToInt32(itemRow["QuotationSeq"]),
-                        SupplierCode = itemRow["SupplierCode"].ToString(), 
+                        SupplierCode = itemRow["SupplierCode"].ToString(),
 
                     };
                     saleorder.items.Add(saleOrderItem);
@@ -268,8 +269,8 @@ namespace goalongapi.Controllers
                     _cmd += ",@UpdUser='" + Quotation.UpdUser + "'";
                     _cmd += ",@QuotationNo='" + Quotation.items[i].QuotationNo + "'";
                     _cmd += ",@QuotationRevNo=" + Quotation.items[i].QuotationRevNo;
-                    _cmd += ",@QuotationSeq=" + Quotation.items[i].QuotationSeq; 
-                    _cmd += ",@SupplierCode='"+ Quotation.items[i].SupplierCode + "'";
+                    _cmd += ",@QuotationSeq=" + Quotation.items[i].QuotationSeq;
+                    _cmd += ",@SupplierCode='" + Quotation.items[i].SupplierCode + "'";
 
                     if (DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran) <= 0)
                     {
@@ -354,7 +355,7 @@ namespace goalongapi.Controllers
                     _cmd += " , @RevNo=" + Quotation[i].RevNo;
                     _cmd += " , @FileName='" + Quotation[i].FileName + "'";
                     _cmd += " , @User='" + Quotation[i].UpdUser + "'";
-                   
+
 
                     if (DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran) <= 0)
                     {
@@ -481,10 +482,10 @@ namespace goalongapi.Controllers
                     + ",@User='"
                     + quoHApprove.user
                     + "'";
-                      _cmd += " , @UserTo='" + quoHApprove.userTo + "'";
+                _cmd += " , @UserTo='" + quoHApprove.userTo + "'";
 
 
-              System.Data.DataTable dt = DB.DBConn.GetDataTable(_cmd);
+                System.Data.DataTable dt = DB.DBConn.GetDataTable(_cmd);
                 if (dt.Rows.Count > 0)
                 {
                     /*  var x = linenotisendapp(quoH.docno); */

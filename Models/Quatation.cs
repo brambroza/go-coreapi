@@ -305,6 +305,7 @@ namespace goalongapi.Models
         public int ShipOfDay { get; set; }
         public DateTime CustomerPODate { get; set; }
 
+        public string? ImgPath { get; set; }
 
 
 
