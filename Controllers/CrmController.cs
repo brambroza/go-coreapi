@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.SignalR;
 using goalongapi.Hubs;
+using System.Globalization;
 
 
 namespace goalongapi.Controllers
@@ -199,22 +200,6 @@ namespace goalongapi.Controllers
                         item.reqReply.Add(itemr);
                     }
 
-                    // new comment
-                    /*     var itemrb = new CustomerReqTicketRouteReply();
-                        itemrb.CmpId = item.CmpId;
-                        itemrb.TicketId = item.TicketId;
-                        itemrb.UpdUser = "";
-                        itemrb.FileUrl = "";
-                        itemrb.Comment = "";
-                        itemrb.RouteId = item.RouteId;
-                        itemrb.RemindId = item.RemindId;
-                        itemrb.createAt = DateTime.Now.AddMinutes(1);
-                        itemrb.Seq = 99999999;
-                        itemrb.ImgPath = "";
-
-                        item.reqReply.Add(itemrb); */
-
-                    // end comment
 
 
 
@@ -386,6 +371,304 @@ namespace goalongapi.Controllers
 
             return Ok(new { tickets = crms });
         }
+
+
+
+
+        [HttpGet("[action]")]
+        public IActionResult getreqfromcustlistNew([FromQuery] string userlogin, [FromQuery] string cmpid)
+        {
+            // *** แนะนำ: culture ไม่จำเป็นถ้า format เป็น yyyy-MM-dd HH:mm
+            // ใช้ InvariantCulture เร็วและชัดเจนกว่า
+            var fmt = CultureInfo.InvariantCulture;
+
+            // 1) Load DataTables (เหมือนเดิม)
+            DataTable dt = DB.DBConn.GetDataTable($"exec dbo.[getReqFromCustomer] @user='{userlogin}', @cmpid='{cmpid}'");
+            DataTable dtItem = DB.DBConn.GetDataTable($"exec dbo.[getReqFromCustomerItem] @user='{userlogin}', @cmpid='{cmpid}'");
+            DataTable dtAssign = DB.DBConn.GetDataTable($"exec dbo.[getReqFromCustomerAssign] @user='{userlogin}', @cmpid='{cmpid}'");
+            DataTable dtAssignDisplay = DB.DBConn.GetDataTable($"exec dbo.[getReqFromCustomerAssignDisplay] @user='{userlogin}', @cmpid='{cmpid}'");
+            DataTable dtOwner = DB.DBConn.GetDataTable($"exec dbo.[getReqFromCustomerOwner] @user='{userlogin}', @cmpid='{cmpid}'");
+            DataTable dtRoute = DB.DBConn.GetDataTable($"exec dbo.[getReqFromCustomerRoute] @user='{userlogin}', @cmpid='{cmpid}'");
+            DataTable dtRouteReply = DB.DBConn.GetDataTable($"exec dbo.[getReqFromCustomerRoute_Reply] @user='{userlogin}', @cmpid='{cmpid}'");
+            DataTable dtComment = DB.DBConn.GetDataTable($"exec dbo.[sp_getManageReqComment] @Operation='COMMENT', @cmpid='{cmpid}'");
+            DataTable dtCommentReply = DB.DBConn.GetDataTable($"exec dbo.[sp_getManageReqComment] @Operation='REPLY', @cmpid='{cmpid}'");
+
+            // 2) Helper: อ่านค่าแบบเร็ว/กัน DBNull
+            static string S(DataRow r, string col) => r[col] == DBNull.Value ? "" : r[col].ToString();
+            static int I(DataRow r, string col) => r[col] == DBNull.Value ? 0 : Convert.ToInt32(r[col]);
+            static short SH(DataRow r, string col) => r[col] == DBNull.Value ? (short)0 : Convert.ToInt16(r[col]);
+            static decimal D(DataRow r, string col) => r[col] == DBNull.Value ? 0m : Convert.ToDecimal(r[col], CultureInfo.InvariantCulture);
+            static DateTime? DT(DataRow r, string col) => r[col] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(r[col], CultureInfo.InvariantCulture);
+
+            // 3) สร้าง Key สำหรับ Lookup (เร็วกว่า Select filter string)
+            // TicketKey: ใช้ใน item/owner/assignDisplay/comment
+            static string TK(string cmp, string ticket) => $"{cmp}||{ticket}";
+            // RouteKey: ใช้ใน routeReply/assign (ตาม TicketId+RemindId+RouteId)
+            static string RK(string ticket, string remind, string route) => $"{ticket}||{remind}||{route}";
+            // CommentKey: ใช้ใน commentReply
+            static string CK(string cmp, string ticket, string commentId) => $"{cmp}||{ticket}||{commentId}";
+
+            // 4) ทำ Lookup ครั้งเดียว
+            var routeByTicket = dtRoute.AsEnumerable()
+                .GroupBy(x => S(x, "TicketId"))
+                .ToDictionary(g => g.Key, g => g.ToList());
+
+            var routeReplyByRouteKey = dtRouteReply.AsEnumerable()
+                .GroupBy(x => RK(S(x, "TicketId"), S(x, "RemindId"), S(x, "RouteId")))
+                .ToDictionary(g => g.Key, g => g.ToList());
+
+            var assignByRouteKey = dtAssign.AsEnumerable()
+                .GroupBy(x => RK(S(x, "TicketId"), S(x, "RemindId"), S(x, "RouteId")))
+                .ToDictionary(g => g.Key, g => g.ToList());
+
+            var ownerByTicketKey = dtOwner.AsEnumerable()
+                .GroupBy(x => TK(S(x, "CmpId"), S(x, "TicketId")))
+                .ToDictionary(g => g.Key, g => g.ToList());
+
+            var itemByTicketKey = dtItem.AsEnumerable()
+                .GroupBy(x => TK(S(x, "CmpId"), S(x, "TicketId")))
+                .ToDictionary(g => g.Key, g => g.ToList());
+
+            var assignDisplayByTicketKey = dtAssignDisplay.AsEnumerable()
+                .GroupBy(x => TK(S(x, "CmpId"), S(x, "TicketId")))
+                .ToDictionary(g => g.Key, g => g.ToList());
+
+            var commentByTicketKey = dtComment.AsEnumerable()
+                .GroupBy(x => TK(S(x, "CmpId"), S(x, "TicketId")))
+                .ToDictionary(g => g.Key, g => g.ToList());
+
+            var commentReplyByCommentKey = dtCommentReply.AsEnumerable()
+                .GroupBy(x => CK(S(x, "CmpId"), S(x, "TicketId"), S(x, "CommentId")))
+                .ToDictionary(g => g.Key, g => g.ToList());
+
+            // 5) Map -> Object (ไม่มีลูปซ้อน Select อีกแล้ว)
+            var crms = new List<ReqFromCustList>(dt.Rows.Count);
+
+            foreach (DataRow r in dt.Rows)
+            {
+                var cmp = S(r, "CmpId");
+                var ticket = S(r, "TicketId");
+                var tkey = TK(cmp, ticket);
+
+                var crm = new ReqFromCustList
+                {
+                    CmpId = cmp,
+                    TicketId = ticket,
+                    ticketIdRef = S(r, "TicketIdRef"),
+                    ServiceType = S(r, "ServiceType"),
+                    CustomerName = S(r, "CustomerName"),
+                    ContactName = S(r, "ContactName"),
+                    ContactPhone = S(r, "ContactPhone"),
+                    ContactEmail = S(r, "ContactEmail"),
+                    Address = S(r, "Address"),
+                    CreateAt = DT(r, "CreateAt") ?? DateTime.MinValue,
+                    Status = S(r, "Status"),
+                    FromApp = S(r, "FromApp"),
+                    todo = S(r, "todo"),
+                    AdditionalDetail = S(r, "AdditionalDetail"),
+                    AdditionalDetail2 = S(r, "AdditionalDetail2"),
+                    completepercent = D(r, "completepercent"),
+                    DueDate = (DT(r, "DueDate") is DateTime due) ? due.ToString("yyyy-MM-dd HH:mm", fmt) : "",
+                    UpdUser = S(r, "updUser"),
+                    Priority = S(r, "Priority"),
+                    CustomerImgPath = S(r, "CustomerImgPath"),
+                    TaskUnRead = I(r, "taskUnRead"),
+                    TodoStatus = I(r, "TodoStatus"),
+                    Labels = S(r, "Labels"),
+                    GrandAmt = D(r, "GrandAmt"),
+                    StateNotificationList = S(r, "StateNotificationList"),
+                };
+
+                // Routes + replies + assigns
+                crm.ReqRoute = new List<CustomerReqTicketRoute>();
+                if (routeByTicket.TryGetValue(ticket, out var routes))
+                {
+                    foreach (var i in routes)
+                    {
+                        var routeId = S(i, "RouteId");
+                        var remindId = S(i, "RemindId");
+                        var rkey = RK(ticket, remindId, routeId);
+
+                        var route = new CustomerReqTicketRoute
+                        {
+                            CmpId = S(i, "CmpId"),
+                            TicketId = S(i, "TicketId"),
+                            RouteId = routeId,
+                            RemindId = remindId,
+                            RouteIdBefore = S(i, "RouteIdBefore"),
+                            StatusFinish = SH(i, "StatusFinish"),
+                            DueDate = DT(i, "DueDate") ?? DateTime.MinValue,
+                            RouteName = S(i, "RouteName"),
+                            Department = S(i, "Department"),
+                            RemideDescription = S(i, "RemideDescription"),
+                            Seq = SH(i, "Seq"),
+                            DateFinish = "",
+                            UserFinish = "",
+                            UpdUser = S(i, "UpdUser"),
+                        };
+
+                        // Route replies
+                        route.reqReply = new List<CustomerReqTicketRouteReply>();
+                        if (routeReplyByRouteKey.TryGetValue(rkey, out var replies))
+                        {
+                            foreach (var a in replies)
+                            {
+                                route.reqReply.Add(new CustomerReqTicketRouteReply
+                                {
+                                    CmpId = S(a, "CmpId"),
+                                    TicketId = S(a, "TicketId"),
+                                    UpdUser = S(a, "updUser"),
+                                    FileUrl = S(a, "FileUrl"),
+                                    Comment = S(a, "Comment"),
+                                    RouteId = routeId,
+                                    RemindId = remindId,
+                                    createAt = DT(a, "createAt") ?? DateTime.MinValue,
+                                    Seq = I(a, "Seq"),
+                                    ImgPath = S(a, "ImgPath"),
+                                });
+                            }
+                        }
+
+                        // Route assigns
+                        route.reqAssign = new List<ReqFromCustAssign>();
+                        if (assignByRouteKey.TryGetValue(rkey, out var assigns))
+                        {
+                            foreach (var a in assigns)
+                            {
+                                route.reqAssign.Add(new ReqFromCustAssign
+                                {
+                                    CmpId = S(a, "CmpId"),
+                                    TicketId = S(a, "TicketId"),
+                                    UserFullName = S(a, "FullName"),
+                                    ImgPath = S(a, "ImgPath"),
+                                    Permission = S(a, "Permission"),
+                                    RouteId = routeId,
+                                    RemindId = remindId,
+                                    UserId = S(a, "UserId"),
+                                });
+                            }
+                        }
+
+                        crm.ReqRoute.Add(route);
+                    }
+                }
+
+                // Owners
+                crm.ReqOwner = new List<ReqFromCustOwner>();
+                if (ownerByTicketKey.TryGetValue(tkey, out var owners))
+                {
+                    foreach (var i in owners)
+                    {
+                        crm.ReqOwner.Add(new ReqFromCustOwner
+                        {
+                            CmpId = S(i, "CmpId"),
+                            TicketId = S(i, "TicketId"),
+                            UserFullName = S(i, "FullName"),
+                            ImgPath = S(i, "ImgPath"),
+                            UserId = S(i, "UserId"),
+                        });
+                    }
+                }
+
+                // Items
+                crm.ReqItem = new List<ReqFromCustItem>();
+                if (itemByTicketKey.TryGetValue(tkey, out var items))
+                {
+                    foreach (var i in items)
+                    {
+                        crm.ReqItem.Add(new ReqFromCustItem
+                        {
+                            CmpId = S(i, "CmpId"),
+                            TicketId = S(i, "TicketId"),
+                            ServiceType = S(i, "ServiceType"),
+                            ModelName = S(i, "ModelName"),
+                            SerialNo = S(i, "SerialNo"),
+                            PartNo = S(i, "PartNo"),
+                            Forticloud = S(i, "Forticloud"),
+                            MABy = S(i, "MABy"),
+                            MADuration = S(i, "MADuration"),
+                            AdvanceReplacement = S(i, "AdvanceReplacement") ?? "",
+                            SLA = S(i, "SLA"),
+                            AdditionalDetail = S(i, "AdditionalDetail"),
+                            AdditionalDetail2 = S(i, "AdditionalDetail2"),
+                            DesiredService = S(i, "DesiredService"),
+                            FileUrl = S(i, "FIleUrl"),
+                            Seq = I(i, "Seq"),
+                            FileUrl1 = S(i, "FIleUrl1"),
+                        });
+                    }
+                }
+
+                // Assign display
+                crm.ReqAssign = new List<ReqFromCustAssign>();
+                if (assignDisplayByTicketKey.TryGetValue(tkey, out var assignsDisp))
+                {
+                    foreach (var i in assignsDisp)
+                    {
+                        crm.ReqAssign.Add(new ReqFromCustAssign
+                        {
+                            CmpId = S(i, "CmpId"),
+                            TicketId = S(i, "TicketId"),
+                            UserFullName = S(i, "FullName"),
+                            ImgPath = S(i, "ImgPath"),
+                            Permission = S(i, "Permission"),
+                            UserId = S(i, "UserId"),
+                            RemindId = S(i, "RemindId"),
+                            RouteId = S(i, "RouteId"),
+                        });
+                    }
+                }
+
+                // Comments + replies
+                crm.ReqComments = new List<ReqComment>();
+                if (commentByTicketKey.TryGetValue(tkey, out var comments))
+                {
+                    foreach (var i in comments)
+                    {
+                        var commentId = S(i, "CommentId");
+                        var ckey = CK(S(i, "CmpId"), S(i, "TicketId"), commentId);
+
+                        var comment = new ReqComment
+                        {
+                            CmpId = S(i, "CmpId"),
+                            CommentId = commentId,
+                            TicketId = S(i, "TicketId"),
+                            Id = S(i, "Id"),
+                            Name = S(i, "Name"),
+                            AvatarUrl = S(i, "AvatarUrl"),
+                            Message = S(i, "Message"),
+                            PostedAt = DT(i, "PostedAt") ?? DateTime.MinValue,
+                            replyComment = new List<ReplyComment>()
+                        };
+
+                        if (commentReplyByCommentKey.TryGetValue(ckey, out var creplies))
+                        {
+                            foreach (var x in creplies)
+                            {
+                                comment.replyComment.Add(new ReplyComment
+                                {
+                                    CmpId = S(x, "CmpId"),
+                                    CommentId = S(x, "CommentId"),   // (เดิมคุณใส่ x["Comment"] น่าจะผิดคอลัมน์)
+                                    TicketId = S(x, "TicketId"),
+                                    Id = S(x, "Id"),
+                                    UserId = S(x, "UserId"),
+                                    Message = S(x, "Message"),
+                                    TagUser = S(x, "TagUser"),
+                                    PostedAt = DT(x, "PostedAt") ?? DateTime.MinValue // (เดิมใช้ PostedAt ของ comment)
+                                });
+                            }
+                        }
+
+                        crm.ReqComments.Add(comment);
+                    }
+                }
+
+                crms.Add(crm);
+            }
+
+            return Ok(new { tickets = crms });
+        }
+
 
         [HttpGet("[action]")]
         public IActionResult getreqfromcustkanban(
