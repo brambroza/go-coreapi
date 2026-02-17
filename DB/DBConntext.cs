@@ -66,5 +66,10 @@ namespace goalongapi.DB
             // ที่เหลือให้คนเรียกเป็นคน open/close เอง
             return new SqlConnection(_connectionString);
         }
+
+        internal string GetConnectionString()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

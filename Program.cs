@@ -51,7 +51,7 @@ builder.Services.AddHostedService<LogProcessorService>();
 builder.Services.AddScoped<EmailSettingRepository>(sp =>
 {
     var config = sp.GetRequiredService<IConfiguration>();
-    var connStr = config.GetConnectionString("DefaultConnection");
+    var connStr = config.GetConnectionString("ConnectionSQLServer");
     return new EmailSettingRepository(connStr!);
 });
 
