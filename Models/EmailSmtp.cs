@@ -54,4 +54,5 @@ public class EmailSmtpSettingViewDto
     public string Username { get; set; } = "";
 
     public DateTime? UpdatedAt { get; set; }
+    public bool IsActive { get; set; } = true;
 }

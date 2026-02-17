@@ -630,7 +630,9 @@ namespace goalongapi.Controllers
                 SmtpPort = setting.SmtpPort,
                 EnableSsl = setting.EnableSsl,
                 Username = setting.Username,
-                UpdatedAt = setting.UpdatedAt
+                UpdatedAt = setting.UpdatedAt,
+                IsActive = setting.IsActive,
+
             };
 
             return Ok(new { ok = true, data = view });
