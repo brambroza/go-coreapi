@@ -7,8 +7,25 @@ public class AesCrypto
 
     public AesCrypto(string keyBase64)
     {
-        _key = Convert.FromBase64String(keyBase64);
-        if (_key.Length != 32) throw new ArgumentException("Key must be 32 bytes (Base64).");
+        if (string.IsNullOrWhiteSpace(keyBase64))
+            throw new InvalidOperationException("EmailCrypto:KeyBase64 is missing.");
+
+        keyBase64 = keyBase64.Trim();
+
+        byte[] key;
+        try
+        {
+            key = Convert.FromBase64String(keyBase64);
+        }
+        catch (FormatException)
+        {
+            throw new InvalidOperationException("EmailCrypto:KeyBase64 must be a valid Base64 string.");
+        }
+
+        if (key.Length != 32)
+            throw new InvalidOperationException($"EmailCrypto:KeyBase64 must decode to 32 bytes, got {key.Length} bytes.");
+
+        _key = key;
     }
 
     public (byte[] cipher, byte[] iv) Encrypt(string plain)

@@ -48,7 +48,20 @@ builder.Services.InstallServiceInAssembly(builder.Configuration);
 builder.Services.AddSingleton<RabbitMQService>();
 
 builder.Services.AddHostedService<LogProcessorService>();
+builder.Services.AddScoped<EmailSettingRepository>(sp =>
+{
+    var config = sp.GetRequiredService<IConfiguration>();
+    var connStr = config.GetConnectionString("DefaultConnection");
+    return new EmailSettingRepository(connStr!);
+});
 
+builder.Services.AddSingleton<AesCrypto>(sp =>
+{
+    var config = sp.GetRequiredService<IConfiguration>();
+    return new AesCrypto(config["EmailCrypto:KeyBase64"]!);
+});
+
+ 
 /// google auth
 ///
 
