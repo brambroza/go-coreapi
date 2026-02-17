@@ -31,12 +31,16 @@ namespace goalongapi.Controllers
 
         private readonly IAccountService accountService;
         private readonly DatabaseContext databaseContext;
+        private readonly EmailSettingRepository _repo;
+        private readonly AesCrypto _crypto;
 
 
-        public AccountController(IAccountService accountService, DatabaseContext databaseContext)
+        public AccountController(IAccountService accountService, DatabaseContext databaseContext, EmailSettingRepository repo, AesCrypto crypto)
         {
             this.accountService = accountService;
             this.databaseContext = databaseContext;
+            this._repo = repo;
+            this._crypto = crypto;
         }
 
 
@@ -249,7 +253,7 @@ namespace goalongapi.Controllers
         [HttpPost("logout")]
         public async Task<IActionResult> Logout()
         {
-            var sidStr = User.FindFirst("sid")?.Value; 
+            var sidStr = User.FindFirst("sid")?.Value;
 
             // account id หาได้หลาย key (เลือกที่ token คุณมีจริง)
             var aidStr =
@@ -609,6 +613,82 @@ namespace goalongapi.Controllers
             return StatusCode((int)HttpStatusCode.Created);
         }
 
+
+        [HttpGet("emailsettings")]
+        public async Task<IActionResult> GetEmailSettings([FromQuery] string? cmpId, [FromQuery] string settingName = "default")
+        {
+            var setting = await _repo.GetActiveAsync(cmpId, settingName);
+            if (setting == null) return NotFound(new { ok = false, message = "Email setting not found." });
+
+            var view = new EmailSmtpSettingViewDto
+            {
+                CmpId = setting.CmpId,
+                SettingName = setting.SettingName,
+                FromEmail = setting.FromEmail,
+                FromName = setting.FromName,
+                SmtpHost = setting.SmtpHost,
+                SmtpPort = setting.SmtpPort,
+                EnableSsl = setting.EnableSsl,
+                Username = setting.Username,
+                UpdatedAt = setting.UpdatedAt
+            };
+
+            return Ok(new { ok = true, data = view });
+        }
+
+
+        // /api/settings/emailsettings
+        [HttpPost("emailsettings")]
+        public async Task<IActionResult> UpsertEmailSettings([FromBody] EmailSmtpSettingUpsertDto dto)
+        {
+            if (string.IsNullOrWhiteSpace(dto.FromEmail))
+                return BadRequest(new { ok = false, message = "FromEmail is required." });
+
+            if (string.IsNullOrWhiteSpace(dto.Username))
+                return BadRequest(new { ok = false, message = "Username is required." });
+
+            var updatePassword = !string.IsNullOrWhiteSpace(dto.AppPasswordPlain);
+
+            // ถ้ามี password ก็เข้ารหัส
+            byte[] cipher = Array.Empty<byte>();
+            byte[] iv = Array.Empty<byte>();
+
+            if (updatePassword)
+            {
+                (cipher, iv) = _crypto.Encrypt(dto.AppPasswordPlain!.Trim().Replace(" ", ""));
+            }
+
+            var entity = new EmailSmtpSetting
+            {
+                CmpId = dto.CmpId,
+                SettingName = string.IsNullOrWhiteSpace(dto.SettingName) ? "default" : dto.SettingName.Trim(),
+                FromEmail = dto.FromEmail.Trim(),
+                FromName = dto.FromName?.Trim(),
+                SmtpHost = dto.SmtpHost.Trim(),
+                SmtpPort = dto.SmtpPort,
+                EnableSsl = dto.EnableSsl,
+                Username = dto.Username.Trim(),
+                IsActive = true
+            };
+
+            // ใส่ password เฉพาะตอนมีการอัปเดต
+            if (updatePassword)
+            {
+                entity.PasswordEnc = cipher;
+                entity.PasswordIv = iv;
+            }
+
+            try
+            {
+                await _repo.UpsertAsync(entity, updatePassword);
+                return Ok(new { ok = true });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { ok = false, message = ex.Message });
+            }
+        }
+
         /*  public void SendEmail()
          {
              // Create a new MailMessage object
@@ -639,6 +719,16 @@ namespace goalongapi.Controllers
 
     public class MailConfirm
     {
+
+        private readonly EmailSettingRepository _repo;
+        private readonly AesCrypto _crypto;
+
+        public MailConfirm(EmailSettingRepository repo, AesCrypto crypto)
+        {
+            _repo = repo;
+            _crypto = crypto;
+        }
+
 
         public static void SendEmail(string from, string toEmail, string fullname, string subject, string body)
         {
@@ -709,12 +799,16 @@ namespace goalongapi.Controllers
             var smtpHost = "smtp-relay.gmail.com"; // ใช้ SMTP Relay
             var smtpPort = 587;
             var fromEmail = "info@goalong.co.th"; // อีเมลที่ได้รับอนุญาตให้ส่งผ่าน SMTP Relay
+            // var appPassword = "your-app-password"; // ใช้ App Password ถ้าต้องการ
 
             var smtpClient = new SmtpClient(smtpHost, smtpPort)
             {
                 EnableSsl = true,
                 UseDefaultCredentials = false,
-                //  Credentials = new NetworkCredential(fromEmail, "your-app-password") // ใช้ App Password ถ้าต้องการ
+                /*    Credentials = new NetworkCredential(fromEmail, appPassword) ,
+                   DeliveryMethod = SmtpDeliveryMethod.Network,
+                   Timeout = 100000 */
+
             };
 
             try
@@ -737,6 +831,36 @@ namespace goalongapi.Controllers
             }
         }
 
+
+        public async Task ReplyEmailAsync(string toEmail, string fullname, string url, string? cmpId = null)
+        {
+            var setting = await _repo.GetActiveAsync(cmpId, "default");
+            if (object.ReferenceEquals(setting, null))
+                throw new Exception("Email SMTP Setting not found.");
+
+            var appPass = _crypto.Decrypt(setting.PasswordEnc, setting.PasswordIv);
+
+            using var smtpClient = new SmtpClient(setting.SmtpHost, setting.SmtpPort)
+            {
+                EnableSsl = setting.EnableSsl,
+                UseDefaultCredentials = false,
+                Credentials = new NetworkCredential(setting.Username, appPass),
+                DeliveryMethod = SmtpDeliveryMethod.Network,
+                Timeout = 100000
+            };
+
+            var fromAddress = new MailAddress(setting.FromEmail, setting.FromName ?? "Support");
+            using var message = new MailMessage(fromAddress, new MailAddress(toEmail))
+            {
+                Subject = "System Reset Password",
+                Body = mailbodyReset(fullname, url),
+                IsBodyHtml = true
+            };
+
+            message.Bcc.Add(new MailAddress(setting.FromEmail));
+
+            smtpClient.Send(message);
+        }
 
         public static void ResetPassword(string emailto, string fullname, string url)
         {
