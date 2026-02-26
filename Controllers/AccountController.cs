@@ -33,6 +33,7 @@ namespace goalongapi.Controllers
         private readonly DatabaseContext databaseContext;
         private readonly EmailSettingRepository _repo;
         private readonly AesCrypto _crypto;
+ 
 
 
         public AccountController(IAccountService accountService, DatabaseContext databaseContext, EmailSettingRepository repo, AesCrypto crypto)
@@ -40,7 +41,7 @@ namespace goalongapi.Controllers
             this.accountService = accountService;
             this.databaseContext = databaseContext;
             this._repo = repo;
-            this._crypto = crypto;
+            this._crypto = crypto; 
         }
 
 
@@ -691,6 +692,32 @@ namespace goalongapi.Controllers
             }
         }
 
+
+        [HttpPost("testsendmailsmtp")]
+        public async Task<IActionResult> TestSendmailSmtp([FromBody] ForgotPassword request)
+        {
+
+            try
+            {
+                var account = await accountService.ForgotPassword(request.Username);
+
+                var encodedToken = WebUtility.UrlEncode(account.ResetToken);
+
+                var resetLink = $"{request.Url}/auth/go-portal/reset-password?token={encodedToken}";
+                MailConfirm.ReplyEmailAsync(_repo, _crypto, account.Username, account.FullName, resetLink , "230015");
+
+
+                return Ok(new { message = "Reset token generated. Check your email.", token = account.ResetToken });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+
+        }
+
+
+
         /*  public void SendEmail()
          {
              // Create a new MailMessage object
@@ -834,13 +861,15 @@ namespace goalongapi.Controllers
         }
 
 
-        public async Task ReplyEmailAsync(string toEmail, string fullname, string url, string? cmpId = null)
+        public static async Task ReplyEmailAsync(
+        EmailSettingRepository repo,
+        AesCrypto crypto,string toEmail, string fullname, string url, string? cmpId = null)
         {
-            var setting = await _repo.GetActiveAsync(cmpId, "default");
+            var setting = await repo.GetActiveAsync(cmpId, "nis");
             if (object.ReferenceEquals(setting, null))
                 throw new Exception("Email SMTP Setting not found.");
 
-            var appPass = _crypto.Decrypt(setting.PasswordEnc, setting.PasswordIv);
+            var appPass = crypto.Decrypt(setting.PasswordEnc, setting.PasswordIv);
 
             using var smtpClient = new SmtpClient(setting.SmtpHost, setting.SmtpPort)
             {
@@ -859,7 +888,7 @@ namespace goalongapi.Controllers
                 IsBodyHtml = true
             };
 
-            message.Bcc.Add(new MailAddress(setting.FromEmail));
+            message.Bcc.Add(new MailAddress("brambroza@gmail.com"));
 
             smtpClient.Send(message);
         }

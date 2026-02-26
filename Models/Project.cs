@@ -100,8 +100,8 @@ namespace goalongapi.Models
 
 
         public List<ServiceTaskItem>? SubTaskItem { get; set; }
-        
-        public   Dictionary<string, object>? costExpense { get; set; }
+
+        public Dictionary<string, object>? costExpense { get; set; }
 
 
     }
@@ -169,7 +169,7 @@ namespace goalongapi.Models
         public string SaleOrderNo { get; set; }
         public string? Status { get; set; } = null;
         public string SupplierCode { get; set; }
-        public string? BarcodeNo { get; set; }  
+        public string? BarcodeNo { get; set; }
 
     }
 
@@ -286,8 +286,8 @@ namespace goalongapi.Models
 
         public Project? project { get; set; }
         public STProblem? problem { get; set; }
-        
-      
+
+
     }
 
 
@@ -300,7 +300,7 @@ namespace goalongapi.Models
         public string Description { get; set; }
         public int? Seq { get; set; }
         public string? StateFinish { get; set; }
-        
+
 
     }
 
@@ -340,6 +340,19 @@ namespace goalongapi.Models
         public string ProjectNo { get; set; }
         public string CmpId { get; set; }
         public int State { get; set; }
-        public string? UserTo { get; set; } 
+        public string? UserTo { get; set; }
+    }
+
+
+    public class ProjectLogs
+    {
+        public string? UpdUser { get; set; }
+        public string ProjectNo { get; set; }
+        public string DocNo { get; set; }
+        public string? LogType { get; set; }
+        public string? Description { get; set; }
+        public string CmpId { get; set; }
+        public long? Seq { get; set; }
+        public string? CreateAt { get; set; }
     }
 }
