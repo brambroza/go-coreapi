@@ -163,6 +163,9 @@ namespace goalongapi.Controllers
                             Status = d["Status"].ToString(),
                             SupplierCode = d["SupplierCode"].ToString(),
                             BarcodeNo = d["BarcodeNo"].ToString(),
+                            Purchasestatus = d["Purchasestatus"].ToString(),
+                            ReserveQty = Convert.ToDecimal(d["ReserveQty"]),
+                            Onhand = Convert.ToDecimal(d["Onhand"]),
                         }
                     );
                 }

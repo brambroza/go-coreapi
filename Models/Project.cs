@@ -176,6 +176,11 @@ namespace goalongapi.Models
         public string SupplierCode { get; set; }
         public string? BarcodeNo { get; set; }
 
+        public string? Purchasestatus { get; set; }
+        public decimal? ReserveQty { get; set; }
+        public decimal? Onhand {get;set;}
+        
+
     }
 
     public class Project_Task
@@ -363,5 +368,5 @@ namespace goalongapi.Models
 
 
 
-   
+
 }
