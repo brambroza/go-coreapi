@@ -123,11 +123,11 @@ namespace goalongapi.Controllers
 
                 project.items = new List<Project_Detail>();
                 project.TotalQty = dtItem.Select("ProjectNo='" + project.ProjectNo + "'").Length;
-                project.ProjectStatusType =  r["ProjectStatusType"].ToString();
+                project.ProjectStatusType = r["ProjectStatusType"].ToString();
 
-                project.ServiceStatus =  r["ServiceStatus"].ToString();
-                project.PurchasingStatus =  r["PurchasingStatus"].ToString();
-                project.AccountingStatus =  r["AccountingStatus"].ToString();
+                project.ServiceStatus = r["ServiceStatus"].ToString();
+                project.PurchasingStatus = r["PurchasingStatus"].ToString();
+                project.AccountingStatus = r["AccountingStatus"].ToString();
 
                 foreach (DataRow d in dtItem.Select("ProjectNo='" + project.ProjectNo + "'"))
                 {
@@ -3914,6 +3914,23 @@ namespace goalongapi.Controllers
             string _cmd;
 
             _cmd = "exec dbo.getProjectLogs @CmpId='" + CmpId + "' , @ProjectNo='" + docno + "'";
+            DataTable datatable2 = DB.DBConn.GetDataTable(_cmd);
+
+
+            var rows = datatable2.AsEnumerable()
+                .Select(RowToDictionary)
+                .ToList();
+
+            return Ok(rows);
+        }
+
+
+        [HttpGet("[action]")]
+        public ActionResult getProjectItems([FromQuery] string CmpId, [FromQuery] string docno)
+        {
+            string _cmd;
+
+            _cmd = "exec dbo.getSaleorder_ProjectItem @CmpId='" + CmpId + "' , @ProjectNo='" + docno + "'";
             DataTable datatable2 = DB.DBConn.GetDataTable(_cmd);
 
 

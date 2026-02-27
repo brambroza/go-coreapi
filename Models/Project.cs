@@ -360,4 +360,8 @@ namespace goalongapi.Models
         public long? Seq { get; set; }
         public string? CreateAt { get; set; }
     }
+
+
+
+   
 }
