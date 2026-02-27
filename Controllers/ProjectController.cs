@@ -124,7 +124,11 @@ namespace goalongapi.Controllers
                 project.items = new List<Project_Detail>();
                 project.TotalQty = dtItem.Select("ProjectNo='" + project.ProjectNo + "'").Length;
                 project.ProjectStatusType =  r["ProjectStatusType"].ToString();
-                
+
+                project.ServiceStatus =  r["ServiceStatus"].ToString();
+                project.PurchasingStatus =  r["PurchasingStatus"].ToString();
+                project.AccountingStatus =  r["AccountingStatus"].ToString();
+
                 foreach (DataRow d in dtItem.Select("ProjectNo='" + project.ProjectNo + "'"))
                 {
                     project.items.Add(

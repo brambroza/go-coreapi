@@ -103,7 +103,10 @@ namespace goalongapi.Models
 
         public Dictionary<string, object>? costExpense { get; set; }
 
-        public string? ProjectStatusType {get;set;}
+        public string? ProjectStatusType { get; set; }
+        public string? ServiceStatus { get; set; }
+        public string? PurchasingStatus { get; set; }
+        public string? AccountingStatus { get; set; }
 
 
     }
