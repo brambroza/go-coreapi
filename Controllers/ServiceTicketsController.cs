@@ -46,7 +46,7 @@ public class ServiceTicketsController : ControllerBase
         return Ok(data);
     }
 
-    [HttpGet("{id:guid}")]
+    [HttpGet("{id}")]
     public async Task<ActionResult<ServiceTicketResponseDto>> GetById(string id)
     {
         var entity = await _context.ServiceTickets
@@ -139,7 +139,7 @@ public class ServiceTicketsController : ControllerBase
         return CreatedAtAction(nameof(GetById), new { id = entity.TicketId }, MapToResponse(result));
     }
 
-    [HttpPut("{id:guid}")]
+    [HttpPut("{id}")]
     public async Task<ActionResult<ServiceTicketResponseDto>> Update(string id, [FromBody] ServiceTicketCreateUpdateDto dto)
     {
         var entity = await _context.ServiceTickets
@@ -221,7 +221,7 @@ public class ServiceTicketsController : ControllerBase
         return Ok(MapToResponse(result));
     }
 
-    [HttpDelete("{id:guid}")]
+    [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(string id)
     {
         var entity = await _context.ServiceTickets
