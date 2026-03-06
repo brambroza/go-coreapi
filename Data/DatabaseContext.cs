@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using goalongapi.Entities;
+using goalongapi.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
@@ -23,6 +24,11 @@ namespace goalongapi.Data
         public virtual DbSet<AccountSession> AccountSessions { get; set; } = null!;
 
         public DbSet<ReportTemplate> ReportTemplates => Set<ReportTemplate>();
+
+        public DbSet<ServiceTicket> ServiceTickets => Set<ServiceTicket>();
+        public DbSet<ServiceTicketJobGroup> ServiceTicketJobGroups => Set<ServiceTicketJobGroup>();
+        public DbSet<ServiceTicketAttachment> ServiceTicketAttachments => Set<ServiceTicketAttachment>();
+
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -109,6 +115,52 @@ namespace goalongapi.Data
 
             modelBuilder.Entity<ReportTemplate>()
                 .HasIndex(x => new { x.TemplateCode, x.IsActive });
+
+            modelBuilder.Entity<ServiceTicket>(entity =>
+        {
+            entity.ToTable("ServiceTicket");
+
+            entity.HasKey(x => x.TicketId);
+
+            entity.Property(x => x.CustomerName).HasMaxLength(255).IsRequired();
+            entity.Property(x => x.JobType).HasMaxLength(20).IsRequired();
+            entity.Property(x => x.Priority).HasMaxLength(20).IsRequired();
+            entity.Property(x => x.CmpId).HasMaxLength(50);
+            entity.Property(x => x.UpdUser).HasMaxLength(100).IsRequired();
+            entity.Property(x => x.Status).HasMaxLength(20).HasDefaultValue("draft");
+
+            entity.HasMany(x => x.JobGroups)
+                  .WithOne(x => x.ServiceTicket)
+                  .HasForeignKey(x => x.TicketId)
+                  .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasMany(x => x.Attachments)
+                  .WithOne(x => x.ServiceTicket)
+                  .HasForeignKey(x => x.TicketId)
+                  .OnDelete(DeleteBehavior.Cascade);
+        });
+
+            modelBuilder.Entity<ServiceTicketJobGroup>(entity =>
+            {
+                entity.ToTable("ServiceTicketJobGroup");
+                entity.HasKey(x => x.Id);
+
+                entity.Property(x => x.JobGroup).HasMaxLength(20).IsRequired();
+
+                entity.HasIndex(x => new { x.TicketId, x.JobGroup }).IsUnique();
+            });
+
+            modelBuilder.Entity<ServiceTicketAttachment>(entity =>
+            {
+                entity.ToTable("ServiceTicketAttachment");
+                entity.HasKey(x => x.AttachmentId);
+
+                entity.Property(x => x.FileName).HasMaxLength(255).IsRequired();
+                entity.Property(x => x.FilePath).HasMaxLength(500);
+                entity.Property(x => x.FileExt).HasMaxLength(20);
+                entity.Property(x => x.ContentType).HasMaxLength(100);
+                entity.Property(x => x.CreatedBy).HasMaxLength(100);
+            });
 
             OnModelCreatingPartial(modelBuilder);
         }
