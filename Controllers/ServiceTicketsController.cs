@@ -4,7 +4,7 @@ using goalongapi.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace YourProject.Controllers;
+namespace goalongapi.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]

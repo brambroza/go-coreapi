@@ -118,7 +118,7 @@ namespace goalongapi.Data
 
             modelBuilder.Entity<ServiceTicket>(entity =>
         {
-            entity.ToTable("ServiceTicket");
+            entity.ToTable("ServiceTicket", tb => tb.UseSqlOutputClause(false));
 
             entity.HasKey(x => x.TicketId);
 
@@ -142,7 +142,7 @@ namespace goalongapi.Data
 
             modelBuilder.Entity<ServiceTicketJobGroup>(entity =>
             {
-                entity.ToTable("ServiceTicketJobGroup");
+                entity.ToTable("ServiceTicketJobGroup", tb => tb.UseSqlOutputClause(false));
                 entity.HasKey(x => x.Id);
 
                 entity.Property(x => x.JobGroup).HasMaxLength(20).IsRequired();
@@ -152,7 +152,7 @@ namespace goalongapi.Data
 
             modelBuilder.Entity<ServiceTicketAttachment>(entity =>
             {
-                entity.ToTable("ServiceTicketAttachment");
+                entity.ToTable("ServiceTicketAttachment", tb => tb.UseSqlOutputClause(false));
                 entity.HasKey(x => x.AttachmentId);
 
                 entity.Property(x => x.FileName).HasMaxLength(255).IsRequired();
