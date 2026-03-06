@@ -47,7 +47,7 @@ public class ServiceTicketsController : ControllerBase
     }
 
     [HttpGet("{id:guid}")]
-    public async Task<ActionResult<ServiceTicketResponseDto>> GetById(Guid id)
+    public async Task<ActionResult<ServiceTicketResponseDto>> GetById(string id)
     {
         var entity = await _context.ServiceTickets
             .AsNoTracking()
@@ -66,7 +66,7 @@ public class ServiceTicketsController : ControllerBase
     {
         var entity = new ServiceTicket
         {
-            TicketId = Guid.NewGuid(),
+            TicketId =  dto.TicketId,
             CustomerName = dto.CustomerName,
             JobType = dto.JobType,
             AdditionalDetails = dto.AdditionalDetails,
@@ -140,7 +140,7 @@ public class ServiceTicketsController : ControllerBase
     }
 
     [HttpPut("{id:guid}")]
-    public async Task<ActionResult<ServiceTicketResponseDto>> Update(Guid id, [FromBody] ServiceTicketCreateUpdateDto dto)
+    public async Task<ActionResult<ServiceTicketResponseDto>> Update(string id, [FromBody] ServiceTicketCreateUpdateDto dto)
     {
         var entity = await _context.ServiceTickets
             .Include(x => x.JobGroups)
@@ -222,7 +222,7 @@ public class ServiceTicketsController : ControllerBase
     }
 
     [HttpDelete("{id:guid}")]
-    public async Task<IActionResult> Delete(Guid id)
+    public async Task<IActionResult> Delete(string id)
     {
         var entity = await _context.ServiceTickets
             .FirstOrDefaultAsync(x => x.TicketId == id);

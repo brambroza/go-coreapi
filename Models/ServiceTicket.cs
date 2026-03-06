@@ -9,7 +9,7 @@ namespace goalongapi.Models
 
     public class ServiceTicket
     {
-        public Guid TicketId { get; set; }
+        public string TicketId { get; set; }
         public string? TicketNo { get; set; }
         public string CustomerName { get; set; } = string.Empty;
         public string JobType { get; set; } = "implement"; // implement, maintenance
@@ -73,7 +73,7 @@ namespace goalongapi.Models
     {
         public long Id { get; set; }
 
-        public Guid TicketId { get; set; }
+        public string TicketId { get; set; }
 
         public string JobGroup { get; set; } = string.Empty;
 
@@ -85,7 +85,7 @@ namespace goalongapi.Models
     public class ServiceTicketAttachment
     {
         public Guid AttachmentId { get; set; } = Guid.NewGuid();
-        public Guid TicketId { get; set; }
+        public string TicketId { get; set; }
 
         public int Seq { get; set; } = 1;
 
