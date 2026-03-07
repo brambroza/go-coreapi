@@ -67,6 +67,7 @@ public class ServiceTicketsController : ControllerBase
         var entity = new ServiceTicket
         {
             TicketId =  dto.TicketId,
+            ProjectNo  = dto.ProjectNo, 
             CustomerName = dto.CustomerName,
             JobType = dto.JobType,
             AdditionalDetails = dto.AdditionalDetails,
