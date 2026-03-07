@@ -66,8 +66,8 @@ public class ServiceTicketsController : ControllerBase
     {
         var entity = new ServiceTicket
         {
-            TicketId =  dto.TicketId,
-            ProjectNo  = dto.ProjectNo, 
+            TicketId = dto.TicketId,
+            ProjectNo = dto.ProjectNo,
             CustomerName = dto.CustomerName,
             JobType = dto.JobType,
             AdditionalDetails = dto.AdditionalDetails,
@@ -138,6 +138,22 @@ public class ServiceTicketsController : ControllerBase
             .FirstAsync(x => x.TicketId == entity.TicketId);
 
         return CreatedAtAction(nameof(GetById), new { id = entity.TicketId }, MapToResponse(result));
+    }
+
+    [HttpGet("project/{projectNo}")]
+    public async Task<ActionResult<IEnumerable<ServiceTicketResponseDto>>> GetByProjectNo(string projectNo)
+    {
+        var entities = await _context.ServiceTickets
+            .AsNoTracking()
+            .Include(x => x.JobGroups)
+            .Include(x => x.Attachments)
+            .Where(x => x.ProjectNo == projectNo)
+            .OrderByDescending(x => x.CreatedAt)
+            .ToListAsync();
+
+        var result = entities.Select(MapToResponse).ToList();
+
+        return Ok(result);
     }
 
     [HttpPut("{id}")]
