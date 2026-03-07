@@ -10,6 +10,7 @@ namespace goalongapi.Models
     public class ServiceTicket
     {
         public string TicketId { get; set; }
+        public string ProjectNo { get; set; }
         public string? TicketNo { get; set; }
         public string CustomerName { get; set; } = string.Empty;
         public string JobType { get; set; } = "implement"; // implement, maintenance

@@ -151,6 +151,7 @@ public class ServiceTicketsController : ControllerBase
             return NotFound();
 
         entity.CustomerName = dto.CustomerName;
+        entity.ProjectNo = dto.ProjectNo;
         entity.JobType = dto.JobType;
         entity.AdditionalDetails = dto.AdditionalDetails;
         entity.Priority = dto.Priority;

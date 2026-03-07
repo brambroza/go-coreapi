@@ -16,6 +16,7 @@ public class ServiceTicketAttachmentDto
 public class ServiceTicketCreateUpdateDto
 {
     public string TicketId { get; set; }
+    public string ProjectNo { get; set; }
     public string CustomerName { get; set; } = string.Empty;
     public string JobType { get; set; } = "implement";
     public List<string> JobGroups { get; set; } = new();
@@ -59,6 +60,7 @@ public class ServiceTicketCreateUpdateDto
 public class ServiceTicketResponseDto
 {
     public string TicketId { get; set; }
+    public string ProjectNo { get; set; }
     public string? TicketNo { get; set; }
     public string CustomerName { get; set; } = string.Empty;
     public string JobType { get; set; } = string.Empty;
