@@ -24,7 +24,7 @@ namespace goalongapi.Controllers
             DataTable dt = new System.Data.DataTable();
             string _docnew = "";
             string _cmd;
- 
+
             if (cmpid == "230015")
             {
                 switch (type)
@@ -58,7 +58,7 @@ namespace goalongapi.Controllers
 
                         break;
 
-                       case "deliverynote":
+                    case "deliverynote":
                         _cmd =
                             "Select Top 1  DeliveryNoteNo  as FTDocNo FROM  inven.DeliveryNote where   CmpId ="
                             + cmpid
@@ -86,8 +86,35 @@ namespace goalongapi.Controllers
                         }
 
                         break;
+                    case "servicetask":
+                        _cmd =
+                            "Select Top 1  TicketNo  as FTDocNo FROM  dbo.ServiceTicket where   CmpId ="
+                            + cmpid
+                            + " and  TicketNo='"
+                            + DocNo
+                            + "'";
+                        dt = DB.DBConn.GetDataTable(_cmd);
+                        if (dt.Rows.Count > 0)
+                        {
+                            try
+                            {
+                                _docnew = dt.Rows[0][0].ToString();
+                            }
+                            catch
+                            {
+                                _docnew = "";
+                            }
+                        }
 
-                    
+                        if ((_docnew.ToString() == "") || (_docnew.ToLower() == "null"))
+                        {
+                            _cmd =
+                                "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo.[servicetaskid]   set @Runno  = 'TS-'+@Runno  select @Runno   "; // + cmpid  ;
+                            dt = DB.DBConn.GetDataTable(_cmd);
+                        }
+
+                        break;
+
                     case "packinglist":
                         _cmd =
                             "Select Top 1  PackingListNo  as FTDocNo FROM  inven.PackingList where   CmpId ="
@@ -257,32 +284,32 @@ namespace goalongapi.Controllers
                         }
                         break;
 
-                 case "count":
+                    case "count":
 
-                    _cmd =
-                        "Select Top 1  AdjustNo  FROM Inven.[Adjust]  where  AdjustNo='"
-                        + DocNo
-                        + "'";
-                    dt = DB.DBConn.GetDataTable(_cmd);
-                    if (dt.Rows.Count > 0)
-                    {
-                        try
-                        {
-                            _docnew = dt.Rows[0][0].ToString();
-                        }
-                        catch
-                        {
-                            _docnew = "";
-                        }
-                    }
-
-                    if ((_docnew.ToString() == "") || (_docnew.ToLower() == "null"))
-                    {
                         _cmd =
-                            "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo.countrun      select 'CT-'+@Runno   "; // + cmpid  ;
+                            "Select Top 1  AdjustNo  FROM Inven.[Adjust]  where  AdjustNo='"
+                            + DocNo
+                            + "'";
                         dt = DB.DBConn.GetDataTable(_cmd);
-                    }
-                    break;
+                        if (dt.Rows.Count > 0)
+                        {
+                            try
+                            {
+                                _docnew = dt.Rows[0][0].ToString();
+                            }
+                            catch
+                            {
+                                _docnew = "";
+                            }
+                        }
+
+                        if ((_docnew.ToString() == "") || (_docnew.ToLower() == "null"))
+                        {
+                            _cmd =
+                                "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo.countrun      select 'CT-'+@Runno   "; // + cmpid  ;
+                            dt = DB.DBConn.GetDataTable(_cmd);
+                        }
+                        break;
 
 
                     case "pur":
@@ -367,7 +394,7 @@ namespace goalongapi.Controllers
                         }
                         break;
 
-                     case "task":
+                    case "task":
                         _cmd =
                             "Select Top 1  TaskNo  FROM  dbo.Project_task  where  TaskNo='"
                             + DocNo
@@ -394,7 +421,7 @@ namespace goalongapi.Controllers
                         break;
 
 
-                      case "prob":
+                    case "prob":
                         _cmd =
                             "Select Top 1  ProblemId  FROM  dbo.STProblem  where  ProblemId='"
                             + DocNo
@@ -414,15 +441,15 @@ namespace goalongapi.Controllers
 
                         if ((_docnew.ToString() == "") || (_docnew.ToLower() == "null"))
                         {
-                            
-                                 _cmd =
-                                "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo.ProblemId      select  @Runno   "; 
+
+                            _cmd =
+                           "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo.ProblemId      select  @Runno   ";
                             dt = DB.DBConn.GetDataTable(_cmd);
                         }
                         break;
 
 
-                       case "action":
+                    case "action":
                         _cmd =
                             "Select Top 1  ServiceActionId  FROM  dbo.STServiceActions  where  ServiceActionId='"
                             + DocNo
@@ -442,9 +469,9 @@ namespace goalongapi.Controllers
 
                         if ((_docnew.ToString() == "") || (_docnew.ToLower() == "null"))
                         {
-                            
-                                 _cmd =
-                                "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo.ProblemActionId      select  @Runno   "; 
+
+                            _cmd =
+                           "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo.ProblemActionId      select  @Runno   ";
                             dt = DB.DBConn.GetDataTable(_cmd);
                         }
                         break;
@@ -1118,15 +1145,15 @@ namespace goalongapi.Controllers
 
                         if ((_docnew.ToString() == "") || (_docnew.ToLower() == "null"))
                         {
-                             _cmd =
-                            "declare @Runno varchar(30)   Select  @Runno =NEXT VALUE FOR  dbo.deptrun   set @Runno  =  @Runno  select @Runno   "; // + cmpid  ;
-                        dt = DB.DBConn.GetDataTable(_cmd);
+                            _cmd =
+                           "declare @Runno varchar(30)   Select  @Runno =NEXT VALUE FOR  dbo.deptrun   set @Runno  =  @Runno  select @Runno   "; // + cmpid  ;
+                            dt = DB.DBConn.GetDataTable(_cmd);
 
                         }
 
                         break;
 
-                case "position":
+                    case "position":
 
                         _cmd =
                             "Select Top 1  PositionNo  as FTDocNo FROM  dbo.Position  where   CmpId ='"
@@ -1149,9 +1176,9 @@ namespace goalongapi.Controllers
 
                         if ((_docnew.ToString() == "") || (_docnew.ToLower() == "null"))
                         {
-                             _cmd =
-                            "declare @Runno varchar(30)   Select  @Runno =NEXT VALUE FOR  dbo.positionrun   set @Runno  =  @Runno  select @Runno   "; // + cmpid  ;
-                        dt = DB.DBConn.GetDataTable(_cmd);
+                            _cmd =
+                           "declare @Runno varchar(30)   Select  @Runno =NEXT VALUE FOR  dbo.positionrun   set @Runno  =  @Runno  select @Runno   "; // + cmpid  ;
+                            dt = DB.DBConn.GetDataTable(_cmd);
 
                         }
 
@@ -1160,84 +1187,84 @@ namespace goalongapi.Controllers
 
 
                     case "costcenter":
-                    _cmd =
-                        "Select Top 1  CostCenterNo  FROM  acc.CostCenter where  CostCenterNo='"
-                        + DocNo
-                        + "'";
-                    dt = DB.DBConn.GetDataTable(_cmd);
-                    if (dt.Rows.Count > 0)
-                    {
-                        try
-                        {
-                            _docnew = dt.Rows[0][0].ToString();
-                        }
-                        catch
-                        {
-                            _docnew = "";
-                        }
-                    }
-
-                    if ((_docnew.ToString() == "") || (_docnew.ToLower() == "null"))
-                    {
                         _cmd =
-                            "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo.[costcenterrun]      select @Runno   "; // + cmpid  ;
+                            "Select Top 1  CostCenterNo  FROM  acc.CostCenter where  CostCenterNo='"
+                            + DocNo
+                            + "'";
                         dt = DB.DBConn.GetDataTable(_cmd);
-                    }
-                    break;
+                        if (dt.Rows.Count > 0)
+                        {
+                            try
+                            {
+                                _docnew = dt.Rows[0][0].ToString();
+                            }
+                            catch
+                            {
+                                _docnew = "";
+                            }
+                        }
+
+                        if ((_docnew.ToString() == "") || (_docnew.ToLower() == "null"))
+                        {
+                            _cmd =
+                                "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo.[costcenterrun]      select @Runno   "; // + cmpid  ;
+                            dt = DB.DBConn.GetDataTable(_cmd);
+                        }
+                        break;
 
 
                     case "costexpense":
-                    _cmd =
-                        "Select Top 1  ExpenseNo  FROM  acc.CostExpense where  ExpenseNo='"
-                        + DocNo
-                        + "'";
-                    dt = DB.DBConn.GetDataTable(_cmd);
-                    if (dt.Rows.Count > 0)
-                    {
-                        try
-                        {
-                            _docnew = dt.Rows[0][0].ToString();
-                        }
-                        catch
-                        {
-                            _docnew = "";
-                        }
-                    }
-
-                    if ((_docnew.ToString() == "") || (_docnew.ToLower() == "null"))
-                    {
                         _cmd =
-                            "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo.[costexpenserun]      select @Runno   "; // + cmpid  ;
+                            "Select Top 1  ExpenseNo  FROM  acc.CostExpense where  ExpenseNo='"
+                            + DocNo
+                            + "'";
                         dt = DB.DBConn.GetDataTable(_cmd);
-                    }
-                    break;
-
-                case "costadvance":
-                    _cmd =
-                        "Select Top 1  AdvanceNo  FROM  acc.CostAdvance where  AdvanceNo='"
-                        + DocNo
-                        + "'";
-                    dt = DB.DBConn.GetDataTable(_cmd);
-                    if (dt.Rows.Count > 0)
-                    {
-                        try
+                        if (dt.Rows.Count > 0)
                         {
-                            _docnew = dt.Rows[0][0].ToString();
+                            try
+                            {
+                                _docnew = dt.Rows[0][0].ToString();
+                            }
+                            catch
+                            {
+                                _docnew = "";
+                            }
                         }
-                        catch
-                        {
-                            _docnew = "";
-                        }
-                    }
 
-                    if ((_docnew.ToString() == "") || (_docnew.ToLower() == "null"))
-                    {
+                        if ((_docnew.ToString() == "") || (_docnew.ToLower() == "null"))
+                        {
+                            _cmd =
+                                "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo.[costexpenserun]      select @Runno   "; // + cmpid  ;
+                            dt = DB.DBConn.GetDataTable(_cmd);
+                        }
+                        break;
+
+                    case "costadvance":
                         _cmd =
-                            "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo.[costAdvancerun]      select @Runno   "; // + cmpid  ;
+                            "Select Top 1  AdvanceNo  FROM  acc.CostAdvance where  AdvanceNo='"
+                            + DocNo
+                            + "'";
                         dt = DB.DBConn.GetDataTable(_cmd);
-                    }
-                    break;
-                     
+                        if (dt.Rows.Count > 0)
+                        {
+                            try
+                            {
+                                _docnew = dt.Rows[0][0].ToString();
+                            }
+                            catch
+                            {
+                                _docnew = "";
+                            }
+                        }
+
+                        if ((_docnew.ToString() == "") || (_docnew.ToLower() == "null"))
+                        {
+                            _cmd =
+                                "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo.[costAdvancerun]      select @Runno   "; // + cmpid  ;
+                            dt = DB.DBConn.GetDataTable(_cmd);
+                        }
+                        break;
+
 
                     default:
                         break;
@@ -1278,8 +1305,8 @@ namespace goalongapi.Controllers
 
                         break;
 
-                    
-                     case "deliverynote":
+
+                    case "deliverynote":
                         _cmd =
                             "Select Top 1  DeliveryNoteNo  as FTDocNo FROM  inven.DeliveryNote where   CmpId ="
                             + cmpid
@@ -1301,17 +1328,47 @@ namespace goalongapi.Controllers
 
                         if ((_docnew.ToString() == "") || (_docnew.ToLower() == "null"))
                         {
-                           _cmd =
-                                "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo.["
-                                + cmpid
-                                + "-deliverynoterun]   set @Runno  = 'DN-'+@Runno  select @Runno   ";
-                         
+                            _cmd =
+                                 "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo.["
+                                 + cmpid
+                                 + "-deliverynoterun]   set @Runno  = 'DN-'+@Runno  select @Runno   ";
+
                             dt = DB.DBConn.GetDataTable(_cmd);
                         }
 
                         break;
 
-                    
+                    case "servicetask":
+                        _cmd =
+                            "Select Top 1  TicketNo  as FTDocNo FROM  dbo.ServiceTicket where   CmpId ="
+                            + cmpid
+                            + " and  TicketNo='"
+                            + DocNo
+                            + "'";
+                        dt = DB.DBConn.GetDataTable(_cmd);
+                        if (dt.Rows.Count > 0)
+                        {
+                            try
+                            {
+                                _docnew = dt.Rows[0][0].ToString();
+                            }
+                            catch
+                            {
+                                _docnew = "";
+                            }
+                        }
+
+                        if ((_docnew.ToString() == "") || (_docnew.ToLower() == "null"))
+                        {
+                            _cmd =
+                                "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR   dbo.["
+                                 + cmpid
+                                 + "-servicetaskid]   set @Runno  = 'TS-'+@Runno  select @Runno   "; // + cmpid  ;
+                            dt = DB.DBConn.GetDataTable(_cmd);
+                        }
+
+                        break;
+
                     case "packinglist":
                         _cmd =
                             "Select Top 1  PackingListNo  as FTDocNo FROM  inven.PackingList where   CmpId ="
@@ -1335,13 +1392,13 @@ namespace goalongapi.Controllers
                         if ((_docnew.ToString() == "") || (_docnew.ToLower() == "null"))
                         {
 
-                             _cmd =
-                                "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo.["
-                                + cmpid
-                                + "-packinglistrun]   set @Runno  = 'PL-'+@Runno  select @Runno   ";
-                         
+                            _cmd =
+                               "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo.["
+                               + cmpid
+                               + "-packinglistrun]   set @Runno  = 'PL-'+@Runno  select @Runno   ";
 
-                             dt = DB.DBConn.GetDataTable(_cmd);
+
+                            dt = DB.DBConn.GetDataTable(_cmd);
                         }
 
                         break;
@@ -1349,7 +1406,7 @@ namespace goalongapi.Controllers
 
 
 
-                      case "emp":
+                    case "emp":
                         _cmd =
                             "Select Top 1  EmployeeNo  as FTDocNo FROM  hr.Employee  where   CmpId ="
                             + cmpid
@@ -1371,10 +1428,10 @@ namespace goalongapi.Controllers
 
                         if ((_docnew.ToString() == "") || (_docnew.ToLower() == "null"))
                         {
-                          _cmd =
-                                "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo.["
-                                + cmpid
-                                + "-emprun]   set @Runno  =  @Runno  select @Runno   "; // + cmpid  ;
+                            _cmd =
+                                  "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo.["
+                                  + cmpid
+                                  + "-emprun]   set @Runno  =  @Runno  select @Runno   "; // + cmpid  ;
                             dt = DB.DBConn.GetDataTable(_cmd);
                         }
 
@@ -1402,10 +1459,10 @@ namespace goalongapi.Controllers
 
                         if ((_docnew.ToString() == "") || (_docnew.ToLower() == "null"))
                         {
-                          _cmd =
-                                "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo.["
-                                + cmpid
-                                + "-empidrun]   set @Runno  =  @Runno  select @Runno   "; // + cmpid  ;
+                            _cmd =
+                                  "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo.["
+                                  + cmpid
+                                  + "-empidrun]   set @Runno  =  @Runno  select @Runno   "; // + cmpid  ;
                             dt = DB.DBConn.GetDataTable(_cmd);
                         }
 
@@ -1505,7 +1562,7 @@ namespace goalongapi.Controllers
                         }
                         break;
 
-                   case "count":
+                    case "count":
 
                         _cmd =
                             "Select Top 1  AdjustNo  FROM Inven.[Adjust]  where  AdjustNo='"
@@ -1629,7 +1686,7 @@ namespace goalongapi.Controllers
                         }
                         break;
 
-                     case "task":
+                    case "task":
                         _cmd =
                             "Select Top 1  TaskNo  FROM  dbo.Project_task  where  TaskNo='"
                             + DocNo
@@ -1658,7 +1715,7 @@ namespace goalongapi.Controllers
                         break;
 
 
-                     case "prob":
+                    case "prob":
                         _cmd =
                             "Select Top 1  ProblemId  FROM  dbo.STProblem  where  ProblemId='"
                             + DocNo
@@ -1688,7 +1745,7 @@ namespace goalongapi.Controllers
                         }
                         break;
 
-                     case "action":
+                    case "action":
                         _cmd =
                             "Select Top 1  ServiceActionId  FROM  dbo.STServiceActions  where  ServiceActionId='"
                               + DocNo
@@ -1710,11 +1767,11 @@ namespace goalongapi.Controllers
 
                         if ((_docnew.ToString() == "") || (_docnew.ToLower() == "null"))
                         {
-                            
-                              _cmd =
-                                "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo."
-                                + cmpid
-                                + "-ProblemActionId      select ''+@Runno   ";
+
+                            _cmd =
+                              "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo."
+                              + cmpid
+                              + "-ProblemActionId      select ''+@Runno   ";
 
                             dt = DB.DBConn.GetDataTable(_cmd);
                         }
@@ -2416,99 +2473,99 @@ namespace goalongapi.Controllers
                         }
 
                         break;
-                    
-                     case "costcenter":
-                    _cmd =
-                        "Select Top 1  CostCenterNo  FROM  acc.CostCenter where  CmpId ='"
-                            + cmpid
-                            + "' and   CostCenterNo='"
-                        + DocNo
-                        + "'";
-                    dt = DB.DBConn.GetDataTable(_cmd);
-                    if (dt.Rows.Count > 0)
-                    {
-                        try
-                        {
-                            _docnew = dt.Rows[0][0].ToString();
-                        }
-                        catch
-                        {
-                            _docnew = "";
-                        }
-                    }
 
-                    if ((_docnew.ToString() == "") || (_docnew.ToLower() == "null"))
-                    {
+                    case "costcenter":
                         _cmd =
-                            "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo.["
+                            "Select Top 1  CostCenterNo  FROM  acc.CostCenter where  CmpId ='"
                                 + cmpid
-                                + "-costcenterrun]      select @Runno   "; // + cmpid  ;
+                                + "' and   CostCenterNo='"
+                            + DocNo
+                            + "'";
                         dt = DB.DBConn.GetDataTable(_cmd);
-                    }
-                    break;
+                        if (dt.Rows.Count > 0)
+                        {
+                            try
+                            {
+                                _docnew = dt.Rows[0][0].ToString();
+                            }
+                            catch
+                            {
+                                _docnew = "";
+                            }
+                        }
+
+                        if ((_docnew.ToString() == "") || (_docnew.ToLower() == "null"))
+                        {
+                            _cmd =
+                                "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo.["
+                                    + cmpid
+                                    + "-costcenterrun]      select @Runno   "; // + cmpid  ;
+                            dt = DB.DBConn.GetDataTable(_cmd);
+                        }
+                        break;
 
 
                     case "costexpense":
-                    _cmd =
-                        "Select Top 1  ExpenseNo  FROM  acc.CostExpense where  CmpId ='"
-                            + cmpid
-                            + "' and  ExpenseNo='"
-                        + DocNo
-                        + "'";
-                    dt = DB.DBConn.GetDataTable(_cmd);
-                    if (dt.Rows.Count > 0)
-                    {
-                        try
-                        {
-                            _docnew = dt.Rows[0][0].ToString();
-                        }
-                        catch
-                        {
-                            _docnew = "";
-                        }
-                    }
-
-                    if ((_docnew.ToString() == "") || (_docnew.ToLower() == "null"))
-                    {
                         _cmd =
-                            "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo.["
+                            "Select Top 1  ExpenseNo  FROM  acc.CostExpense where  CmpId ='"
                                 + cmpid
-                                + "-costexpenserun]      select @Runno   "; // + cmpid  ;
+                                + "' and  ExpenseNo='"
+                            + DocNo
+                            + "'";
                         dt = DB.DBConn.GetDataTable(_cmd);
-                    }
-                    break;
-
-                case "costadvance":
-                    _cmd =
-                        "Select Top 1  AdvanceNo  FROM  acc.CostAdvance where  CmpId ='"
-                            + cmpid
-                            + "' and  AdvanceNo='"
-                        + DocNo
-                        + "'";
-
-                    dt = DB.DBConn.GetDataTable(_cmd);
-                    if (dt.Rows.Count > 0)
-                    {
-                        try
+                        if (dt.Rows.Count > 0)
                         {
-                            _docnew = dt.Rows[0][0].ToString();
+                            try
+                            {
+                                _docnew = dt.Rows[0][0].ToString();
+                            }
+                            catch
+                            {
+                                _docnew = "";
+                            }
                         }
-                        catch
-                        {
-                            _docnew = "";
-                        }
-                    }
 
-                    if ((_docnew.ToString() == "") || (_docnew.ToLower() == "null"))
-                    {
+                        if ((_docnew.ToString() == "") || (_docnew.ToLower() == "null"))
+                        {
+                            _cmd =
+                                "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo.["
+                                    + cmpid
+                                    + "-costexpenserun]      select @Runno   "; // + cmpid  ;
+                            dt = DB.DBConn.GetDataTable(_cmd);
+                        }
+                        break;
+
+                    case "costadvance":
                         _cmd =
-                            "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo.["
+                            "Select Top 1  AdvanceNo  FROM  acc.CostAdvance where  CmpId ='"
                                 + cmpid
-                                + "-costadvancerun]      select @Runno   "; // + cmpid  ;
+                                + "' and  AdvanceNo='"
+                            + DocNo
+                            + "'";
+
                         dt = DB.DBConn.GetDataTable(_cmd);
-                    }
-                    break;
-                case "dept":
+                        if (dt.Rows.Count > 0)
+                        {
+                            try
+                            {
+                                _docnew = dt.Rows[0][0].ToString();
+                            }
+                            catch
+                            {
+                                _docnew = "";
+                            }
+                        }
+
+                        if ((_docnew.ToString() == "") || (_docnew.ToLower() == "null"))
+                        {
+                            _cmd =
+                                "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo.["
+                                    + cmpid
+                                    + "-costadvancerun]      select @Runno   "; // + cmpid  ;
+                            dt = DB.DBConn.GetDataTable(_cmd);
+                        }
+                        break;
+                    case "dept":
 
                         _cmd =
                             "Select Top 1  DepartmentNo  as FTDocNo FROM  dbo.Department  where   CmpId ='"
@@ -2531,17 +2588,17 @@ namespace goalongapi.Controllers
 
                         if ((_docnew.ToString() == "") || (_docnew.ToLower() == "null"))
                         {
-                             _cmd =
-                            "declare @Runno varchar(30)   Select  @Runno =NEXT VALUE FOR  dbo.["
-                                + cmpid
-                                + "-deptrun]   set @Runno  =  @Runno  select @Runno   "; // + cmpid  ;
-                        dt = DB.DBConn.GetDataTable(_cmd);
+                            _cmd =
+                           "declare @Runno varchar(30)   Select  @Runno =NEXT VALUE FOR  dbo.["
+                               + cmpid
+                               + "-deptrun]   set @Runno  =  @Runno  select @Runno   "; // + cmpid  ;
+                            dt = DB.DBConn.GetDataTable(_cmd);
 
                         }
 
                         break;
 
-                case "position":
+                    case "position":
 
                         _cmd =
                             "Select Top 1  PositionNo  as FTDocNo FROM  dbo.Position  where   CmpId ='"
@@ -2564,17 +2621,17 @@ namespace goalongapi.Controllers
 
                         if ((_docnew.ToString() == "") || (_docnew.ToLower() == "null"))
                         {
-                             _cmd =
-                            "declare @Runno varchar(30)   Select  @Runno =NEXT VALUE FOR  dbo.["
-                                + cmpid
-                                + "-positionrun]   set @Runno  =  @Runno  select @Runno   "; // + cmpid  ;
-                        dt = DB.DBConn.GetDataTable(_cmd);
+                            _cmd =
+                           "declare @Runno varchar(30)   Select  @Runno =NEXT VALUE FOR  dbo.["
+                               + cmpid
+                               + "-positionrun]   set @Runno  =  @Runno  select @Runno   "; // + cmpid  ;
+                            dt = DB.DBConn.GetDataTable(_cmd);
 
                         }
 
                         break;
 
-                case "roleid":
+                    case "roleid":
 
                         _cmd =
                             "declare @Runno int  Select  @Runno =NEXT VALUE FOR  dbo.roleid   set @Runno  =  @Runno  select @Runno   "; // + cmpid  ;
@@ -2630,130 +2687,130 @@ namespace goalongapi.Controllers
 
                     break;
 
-                
-                  case "deliverynote":
+
+                case "deliverynote":
+                    _cmd =
+                        "Select Top 1  DeliveryNoteNo  as FTDocNo FROM  inven.DeliveryNote where   CmpId ="
+                        + cmpid
+                        + " and  DeliveryNoteNo='"
+                        + DocNo
+                        + "'";
+                    dt = DB.DBConn.GetDataTable(_cmd);
+                    if (dt.Rows.Count > 0)
+                    {
+                        try
+                        {
+                            _docnew = dt.Rows[0][0].ToString();
+                        }
+                        catch
+                        {
+                            _docnew = "";
+                        }
+                    }
+
+                    if ((_docnew.ToString() == "") || (_docnew.ToLower() == "null"))
+                    {
                         _cmd =
-                            "Select Top 1  DeliveryNoteNo  as FTDocNo FROM  inven.DeliveryNote where   CmpId ="
-                            + cmpid
-                            + " and  DeliveryNoteNo='"
-                            + DocNo
-                            + "'";
+                            "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo.deliverynoterun   set @Runno  = 'DN-'+@Runno  select @Runno   "; // + cmpid  ;
                         dt = DB.DBConn.GetDataTable(_cmd);
-                        if (dt.Rows.Count > 0)
-                        {
-                            try
-                            {
-                                _docnew = dt.Rows[0][0].ToString();
-                            }
-                            catch
-                            {
-                                _docnew = "";
-                            }
-                        }
+                    }
 
-                        if ((_docnew.ToString() == "") || (_docnew.ToLower() == "null"))
-                        {
-                            _cmd =
-                                "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo.deliverynoterun   set @Runno  = 'DN-'+@Runno  select @Runno   "; // + cmpid  ;
-                            dt = DB.DBConn.GetDataTable(_cmd);
-                        }
-
-                        break;
+                    break;
 
 
                 case "packinglist":
+                    _cmd =
+                        "Select Top 1  PackingListNo  as FTDocNo FROM  inven.PackingList where   CmpId ="
+                        + cmpid
+                        + " and  PackingListNo='"
+                        + DocNo
+                        + "'";
+                    dt = DB.DBConn.GetDataTable(_cmd);
+                    if (dt.Rows.Count > 0)
+                    {
+                        try
+                        {
+                            _docnew = dt.Rows[0][0].ToString();
+                        }
+                        catch
+                        {
+                            _docnew = "";
+                        }
+                    }
+
+                    if ((_docnew.ToString() == "") || (_docnew.ToLower() == "null"))
+                    {
+
+
                         _cmd =
-                            "Select Top 1  PackingListNo  as FTDocNo FROM  inven.PackingList where   CmpId ="
-                            + cmpid
-                            + " and  PackingListNo='"
-                            + DocNo
-                            + "'";
+                            "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo.packinglistrun   set @Runno  = 'PL-'+@Runno  select @Runno   "; // + cmpid  ;
                         dt = DB.DBConn.GetDataTable(_cmd);
-                        if (dt.Rows.Count > 0)
-                        {
-                            try
-                            {
-                                _docnew = dt.Rows[0][0].ToString();
-                            }
-                            catch
-                            {
-                                _docnew = "";
-                            }
-                        }
-
-                        if ((_docnew.ToString() == "") || (_docnew.ToLower() == "null"))
-                        {
-
-                             
-                            _cmd =
-                                "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo.packinglistrun   set @Runno  = 'PL-'+@Runno  select @Runno   "; // + cmpid  ;
-                            dt = DB.DBConn.GetDataTable(_cmd);
 
 
-                             dt = DB.DBConn.GetDataTable(_cmd);
-                        }
+                        dt = DB.DBConn.GetDataTable(_cmd);
+                    }
                     break;
                 case "emp":
+                    _cmd =
+                        "Select Top 1  EmployeeNo  as FTDocNo FROM  hr.Employee  where   CmpId ="
+                        + cmpid
+                        + " and  EmployeeNo='"
+                        + DocNo
+                        + "'";
+                    dt = DB.DBConn.GetDataTable(_cmd);
+                    if (dt.Rows.Count > 0)
+                    {
+                        try
+                        {
+                            _docnew = dt.Rows[0][0].ToString();
+                        }
+                        catch
+                        {
+                            _docnew = "";
+                        }
+                    }
+
+                    if ((_docnew.ToString() == "") || (_docnew.ToLower() == "null"))
+                    {
                         _cmd =
-                            "Select Top 1  EmployeeNo  as FTDocNo FROM  hr.Employee  where   CmpId ="
-                            + cmpid
-                            + " and  EmployeeNo='"
-                            + DocNo
-                            + "'";
+                              "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo.["
+
+                              + "emprun]   set @Runno  =  @Runno  select @Runno   "; // + cmpid  ;
                         dt = DB.DBConn.GetDataTable(_cmd);
-                        if (dt.Rows.Count > 0)
+                    }
+
+                    break;
+
+                case "empid":
+                    _cmd =
+                        "Select Top 1  EmployeeId  as FTDocNo FROM  hr.Employee  where   CmpId ="
+                        + cmpid
+                        + " and  EmployeeId='"
+                        + DocNo
+                        + "'";
+                    dt = DB.DBConn.GetDataTable(_cmd);
+                    if (dt.Rows.Count > 0)
+                    {
+                        try
                         {
-                            try
-                            {
-                                _docnew = dt.Rows[0][0].ToString();
-                            }
-                            catch
-                            {
-                                _docnew = "";
-                            }
+                            _docnew = dt.Rows[0][0].ToString();
                         }
-
-                        if ((_docnew.ToString() == "") || (_docnew.ToLower() == "null"))
+                        catch
                         {
-                          _cmd =
-                                "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo.["
-                               
-                                + "emprun]   set @Runno  =  @Runno  select @Runno   "; // + cmpid  ;
-                            dt = DB.DBConn.GetDataTable(_cmd);
+                            _docnew = "";
                         }
+                    }
 
-                        break;
-
-                 case "empid":
+                    if ((_docnew.ToString() == "") || (_docnew.ToLower() == "null"))
+                    {
                         _cmd =
-                            "Select Top 1  EmployeeId  as FTDocNo FROM  hr.Employee  where   CmpId ="
-                            + cmpid
-                            + " and  EmployeeId='"
-                            + DocNo
-                            + "'";
+                              "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo.["
+
+                              + "empidrun]   set @Runno  =  @Runno  select @Runno   "; // + cmpid  ;
                         dt = DB.DBConn.GetDataTable(_cmd);
-                        if (dt.Rows.Count > 0)
-                        {
-                            try
-                            {
-                                _docnew = dt.Rows[0][0].ToString();
-                            }
-                            catch
-                            {
-                                _docnew = "";
-                            }
-                        }
+                    }
 
-                        if ((_docnew.ToString() == "") || (_docnew.ToLower() == "null"))
-                        {
-                          _cmd =
-                                "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo.["
-                               
-                                + "empidrun]   set @Runno  =  @Runno  select @Runno   "; // + cmpid  ;
-                            dt = DB.DBConn.GetDataTable(_cmd);
-                        }
-
-                        break;
+                    break;
 
 
 
@@ -3516,7 +3573,7 @@ namespace goalongapi.Controllers
                     }
                     break;
 
-                  case "position":
+                case "position":
                     _cmd =
                         "Select Top 1  PositionNo  FROM  dbo.Position where  PositionNo='"
                         + DocNo
@@ -3542,7 +3599,7 @@ namespace goalongapi.Controllers
                     }
                     break;
 
-                 case "costcenter":
+                case "costcenter":
                     _cmd =
                         "Select Top 1  CostCenterNo  FROM  acc.CostCenter where  CostCenterNo='"
                         + DocNo
@@ -3569,7 +3626,7 @@ namespace goalongapi.Controllers
                     break;
 
 
-                    case "costexpense":
+                case "costexpense":
                     _cmd =
                         "Select Top 1  ExpenseNo  FROM  acc.CostExpense where  ExpenseNo='"
                         + DocNo
