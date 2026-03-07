@@ -67,6 +67,7 @@ public class ServiceTicketsController : ControllerBase
         var entity = new ServiceTicket
         {
             TicketId = dto.TicketId,
+            TicketNo = dto.TicketNo, 
             ProjectNo = dto.ProjectNo,
             CustomerName = dto.CustomerName,
             JobType = dto.JobType,
@@ -168,6 +169,7 @@ public class ServiceTicketsController : ControllerBase
             return NotFound();
 
         entity.CustomerName = dto.CustomerName;
+        entity.TicketNo = dto.TicketNo;
         entity.ProjectNo = dto.ProjectNo;
         entity.JobType = dto.JobType;
         entity.AdditionalDetails = dto.AdditionalDetails;
