@@ -67,7 +67,7 @@ public class ServiceTicketsController : ControllerBase
         var entity = new ServiceTicket
         {
             TicketId = dto.TicketId,
-            TicketNo = dto.TicketNo, 
+            TicketNo = dto.TicketNo,
             ProjectNo = dto.ProjectNo,
             CustomerName = dto.CustomerName,
             JobType = dto.JobType,
@@ -254,6 +254,62 @@ public class ServiceTicketsController : ControllerBase
         await _context.SaveChangesAsync();
 
         return NoContent();
+    }
+
+    [HttpGet("kanban")]
+    public async Task<ActionResult<IEnumerable<ServiceTicketResponseDto>>> GetAll(
+    [FromQuery] string? cmpId,
+    [FromQuery] string? status,
+    [FromQuery] string? jobType,
+    [FromQuery] string? keyword
+)
+    {
+        var query = _context.ServiceTickets
+            .AsNoTracking()
+            .Include(x => x.JobGroups)
+            .Include(x => x.Attachments)
+            .AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(cmpId))
+            query = query.Where(x => x.CmpId == cmpId);
+
+        if (!string.IsNullOrWhiteSpace(status))
+            query = query.Where(x => x.Status == status);
+
+        if (!string.IsNullOrWhiteSpace(jobType))
+            query = query.Where(x => x.JobType == jobType);
+
+        if (!string.IsNullOrWhiteSpace(keyword))
+        {
+            query = query.Where(x =>
+                (x.TicketNo ?? "").Contains(keyword) ||
+                (x.CustomerName ?? "").Contains(keyword) ||
+                (x.ProjectNo ?? "").Contains(keyword) ||
+                (x.AdditionalDetails ?? "").Contains(keyword)
+            );
+        }
+
+        var rows = await query
+            .OrderByDescending(x => x.UpdatedAt)
+            .ToListAsync();
+
+        return Ok(rows.Select(MapToResponse).ToList());
+    }
+
+    [HttpPut("kanban/{id}/status")]
+    public async Task<IActionResult> UpdateStatus(string id, [FromBody] UpdateServiceTicketStatusDto dto)
+    {
+        var entity = await _context.ServiceTickets.FirstOrDefaultAsync(x => x.TicketId == id);
+
+        if (entity == null)
+            return NotFound();
+ 
+        entity.Status = dto.Status;
+        entity.UpdatedAt = DateTime.Now;
+
+        await _context.SaveChangesAsync();
+
+        return Ok();
     }
 
     private static ServiceTicketResponseDto MapToResponse(ServiceTicket x)

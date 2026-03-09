@@ -105,3 +105,8 @@ public class ServiceTicketResponseDto
 
     public List<ServiceTicketAttachmentDto> Attachments { get; set; } = new();
 }
+
+public class UpdateServiceTicketStatusDto
+{
+    public string Status { get; set; } = string.Empty;
+}
