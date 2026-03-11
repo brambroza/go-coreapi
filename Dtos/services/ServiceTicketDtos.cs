@@ -32,18 +32,9 @@ public class ServiceTicketCreateUpdateDto
     public string? CmpId { get; set; }
     public string UpdUser { get; set; } = string.Empty;
 
-    public bool ProcedureSiteSurvey { get; set; }
-    public bool ProcedurePreConfig { get; set; }
-    public bool ProcedureInstallConfig { get; set; }
-    public bool ProcedureUAT { get; set; }
-    public bool ProcedureHandover { get; set; }
+    public ServiceTicketProceduresDto? Procedures { get; set; }
 
-    public bool MaintenanceOnsiteService { get; set; }
-    public bool MaintenancePMService { get; set; }
-    public bool MaintenanceSLAServiceLicense { get; set; }
-    public bool MaintenanceServiceReplacement { get; set; }
-    public bool MaintenanceRemoteBackupConfig { get; set; }
-    public bool MaintenanceReport { get; set; }
+    public ServiceTicketMaintenancesDto? Maintenances { get; set; }
 
     public string? OnsiteServiceCycle { get; set; }
     public string? PMServiceCycle { get; set; }
@@ -56,6 +47,25 @@ public class ServiceTicketCreateUpdateDto
     public string Status { get; set; } = "draft";
 
     public List<ServiceTicketAttachmentDto> Attachments { get; set; } = new();
+}
+
+public class ServiceTicketProceduresDto
+{
+    public bool SiteSurvey { get; set; }
+    public bool PreConfig { get; set; }
+    public bool InstallConfig { get; set; }
+    public bool UAT { get; set; }
+    public bool Handover { get; set; }
+}
+
+public class ServiceTicketMaintenancesDto
+{
+    public bool OnsiteService { get; set; }
+    public bool PMService { get; set; }
+    public bool SLAServiceLicense { get; set; }
+    public bool ServiceReplacement { get; set; }
+    public bool RemoteBackupConfig { get; set; }
+    public bool Report { get; set; }
 }
 
 public class ServiceTicketResponseDto
