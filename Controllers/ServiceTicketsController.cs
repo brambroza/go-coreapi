@@ -180,18 +180,18 @@ public class ServiceTicketsController : ControllerBase
         entity.CmpId = dto.CmpId;
         entity.UpdUser = dto.UpdUser;
 
-        entity.ProcedureSiteSurvey = dto.ProcedureSiteSurvey;
-        entity.ProcedurePreConfig = dto.ProcedurePreConfig;
-        entity.ProcedureInstallConfig = dto.ProcedureInstallConfig;
-        entity.ProcedureUAT = dto.ProcedureUAT;
-        entity.ProcedureHandover = dto.ProcedureHandover;
+        entity.ProcedureSiteSurvey = dto.Procedures.SiteSurvey;
+        entity.ProcedurePreConfig = dto.Procedures.PreConfig;
+        entity.ProcedureInstallConfig = dto.Procedures.InstallConfig;
+        entity.ProcedureUAT = dto.Procedures.UAT;
+        entity.ProcedureHandover = dto.Procedures.Handover;
 
-        entity.MaintenanceOnsiteService = dto.MaintenanceOnsiteService;
-        entity.MaintenancePMService = dto.MaintenancePMService;
-        entity.MaintenanceSLAServiceLicense = dto.MaintenanceSLAServiceLicense;
-        entity.MaintenanceServiceReplacement = dto.MaintenanceServiceReplacement;
-        entity.MaintenanceRemoteBackupConfig = dto.MaintenanceRemoteBackupConfig;
-        entity.MaintenanceReport = dto.MaintenanceReport;
+        entity.MaintenanceOnsiteService = dto.Maintenances.OnsiteService;
+        entity.MaintenancePMService = dto.Maintenances.PMService;
+        entity.MaintenanceSLAServiceLicense = dto.Maintenances.SLAServiceLicense;
+        entity.MaintenanceServiceReplacement = dto.Maintenances.ServiceReplacement;
+        entity.MaintenanceRemoteBackupConfig = dto.Maintenances.RemoteBackupConfig;
+        entity.MaintenanceReport = dto.Maintenances.Report;
 
         entity.OnsiteServiceCycle = dto.OnsiteServiceCycle;
         entity.PMServiceCycle = dto.PMServiceCycle;
