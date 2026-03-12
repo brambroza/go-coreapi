@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using goalongapi.Dtos;
 using goalongapi.Entities;
 using goalongapi.Models;
 using Microsoft.EntityFrameworkCore;
@@ -28,6 +29,8 @@ namespace goalongapi.Data
         public DbSet<ServiceTicket> ServiceTickets => Set<ServiceTicket>();
         public DbSet<ServiceTicketJobGroup> ServiceTicketJobGroups => Set<ServiceTicketJobGroup>();
         public DbSet<ServiceTicketAttachment> ServiceTicketAttachments => Set<ServiceTicketAttachment>();
+
+        public DbSet<TeamServiceSpResult> TeamServiceSpResults { get; set; }
 
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -161,6 +164,8 @@ namespace goalongapi.Data
                 entity.Property(x => x.ContentType).HasMaxLength(100);
                 entity.Property(x => x.CreatedBy).HasMaxLength(100);
             });
+
+            modelBuilder.Entity<TeamServiceSpResult>().HasNoKey();
 
             OnModelCreatingPartial(modelBuilder);
         }

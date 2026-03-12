@@ -330,7 +330,7 @@ public class ServiceTicketsController : ControllerBase
         return ColorPool[hash % ColorPool.Length];
     }
 
-   [HttpGet("column/serviceteams")]
+    [HttpGet("column/serviceteams")]
     public async Task<ActionResult<IEnumerable<TeamServiceDto>>> Get([FromQuery] string cmpId)
     {
         if (string.IsNullOrWhiteSpace(cmpId))
@@ -338,7 +338,7 @@ public class ServiceTicketsController : ControllerBase
 
         var cmpIdParam = new SqlParameter("@CmpId", cmpId);
 
-        var raw = await _context.Set<TeamServiceDto>()
+        var raw = await _context.TeamServiceSpResults
             .FromSqlRaw("EXEC dbo.sp_getteamservice @CmpId", cmpIdParam)
             .AsNoTracking()
             .ToListAsync();
