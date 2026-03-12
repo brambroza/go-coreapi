@@ -111,3 +111,10 @@ public class UpdateServiceTicketStatusDto
 {
     public string Status { get; set; } = string.Empty;
 }
+
+public class TeamServiceDto
+{
+    public string Id { get; set; } = string.Empty;
+    public string Name { get; set; } = string.Empty;
+    public string Color { get; set; } = "default";
+}

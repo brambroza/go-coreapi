@@ -2,6 +2,7 @@ using goalongapi.Data;
 using goalongapi.Dtos;
 using goalongapi.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 
 namespace goalongapi.Controllers;
@@ -310,6 +311,46 @@ public class ServiceTicketsController : ControllerBase
         await _context.SaveChangesAsync();
 
         return Ok();
+    }
+
+
+
+
+    private static readonly string[] ColorPool =
+{
+    "default", "warning", "info", "success", "error", "primary", "secondary"
+};
+
+    private static string GetColorFromKey(string key)
+    {
+        if (string.IsNullOrWhiteSpace(key))
+            return "default";
+
+        var hash = Math.Abs(key.GetHashCode());
+        return ColorPool[hash % ColorPool.Length];
+    }
+
+   [HttpGet("column/serviceteams")]
+    public async Task<ActionResult<IEnumerable<TeamServiceDto>>> Get([FromQuery] string cmpId)
+    {
+        if (string.IsNullOrWhiteSpace(cmpId))
+            return BadRequest("cmpId is required.");
+
+        var cmpIdParam = new SqlParameter("@CmpId", cmpId);
+
+        var raw = await _context.Set<TeamServiceDto>()
+            .FromSqlRaw("EXEC dbo.sp_getteamservice @CmpId", cmpIdParam)
+            .AsNoTracking()
+            .ToListAsync();
+
+        var data = raw.Select(x => new TeamServiceDto
+        {
+            Id = x.Id,
+            Name = x.Name,
+            Color = GetColorFromKey(x.Id)
+        }).ToList();
+
+        return Ok(data);
     }
 
     private static ServiceTicketResponseDto MapToResponse(ServiceTicket x)
