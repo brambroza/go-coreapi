@@ -329,26 +329,35 @@ public class ServiceTicketsController : ControllerBase
             CmpId = x.CmpId,
             UpdUser = x.UpdUser,
 
-            ProcedureSiteSurvey = x.ProcedureSiteSurvey,
-            ProcedurePreConfig = x.ProcedurePreConfig,
-            ProcedureInstallConfig = x.ProcedureInstallConfig,
-            ProcedureUAT = x.ProcedureUAT,
-            ProcedureHandover = x.ProcedureHandover,
+            Procedures = new ServiceTicketProceduresDto
+            {
+                SiteSurvey = x.ProcedureSiteSurvey,
+                PreConfig = x.ProcedurePreConfig,
+                InstallConfig = x.ProcedureInstallConfig,
+                UAT = x.ProcedureUAT,
+                Handover = x.ProcedureHandover
+            },
 
-            MaintenanceOnsiteService = x.MaintenanceOnsiteService,
-            MaintenancePMService = x.MaintenancePMService,
-            MaintenanceSLAServiceLicense = x.MaintenanceSLAServiceLicense,
-            MaintenanceServiceReplacement = x.MaintenanceServiceReplacement,
-            MaintenanceRemoteBackupConfig = x.MaintenanceRemoteBackupConfig,
-            MaintenanceReport = x.MaintenanceReport,
+            Maintenances = new ServiceTicketMaintenancesDto
+            {
+                OnsiteService = x.MaintenanceOnsiteService,
+                PMService = x.MaintenancePMService,
+                SLAServiceLicense = x.MaintenanceSLAServiceLicense,
+                ServiceReplacement = x.MaintenanceServiceReplacement,
+                RemoteBackupConfig = x.MaintenanceRemoteBackupConfig,
+                Report = x.MaintenanceReport
+            },
 
-            OnsiteServiceCycle = x.OnsiteServiceCycle,
-            PMServiceCycle = x.PMServiceCycle,
-            SLAType = x.SLAType,
-            ReplacementType = x.ReplacementType,
-            RemoteBackupCycle = x.RemoteBackupCycle,
-            ReportCycle = x.ReportCycle,
-            ReportSendDay = x.ReportSendDay,
+            MaintenanceOptions = new ServiceTicketMaintenanceOptionsDto
+            {
+                OnsiteServiceCycle = x.OnsiteServiceCycle,
+                PmServiceCycle = x.PMServiceCycle,
+                SlaType = x.SLAType,
+                ReplacementType = x.ReplacementType,
+                RemoteBackupCycle = x.RemoteBackupCycle,
+                ReportCycle = x.ReportCycle
+            },
+
 
             Status = x.Status,
             CreatedAt = x.CreatedAt,

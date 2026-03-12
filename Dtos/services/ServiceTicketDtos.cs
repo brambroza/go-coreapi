@@ -36,7 +36,7 @@ public class ServiceTicketCreateUpdateDto
 
     public ServiceTicketMaintenancesDto? Maintenances { get; set; }
     public ServiceTicketMaintenanceOptionsDto? MaintenanceOptions { get; set; }
- 
+
     public int? ReportSendDay { get; set; }
 
     public string Status { get; set; } = "draft";
@@ -93,26 +93,10 @@ public class ServiceTicketResponseDto
 
     public string? CmpId { get; set; }
     public string UpdUser { get; set; } = string.Empty;
+    public ServiceTicketProceduresDto? Procedures { get; set; }
 
-    public bool ProcedureSiteSurvey { get; set; }
-    public bool ProcedurePreConfig { get; set; }
-    public bool ProcedureInstallConfig { get; set; }
-    public bool ProcedureUAT { get; set; }
-    public bool ProcedureHandover { get; set; }
-
-    public bool MaintenanceOnsiteService { get; set; }
-    public bool MaintenancePMService { get; set; }
-    public bool MaintenanceSLAServiceLicense { get; set; }
-    public bool MaintenanceServiceReplacement { get; set; }
-    public bool MaintenanceRemoteBackupConfig { get; set; }
-    public bool MaintenanceReport { get; set; }
-
-    public string? OnsiteServiceCycle { get; set; }
-    public string? PMServiceCycle { get; set; }
-    public string? SLAType { get; set; }
-    public string? ReplacementType { get; set; }
-    public string? RemoteBackupCycle { get; set; }
-    public string? ReportCycle { get; set; }
+    public ServiceTicketMaintenancesDto? Maintenances { get; set; }
+    public ServiceTicketMaintenanceOptionsDto? MaintenanceOptions { get; set; }
     public int? ReportSendDay { get; set; }
 
     public string Status { get; set; } = string.Empty;
