@@ -358,6 +358,7 @@ public class ServiceTicketsController : ControllerBase
                 ReportCycle = x.ReportCycle
             },
 
+            ReportSendDay = x.ReportSendDay,
 
             Status = x.Status,
             CreatedAt = x.CreatedAt,
