@@ -92,12 +92,12 @@ public class ServiceTicketsController : ControllerBase
             MaintenanceRemoteBackupConfig = dto.Maintenances.RemoteBackupConfig,
             MaintenanceReport = dto.Maintenances.Report,
 
-            OnsiteServiceCycle = dto.OnsiteServiceCycle,
-            PMServiceCycle = dto.PMServiceCycle,
-            SLAType = dto.SLAType,
-            ReplacementType = dto.ReplacementType,
-            RemoteBackupCycle = dto.RemoteBackupCycle,
-            ReportCycle = dto.ReportCycle,
+            OnsiteServiceCycle = dto.Options.OnsiteServiceCycle,
+            PMServiceCycle = dto.Options.PmServiceCycle,
+            SLAType = dto.Options.SlaType,
+            ReplacementType = dto.Options.ReplacementType,
+            RemoteBackupCycle = dto.Options.RemoteBackupCycle,
+            ReportCycle = dto.Options.ReportCycle,
             ReportSendDay = dto.ReportSendDay,
 
             Status = dto.Status,
@@ -193,12 +193,12 @@ public class ServiceTicketsController : ControllerBase
         entity.MaintenanceRemoteBackupConfig = dto.Maintenances.RemoteBackupConfig;
         entity.MaintenanceReport = dto.Maintenances.Report;
 
-        entity.OnsiteServiceCycle = dto.OnsiteServiceCycle;
-        entity.PMServiceCycle = dto.PMServiceCycle;
-        entity.SLAType = dto.SLAType;
-        entity.ReplacementType = dto.ReplacementType;
-        entity.RemoteBackupCycle = dto.RemoteBackupCycle;
-        entity.ReportCycle = dto.ReportCycle;
+        entity.OnsiteServiceCycle = dto.Options.OnsiteServiceCycle;
+        entity.PMServiceCycle = dto.Options.PmServiceCycle;
+        entity.SLAType = dto.Options.SlaType;
+        entity.ReplacementType = dto.Options.ReplacementType;
+        entity.RemoteBackupCycle = dto.Options.RemoteBackupCycle;
+        entity.ReportCycle = dto.Options.ReportCycle;
         entity.ReportSendDay = dto.ReportSendDay;
 
         entity.Status = dto.Status;
@@ -303,7 +303,7 @@ public class ServiceTicketsController : ControllerBase
 
         if (entity == null)
             return NotFound();
- 
+
         entity.Status = dto.Status;
         entity.UpdatedAt = DateTime.Now;
 

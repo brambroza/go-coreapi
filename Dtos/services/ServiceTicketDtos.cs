@@ -35,13 +35,8 @@ public class ServiceTicketCreateUpdateDto
     public ServiceTicketProceduresDto? Procedures { get; set; }
 
     public ServiceTicketMaintenancesDto? Maintenances { get; set; }
-
-    public string? OnsiteServiceCycle { get; set; }
-    public string? PMServiceCycle { get; set; }
-    public string? SLAType { get; set; }
-    public string? ReplacementType { get; set; }
-    public string? RemoteBackupCycle { get; set; }
-    public string? ReportCycle { get; set; }
+    public ServiceTicketMaintenanceOptionsDto? Options { get; set; }
+ 
     public int? ReportSendDay { get; set; }
 
     public string Status { get; set; } = "draft";
@@ -66,6 +61,18 @@ public class ServiceTicketMaintenancesDto
     public bool ServiceReplacement { get; set; }
     public bool RemoteBackupConfig { get; set; }
     public bool Report { get; set; }
+}
+
+public class ServiceTicketMaintenanceOptionsDto
+{
+    public string? OnsiteServiceCycle { get; set; }
+    public string? PmServiceCycle { get; set; }
+    public string? SlaType { get; set; }
+    public string? ReplacementType { get; set; }
+    public string? RemoteBackupCycle { get; set; }
+    public string? ReportCycle { get; set; }
+
+
 }
 
 public class ServiceTicketResponseDto
