@@ -92,12 +92,12 @@ public class ServiceTicketsController : ControllerBase
             MaintenanceRemoteBackupConfig = dto.Maintenances.RemoteBackupConfig,
             MaintenanceReport = dto.Maintenances.Report,
 
-            OnsiteServiceCycle = dto.Options.OnsiteServiceCycle,
-            PMServiceCycle = dto.Options.PmServiceCycle,
-            SLAType = dto.Options.SlaType,
-            ReplacementType = dto.Options.ReplacementType,
-            RemoteBackupCycle = dto.Options.RemoteBackupCycle,
-            ReportCycle = dto.Options.ReportCycle,
+            OnsiteServiceCycle = dto.MaintenanceOptions.OnsiteServiceCycle,
+            PMServiceCycle = dto.MaintenanceOptions.PmServiceCycle,
+            SLAType = dto.MaintenanceOptions.SlaType,
+            ReplacementType = dto.MaintenanceOptions.ReplacementType,
+            RemoteBackupCycle = dto.MaintenanceOptions.RemoteBackupCycle,
+            ReportCycle = dto.MaintenanceOptions.ReportCycle,
             ReportSendDay = dto.ReportSendDay,
 
             Status = dto.Status,
@@ -193,12 +193,12 @@ public class ServiceTicketsController : ControllerBase
         entity.MaintenanceRemoteBackupConfig = dto.Maintenances.RemoteBackupConfig;
         entity.MaintenanceReport = dto.Maintenances.Report;
 
-        entity.OnsiteServiceCycle = dto.Options.OnsiteServiceCycle;
-        entity.PMServiceCycle = dto.Options.PmServiceCycle;
-        entity.SLAType = dto.Options.SlaType;
-        entity.ReplacementType = dto.Options.ReplacementType;
-        entity.RemoteBackupCycle = dto.Options.RemoteBackupCycle;
-        entity.ReportCycle = dto.Options.ReportCycle;
+        entity.OnsiteServiceCycle = dto.MaintenanceOptions.OnsiteServiceCycle;
+        entity.PMServiceCycle = dto.MaintenanceOptions.PmServiceCycle;
+        entity.SLAType = dto.MaintenanceOptions.SlaType;
+        entity.ReplacementType = dto.MaintenanceOptions.ReplacementType;
+        entity.RemoteBackupCycle = dto.MaintenanceOptions.RemoteBackupCycle;
+        entity.ReportCycle = dto.MaintenanceOptions.ReportCycle;
         entity.ReportSendDay = dto.ReportSendDay;
 
         entity.Status = dto.Status;

@@ -35,7 +35,7 @@ public class ServiceTicketCreateUpdateDto
     public ServiceTicketProceduresDto? Procedures { get; set; }
 
     public ServiceTicketMaintenancesDto? Maintenances { get; set; }
-    public ServiceTicketMaintenanceOptionsDto? Options { get; set; }
+    public ServiceTicketMaintenanceOptionsDto? MaintenanceOptions { get; set; }
  
     public int? ReportSendDay { get; set; }
 
