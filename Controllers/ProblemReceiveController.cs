@@ -190,6 +190,190 @@ namespace goalongapi.Controllers
 
         }
 
+
+        [HttpGet("[action]")]
+        public IActionResult gettaskservices([FromQuery] string cmpid, [FromQuery] string username)
+        {
+            DataTable dt;
+            DataTable dta;
+            DataTable dtf;
+            DataTable dtba;
+            DataTable dtbb;
+            DataTable dtbf;
+
+            string _cmd;
+
+            _cmd = "exec dbo.[getProblem] @CmpId='" + cmpid + "' ,  @User='" + username + "'";
+            dt = DB.DBConn.GetDataTable(_cmd);
+
+            _cmd = "exec dbo.[getProblem_Assign] @CmpId='" + cmpid + "' ,  @User='" + username + "'";
+            dta = DB.DBConn.GetDataTable(_cmd);
+
+            _cmd = "exec dbo.[getProblem_File] @CmpId='" + cmpid + "' ,  @User='" + username + "'";
+            dtf = DB.DBConn.GetDataTable(_cmd);
+
+            _cmd = "exec dbo.[getProblemActions_All] @CmpId='" + cmpid + "' ,  @User='" + username + "'";
+            dtba = DB.DBConn.GetDataTable(_cmd);
+
+            _cmd = "exec dbo.[getProblemActions_Actions_All] @CmpId='" + cmpid + "' ,  @User='" + username + "'";
+            dtbb = DB.DBConn.GetDataTable(_cmd);
+
+            _cmd = "exec dbo.[getProblemActions_Files_All] @CmpId='" + cmpid + "' ,  @User='" + username + "'";
+            dtbf = DB.DBConn.GetDataTable(_cmd);
+
+            var filesByProblemId = dtf.AsEnumerable()
+                .GroupBy(r => r["ProblemId"]?.ToString() ?? "")
+                .ToDictionary(
+                    g => g.Key,
+                    g => g.Select(f => new STProblem_File
+                    {
+                        UpdUser = f["UpdUser"]?.ToString(),
+                        ProblemId = f["ProblemId"]?.ToString(),
+                        Seq = int.TryParse(f["Seq"]?.ToString(), out var seq) ? seq : 0,
+                        FileName = f["FileName"]?.ToString(),
+                        FilePath = f["FilePath"]?.ToString(),
+                        CmpId = f["CmpId"]?.ToString()
+                    }).ToList()
+                );
+
+            var assignByProblemId = dta.AsEnumerable()
+                .GroupBy(r => r["ProblemId"]?.ToString() ?? "")
+                .ToDictionary(
+                    g => g.Key,
+                    g => g.Select(f => new STProblem_Assign
+                    {
+                        UpdUser = f["UpdUser"]?.ToString(),
+                        ProblemId = f["ProblemId"]?.ToString(),
+                        UserFullName = f["UserFullName"]?.ToString(),
+                        ImgPath = f["ImgPath"]?.ToString(),
+                        Permission = f["Permission"]?.ToString(),
+                        RouteId = f["RouteId"]?.ToString(),
+                        RemindId = f["RemindId"]?.ToString(),
+                        UserId = f["UserId"]?.ToString(),
+                        CmpId = f["CmpId"]?.ToString(),
+                        StateOwner = f["StateOwner"]?.ToString(),
+                    }).ToList()
+                );
+
+            var actionUsersByServiceActionId = dtbb.AsEnumerable()
+                .GroupBy(r => r["ServiceActionId"]?.ToString() ?? "")
+                .ToDictionary(
+                    g => g.Key,
+                    g => g.Select(ac => new STServiceActions_Assign
+                    {
+                        UpdUser = ac["UpdUser"]?.ToString(),
+                        ServiceActionId = ac["ServiceActionId"]?.ToString(),
+                        UserFullName = ac["UserFullName"]?.ToString(),
+                        ImgPath = ac["ImgPath"]?.ToString(),
+                        Permission = ac["Permission"]?.ToString(),
+                        RouteId = ac["RouteId"]?.ToString(),
+                        RemindId = ac["RemindId"]?.ToString(),
+                        UserId = ac["UserId"]?.ToString(),
+                        CmpId = ac["CmpId"]?.ToString()
+                    }).ToList()
+                );
+
+            var actionFilesByServiceActionId = dtbf.AsEnumerable()
+                .GroupBy(r => r["ServiceActionId"]?.ToString() ?? "")
+                .ToDictionary(
+                    g => g.Key,
+                    g => g.Select(fa => new STServiceActions_File
+                    {
+                        UpdUser = fa["UpdUser"]?.ToString(),
+                        ServiceActionId = fa["ServiceActionId"]?.ToString(),
+                        Seq = int.TryParse(fa["Seq"]?.ToString(), out var seq) ? seq : 0,
+                        FileName = fa["FileName"]?.ToString(),
+                        FilePath = fa["FilePath"]?.ToString(),
+                        CmpId = fa["CmpId"]?.ToString()
+                    }).ToList()
+                );
+
+            var actionsByProblemId = dtba.AsEnumerable()
+                .GroupBy(r => r["ProblemId"]?.ToString() ?? "")
+                .ToDictionary(
+                    g => g.Key,
+                    g => g.Select(f =>
+                    {
+                        var serviceActionId = f["ServiceActionId"]?.ToString() ?? "";
+
+                        return new STServiceActions
+                        {
+                            UpdUser = f["UpdUser"]?.ToString(),
+                            ProblemId = f["ProblemId"]?.ToString(),
+                            ServiceActionId = serviceActionId,
+                            ServiceType = int.TryParse(f["ServiceType"]?.ToString(), out var st) ? st : 0,
+                            ActionDetails = f["ActionDetails"]?.ToString(),
+                            FinishDate = f["FinishDate"]?.ToString(),
+                            FinishTime = f["FinishTime"]?.ToString(),
+                            CmpId = f["CmpId"]?.ToString(),
+                            ActionBy = actionUsersByServiceActionId.TryGetValue(serviceActionId, out var users)
+                                ? users
+                                : new List<STServiceActions_Assign>(),
+                            Attachfile = actionFilesByServiceActionId.TryGetValue(serviceActionId, out var files)
+                                ? files
+                                : new List<STServiceActions_File>()
+                        };
+                    }).ToList()
+                );
+
+            var problems = dt.AsEnumerable().Select(b =>
+            {
+                var problemId = b["ProblemId"]?.ToString() ?? "";
+
+                return new STProblem
+                {
+                    UpdUser = b["UpdUser"]?.ToString(),
+                    ProblemId = problemId,
+                    ReceiveDate = b["ReceiveDate"]?.ToString(),
+                    CustomerCode = b["CustomerCode"]?.ToString(),
+                    ContactName = b["ContactName"]?.ToString(),
+                    ProblemDetails = b["ProblemDetails"]?.ToString(),
+                    ReceiveTime = b["ReceiveTime"]?.ToString(),
+                    ProblemType = b["ProblemType"]?.ToString(),
+                    CustBranchName = b["CustBranchName"]?.ToString(),
+                    CmpId = b["CmpId"]?.ToString(),
+                    CustomerName = b["CustomerName"]?.ToString(),
+                    RequestBy = b["RequestBy"]?.ToString(),
+                    ProvinceId = b["ProvinceId"]?.ToString(),
+                    Status = b["Status"]?.ToString(),
+                    Priority = b["Priority"]?.ToString(),
+                    GrpId = b["GrpId"]?.ToString(),
+                    TaskNo = b["TaskNo"]?.ToString(),
+                    TaskId = b["TaskId"]?.ToString(),
+                    UserLineId = b["UserLineId"]?.ToString(),
+                    OALineId = b["OALineId"]?.ToString(),
+                    StartDate = b["StartDate"]?.ToString(),
+                    StartTime = b["StartTime"]?.ToString(),
+                    FeedbackRating = int.TryParse(b["FeedbackRating"]?.ToString(), out var rating) ? rating : 0,
+                    FeedbackDate = b["FeedbackDate"]?.ToString(),
+                    IsUnReadMsgCount = int.TryParse(b["IsUnReadMsgCount"]?.ToString(), out var unread) ? unread : 0,
+                    FeedbackDescription = b["FeedbackDescription"]?.ToString(),
+                    requestEmail = b["RequestEmail"]?.ToString(),
+                    requestPhone = b["RequestPhone"]?.ToString(),
+                    requestPosition = b["RequestPosition"]?.ToString(),
+                    Remark = b["Remark"]?.ToString(),
+                    IsReadMenu = b["IsReadMenu"]?.ToString(),
+                    ModifiedAt = b["ModifiedAt"]?.ToString(),
+                    UpdatedAt = b["UpdatedAt"]?.ToString(),
+                    RequestByName = b["RequestByName"]?.ToString(),
+                    AnydeskId = b["AnydeskId"]?.ToString(),
+                    ImgPath = b["ImgPath"]?.ToString(),
+                    attachfile = filesByProblemId.TryGetValue(problemId, out var attachs)
+                        ? attachs
+                        : new List<STProblem_File>(),
+                    assign = assignByProblemId.TryGetValue(problemId, out var assigns)
+                        ? assigns
+                        : new List<STProblem_Assign>(),
+                    actions = actionsByProblemId.TryGetValue(problemId, out var actions)
+                        ? actions
+                        : new List<STServiceActions>()
+                };
+            }).ToList();
+
+            return Ok(problems);
+        }
+
+
         [HttpPost("[action]")]
         public ActionResult settaskservice(STProblem pr)
         {
