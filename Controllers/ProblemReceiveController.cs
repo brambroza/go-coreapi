@@ -364,9 +364,9 @@ namespace goalongapi.Controllers
                     assign = assignByProblemId.TryGetValue(problemId, out var assigns)
                         ? assigns
                         : new List<STProblem_Assign>(),
-                    actions = actionsByProblemId.TryGetValue(problemId, out var actions)
-                        ? actions
-                        : new List<STServiceActions>()
+                    action = actionsByProblemId.TryGetValue(problemId, out var actions)
+                        ? actions.FirstOrDefault() ?? new STServiceActions()
+                        : new STServiceActions()
                 };
             }).ToList();
 
