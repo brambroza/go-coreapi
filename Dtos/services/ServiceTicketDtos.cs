@@ -337,6 +337,7 @@ public class ServiceTicketSubTaskActionDto
     public string? ActionStatus { get; set; }
     public string? Tomorrow { get; set; }
     public DateTime? UpdatedAt { get; set; }
+    public List<ServiceTicketSubTaskActionAttachmentDto> Attachments { get; set; } = new();
 }
 
 
@@ -368,8 +369,8 @@ public class UpdateServiceTicketSubTaskActionAttachmentDto
 
 public class ServiceTicketSubTaskActionAttachmentDto
 {
-    public Guid AttachmentId { get; set; }
-    public string TaskActionId { get; set; }
+    public string? AttachmentId { get; set; }
+    public string TaskActionId { get; set; }  = string.Empty;
     public int Seq { get; set; }
     public string FileName { get; set; } = string.Empty;
     public string? FilePath { get; set; }

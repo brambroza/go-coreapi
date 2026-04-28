@@ -118,8 +118,8 @@ namespace goalongapi.Models
         public virtual ServiceTicket? ServiceTicket { get; set; }
         public virtual ICollection<ServiceTicketSubTaskAssign> Assignments { get; set; } = new List<ServiceTicketSubTaskAssign>();
         public virtual ICollection<ServiceTicketSubTaskFile> AttachFiles { get; set; } = new List<ServiceTicketSubTaskFile>();
-      
-      
+
+
         public string? StateApprove { get; set; }
         public DateTime? DateApprove { get; set; }
         public string? ApproveBy { get; set; }
@@ -271,11 +271,13 @@ namespace goalongapi.Models
         public string? Tomorrow { get; set; }
 
         public DateTime? UpdatedAt { get; set; }
+        public ICollection<ServiceTicketSubTaskActionAttachment> Attachments { get; set; }
+                  = new List<ServiceTicketSubTaskActionAttachment>();
     }
 
     public class ServiceTicketSubTaskActionAttachment
     {
-        public Guid AttachmentId { get; set; }
+        public string AttachmentId { get; set; }
 
         public string TaskActionId { get; set; }
 
@@ -297,6 +299,8 @@ namespace goalongapi.Models
         public DateTime CreatedAt { get; set; }
 
         public string? CreatedBy { get; set; }
+
+        public ServiceTicketSubTaskAction? TaskAction { get; set; }
     }
 
 

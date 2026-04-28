@@ -1058,6 +1058,7 @@ public class ServiceTicketsController : ControllerBase
     {
         var query = _context.ServiceTicketSubTaskActions
             .AsNoTracking()
+             .Include(x => x.Attachments)
             .AsQueryable();
 
         if (!string.IsNullOrWhiteSpace(cmpId))
@@ -1083,7 +1084,23 @@ public class ServiceTicketsController : ControllerBase
                 ActionDetails = x.ActionDetails,
                 ActionStatus = x.ActionStatus,
                 Tomorrow = x.Tomorrow,
-                UpdatedAt = x.UpdatedAt
+                UpdatedAt = x.UpdatedAt,
+                Attachments = x.Attachments
+                .OrderBy(a => a.Seq)
+                .Select(a => new ServiceTicketSubTaskActionAttachmentDto
+                {
+                    AttachmentId = a.AttachmentId,
+                    TaskActionId = a.TaskActionId,
+                    Seq = a.Seq,
+                    FileName = a.FileName,
+                    FilePath = a.FilePath,
+                    FileExt = a.FileExt,
+                    FileSize = a.FileSize,
+                    ContentType = a.ContentType,
+                    CreatedAt = a.CreatedAt,
+                    CreatedBy = a.CreatedBy
+                })
+                .ToList()
             })
             .ToListAsync();
 
@@ -1254,7 +1271,7 @@ public class ServiceTicketsController : ControllerBase
             .ThenBy(x => x.Seq)
             .Select(x => new ServiceTicketSubTaskActionAttachmentDto
             {
-                AttachmentId = x.AttachmentId,
+                AttachmentId = Guid.NewGuid().ToString(),
                 TaskActionId = x.TaskActionId,
                 Seq = x.Seq,
                 FileName = x.FileName,
@@ -1273,7 +1290,7 @@ public class ServiceTicketsController : ControllerBase
     [HttpGet("subtask/actions/attachment/{taskActionId}/{attachmentId}")]
     public async Task<ActionResult<ServiceTicketSubTaskActionAttachmentDto>> GetById(
         string taskActionId,
-        Guid attachmentId)
+        string attachmentId)
     {
         var entity = await _context.ServiceTicketSubTaskActionAttachments
             .AsNoTracking()
@@ -1307,7 +1324,7 @@ public class ServiceTicketsController : ControllerBase
     {
         var entity = new ServiceTicketSubTaskActionAttachment
         {
-            AttachmentId = Guid.NewGuid(),
+            AttachmentId = Guid.NewGuid().ToString(),
             TaskActionId = request.TaskActionId,
             Seq = request.Seq,
             FileName = request.FileName,
@@ -1343,10 +1360,10 @@ public class ServiceTicketsController : ControllerBase
         );
     }
 
-    [HttpPut("subtask/actions/attachment/{taskActionId:guid}/{attachmentId}")]
+    [HttpPut("subtask/actions/attachment/{taskActionId}/{attachmentId}")]
     public async Task<ActionResult<ServiceTicketSubTaskActionAttachmentDto>> Update(
         string taskActionId,
-        Guid attachmentId,
+        string attachmentId,
         [FromBody] UpdateServiceTicketSubTaskActionAttachmentDto request)
     {
         var entity = await _context.ServiceTicketSubTaskActionAttachments
@@ -1384,10 +1401,10 @@ public class ServiceTicketsController : ControllerBase
         });
     }
 
-    [HttpDelete("subtask/actions/attachment/{taskActionId}/{attachmentId:guid}")]
+    [HttpDelete("subtask/actions/attachment/{taskActionId}/{attachmentId}")]
     public async Task<IActionResult> Delete(
         string taskActionId,
-        Guid attachmentId)
+        string attachmentId)
     {
         var entity = await _context.ServiceTicketSubTaskActionAttachments
             .FirstOrDefaultAsync(x =>

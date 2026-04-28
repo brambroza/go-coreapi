@@ -473,11 +473,11 @@ namespace goalongapi.Data
 
                   entity.HasIndex(e => new { e.TaskActionId, e.Seq });
 
-                  // ถ้ามี table แม่อยู่แล้ว แนะนำเปิด FK นี้
-                  entity.HasOne<ServiceTicketSubTaskAction>()
-                        .WithMany()
-                        .HasForeignKey(e => e.TaskActionId)
-                        .OnDelete(DeleteBehavior.Cascade);
+                   
+                  entity.HasOne(e => e.TaskAction)
+                    .WithMany(e => e.Attachments)
+                    .HasForeignKey(e => e.TaskActionId)
+                    .OnDelete(DeleteBehavior.Cascade);
               });
 
             modelBuilder.Entity<MServiceMode>(entity =>
