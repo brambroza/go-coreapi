@@ -28,6 +28,7 @@ builder.Services.AddCors(p =>
                   "https://erp.nisolution.co.th", "https://app.nisolution.co.th",
                   "http://nisolution.fortiddns.com:8284",
                   "http://localhost:8080", "http://192.168.1.179:8080",
+                    "http://localhost:8081",
                   "http://192.168.55.219:8285", "http://10.0.2.2:8000",
                   "http://127.0.0.1:51052", "https://liff.line.me",
                   "http://127.0.0.1:65060", "http://127.0.0.1:9101" // simulator ios 
@@ -61,7 +62,7 @@ builder.Services.AddSingleton<AesCrypto>(sp =>
     return new AesCrypto(config["EmailCrypto:KeyBase64"]!);
 });
 
- 
+
 /// google auth
 ///
 
@@ -98,7 +99,7 @@ builder.Services.AddDbContext<HrDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("ConnectionSQLServer"))
 );
 
- 
+
 
 
 var app = builder.Build();

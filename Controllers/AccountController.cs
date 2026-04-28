@@ -245,7 +245,8 @@ namespace goalongapi.Controllers
                 refreshToken = result.RefreshToken,
                 sessionId = result.SessionId,
                 CmpId = account.CmpId,
-                imgurl = account.imgPath
+                imgurl = account.imgPath,
+                userId = account.AccountId
             });
         }
 

@@ -97,6 +97,10 @@
       "PackagePath": "staticwebassets/230015/7ada6587-9ea3-48ec-99fd-1adb04c7dcbe/comment/attachment/test20250411.pdf"
     },
     {
+      "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/976BD033-7F99-4371-872A-8026F815F734/comment/attachment/failed_icon.png",
+      "PackagePath": "staticwebassets/230015/976BD033-7F99-4371-872A-8026F815F734/comment/attachment/failed_icon.png"
+    },
+    {
       "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/Employee/2500001/lineidton.jpg",
       "PackagePath": "staticwebassets/230015/Employee/2500001/lineidton.jpg"
     },
@@ -893,10 +897,6 @@
       "PackagePath": "staticwebassets/images/660a8d64-7d0a-46a0-8f55-ed998c7d57ea.jpg"
     },
     {
-      "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/66fba2cc-6612-4ae7-bf6c-8a2e477e54d5.png",
-      "PackagePath": "staticwebassets/images/66fba2cc-6612-4ae7-bf6c-8a2e477e54d5.png"
-    },
-    {
       "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/68c6862b-35d1-454e-8d11-ae6d34c44516.png",
       "PackagePath": "staticwebassets/images/68c6862b-35d1-454e-8d11-ae6d34c44516.png"
     },
@@ -1243,6 +1243,10 @@
     {
       "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/logo.png",
       "PackagePath": "staticwebassets/images/logo.png"
+    },
+    {
+      "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/nislogo.png",
+      "PackagePath": "staticwebassets/images/nislogo.png"
     },
     {
       "Id": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/ดีไซน์ที่ยังไม่ได้ตั้งชื่อ-12.png",

@@ -706,6 +706,33 @@ namespace goalongapi.Controllers
                         }
                         break;
 
+                    case "servicemode":
+                        _cmd =
+                            "Select Top 1  ServiceModeId  FROM  msb.mServiceMode where  ServiceModeId='"
+                            + DocNo
+                            + "'";
+                        dt = DB.DBConn.GetDataTable(_cmd);
+                        if (dt.Rows.Count > 0)
+                        {
+                            try
+                            {
+                                _docnew = dt.Rows[0][0].ToString();
+                            }
+                            catch
+                            {
+                                _docnew = "";
+                            }
+                        }
+
+                        if ((_docnew.ToString() == "") || (_docnew.ToLower() == "null"))
+                        {
+                            _cmd =
+                                "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo.[servicemoderun]      select   @Runno   "; // + cmpid  ;
+                            dt = DB.DBConn.GetDataTable(_cmd);
+                        }
+                        break;
+
+
                     case "bom":
                         _cmd =
                             "Select Top 1  BomNo  as FTDocNo FROM  dbo.salesbom  where   CmpId ="
@@ -2034,6 +2061,35 @@ namespace goalongapi.Controllers
                                 "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo.["
                                 + cmpid
                                 + "-jobtyperun]     select   @Runno   "; // + cmpid  ;
+                            dt = DB.DBConn.GetDataTable(_cmd);
+                        }
+                        break;
+
+                    case "servicemode":
+                        _cmd =
+                            "Select Top 1  ServiceModeId  FROM  msb.mServiceMode where  ServiceModeId='"
+                            + DocNo
+                            + "'";
+                        dt = DB.DBConn.GetDataTable(_cmd);
+                        if (dt.Rows.Count > 0)
+                        {
+                            try
+                            {
+                                _docnew = dt.Rows[0][0].ToString();
+                            }
+                            catch
+                            {
+                                _docnew = "";
+                            }
+                        }
+
+                        if ((_docnew.ToString() == "") || (_docnew.ToLower() == "null"))
+                        {
+                           
+                            _cmd =
+                               "declare @Runno varchar(30)  Select  @Runno =NEXT VALUE FOR  dbo.["
+                               + cmpid
+                               + "-servicemoderun]     select   @Runno   ";
                             dt = DB.DBConn.GetDataTable(_cmd);
                         }
                         break;

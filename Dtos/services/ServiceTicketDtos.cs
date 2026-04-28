@@ -42,6 +42,7 @@ public class ServiceTicketCreateUpdateDto
     public string Status { get; set; } = "draft";
 
     public List<ServiceTicketAttachmentDto> Attachments { get; set; } = new();
+    public List<ServiceTicketSubTaskDto> SubTasks { get; set; } = new();
 }
 
 public class ServiceTicketProceduresDto
@@ -81,6 +82,9 @@ public class ServiceTicketResponseDto
     public string? ProjectNo { get; set; }
     public string? TicketNo { get; set; }
     public string CustomerName { get; set; } = string.Empty;
+    public string CustomerCode { get; set; } = string.Empty;
+
+    public string? ImagePath { get; set; }
     public string JobType { get; set; } = string.Empty;
     public List<string> JobGroups { get; set; } = new();
 
@@ -105,11 +109,80 @@ public class ServiceTicketResponseDto
     public DateTime UpdatedAt { get; set; }
 
     public List<ServiceTicketAttachmentDto> Attachments { get; set; } = new();
+    public List<ServiceTicketSubTaskDto> SubTasks { get; set; } = new();
+}
+
+
+public class ServiceTicketSubTaskDto
+{
+    public string? SubTaskId { get; set; }
+    public string TicketId { get; set; }
+    public int Seq { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public string Title { get; set; } = string.Empty;
+    public string Source { get; set; } = "additional";
+    public bool IsDone { get; set; }
+    public DateTime? DoneAt { get; set; }
+    public string? DoneBy { get; set; }
+    public string Status { get; set; } = string.Empty;
+
+    public DateTime? StartDate { get; set; }
+    public DateTime? EndDate { get; set; }
+
+    public List<ServiceTicketSubTaskAssignResponseDto> Assignments { get; set; } = new();
+
+    public List<ProcedureTaskItemFileDto>? AttachFiles { get; set; }
+    public string CmpId { get; set; } = string.Empty;
+    public string? Remark { get; set; }
+
+    public string? StateApprove { get; set; }
+    public DateTime? DateApprove { get; set; }
+    public string? ApproveBy { get; set; }
+
+    public string? StateSendApprove { get; set; }
+    public DateTime? DateSendApprove { get; set; }
+    public string? SendApproveBy { get; set; }
+}
+
+public class ServiceTicketSubTaskDtoUpdate
+{
+    public string? TicketId { get; set; }
+    public string? SubTaskId { get; set; }
+    public int Seq { get; set; }
+    public string? Name { get; set; }
+    public string Title { get; set; } = string.Empty;
+    public string? Source { get; set; }
+    public bool IsDone { get; set; }
+    public DateTime? DoneAt { get; set; }
+    public string? DoneBy { get; set; }
+    public string? Status { get; set; }
+    public DateTime? StartDate { get; set; }
+    public DateTime? EndDate { get; set; }
+    public string? CmpId { get; set; }
+    public string? Remark { get; set; }
+
+    public List<ServiceTicketSubTaskAssignResponseDto> Assignments { get; set; } = new();
+    public List<ProcedureTaskItemFileDto>? AttachFiles { get; set; }
+}
+
+
+public class ProcedureTaskItemFileDto
+{
+    public string UpdUser { get; set; } = string.Empty;
+    public Guid FileId { get; set; }
+    public string SubTaskId { get; set; } = string.Empty;
+    public int Seq { get; set; }
+    public string FileName { get; set; } = string.Empty;
+    public string FilePath { get; set; } = string.Empty;
+    public string CmpId { get; set; } = string.Empty;
 }
 
 public class UpdateServiceTicketStatusDto
 {
     public string Status { get; set; } = string.Empty;
+    public DateTime? StartDate { get; set; }
+    public DateTime? EndDate { get; set; }
+
 }
 
 public class TeamServiceDto
@@ -123,4 +196,199 @@ public class TeamServiceSpResult
 {
     public string Id { get; set; } = string.Empty;
     public string Name { get; set; } = string.Empty;
+}
+
+public class ServiceTicketSubTaskAssignResponseDto
+{
+    public Guid AssignId { get; set; }
+    public string SubTaskId { get; set; }
+    public string TicketId { get; set; } = string.Empty;
+    public string AssignUserId { get; set; } = string.Empty;
+    public string? AssignUserName { get; set; }
+    public string? RoleName { get; set; }
+    public bool IsActive { get; set; }
+    public DateTime AssignedAt { get; set; }
+    public string AssignedBy { get; set; } = string.Empty;
+}
+
+public class ServiceTicketSubTaskAssignDto
+{
+    public Guid? AssignId { get; set; }
+    public string SubTaskId { get; set; }
+    public string AssignUserId { get; set; } = string.Empty;
+    public string? AssignUserName { get; set; }
+    public string? RoleName { get; set; }
+    public bool IsActive { get; set; } = true;
+}
+
+
+
+public class UpdateMyTaskDto
+{
+    public string? Status { get; set; }
+    public decimal? ProgressPercent { get; set; }
+    public bool? IsDone { get; set; }
+    public string? Remark { get; set; }
+    public DateTime? StartDate { get; set; }
+    public DateTime? EndDate { get; set; }
+    public string UpdatedBy { get; set; } = string.Empty;
+}
+
+public class UpdateMyTaskStatusDto
+{
+    public string Status { get; set; } = string.Empty;
+    public string UpdatedBy { get; set; } = string.Empty;
+}
+
+
+public class CreateServiceTicketSubTaskCheckInDto
+{
+    public string TicketId { get; set; }
+    public string SubTaskId { get; set; }
+    public string CmpId { get; set; } = string.Empty;
+
+    public DateTime? CheckInAt { get; set; }
+
+    public decimal? Latitude { get; set; }
+    public decimal? Longitude { get; set; }
+    public string? LocationText { get; set; }
+
+    public string? CheckInBy { get; set; }
+}
+
+
+public class UpdateServiceTicketSubTaskCheckInDto
+{
+    public string TicketId { get; set; }
+    public string SubTaskId { get; set; }
+    public string CmpId { get; set; } = string.Empty;
+
+    public DateTime CheckInAt { get; set; }
+    public DateTime? CheckOutAt { get; set; }
+
+    public decimal? Latitude { get; set; }
+    public decimal? Longitude { get; set; }
+    public string? LocationText { get; set; }
+
+    public string? CheckInBy { get; set; }
+    public string? CheckOutBy { get; set; }
+
+    public string? UpdatedBy { get; set; }
+}
+
+public class ServiceTicketSubTaskCheckInDto
+{
+    public Guid CheckInId { get; set; }
+    public string TicketId { get; set; }
+    public string SubTaskId { get; set; }
+    public string CmpId { get; set; } = string.Empty;
+
+    public DateTime CheckInAt { get; set; }
+    public DateTime? CheckOutAt { get; set; }
+
+    public decimal? Latitude { get; set; }
+    public decimal? Longitude { get; set; }
+    public string? LocationText { get; set; }
+
+    public string? CheckInBy { get; set; }
+    public string? CheckOutBy { get; set; }
+
+    public DateTime? UpdatedAt { get; set; }
+    public string? UpdatedBy { get; set; }
+}
+
+
+public class CreateServiceTicketSubTaskActionDto
+{
+    public string TaskActionId { get; set; }
+    public string TicketId { get; set; } = string.Empty;
+    public string SubTaskId { get; set; } = string.Empty;
+    public string CmpId { get; set; } = string.Empty;
+    public int Seq { get; set; }
+    public DateTime ActionDate { get; set; }
+    public string? ActionDetails { get; set; }
+    public string? ActionStatus { get; set; }
+    public string? Tomorrow { get; set; }
+}
+
+
+public class UpdateServiceTicketSubTaskActionDto
+{
+    public string TicketId { get; set; } = string.Empty;
+    public string SubTaskId { get; set; } = string.Empty;
+    public string CmpId { get; set; } = string.Empty;
+    public int Seq { get; set; }
+    public DateTime ActionDate { get; set; }
+    public string? ActionDetails { get; set; }
+    public string? ActionStatus { get; set; }
+    public string? Tomorrow { get; set; }
+}
+
+
+public class ServiceTicketSubTaskActionDto
+{
+    public string TaskActionId { get; set; }
+    public string TicketId { get; set; } = string.Empty;
+    public string SubTaskId { get; set; } = string.Empty;
+    public string CmpId { get; set; } = string.Empty;
+    public int Seq { get; set; }
+    public DateTime ActionDate { get; set; }
+    public string? ActionDetails { get; set; }
+    public string? ActionStatus { get; set; }
+    public string? Tomorrow { get; set; }
+    public DateTime? UpdatedAt { get; set; }
+}
+
+
+
+public class CreateServiceTicketSubTaskActionAttachmentDto
+{
+    public string TaskActionId { get; set; }
+    public int Seq { get; set; }
+    public string FileName { get; set; } = string.Empty;
+    public string? FilePath { get; set; }
+    public string? FileExt { get; set; }
+    public long? FileSize { get; set; }
+    public string? ContentType { get; set; }
+    public string? CreatedBy { get; set; }
+}
+
+
+public class UpdateServiceTicketSubTaskActionAttachmentDto
+{
+    public int Seq { get; set; }
+    public string FileName { get; set; } = string.Empty;
+    public string? FilePath { get; set; }
+    public string? FileExt { get; set; }
+    public long? FileSize { get; set; }
+    public string? ContentType { get; set; }
+    public string? CreatedBy { get; set; }
+}
+
+
+public class ServiceTicketSubTaskActionAttachmentDto
+{
+    public Guid AttachmentId { get; set; }
+    public string TaskActionId { get; set; }
+    public int Seq { get; set; }
+    public string FileName { get; set; } = string.Empty;
+    public string? FilePath { get; set; }
+    public string? FileExt { get; set; }
+    public long? FileSize { get; set; }
+    public string? ContentType { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public string? CreatedBy { get; set; }
+}
+
+
+public class SubTaskSendApproveDto
+{
+    public string SubTaskId { get; set; } = string.Empty;
+    public string SendApproveBy { get; set; } = string.Empty;
+}
+
+public class SubTaskApproveDto
+{
+    public string SubTaskId { get; set; } = string.Empty;
+    public string ApproveBy { get; set; } = string.Empty;
 }

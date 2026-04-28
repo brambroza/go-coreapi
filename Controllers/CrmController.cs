@@ -686,7 +686,7 @@ namespace goalongapi.Controllers
             DataTable dtRouteReply = DB.DBConn.GetDataTable($"exec dbo.[getReqFromCustomerRoute_ReplyId] @user='{userlogin}', @cmpid='{cmpid}' , @ticketId='{ticketId}'");
             DataTable dtComment = DB.DBConn.GetDataTable($"exec dbo.[sp_getManageReqCommentId] @Operation='COMMENT', @cmpid='{cmpid}' , @ticketId='{ticketId}'");
             DataTable dtCommentReply = DB.DBConn.GetDataTable($"exec dbo.[sp_getManageReqCommentId] @Operation='REPLY', @cmpid='{cmpid}' , @ticketId='{ticketId}'");
-
+ 
             // 2) Helper: อ่านค่าแบบเร็ว/กัน DBNull
             static string S(DataRow r, string col) => r[col] == DBNull.Value ? "" : r[col].ToString();
             static int I(DataRow r, string col) => r[col] == DBNull.Value ? 0 : Convert.ToInt32(r[col]);

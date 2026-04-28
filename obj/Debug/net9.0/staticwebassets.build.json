@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "vr5AWvAClxv+l65b0ZcyvnjGeNZJuGpYbRztfHHssPs=",
+  "Hash": "SItoXI9jsKYJKhX0DqXWiOadlZZBwTIJFKgjpUzOgvU=",
   "Source": "goalongapi",
   "BasePath": "_content/goalongapi",
   "Mode": "Default",
@@ -582,6 +582,27 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot/230015/7ada6587-9ea3-48ec-99fd-1adb04c7dcbe/comment/attachment/test20250411.pdf"
+    },
+    {
+      "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/976BD033-7F99-4371-872A-8026F815F734/comment/attachment/failed_icon.png",
+      "SourceId": "goalongapi",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/",
+      "BasePath": "_content/goalongapi",
+      "RelativePath": "230015/976BD033-7F99-4371-872A-8026F815F734/comment/attachment/failed_icon#[.{fingerprint}]?.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "rspc21gcbe",
+      "Integrity": "m/OVzvcnRud8UNkBKtXzFFz+MhQctIs50UgoYqse5fs=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/230015/976BD033-7F99-4371-872A-8026F815F734/comment/attachment/failed_icon.png"
     },
     {
       "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/customer/images/0ae12485-2759-44fd-947a-0a0e441e05f5.png",
@@ -4763,27 +4784,6 @@
       "OriginalItemSpec": "wwwroot/images/660a8d64-7d0a-46a0-8f55-ed998c7d57ea.jpg"
     },
     {
-      "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/66fba2cc-6612-4ae7-bf6c-8a2e477e54d5.png",
-      "SourceId": "goalongapi",
-      "SourceType": "Discovered",
-      "ContentRoot": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/",
-      "BasePath": "_content/goalongapi",
-      "RelativePath": "images/66fba2cc-6612-4ae7-bf6c-8a2e477e54d5#[.{fingerprint}]?.png",
-      "AssetKind": "All",
-      "AssetMode": "All",
-      "AssetRole": "Primary",
-      "AssetMergeBehavior": "",
-      "AssetMergeSource": "",
-      "RelatedAsset": "",
-      "AssetTraitName": "",
-      "AssetTraitValue": "",
-      "Fingerprint": "vyem1bdh0j",
-      "Integrity": "uU1/toufTc+wqx+8bJrFdq0FOFIX/79kgZR/AgxLBjU=",
-      "CopyToOutputDirectory": "Never",
-      "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot/images/66fba2cc-6612-4ae7-bf6c-8a2e477e54d5.png"
-    },
-    {
       "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/68c6862b-35d1-454e-8d11-ae6d34c44516.png",
       "SourceId": "goalongapi",
       "SourceType": "Discovered",
@@ -6609,6 +6609,27 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot/images/logo.png"
+    },
+    {
+      "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/nislogo.png",
+      "SourceId": "goalongapi",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/",
+      "BasePath": "_content/goalongapi",
+      "RelativePath": "images/nislogo#[.{fingerprint}]?.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "vyem1bdh0j",
+      "Integrity": "uU1/toufTc+wqx+8bJrFdq0FOFIX/79kgZR/AgxLBjU=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/images/nislogo.png"
     },
     {
       "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/ดีไซน์ที่ยังไม่ได้ตั้งชื่อ-12.png",
@@ -12273,6 +12294,88 @@
         {
           "Name": "integrity",
           "Value": "sha256-H8ZiZQmRp93rvJjzQ7ybZIMTsSAUCA9JmhfWa5IR1So="
+        }
+      ]
+    },
+    {
+      "Route": "230015/976BD033-7F99-4371-872A-8026F815F734/comment/attachment/failed_icon.png",
+      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/976BD033-7F99-4371-872A-8026F815F734/comment/attachment/failed_icon.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "6844"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"m/OVzvcnRud8UNkBKtXzFFz+MhQctIs50UgoYqse5fs=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 20 Apr 2026 11:42:30 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-m/OVzvcnRud8UNkBKtXzFFz+MhQctIs50UgoYqse5fs="
+        }
+      ]
+    },
+    {
+      "Route": "230015/976BD033-7F99-4371-872A-8026F815F734/comment/attachment/failed_icon.rspc21gcbe.png",
+      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/976BD033-7F99-4371-872A-8026F815F734/comment/attachment/failed_icon.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "6844"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"m/OVzvcnRud8UNkBKtXzFFz+MhQctIs50UgoYqse5fs=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 20 Apr 2026 11:42:30 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "rspc21gcbe"
+        },
+        {
+          "Name": "label",
+          "Value": "230015/976BD033-7F99-4371-872A-8026F815F734/comment/attachment/failed_icon.png"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-m/OVzvcnRud8UNkBKtXzFFz+MhQctIs50UgoYqse5fs="
         }
       ]
     },
@@ -28595,88 +28698,6 @@
       ]
     },
     {
-      "Route": "images/66fba2cc-6612-4ae7-bf6c-8a2e477e54d5.png",
-      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/66fba2cc-6612-4ae7-bf6c-8a2e477e54d5.png",
-      "Selectors": [],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "38578"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "image/png"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"uU1/toufTc+wqx+8bJrFdq0FOFIX/79kgZR/AgxLBjU=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Mon, 02 Dec 2024 03:51:50 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "max-age=3600, must-revalidate"
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "integrity",
-          "Value": "sha256-uU1/toufTc+wqx+8bJrFdq0FOFIX/79kgZR/AgxLBjU="
-        }
-      ]
-    },
-    {
-      "Route": "images/66fba2cc-6612-4ae7-bf6c-8a2e477e54d5.vyem1bdh0j.png",
-      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/66fba2cc-6612-4ae7-bf6c-8a2e477e54d5.png",
-      "Selectors": [],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "38578"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "image/png"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"uU1/toufTc+wqx+8bJrFdq0FOFIX/79kgZR/AgxLBjU=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Mon, 02 Dec 2024 03:51:50 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "max-age=31536000, immutable"
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "fingerprint",
-          "Value": "vyem1bdh0j"
-        },
-        {
-          "Name": "label",
-          "Value": "images/66fba2cc-6612-4ae7-bf6c-8a2e477e54d5.png"
-        },
-        {
-          "Name": "integrity",
-          "Value": "sha256-uU1/toufTc+wqx+8bJrFdq0FOFIX/79kgZR/AgxLBjU="
-        }
-      ]
-    },
-    {
       "Route": "images/68c6862b-35d1-454e-8d11-ae6d34c44516.g7dcrr9bhs.png",
       "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/68c6862b-35d1-454e-8d11-ae6d34c44516.png",
       "Selectors": [],
@@ -35807,6 +35828,88 @@
         {
           "Name": "integrity",
           "Value": "sha256-MpX4MeLwJP6x0TAwQbiWq081j9GDiDA4lq6858R85Vs="
+        }
+      ]
+    },
+    {
+      "Route": "images/nislogo.png",
+      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/nislogo.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "38578"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"uU1/toufTc+wqx+8bJrFdq0FOFIX/79kgZR/AgxLBjU=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 02 Dec 2024 03:51:50 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-uU1/toufTc+wqx+8bJrFdq0FOFIX/79kgZR/AgxLBjU="
+        }
+      ]
+    },
+    {
+      "Route": "images/nislogo.vyem1bdh0j.png",
+      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/nislogo.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "38578"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"uU1/toufTc+wqx+8bJrFdq0FOFIX/79kgZR/AgxLBjU=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 02 Dec 2024 03:51:50 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "vyem1bdh0j"
+        },
+        {
+          "Name": "label",
+          "Value": "images/nislogo.png"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-uU1/toufTc+wqx+8bJrFdq0FOFIX/79kgZR/AgxLBjU="
         }
       ]
     },
