@@ -130,9 +130,6 @@ namespace goalongapi.Controllers
             return Ok(invoices);
         }
 
-
-
-
         [HttpPost("[action]")]
         public IActionResult setInvoice([FromBody] Invoice inv)
         {
@@ -358,7 +355,6 @@ namespace goalongapi.Controllers
         }
 
 
-
         [HttpPost("[action]")]
         public IActionResult setCopy([FromBody] InvoiceCopy inv)
         {
@@ -542,7 +538,62 @@ namespace goalongapi.Controllers
         }
 
 
+        /* ProjectToInvoice */
 
+        [HttpPost("[action]")]
+        public IActionResult setProjectToInv([FromBody] ProjectToInvoice inv)
+        {
+            MsgReturn msgretrun = new MsgReturn();
+
+
+            DB.DBConn.SqlConnectionOpen();
+            DB.DBConn.Cmd = DB.DBConn.Cnn.CreateCommand();
+            DB.DBConn.Tran = DB.DBConn.Cnn.BeginTransaction();
+
+            try
+            {
+                string _cmd = ""; 
+                _cmd = "exec  dbo.setProjectToInvoice";
+                _cmd += " @InvoiceNo  ='" + inv.InvoiceNo + "'"; 
+                _cmd += ",@ProjectNo  ='" + inv.ProjectNo+ "'";
+                _cmd += ",@UpdUser  ='" + inv.UpdUser + "'"; 
+                _cmd += ",@CmpId  ='" + inv.CmpId + "'"; 
+
+
+                if (DB.DBConn.ExecuteTran(_cmd, DB.DBConn.Cmd, DB.DBConn.Tran) <= 0)
+                {
+                    DB.DBConn.Tran.Rollback();
+                    DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
+                    DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
+                    msgretrun.ReturnCode = "400";
+                    msgretrun.Msg = "Error !!";
+                    return Ok(msgretrun);
+
+                }
+
+
+
+
+                DB.DBConn.Tran.Commit();
+                DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
+                DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
+
+                msgretrun.ReturnCode = "200";
+                msgretrun.Msg = "Save Success !!";
+                return Ok(msgretrun);
+
+            }
+            catch
+            {
+                DB.DBConn.Tran.Rollback();
+                DB.DBConn.DisposeSqlTransaction(DB.DBConn.Tran);
+                DB.DBConn.DisposeSqlConnection(DB.DBConn.Cmd);
+                msgretrun.ReturnCode = "400";
+                msgretrun.Msg = "Error !!";
+                return Ok(msgretrun);
+            }
+
+        }
 
 
     }

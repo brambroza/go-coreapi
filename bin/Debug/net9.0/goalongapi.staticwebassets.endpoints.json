@@ -2053,6 +2053,88 @@
       ]
     },
     {
+      "Route": "230015/9812f5f6-0f92-411b-a328-1e8377ca7dd9/comment/attachment/failed_icon.png",
+      "AssetFile": "230015/9812f5f6-0f92-411b-a328-1e8377ca7dd9/comment/attachment/failed_icon.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "6844"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"m/OVzvcnRud8UNkBKtXzFFz+MhQctIs50UgoYqse5fs=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 28 Apr 2026 09:57:52 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-m/OVzvcnRud8UNkBKtXzFFz+MhQctIs50UgoYqse5fs="
+        }
+      ]
+    },
+    {
+      "Route": "230015/9812f5f6-0f92-411b-a328-1e8377ca7dd9/comment/attachment/failed_icon.rspc21gcbe.png",
+      "AssetFile": "230015/9812f5f6-0f92-411b-a328-1e8377ca7dd9/comment/attachment/failed_icon.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "6844"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"m/OVzvcnRud8UNkBKtXzFFz+MhQctIs50UgoYqse5fs=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 28 Apr 2026 09:57:52 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "rspc21gcbe"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-m/OVzvcnRud8UNkBKtXzFFz+MhQctIs50UgoYqse5fs="
+        },
+        {
+          "Name": "label",
+          "Value": "230015/9812f5f6-0f92-411b-a328-1e8377ca7dd9/comment/attachment/failed_icon.png"
+        }
+      ]
+    },
+    {
       "Route": "230015/Employee/2500001/lineidton.jpg",
       "AssetFile": "230015/Employee/2500001/lineidton.jpg",
       "Selectors": [],

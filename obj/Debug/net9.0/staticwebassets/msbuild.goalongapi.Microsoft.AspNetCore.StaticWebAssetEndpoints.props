@@ -300,6 +300,18 @@
       <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"rspc21gcbe"},{"Name":"integrity","Value":"sha256-m/OVzvcnRud8UNkBKtXzFFz\u002BMhQctIs50UgoYqse5fs="},{"Name":"label","Value":"_content/goalongapi/230015/976BD033-7F99-4371-872A-8026F815F734/comment/attachment/failed_icon.png"}]]]></EndpointProperties>
       <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"6844"},{"Name":"Content-Type","Value":"image/png"},{"Name":"ETag","Value":"\u0022m/OVzvcnRud8UNkBKtXzFFz\u002BMhQctIs50UgoYqse5fs=\u0022"},{"Name":"Last-Modified","Value":"Mon, 20 Apr 2026 11:42:30 GMT"}]]]></ResponseHeaders>
     </StaticWebAssetEndpoint>
+    <StaticWebAssetEndpoint Include="_content/goalongapi/230015/9812f5f6-0f92-411b-a328-1e8377ca7dd9/comment/attachment/failed_icon.png">
+      <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\230015\9812f5f6-0f92-411b-a328-1e8377ca7dd9\comment\attachment\failed_icon.png'))</AssetFile>
+      <Selectors><![CDATA[[]]]></Selectors>
+      <EndpointProperties><![CDATA[[{"Name":"integrity","Value":"sha256-m/OVzvcnRud8UNkBKtXzFFz\u002BMhQctIs50UgoYqse5fs="}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=3600, must-revalidate"},{"Name":"Content-Length","Value":"6844"},{"Name":"Content-Type","Value":"image/png"},{"Name":"ETag","Value":"\u0022m/OVzvcnRud8UNkBKtXzFFz\u002BMhQctIs50UgoYqse5fs=\u0022"},{"Name":"Last-Modified","Value":"Tue, 28 Apr 2026 09:57:52 GMT"}]]]></ResponseHeaders>
+    </StaticWebAssetEndpoint>
+    <StaticWebAssetEndpoint Include="_content/goalongapi/230015/9812f5f6-0f92-411b-a328-1e8377ca7dd9/comment/attachment/failed_icon.rspc21gcbe.png">
+      <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\230015\9812f5f6-0f92-411b-a328-1e8377ca7dd9\comment\attachment\failed_icon.png'))</AssetFile>
+      <Selectors><![CDATA[[]]]></Selectors>
+      <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"rspc21gcbe"},{"Name":"integrity","Value":"sha256-m/OVzvcnRud8UNkBKtXzFFz\u002BMhQctIs50UgoYqse5fs="},{"Name":"label","Value":"_content/goalongapi/230015/9812f5f6-0f92-411b-a328-1e8377ca7dd9/comment/attachment/failed_icon.png"}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"6844"},{"Name":"Content-Type","Value":"image/png"},{"Name":"ETag","Value":"\u0022m/OVzvcnRud8UNkBKtXzFFz\u002BMhQctIs50UgoYqse5fs=\u0022"},{"Name":"Last-Modified","Value":"Tue, 28 Apr 2026 09:57:52 GMT"}]]]></ResponseHeaders>
+    </StaticWebAssetEndpoint>
     <StaticWebAssetEndpoint Include="_content/goalongapi/230015/customer/images/0ae12485-2759-44fd-947a-0a0e441e05f5.p9z55iiuh2.png">
       <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\230015\customer\images\0ae12485-2759-44fd-947a-0a0e441e05f5.png'))</AssetFile>
       <Selectors><![CDATA[[]]]></Selectors>

@@ -230,4 +230,14 @@ namespace goalongapi.Models
         public int RevNo { get; set; }
     }
 
+
+    public class ProjectToInvoice
+    {
+        public string UpdUser { get; set; }
+        public string InvoiceNo { get; set; }
+        public string ProjectNo { get; set; }
+        public string CmpId { get; set; }
+
+    }
+
 }

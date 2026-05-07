@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "SItoXI9jsKYJKhX0DqXWiOadlZZBwTIJFKgjpUzOgvU=",
+  "Hash": "GxfiVmE0fWz+dfGSw1Qjh+tCip2xYUtyCH66sESJgYs=",
   "Source": "goalongapi",
   "BasePath": "_content/goalongapi",
   "Mode": "Default",
@@ -603,6 +603,27 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot/230015/976BD033-7F99-4371-872A-8026F815F734/comment/attachment/failed_icon.png"
+    },
+    {
+      "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/9812f5f6-0f92-411b-a328-1e8377ca7dd9/comment/attachment/failed_icon.png",
+      "SourceId": "goalongapi",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/",
+      "BasePath": "_content/goalongapi",
+      "RelativePath": "230015/9812f5f6-0f92-411b-a328-1e8377ca7dd9/comment/attachment/failed_icon#[.{fingerprint}]?.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "rspc21gcbe",
+      "Integrity": "m/OVzvcnRud8UNkBKtXzFFz+MhQctIs50UgoYqse5fs=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/230015/9812f5f6-0f92-411b-a328-1e8377ca7dd9/comment/attachment/failed_icon.png"
     },
     {
       "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/customer/images/0ae12485-2759-44fd-947a-0a0e441e05f5.png",
@@ -12372,6 +12393,88 @@
         {
           "Name": "label",
           "Value": "230015/976BD033-7F99-4371-872A-8026F815F734/comment/attachment/failed_icon.png"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-m/OVzvcnRud8UNkBKtXzFFz+MhQctIs50UgoYqse5fs="
+        }
+      ]
+    },
+    {
+      "Route": "230015/9812f5f6-0f92-411b-a328-1e8377ca7dd9/comment/attachment/failed_icon.png",
+      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/9812f5f6-0f92-411b-a328-1e8377ca7dd9/comment/attachment/failed_icon.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "6844"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"m/OVzvcnRud8UNkBKtXzFFz+MhQctIs50UgoYqse5fs=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 28 Apr 2026 09:57:52 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-m/OVzvcnRud8UNkBKtXzFFz+MhQctIs50UgoYqse5fs="
+        }
+      ]
+    },
+    {
+      "Route": "230015/9812f5f6-0f92-411b-a328-1e8377ca7dd9/comment/attachment/failed_icon.rspc21gcbe.png",
+      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/230015/9812f5f6-0f92-411b-a328-1e8377ca7dd9/comment/attachment/failed_icon.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "6844"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"m/OVzvcnRud8UNkBKtXzFFz+MhQctIs50UgoYqse5fs=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 28 Apr 2026 09:57:52 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "rspc21gcbe"
+        },
+        {
+          "Name": "label",
+          "Value": "230015/9812f5f6-0f92-411b-a328-1e8377ca7dd9/comment/attachment/failed_icon.png"
         },
         {
           "Name": "integrity",
