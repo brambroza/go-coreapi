@@ -172,6 +172,7 @@ public class ServiceTicketsController : ControllerBase
             UpdatedAt = DateTime.Now,
             StartDate = x.StartDate,
             EndDate = x.EndDate,
+            TransDate = x.TransDate, 
             CmpId = x.CmpId
         })
         .ToList();
@@ -1584,6 +1585,7 @@ public class ServiceTicketsController : ControllerBase
                 Status = x.Status,
                 StartDate = x.StartDate,
                 EndDate = x.EndDate,
+                TransDate = x.TransDate, 
                 CmpId = x.CmpId,
                 Remark = x.Remark,
                 StateSendApprove = x.StateSendApprove,

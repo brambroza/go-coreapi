@@ -108,6 +108,7 @@ namespace goalongapi.Models
         public string TaskStatus { get; set; } = "pending";
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
+        public DateTime? TransDate { get; set; }
 
         public string TeamId { get; set; } = string.Empty;
         public string? TeamName { get; set; }

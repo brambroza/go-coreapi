@@ -128,6 +128,7 @@ public class ServiceTicketSubTaskDto
 
     public DateTime? StartDate { get; set; }
     public DateTime? EndDate { get; set; }
+    public DateTime? TransDate { get; set; }
 
     public List<ServiceTicketSubTaskAssignResponseDto> Assignments { get; set; } = new();
 
@@ -370,7 +371,7 @@ public class UpdateServiceTicketSubTaskActionAttachmentDto
 public class ServiceTicketSubTaskActionAttachmentDto
 {
     public string? AttachmentId { get; set; }
-    public string TaskActionId { get; set; }  = string.Empty;
+    public string TaskActionId { get; set; } = string.Empty;
     public int Seq { get; set; }
     public string FileName { get; set; } = string.Empty;
     public string? FilePath { get; set; }
