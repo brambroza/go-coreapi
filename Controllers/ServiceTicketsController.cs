@@ -267,6 +267,7 @@ public class ServiceTicketsController : ControllerBase
             entity.Status = string.IsNullOrWhiteSpace(item.Status) ? "pending" : item.Status;
             entity.CmpId = item.CmpId;
             entity.StartDate = item.StartDate;
+            entity.TransDate = item.TransDate;
             entity.EndDate = item.EndDate;
             entity.UpdatedAt = DateTime.Now;
             entity.Remark = item.Remark;

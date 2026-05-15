@@ -159,6 +159,7 @@ public class ServiceTicketSubTaskDtoUpdate
     public string? Status { get; set; }
     public DateTime? StartDate { get; set; }
     public DateTime? EndDate { get; set; }
+    public DateTime? TransDate { get; set; }
     public string? CmpId { get; set; }
     public string? Remark { get; set; }
 
