@@ -139,11 +139,13 @@ namespace goalongapi.Models
 
         public string StateCustomer { get; set; }
         public string StateVendor { get; set; }
+
+        public string StateOutOfService { get; set; }
         public int? StateGenQRCode { get; set; }
         public List<Dictionary<string, object>> constactline { get; set; } = new();
-            
+
     }
-    
+
 
 
     public class Contact
@@ -210,5 +212,13 @@ namespace goalongapi.Models
         public Int64 AccountID { get; set; }
         public int Priority { get; set; }
         public string UpdUser { get; set; }
+    }
+
+    public class OutOfService
+    {
+        public string CustomerCode { get; set; }
+        public string CmpId { get; set; }
+        public string UpdUser { get; set; }
+
     }
 }
