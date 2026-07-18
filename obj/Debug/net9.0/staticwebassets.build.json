@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "GxfiVmE0fWz+dfGSw1Qjh+tCip2xYUtyCH66sESJgYs=",
+  "Hash": "7rvSv5o9f50ooWKi6/jLW0s+EA0mkzuModTJkbR33Fc=",
   "Source": "goalongapi",
   "BasePath": "_content/goalongapi",
   "Mode": "Default",
@@ -3692,6 +3692,27 @@
       "OriginalItemSpec": "wwwroot/images/08db416d-58d4-40b3-baef-db488f0f4d11.png"
     },
     {
+      "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/09020896-41a3-40ff-bb84-eb914953636d.jpg",
+      "SourceId": "goalongapi",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/",
+      "BasePath": "_content/goalongapi",
+      "RelativePath": "images/09020896-41a3-40ff-bb84-eb914953636d#[.{fingerprint}]?.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "kusbfrp8zr",
+      "Integrity": "zLFh2zXWH71g9R+hxIWf2pakLM7e9ON78+R599Kfn7U=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/images/09020896-41a3-40ff-bb84-eb914953636d.jpg"
+    },
+    {
       "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/09d3cf24-a4af-4803-8f1b-757f0ae01679.png",
       "SourceId": "goalongapi",
       "SourceType": "Discovered",
@@ -4028,6 +4049,27 @@
       "OriginalItemSpec": "wwwroot/images/20319273-78d9-46be-a3dc-8b52535e6570.png"
     },
     {
+      "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/21170259-2cea-439c-ad72-af42c397620b.jpg",
+      "SourceId": "goalongapi",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/",
+      "BasePath": "_content/goalongapi",
+      "RelativePath": "images/21170259-2cea-439c-ad72-af42c397620b#[.{fingerprint}]?.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "iydovoepdi",
+      "Integrity": "VqTYCEGpaUKg4qFWwOFjkZcz1XpttbPKDKySEB6ojxA=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/images/21170259-2cea-439c-ad72-af42c397620b.jpg"
+    },
+    {
       "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/21aec0ce-d541-40e0-b08d-6476ec926089.jpeg",
       "SourceId": "goalongapi",
       "SourceType": "Discovered",
@@ -4196,6 +4238,27 @@
       "OriginalItemSpec": "wwwroot/images/28544115-e53d-4b79-a697-69a143495c19.png"
     },
     {
+      "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/2877ce79-85df-429c-841b-072bec3c66bd.png",
+      "SourceId": "goalongapi",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/",
+      "BasePath": "_content/goalongapi",
+      "RelativePath": "images/2877ce79-85df-429c-841b-072bec3c66bd#[.{fingerprint}]?.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "vwnsovzclv",
+      "Integrity": "D4xQm28x9z5pwpn3Ixn2FI/sNK2XHz13BBnYdrOi5GI=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/images/2877ce79-85df-429c-841b-072bec3c66bd.png"
+    },
+    {
       "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/29b62eec-95c9-4187-af89-c3913e9540b2.png",
       "SourceId": "goalongapi",
       "SourceType": "Discovered",
@@ -4299,6 +4362,27 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot/images/399a7641-9d4e-4750-ac24-d8e435dfa23b.jpg"
+    },
+    {
+      "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/3a1bbadd-1aa9-4507-977f-e08c137529a6.png",
+      "SourceId": "goalongapi",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/",
+      "BasePath": "_content/goalongapi",
+      "RelativePath": "images/3a1bbadd-1aa9-4507-977f-e08c137529a6#[.{fingerprint}]?.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "vwnsovzclv",
+      "Integrity": "D4xQm28x9z5pwpn3Ixn2FI/sNK2XHz13BBnYdrOi5GI=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/images/3a1bbadd-1aa9-4507-977f-e08c137529a6.png"
     },
     {
       "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/3b5bfbc8-bb4d-4c92-bc7f-4a90aa0ed9a8.jpg",
@@ -4700,6 +4784,27 @@
       "OriginalItemSpec": "wwwroot/images/5de771db-074f-4645-9564-f7f23cae312b.jpg"
     },
     {
+      "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/5ed139f9-f77a-4afd-a335-a8d6a092f1dd.jpg",
+      "SourceId": "goalongapi",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/",
+      "BasePath": "_content/goalongapi",
+      "RelativePath": "images/5ed139f9-f77a-4afd-a335-a8d6a092f1dd#[.{fingerprint}]?.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "fxzb1k0w7x",
+      "Integrity": "o/tZ0B/c9BllTRhgHIB/ohQvpVD2dn6XmYnWvFLWLeA=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/images/5ed139f9-f77a-4afd-a335-a8d6a092f1dd.jpg"
+    },
+    {
       "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/603bc280-3260-47df-b0e4-e9234df1517a.jpg",
       "SourceId": "goalongapi",
       "SourceType": "Discovered",
@@ -4992,6 +5097,27 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot/images/73592ca9-eadf-4903-a997-864fd2aa2c52.jpg"
+    },
+    {
+      "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/75ec3196-e907-425b-b324-5918931f9799.jpg",
+      "SourceId": "goalongapi",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/",
+      "BasePath": "_content/goalongapi",
+      "RelativePath": "images/75ec3196-e907-425b-b324-5918931f9799#[.{fingerprint}]?.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "fxzb1k0w7x",
+      "Integrity": "o/tZ0B/c9BllTRhgHIB/ohQvpVD2dn6XmYnWvFLWLeA=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/images/75ec3196-e907-425b-b324-5918931f9799.jpg"
     },
     {
       "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/779b05d4-f8eb-48d6-827a-dfe60ef5400e.jpg",
@@ -5939,6 +6065,27 @@
       "OriginalItemSpec": "wwwroot/images/cf4a4ec9-2186-4268-87d1-26c3a4863240.jpg"
     },
     {
+      "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/cfb312cc-87e2-4b4c-97c0-229360fb41e6.jpg",
+      "SourceId": "goalongapi",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/",
+      "BasePath": "_content/goalongapi",
+      "RelativePath": "images/cfb312cc-87e2-4b4c-97c0-229360fb41e6#[.{fingerprint}]?.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "0jg829lczj",
+      "Integrity": "rFtvmJdy5aFzv+Y9cIcY0wW0MiyQd3lVoW4kQZDgCs4=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/images/cfb312cc-87e2-4b4c-97c0-229360fb41e6.jpg"
+    },
+    {
       "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/chat/526600284110585858.jpg",
       "SourceId": "goalongapi",
       "SourceType": "Discovered",
@@ -6338,6 +6485,27 @@
       "OriginalItemSpec": "wwwroot/images/ed5bcd13-0ab2-46ea-8b98-95e3a813d3a5.png"
     },
     {
+      "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/ef232460-5ff0-42e3-a3c0-0a5473493fd3.png",
+      "SourceId": "goalongapi",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/",
+      "BasePath": "_content/goalongapi",
+      "RelativePath": "images/ef232460-5ff0-42e3-a3c0-0a5473493fd3#[.{fingerprint}]?.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "v79cwg0tou",
+      "Integrity": "q1m0XDKyY9I8B9M8o4v6K/gpSvARW/o37ABOcQz5Sqo=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/images/ef232460-5ff0-42e3-a3c0-0a5473493fd3.png"
+    },
+    {
       "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/efcd0ce4-62c3-40d8-acbf-c1a534314826.png",
       "SourceId": "goalongapi",
       "SourceType": "Discovered",
@@ -6378,6 +6546,27 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot/images/f0198218-8e25-4123-9b4b-1b378d8471b9.png"
+    },
+    {
+      "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/f3cea69f-31c1-472d-96c5-497aba5d430c.jpg",
+      "SourceId": "goalongapi",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/",
+      "BasePath": "_content/goalongapi",
+      "RelativePath": "images/f3cea69f-31c1-472d-96c5-497aba5d430c#[.{fingerprint}]?.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "kusbfrp8zr",
+      "Integrity": "zLFh2zXWH71g9R+hxIWf2pakLM7e9ON78+R599Kfn7U=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/images/f3cea69f-31c1-472d-96c5-497aba5d430c.jpg"
     },
     {
       "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/f514553d-40a8-4002-92aa-e3f497671f8b.jpg",
@@ -6525,6 +6714,27 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot/images/fb4df39a-fd7f-4420-9563-5c981638b316.png"
+    },
+    {
+      "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/fba468d3-bc29-463a-a342-f69a5619b941.png",
+      "SourceId": "goalongapi",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/",
+      "BasePath": "_content/goalongapi",
+      "RelativePath": "images/fba468d3-bc29-463a-a342-f69a5619b941#[.{fingerprint}]?.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "vwnsovzclv",
+      "Integrity": "D4xQm28x9z5pwpn3Ixn2FI/sNK2XHz13BBnYdrOi5GI=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/images/fba468d3-bc29-463a-a342-f69a5619b941.png"
     },
     {
       "Identity": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/ff9b8ddf-cae1-488c-a5a3-f5142fedce25.png",
@@ -24455,6 +24665,88 @@
       ]
     },
     {
+      "Route": "images/09020896-41a3-40ff-bb84-eb914953636d.jpg",
+      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/09020896-41a3-40ff-bb84-eb914953636d.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "24572"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"zLFh2zXWH71g9R+hxIWf2pakLM7e9ON78+R599Kfn7U=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 12 Jun 2026 03:05:11 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-zLFh2zXWH71g9R+hxIWf2pakLM7e9ON78+R599Kfn7U="
+        }
+      ]
+    },
+    {
+      "Route": "images/09020896-41a3-40ff-bb84-eb914953636d.kusbfrp8zr.jpg",
+      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/09020896-41a3-40ff-bb84-eb914953636d.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "24572"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"zLFh2zXWH71g9R+hxIWf2pakLM7e9ON78+R599Kfn7U=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 12 Jun 2026 03:05:11 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "kusbfrp8zr"
+        },
+        {
+          "Name": "label",
+          "Value": "images/09020896-41a3-40ff-bb84-eb914953636d.jpg"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-zLFh2zXWH71g9R+hxIWf2pakLM7e9ON78+R599Kfn7U="
+        }
+      ]
+    },
+    {
       "Route": "images/09d3cf24-a4af-4803-8f1b-757f0ae01679.g7dcrr9bhs.png",
       "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/09d3cf24-a4af-4803-8f1b-757f0ae01679.png",
       "Selectors": [],
@@ -25767,6 +26059,88 @@
       ]
     },
     {
+      "Route": "images/21170259-2cea-439c-ad72-af42c397620b.iydovoepdi.jpg",
+      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/21170259-2cea-439c-ad72-af42c397620b.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "32225"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"VqTYCEGpaUKg4qFWwOFjkZcz1XpttbPKDKySEB6ojxA=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 12 Jun 2026 02:48:29 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "iydovoepdi"
+        },
+        {
+          "Name": "label",
+          "Value": "images/21170259-2cea-439c-ad72-af42c397620b.jpg"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-VqTYCEGpaUKg4qFWwOFjkZcz1XpttbPKDKySEB6ojxA="
+        }
+      ]
+    },
+    {
+      "Route": "images/21170259-2cea-439c-ad72-af42c397620b.jpg",
+      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/21170259-2cea-439c-ad72-af42c397620b.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "32225"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"VqTYCEGpaUKg4qFWwOFjkZcz1XpttbPKDKySEB6ojxA=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 12 Jun 2026 02:48:29 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-VqTYCEGpaUKg4qFWwOFjkZcz1XpttbPKDKySEB6ojxA="
+        }
+      ]
+    },
+    {
       "Route": "images/21aec0ce-d541-40e0-b08d-6476ec926089.jpeg",
       "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/21aec0ce-d541-40e0-b08d-6476ec926089.jpeg",
       "Selectors": [],
@@ -26423,6 +26797,88 @@
       ]
     },
     {
+      "Route": "images/2877ce79-85df-429c-841b-072bec3c66bd.png",
+      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/2877ce79-85df-429c-841b-072bec3c66bd.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "14138"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"D4xQm28x9z5pwpn3Ixn2FI/sNK2XHz13BBnYdrOi5GI=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 12 Jun 2026 03:36:30 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-D4xQm28x9z5pwpn3Ixn2FI/sNK2XHz13BBnYdrOi5GI="
+        }
+      ]
+    },
+    {
+      "Route": "images/2877ce79-85df-429c-841b-072bec3c66bd.vwnsovzclv.png",
+      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/2877ce79-85df-429c-841b-072bec3c66bd.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "14138"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"D4xQm28x9z5pwpn3Ixn2FI/sNK2XHz13BBnYdrOi5GI=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 12 Jun 2026 03:36:30 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "vwnsovzclv"
+        },
+        {
+          "Name": "label",
+          "Value": "images/2877ce79-85df-429c-841b-072bec3c66bd.png"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-D4xQm28x9z5pwpn3Ixn2FI/sNK2XHz13BBnYdrOi5GI="
+        }
+      ]
+    },
+    {
       "Route": "images/29b62eec-95c9-4187-af89-c3913e9540b2.g7dcrr9bhs.png",
       "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/29b62eec-95c9-4187-af89-c3913e9540b2.png",
       "Selectors": [],
@@ -26829,6 +27285,88 @@
         {
           "Name": "integrity",
           "Value": "sha256-N4+fCQvHJn8h1TjFhx4uzqnXyedLO7g8Gax2d+3CWO8="
+        }
+      ]
+    },
+    {
+      "Route": "images/3a1bbadd-1aa9-4507-977f-e08c137529a6.png",
+      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/3a1bbadd-1aa9-4507-977f-e08c137529a6.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "14138"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"D4xQm28x9z5pwpn3Ixn2FI/sNK2XHz13BBnYdrOi5GI=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 12 Jun 2026 03:18:54 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-D4xQm28x9z5pwpn3Ixn2FI/sNK2XHz13BBnYdrOi5GI="
+        }
+      ]
+    },
+    {
+      "Route": "images/3a1bbadd-1aa9-4507-977f-e08c137529a6.vwnsovzclv.png",
+      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/3a1bbadd-1aa9-4507-977f-e08c137529a6.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "14138"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"D4xQm28x9z5pwpn3Ixn2FI/sNK2XHz13BBnYdrOi5GI=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 12 Jun 2026 03:18:54 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "vwnsovzclv"
+        },
+        {
+          "Name": "label",
+          "Value": "images/3a1bbadd-1aa9-4507-977f-e08c137529a6.png"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-D4xQm28x9z5pwpn3Ixn2FI/sNK2XHz13BBnYdrOi5GI="
         }
       ]
     },
@@ -28391,6 +28929,88 @@
       ]
     },
     {
+      "Route": "images/5ed139f9-f77a-4afd-a335-a8d6a092f1dd.fxzb1k0w7x.jpg",
+      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/5ed139f9-f77a-4afd-a335-a8d6a092f1dd.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "195825"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"o/tZ0B/c9BllTRhgHIB/ohQvpVD2dn6XmYnWvFLWLeA=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 12 Jun 2026 03:05:11 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "fxzb1k0w7x"
+        },
+        {
+          "Name": "label",
+          "Value": "images/5ed139f9-f77a-4afd-a335-a8d6a092f1dd.jpg"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-o/tZ0B/c9BllTRhgHIB/ohQvpVD2dn6XmYnWvFLWLeA="
+        }
+      ]
+    },
+    {
+      "Route": "images/5ed139f9-f77a-4afd-a335-a8d6a092f1dd.jpg",
+      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/5ed139f9-f77a-4afd-a335-a8d6a092f1dd.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "195825"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"o/tZ0B/c9BllTRhgHIB/ohQvpVD2dn6XmYnWvFLWLeA=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 12 Jun 2026 03:05:11 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-o/tZ0B/c9BllTRhgHIB/ohQvpVD2dn6XmYnWvFLWLeA="
+        }
+      ]
+    },
+    {
       "Route": "images/603bc280-3260-47df-b0e4-e9234df1517a.jpg",
       "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/603bc280-3260-47df-b0e4-e9234df1517a.jpg",
       "Selectors": [],
@@ -29535,6 +30155,88 @@
         {
           "Name": "integrity",
           "Value": "sha256-f9+S2bqBrL2pjXtqRaTVdnuO1qc4kY4MVrsbHvnv/nw="
+        }
+      ]
+    },
+    {
+      "Route": "images/75ec3196-e907-425b-b324-5918931f9799.fxzb1k0w7x.jpg",
+      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/75ec3196-e907-425b-b324-5918931f9799.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "195825"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"o/tZ0B/c9BllTRhgHIB/ohQvpVD2dn6XmYnWvFLWLeA=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 12 Jun 2026 03:02:41 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "fxzb1k0w7x"
+        },
+        {
+          "Name": "label",
+          "Value": "images/75ec3196-e907-425b-b324-5918931f9799.jpg"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-o/tZ0B/c9BllTRhgHIB/ohQvpVD2dn6XmYnWvFLWLeA="
+        }
+      ]
+    },
+    {
+      "Route": "images/75ec3196-e907-425b-b324-5918931f9799.jpg",
+      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/75ec3196-e907-425b-b324-5918931f9799.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "195825"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"o/tZ0B/c9BllTRhgHIB/ohQvpVD2dn6XmYnWvFLWLeA=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 12 Jun 2026 03:02:41 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-o/tZ0B/c9BllTRhgHIB/ohQvpVD2dn6XmYnWvFLWLeA="
         }
       ]
     },
@@ -33229,6 +33931,88 @@
       ]
     },
     {
+      "Route": "images/cfb312cc-87e2-4b4c-97c0-229360fb41e6.0jg829lczj.jpg",
+      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/cfb312cc-87e2-4b4c-97c0-229360fb41e6.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "63043"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"rFtvmJdy5aFzv+Y9cIcY0wW0MiyQd3lVoW4kQZDgCs4=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 12 Jun 2026 03:05:11 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "0jg829lczj"
+        },
+        {
+          "Name": "label",
+          "Value": "images/cfb312cc-87e2-4b4c-97c0-229360fb41e6.jpg"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-rFtvmJdy5aFzv+Y9cIcY0wW0MiyQd3lVoW4kQZDgCs4="
+        }
+      ]
+    },
+    {
+      "Route": "images/cfb312cc-87e2-4b4c-97c0-229360fb41e6.jpg",
+      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/cfb312cc-87e2-4b4c-97c0-229360fb41e6.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "63043"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"rFtvmJdy5aFzv+Y9cIcY0wW0MiyQd3lVoW4kQZDgCs4=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 12 Jun 2026 03:05:11 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-rFtvmJdy5aFzv+Y9cIcY0wW0MiyQd3lVoW4kQZDgCs4="
+        }
+      ]
+    },
+    {
       "Route": "images/chat/526600284110585858.jpg",
       "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/chat/526600284110585858.jpg",
       "Selectors": [],
@@ -34787,6 +35571,88 @@
       ]
     },
     {
+      "Route": "images/ef232460-5ff0-42e3-a3c0-0a5473493fd3.png",
+      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/ef232460-5ff0-42e3-a3c0-0a5473493fd3.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "52174"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"q1m0XDKyY9I8B9M8o4v6K/gpSvARW/o37ABOcQz5Sqo=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 12 Jun 2026 03:16:38 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-q1m0XDKyY9I8B9M8o4v6K/gpSvARW/o37ABOcQz5Sqo="
+        }
+      ]
+    },
+    {
+      "Route": "images/ef232460-5ff0-42e3-a3c0-0a5473493fd3.v79cwg0tou.png",
+      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/ef232460-5ff0-42e3-a3c0-0a5473493fd3.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "52174"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"q1m0XDKyY9I8B9M8o4v6K/gpSvARW/o37ABOcQz5Sqo=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 12 Jun 2026 03:16:38 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "v79cwg0tou"
+        },
+        {
+          "Name": "label",
+          "Value": "images/ef232460-5ff0-42e3-a3c0-0a5473493fd3.png"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-q1m0XDKyY9I8B9M8o4v6K/gpSvARW/o37ABOcQz5Sqo="
+        }
+      ]
+    },
+    {
       "Route": "images/efcd0ce4-62c3-40d8-acbf-c1a534314826.h2u7gywn64.png",
       "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/efcd0ce4-62c3-40d8-acbf-c1a534314826.png",
       "Selectors": [],
@@ -34947,6 +35813,88 @@
         {
           "Name": "integrity",
           "Value": "sha256-JJveW7DWyG+pfwnrQlZerrtxQTbT+hI7eZ66gQV+3zU="
+        }
+      ]
+    },
+    {
+      "Route": "images/f3cea69f-31c1-472d-96c5-497aba5d430c.jpg",
+      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/f3cea69f-31c1-472d-96c5-497aba5d430c.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "24572"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"zLFh2zXWH71g9R+hxIWf2pakLM7e9ON78+R599Kfn7U=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 12 Jun 2026 03:02:41 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-zLFh2zXWH71g9R+hxIWf2pakLM7e9ON78+R599Kfn7U="
+        }
+      ]
+    },
+    {
+      "Route": "images/f3cea69f-31c1-472d-96c5-497aba5d430c.kusbfrp8zr.jpg",
+      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/f3cea69f-31c1-472d-96c5-497aba5d430c.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "24572"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"zLFh2zXWH71g9R+hxIWf2pakLM7e9ON78+R599Kfn7U=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 12 Jun 2026 03:02:41 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "kusbfrp8zr"
+        },
+        {
+          "Name": "label",
+          "Value": "images/f3cea69f-31c1-472d-96c5-497aba5d430c.jpg"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-zLFh2zXWH71g9R+hxIWf2pakLM7e9ON78+R599Kfn7U="
         }
       ]
     },
@@ -35521,6 +36469,88 @@
         {
           "Name": "integrity",
           "Value": "sha256-JJveW7DWyG+pfwnrQlZerrtxQTbT+hI7eZ66gQV+3zU="
+        }
+      ]
+    },
+    {
+      "Route": "images/fba468d3-bc29-463a-a342-f69a5619b941.png",
+      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/fba468d3-bc29-463a-a342-f69a5619b941.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "14138"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"D4xQm28x9z5pwpn3Ixn2FI/sNK2XHz13BBnYdrOi5GI=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 12 Jun 2026 03:36:38 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-D4xQm28x9z5pwpn3Ixn2FI/sNK2XHz13BBnYdrOi5GI="
+        }
+      ]
+    },
+    {
+      "Route": "images/fba468d3-bc29-463a-a342-f69a5619b941.vwnsovzclv.png",
+      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/wwwroot/images/fba468d3-bc29-463a-a342-f69a5619b941.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "14138"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"D4xQm28x9z5pwpn3Ixn2FI/sNK2XHz13BBnYdrOi5GI=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 12 Jun 2026 03:36:38 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "vwnsovzclv"
+        },
+        {
+          "Name": "label",
+          "Value": "images/fba468d3-bc29-463a-a342-f69a5619b941.png"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-D4xQm28x9z5pwpn3Ixn2FI/sNK2XHz13BBnYdrOi5GI="
         }
       ]
     },
