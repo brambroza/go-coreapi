@@ -1,0 +1,38 @@
+using goalongapi.Entities;
+using Microsoft.IdentityModel.Tokens;
+using goalongapi.Models;
+
+namespace goalongapi.Interfaces
+{
+    public interface IAccountService
+    {
+        Task Register(Account account);
+        Task ChangePassword(string username, string newPassword);
+        Task RegisterGoogle(AccountGoogle accountGoogle);
+        Task<Account> Login(string username, string password);
+        Task<AccountGoogle> LoginGoogle(long Id, string Email);
+        string GenerateToken(Account account  );
+        Task<string> GenerateNisTokenAsync(Account account);
+        string GenerateRefreshToken(Account account);
+        string GenerateTokenGoogle(AccountGoogle account);
+        Account GetInfo(string accessToken);
+        Task<Account?> GetAccount(string accessToken);
+        string GenerateTokenRegister(string Username);
+        bool UpdateConfirmEmail(string Username);
+        bool validateEmails(string Username);
+        bool removeUser(string Username);
+        Task<Account> ForgotPassword(string username);
+        Task<bool> ResetPassword(string token, string newPassword);
+
+        bool ValidateToken(string token, out SecurityToken validatedToken);
+        Task<IssueTokenResult> IssueSessionTokens(
+              Account account,
+              string deviceId,
+              string? deviceName,
+              string? userAgent,
+              string? ipAddress,
+              bool force
+          );
+
+    }
+}

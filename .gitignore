@@ -1,0 +1,31 @@
+global.json
+#config  
+config\
+client_secret.json
+.qodo
+
+# macOS
+.DS_Store
+
+# Visual Studio / VS Code
+.vs/
+.vscode/
+*.user
+*.suo
+
+# .NET build
+bin/
+obj/
+
+# Logs
+*.log
+build.log
+build-diag.log
+
+# Config / secret
+token.json/
+*.Development.json
+appsettings.Development.json
+
+# local config
+.config/
