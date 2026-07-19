@@ -1,5 +1,13 @@
 namespace goalongapi.Dtos;
 
+public class PagedResult<T>
+{
+    public List<T> Data { get; set; } = new();
+    public int TotalCount { get; set; }
+    public int Page { get; set; }
+    public int PageSize { get; set; }
+    public int TotalPages => PageSize > 0 ? (int)Math.Ceiling((double)TotalCount / PageSize) : 0;
+}
 
 public class ServiceTicketAttachmentDto
 {
@@ -143,6 +151,10 @@ public class ServiceTicketSubTaskDto
     public string? StateSendApprove { get; set; }
     public DateTime? DateSendApprove { get; set; }
     public string? SendApproveBy { get; set; }
+
+    public string? RejectBy { get; set; }
+    public string? RejectReason { get; set; }
+    public DateTime? DateReject { get; set; }
 }
 
 public class ServiceTicketSubTaskDtoUpdate
@@ -311,6 +323,13 @@ public class CreateServiceTicketSubTaskActionDto
     public string? ActionDetails { get; set; }
     public string? ActionStatus { get; set; }
     public string? Tomorrow { get; set; }
+    public string? WorkDetail { get; set; }
+    public string? IssueDetail { get; set; }
+    public string? SignatureFilePath { get; set; }
+    public string? ChecklistItemsJson { get; set; }
+    public string? RackPhotosJson { get; set; }
+    public string? DamagedProductJson { get; set; }
+    public string? OthersItemsJson { get; set; }
 }
 
 
@@ -324,6 +343,13 @@ public class UpdateServiceTicketSubTaskActionDto
     public string? ActionDetails { get; set; }
     public string? ActionStatus { get; set; }
     public string? Tomorrow { get; set; }
+    public string? WorkDetail { get; set; }
+    public string? IssueDetail { get; set; }
+    public string? SignatureFilePath { get; set; }
+    public string? ChecklistItemsJson { get; set; }
+    public string? RackPhotosJson { get; set; }
+    public string? DamagedProductJson { get; set; }
+    public string? OthersItemsJson { get; set; }
 }
 
 
@@ -338,8 +364,79 @@ public class ServiceTicketSubTaskActionDto
     public string? ActionDetails { get; set; }
     public string? ActionStatus { get; set; }
     public string? Tomorrow { get; set; }
+    public string? WorkDetail { get; set; }
+    public string? IssueDetail { get; set; }
+    public string? SignatureFilePath { get; set; }
+    public string? ChecklistItemsJson { get; set; }
+    public string? RackPhotosJson { get; set; }
+    public string? DamagedProductJson { get; set; }
+    public string? OthersItemsJson { get; set; }
     public DateTime? UpdatedAt { get; set; }
     public List<ServiceTicketSubTaskActionAttachmentDto> Attachments { get; set; } = new();
+}
+
+/// <summary>
+/// Payload สำหรับ POST /api/ServiceTickets/{id}/close-request
+/// อัพสถานะ ticket เป็น "Waiting Close Approval" และส่ง email แจ้งลูกค้า
+/// </summary>
+public class CloseRequestDto
+{
+    public string CmpId { get; set; } = string.Empty;
+    /// <summary>อีเมลปลายทาง (required)</summary>
+    public string To { get; set; } = string.Empty;
+    public string Subject { get; set; } = string.Empty;
+    /// <summary>HTML body แบบกำหนดเอง — ถ้าไม่ส่งมาระบบจะสร้างอัตโนมัติ</summary>
+    public string? Body { get; set; }
+    /// <summary>Data URL ของลายเซ็นลูกค้า (canvas.toDataURL) — optional</summary>
+    public string? SignatureBase64 { get; set; }
+    /// <summary>true เมื่อลูกค้าไม่ได้เซ็นและ staff เลือก Skip</summary>
+    public bool SkipSignature { get; set; }
+    public string UpdatedBy { get; set; } = string.Empty;
+}
+
+public class CloseRequestResponseDto
+{
+    public string TicketId { get; set; } = string.Empty;
+    public string Status { get; set; } = string.Empty;
+    public bool EmailSent { get; set; }
+    public string? EmailError { get; set; }
+}
+
+public class SendReportEmailDto
+{
+    public string To { get; set; } = string.Empty;
+    public string Subject { get; set; } = string.Empty;
+    public string Body { get; set; } = string.Empty;
+    public string? PdfBase64 { get; set; }
+    public string? FileName { get; set; }
+    public string TicketId { get; set; } = string.Empty;
+    public string CmpId { get; set; } = string.Empty;
+}
+
+public class CreateReplacementTicketDto
+{
+    public string SourceTicketId { get; set; } = string.Empty;
+    public string CmpId { get; set; } = string.Empty;
+    public string Brand { get; set; } = string.Empty;
+    public string Model { get; set; } = string.Empty;
+    public string SerialNo { get; set; } = string.Empty;
+    public string Warranty { get; set; } = string.Empty;
+    public string CustomerName { get; set; } = string.Empty;
+    public string CreatedBy { get; set; } = string.Empty;
+}
+
+public class CreateHelpdeskCaseDto
+{
+    public string SourceTicketId { get; set; } = string.Empty;
+    public string CmpId { get; set; } = string.Empty;
+    public string Reporter { get; set; } = string.Empty;
+    public string Category { get; set; } = string.Empty;
+    public string Problem { get; set; } = string.Empty;
+    public string Solution { get; set; } = string.Empty;
+    public string? StartTime { get; set; }
+    public string? EndTime { get; set; }
+    public string CustomerName { get; set; } = string.Empty;
+    public string CreatedBy { get; set; } = string.Empty;
 }
 
 
@@ -394,4 +491,25 @@ public class SubTaskApproveDto
 {
     public string SubTaskId { get; set; } = string.Empty;
     public string ApproveBy { get; set; } = string.Empty;
+}
+
+public class SubTaskRejectDto
+{
+    public string SubTaskId { get; set; } = string.Empty;
+    public string RejectBy { get; set; } = string.Empty;
+    public string? RejectReason { get; set; }
+}
+
+public class BulkAssignDto
+{
+    public List<string> TicketIds { get; set; } = new();
+    public string AssignUserId { get; set; } = string.Empty;
+    public string AssignUserName { get; set; } = string.Empty;
+    public string AssignedBy { get; set; } = string.Empty;
+}
+
+public class BulkStatusDto
+{
+    public List<string> TicketIds { get; set; } = new();
+    public string Status { get; set; } = string.Empty;
 }

@@ -73,6 +73,7 @@ namespace goalongapi.Entities
         public string Token { get; set; } = "";
         public string RefreshToken { get; set; } = "";
         public Guid SessionId { get; set; }
+        public string Role { get; set; } = "staff";
         public object? ActiveSession { get; set; }
     }
 

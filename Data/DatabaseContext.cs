@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using goalongapi.Dtos;
 using goalongapi.Entities;
 using goalongapi.Models;
+using goalongapi.Models.Nis;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
@@ -45,6 +46,35 @@ namespace goalongapi.Data
 
 
         public DbSet<MServiceMode> MServiceModes { get; set; }
+
+        // REQ-004 — Self-Job Request
+        public DbSet<SelfJobRequest> SelfJobRequests { get; set; }
+
+        // ServiceTicket Master Data
+        public DbSet<ServiceTicketMasterCategory> ServiceTicketMasterCategories { get; set; }
+        public DbSet<ServiceTicketMasterTag> ServiceTicketMasterTags { get; set; }
+        public DbSet<ServiceTicketMasterChecklist> ServiceTicketMasterChecklists { get; set; }
+
+        // Warranty & Claims
+        public DbSet<WarrantyDevice> WarrantyDevices { get; set; }
+        public DbSet<WarrantyClaim> WarrantyClaims { get; set; }
+
+        // NIS — Service Project Portal
+        public DbSet<NisProject> NisProjects { get; set; }
+        public DbSet<NisTicket> NisTickets { get; set; }
+        public DbSet<NisSalesOrder> NisSalesOrders { get; set; }
+        public DbSet<NisSystemConfig> NisSystemConfigs { get; set; }
+        public DbSet<NisPendingRequest> NisPendingRequests { get; set; }
+        public DbSet<NisOnsiteReport> NisOnsiteReports { get; set; }
+        public DbSet<NisCustomerLocation> NisCustomerLocations { get; set; }
+        public DbSet<NisCustomerAssignEmp> NisCustomerAssignEmps { get; set; }
+        public DbSet<NisContactRow> NisContacts { get; set; }
+        public DbSet<NisPersonalTodo> NisPersonalTodos { get; set; }
+        public DbSet<NisPersonalNote> NisPersonalNotes { get; set; }
+        public DbSet<NisPushToken> NisPushTokens { get; set; }
+        public DbSet<NisPushLog> NisPushLogs { get; set; }
+        public DbSet<EmailSendLog> EmailSendLogs { get; set; }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
@@ -156,6 +186,8 @@ namespace goalongapi.Data
                 entity.Property(x => x.CmpId).HasMaxLength(50);
                 entity.Property(x => x.UpdUser).HasMaxLength(100).IsRequired();
                 entity.Property(x => x.Status).HasMaxLength(20).HasDefaultValue("draft");
+                entity.Property(x => x.SkipSignature).HasDefaultValue(false);
+                entity.Property(x => x.RequireCloseApproval).HasDefaultValue(false);
 
                 entity.Ignore(x => x.ImagePath);
 
@@ -431,6 +463,51 @@ namespace goalongapi.Data
                         entity.Property(e => e.Tomorrow)
                                 .HasMaxLength(100);
 
+                        entity.Property(e => e.WorkDetail)
+                                .HasMaxLength(4000)
+                                .IsRequired(false);
+
+                        entity.Property(e => e.IssueDetail)
+                                .HasMaxLength(4000)
+                                .IsRequired(false);
+
+                        entity.Property(e => e.SignatureFilePath)
+                                .HasMaxLength(500)
+                                .IsRequired(false);
+
+                        entity.Property(e => e.ChecklistItemsJson)
+                                .HasColumnType("nvarchar(max)")
+                                .IsRequired(false);
+
+                        entity.Property(e => e.RackPhotosJson)
+                                .HasColumnType("nvarchar(max)")
+                                .IsRequired(false);
+
+                        entity.Property(e => e.DamagedProductJson)
+                                .HasColumnType("nvarchar(max)")
+                                .IsRequired(false);
+
+                        entity.Property(e => e.OthersItemsJson)
+                                .HasColumnType("nvarchar(max)")
+                                .IsRequired(false);
+
+                        entity.Property(e => e.SrNumber)
+                                .HasMaxLength(50)
+                                .IsRequired(false);
+
+                        entity.Property(e => e.SignatureImageBase64)
+                                .HasColumnType("nvarchar(max)")
+                                .IsRequired(false);
+
+                        entity.Property(e => e.WorkPhotosJson)
+                                .HasColumnType("nvarchar(max)")
+                                .IsRequired(false);
+
+                        entity.Property(e => e.CheckInLatitude).HasColumnType("decimal(18,10)");
+                        entity.Property(e => e.CheckInLongitude).HasColumnType("decimal(18,10)");
+                        entity.Property(e => e.CheckOutLatitude).HasColumnType("decimal(18,10)");
+                        entity.Property(e => e.CheckOutLongitude).HasColumnType("decimal(18,10)");
+
                         entity.Property(e => e.UpdatedAt)
                                 .HasColumnType("datetime2(0)");
 
@@ -507,6 +584,345 @@ namespace goalongapi.Data
 
                 });
 
+
+            // REQ-004 — Self-Job Request
+            modelBuilder.Entity<SelfJobRequest>(entity =>
+            {
+                entity.ToTable("SelfJobRequest", "dbo");
+                entity.HasKey(e => e.RequestId);
+
+                entity.Property(e => e.RequestId).HasMaxLength(100).IsRequired();
+                entity.Property(e => e.RequestNo).HasMaxLength(50);
+                entity.Property(e => e.RequestTitle).HasMaxLength(500).IsRequired();
+                entity.Property(e => e.RequestType).HasMaxLength(100);
+                entity.Property(e => e.Status).HasMaxLength(50).HasDefaultValue("Draft");
+                entity.Property(e => e.CmpId).HasMaxLength(50).IsRequired();
+                entity.Property(e => e.CustomerCode).HasMaxLength(100);
+                entity.Property(e => e.CustomerName).HasMaxLength(200);
+                entity.Property(e => e.SiteName).HasMaxLength(200);
+                entity.Property(e => e.ContactName).HasMaxLength(200);
+                entity.Property(e => e.ContactPhone).HasMaxLength(50);
+                entity.Property(e => e.Priority).HasMaxLength(20).HasDefaultValue("medium");
+                entity.Property(e => e.ExpectedServiceDate).HasColumnType("datetime");
+                entity.Property(e => e.EstimatedHours).HasColumnType("decimal(10,2)");
+                entity.Property(e => e.EstimatedCost).HasColumnType("decimal(18,2)");
+                entity.Property(e => e.RequestedBy).HasMaxLength(100);
+                entity.Property(e => e.RequestedDate).HasColumnType("datetime").HasDefaultValueSql("GETDATE()");
+                entity.Property(e => e.ApprovedBy).HasMaxLength(100);
+                entity.Property(e => e.ApprovedDate).HasColumnType("datetime");
+                entity.Property(e => e.RejectedBy).HasMaxLength(100);
+                entity.Property(e => e.RejectedDate).HasColumnType("datetime");
+                entity.Property(e => e.CancelledBy).HasMaxLength(100);
+                entity.Property(e => e.CancelledDate).HasColumnType("datetime");
+                entity.Property(e => e.TicketId).HasMaxLength(100);
+                entity.Property(e => e.SubTaskId).HasMaxLength(100);
+                entity.Property(e => e.UpdatedBy).HasMaxLength(100);
+                entity.Property(e => e.CreatedAt).HasColumnType("datetime").HasDefaultValueSql("GETDATE()");
+                entity.Property(e => e.UpdatedAt).HasColumnType("datetime").HasDefaultValueSql("GETDATE()");
+
+                entity.HasIndex(e => e.CmpId);
+                entity.HasIndex(e => e.Status);
+                entity.HasIndex(e => new { e.CmpId, e.Status });
+                entity.HasIndex(e => e.RequestedBy);
+            });
+
+            // ── NIS Project Portal ────────────────────────────────────────────────────
+
+            modelBuilder.Entity<NisProject>(entity =>
+            {
+                entity.ToTable("NisProject", "dbo", tb => tb.UseSqlOutputClause(false));
+                entity.HasKey(e => e.ProjectId);
+
+                entity.Property(e => e.Name).HasMaxLength(200).IsRequired();
+                entity.Property(e => e.Customer).HasMaxLength(200).IsRequired();
+                entity.Property(e => e.Type).HasMaxLength(50).IsRequired();
+                entity.Property(e => e.Priority).HasMaxLength(20);
+                entity.Property(e => e.Status).HasMaxLength(50);
+                entity.Property(e => e.Staff).HasMaxLength(200);
+                entity.Property(e => e.SoRef).HasMaxLength(100);
+                entity.Property(e => e.TagsRaw).HasMaxLength(1000);
+                entity.Property(e => e.CmpId).HasMaxLength(50).IsRequired();
+                entity.Property(e => e.StartDate).HasColumnType("datetime");
+                entity.Property(e => e.EndDate).HasColumnType("datetime");
+                entity.Property(e => e.CreatedBy).HasMaxLength(100);
+                entity.Property(e => e.UpdatedBy).HasMaxLength(100);
+                entity.Property(e => e.CreatedDate).HasColumnType("datetime");
+                entity.Property(e => e.UpdatedDate).HasColumnType("datetime");
+
+                entity.HasMany(e => e.Tickets)
+                    .WithOne(e => e.Project)
+                    .HasForeignKey(e => e.ProjectId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasIndex(e => e.CmpId);
+                entity.HasIndex(e => new { e.CmpId, e.Status });
+                entity.HasIndex(e => new { e.CmpId, e.ProjectNo }).IsUnique();
+            });
+
+            modelBuilder.Entity<NisTicket>(entity =>
+            {
+                entity.ToTable("NisTicket", "dbo", tb => tb.UseSqlOutputClause(false));
+                entity.HasKey(e => e.TicketId);
+
+                entity.Property(e => e.ProjectId).HasMaxLength(50).IsRequired();
+                entity.Property(e => e.Title).HasMaxLength(500).IsRequired();
+                entity.Property(e => e.Status).HasMaxLength(50);
+                entity.Property(e => e.Assignee).HasMaxLength(200);
+                entity.Property(e => e.Type).HasMaxLength(50);
+                entity.Property(e => e.TicketCode).HasMaxLength(50);
+                entity.Property(e => e.Priority).HasMaxLength(20);
+                entity.Property(e => e.TagsRaw).HasMaxLength(500);
+                entity.Property(e => e.StartDate).HasColumnType("datetime");
+                entity.Property(e => e.EndDate).HasColumnType("datetime");
+                entity.Property(e => e.Due).HasColumnType("datetime");
+                entity.Property(e => e.CmpId).HasMaxLength(50);
+                entity.Property(e => e.CreatedBy).HasMaxLength(100);
+                entity.Property(e => e.CreatedDate).HasColumnType("datetime");
+                entity.Property(e => e.UpdatedDate).HasColumnType("datetime");
+
+                entity.HasIndex(e => e.ProjectId);
+                entity.HasIndex(e => new { e.CmpId, e.Status });
+                entity.HasIndex(e => e.TicketCode);
+            });
+
+            modelBuilder.Entity<NisSalesOrder>(entity =>
+            {
+                entity.ToTable("NisSalesOrder", "dbo", tb => tb.UseSqlOutputClause(false));
+                entity.HasKey(e => e.SoId);
+
+                entity.Property(e => e.QuoteRef).HasMaxLength(100).IsRequired();
+                entity.Property(e => e.Customer).HasMaxLength(200).IsRequired();
+                entity.Property(e => e.Type).HasMaxLength(50);
+                entity.Property(e => e.Value).HasColumnType("decimal(18,2)");
+                entity.Property(e => e.Status).HasMaxLength(50);
+                entity.Property(e => e.Date).HasColumnType("datetime");
+                entity.Property(e => e.PoDate).HasColumnType("datetime");
+                entity.Property(e => e.PoNumber).HasMaxLength(100);
+                entity.Property(e => e.SalesName).HasMaxLength(200);
+                entity.Property(e => e.CmpId).HasMaxLength(50);
+                entity.Property(e => e.CreatedBy).HasMaxLength(100);
+                entity.Property(e => e.CreatedDate).HasColumnType("datetime");
+                entity.Property(e => e.UpdatedDate).HasColumnType("datetime");
+
+                entity.HasIndex(e => e.CmpId);
+                entity.HasIndex(e => e.Status);
+            });
+
+            modelBuilder.Entity<NisPendingRequest>(entity =>
+            {
+                entity.ToTable("NisPendingRequest", "dbo", tb => tb.UseSqlOutputClause(false));
+                entity.HasKey(e => e.RequestId);
+
+                entity.Property(e => e.RequestedBy).HasMaxLength(200).IsRequired();
+                entity.Property(e => e.Title).HasMaxLength(500).IsRequired();
+                entity.Property(e => e.TicketType).HasMaxLength(50);
+                entity.Property(e => e.SupportMethod).HasMaxLength(50);
+                entity.Property(e => e.ProjectId).HasMaxLength(50);
+                entity.Property(e => e.Location).HasMaxLength(500);
+                entity.Property(e => e.Detail).HasMaxLength(2000);
+                entity.Property(e => e.ParentTicketId).HasMaxLength(50);
+                entity.Property(e => e.Status).HasMaxLength(20);
+                entity.Property(e => e.CreatedTicketId).HasMaxLength(50);
+                entity.Property(e => e.CmpId).HasMaxLength(50).IsRequired();
+                entity.Property(e => e.ApprovedBy).HasMaxLength(100);
+                entity.Property(e => e.RejectedBy).HasMaxLength(100);
+                entity.Property(e => e.Due).HasColumnType("datetime");
+                entity.Property(e => e.CreatedDate).HasColumnType("datetime");
+                entity.Property(e => e.UpdatedDate).HasColumnType("datetime");
+
+                entity.HasIndex(e => new { e.CmpId, e.Status });
+                entity.HasIndex(e => new { e.CmpId, e.RequestedBy });
+            });
+
+            modelBuilder.Entity<NisOnsiteReport>(entity =>
+            {
+                entity.ToTable("NisOnsiteReport", "dbo", tb => tb.UseSqlOutputClause(false));
+                entity.HasKey(e => e.ReportId);
+
+                entity.Property(e => e.NisTicketId).HasMaxLength(50).IsRequired();
+                entity.Property(e => e.TicketCode).HasMaxLength(50);
+                entity.Property(e => e.SrNumber).HasMaxLength(50);
+                entity.Property(e => e.CmpId).HasMaxLength(50).IsRequired();
+                entity.Property(e => e.Engineer).HasMaxLength(200);
+                entity.Property(e => e.CheckInTime).HasMaxLength(100);
+                entity.Property(e => e.CheckOutTime).HasMaxLength(100);
+                entity.Property(e => e.Status).HasMaxLength(30);
+                entity.Property(e => e.CreatedDate).HasColumnType("datetime");
+                // WorkDetail / IssueDetail / *Json / SignatureImageBase64 default to nvarchar(max).
+
+                // Persisted Service Report PDF reference (blob stored on disk, not in-row).
+                entity.Property(e => e.ReportPdfPath).HasMaxLength(400);
+                entity.Property(e => e.ReportPdfSha256).HasMaxLength(64);
+
+                entity.HasIndex(e => e.NisTicketId);
+                entity.HasIndex(e => new { e.CmpId, e.SrNumber });
+            });
+
+            modelBuilder.Entity<NisPersonalTodo>(entity =>
+            {
+                entity.ToTable("NisPersonalTodo", "dbo", tb => tb.UseSqlOutputClause(false));
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Id).HasMaxLength(60);
+                entity.Property(e => e.CmpId).HasMaxLength(50).IsRequired();
+                entity.Property(e => e.RemindDateTime).HasMaxLength(30);
+                entity.Property(e => e.CreatedDate).HasColumnType("datetime");
+                entity.Property(e => e.UpdatedDate).HasColumnType("datetime");
+                entity.HasIndex(e => new { e.CmpId, e.AccountId });
+            });
+
+            modelBuilder.Entity<NisPersonalNote>(entity =>
+            {
+                entity.ToTable("NisPersonalNote", "dbo", tb => tb.UseSqlOutputClause(false));
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Id).HasMaxLength(60);
+                entity.Property(e => e.CmpId).HasMaxLength(50).IsRequired();
+                entity.Property(e => e.Reminder).HasMaxLength(30);
+                entity.Property(e => e.CreatedDate).HasColumnType("datetime");
+                entity.HasIndex(e => new { e.CmpId, e.AccountId });
+            });
+
+            // NIS Onsite push (Track B) — table สร้างด้วย add-nis-push-tokens.sql
+            modelBuilder.Entity<NisPushToken>(entity =>
+            {
+                entity.ToTable("NisPushToken", "dbo", tb => tb.UseSqlOutputClause(false));
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.CmpId).HasMaxLength(100).IsRequired();
+                entity.Property(e => e.StaffName).HasMaxLength(200).IsRequired();
+                entity.Property(e => e.ExpoPushToken).HasMaxLength(255).IsRequired();
+                entity.Property(e => e.DeviceId).HasMaxLength(255).IsRequired();
+                // upsert key: เครื่องเดิม + คนเดิม = แถวเดิม
+                entity.HasIndex(e => new { e.CmpId, e.StaffName, e.DeviceId }).IsUnique();
+            });
+
+            modelBuilder.Entity<NisPushLog>(entity =>
+            {
+                entity.ToTable("NisPushLog", "dbo", tb => tb.UseSqlOutputClause(false));
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.EventKey).HasMaxLength(255).IsRequired();
+                // unique = insert ซ้ำล้ม → ข้ามการส่ง (dedupe first-writer-wins)
+                entity.HasIndex(e => e.EventKey).IsUnique();
+            });
+
+            modelBuilder.Entity<EmailSendLog>(entity =>
+            {
+                entity.ToTable("EmailSendLog", "dbo");
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Source).HasMaxLength(100).IsRequired();
+                entity.Property(e => e.CmpId).HasMaxLength(100).IsRequired();
+                entity.Property(e => e.RecipientEmail).HasMaxLength(320).IsRequired();
+                entity.Property(e => e.Subject).HasMaxLength(500).IsRequired();
+                entity.Property(e => e.Provider).HasMaxLength(30).IsRequired();
+                entity.Property(e => e.ErrorMessage).HasMaxLength(4000);
+                entity.Property(e => e.ErrorDetail).HasColumnType("nvarchar(max)");
+                entity.Property(e => e.CreatedAt).HasColumnType("datetime2");
+                entity.HasIndex(e => new { e.CmpId, e.CreatedAt });
+            });
+
+            // Read-only mappings to existing master tables (no migration).
+            modelBuilder.Entity<NisCustomerLocation>(entity =>
+            {
+                // Written to by the Customer tab save — disable OUTPUT for legacy triggers.
+                entity.ToTable("mCustomerLocations", "msb", tb => tb.UseSqlOutputClause(false));
+                entity.HasKey(e => new { e.CustomerCode, e.CmpId, e.Seq });
+                entity.Property(e => e.CustomerCode).HasMaxLength(50);
+                entity.Property(e => e.CmpId).HasMaxLength(50);
+                entity.Property(e => e.Lat).HasColumnType("numeric(18,2)");
+                entity.Property(e => e.Lon).HasColumnType("numeric(18,2)");
+                entity.Property(e => e.LocationName).HasMaxLength(50);
+                entity.Property(e => e.Remark).HasMaxLength(500);
+                entity.Property(e => e.LocationURL).HasMaxLength(200);
+                entity.Property(e => e.UpdUser).HasMaxLength(50);
+            });
+
+            modelBuilder.Entity<NisCustomerAssignEmp>(entity =>
+            {
+                // Written to by the Customer tab caretakers matrix — disable the OUTPUT
+                // clause in case the legacy table carries triggers.
+                entity.ToTable("mCustomerAssignEmp", "msb", tb => tb.UseSqlOutputClause(false));
+                entity.HasKey(e => new { e.CustomerCode, e.CmpId, e.AccountID });
+                entity.Property(e => e.CustomerCode).HasMaxLength(50);
+                entity.Property(e => e.CmpId).HasMaxLength(50);
+                entity.Property(e => e.UpdUser).HasMaxLength(50);
+            });
+
+            modelBuilder.Entity<NisContactRow>(entity =>
+            {
+                // Written to by the Customer tab save — disable OUTPUT for legacy triggers.
+                entity.ToTable("Contact", "dbo", tb => tb.UseSqlOutputClause(false));
+                entity.HasKey(e => e.ContactId);
+                entity.Property(e => e.ContactId).HasMaxLength(50);
+                entity.Property(e => e.ContactName).HasMaxLength(100);
+                entity.Property(e => e.ContactEmail).HasMaxLength(100);
+                entity.Property(e => e.ContactPhone).HasMaxLength(50);
+                entity.Property(e => e.ContactPosition).HasMaxLength(100);
+                entity.Property(e => e.ContactLineId).HasMaxLength(100);
+                entity.Property(e => e.CmpId).HasMaxLength(30);
+                entity.Property(e => e.DocNo).HasMaxLength(50);
+                entity.Property(e => e.DocType).HasMaxLength(50);
+            });
+
+            modelBuilder.Entity<NisSystemConfig>(entity =>
+            {
+                entity.ToTable("NisSystemConfig", "dbo", tb => tb.UseSqlOutputClause(false));
+                entity.HasKey(e => e.CmpId);
+
+                entity.Property(e => e.CmpId).HasMaxLength(50).IsRequired();
+                entity.Property(e => e.JobTypesRaw).HasMaxLength(2000);
+                entity.Property(e => e.TagsRaw).HasMaxLength(4000);
+                entity.Property(e => e.ImplementChecklistRaw).HasMaxLength(8000);
+                entity.Property(e => e.MaChecklistRaw).HasMaxLength(8000);
+                entity.Property(e => e.PmChecklistRaw).HasMaxLength(8000);
+                entity.Property(e => e.SlaOptionsRaw).HasMaxLength(500);
+                entity.Property(e => e.UpdatedBy).HasMaxLength(100);
+                entity.Property(e => e.UpdatedDate).HasColumnType("datetime");
+            });
+
+            // ── WarrantyClaim (table: WarrantyClaim — match add_warranty_claims_tables.sql) ──
+            modelBuilder.Entity<WarrantyClaim>(entity =>
+            {
+                entity.ToTable("WarrantyClaim", "dbo", tb => tb.UseSqlOutputClause(false));
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Id).HasMaxLength(30).IsRequired().ValueGeneratedNever();
+                entity.Property(e => e.TicketId).HasMaxLength(100);
+                entity.Property(e => e.Customer).HasMaxLength(200).IsRequired();
+                entity.Property(e => e.SalesName).HasMaxLength(100);
+                entity.Property(e => e.ReporterStaff).HasMaxLength(100).IsRequired();
+                entity.Property(e => e.Brand).HasMaxLength(100).IsRequired();
+                entity.Property(e => e.Model).HasMaxLength(100).IsRequired();
+                entity.Property(e => e.SerialNo).HasMaxLength(100).IsRequired();
+                entity.Property(e => e.WarrantyStatus).HasMaxLength(10).HasDefaultValue("on");
+                entity.Property(e => e.Status).HasMaxLength(50).HasDefaultValue("Claim Received");
+                entity.Property(e => e.Detail).HasColumnType("NVARCHAR(MAX)");
+                entity.Property(e => e.CmpId).HasMaxLength(50);
+                entity.Property(e => e.UpdUser).HasMaxLength(100);
+                entity.Property(e => e.ClaimDate).HasColumnType("date").HasDefaultValueSql("CAST(GETDATE() AS DATE)");
+                entity.Property(e => e.CreatedAt).HasColumnType("datetime").HasDefaultValueSql("GETDATE()");
+                entity.Property(e => e.UpdatedAt).HasColumnType("datetime").HasDefaultValueSql("GETDATE()");
+                entity.HasIndex(e => e.CmpId);
+                entity.HasIndex(e => e.ClaimDate);
+            });
+
+            // ── WarrantyDevice (table: WarrantyDevice — match add_warranty_claims_tables.sql) ──
+            modelBuilder.Entity<WarrantyDevice>(entity =>
+            {
+                entity.ToTable("WarrantyDevice", "dbo", tb => tb.UseSqlOutputClause(false));
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
+                entity.Property(e => e.SerialNo).HasMaxLength(100).IsRequired();
+                entity.Property(e => e.ProductName).HasMaxLength(200).IsRequired();
+                entity.Property(e => e.Brand).HasMaxLength(100).IsRequired();
+                entity.Property(e => e.Model).HasMaxLength(100).IsRequired();
+                entity.Property(e => e.Customer).HasMaxLength(200);
+                entity.Property(e => e.ProjectNo).HasMaxLength(50);
+                entity.Property(e => e.WarrantyStatus).HasMaxLength(10).HasDefaultValue("on");
+                entity.Property(e => e.WarrantyExpiry).HasColumnType("date");
+                entity.Property(e => e.CmpId).HasMaxLength(50);
+                entity.Property(e => e.UpdUser).HasMaxLength(100);
+                entity.Property(e => e.CreatedAt).HasColumnType("datetime").HasDefaultValueSql("GETDATE()");
+                entity.Property(e => e.UpdatedAt).HasColumnType("datetime").HasDefaultValueSql("GETDATE()");
+                entity.HasIndex(e => e.SerialNo).IsUnique();
+                entity.HasIndex(e => e.CmpId);
+            });
 
             OnModelCreatingPartial(modelBuilder);
         }

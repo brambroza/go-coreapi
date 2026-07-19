@@ -132,6 +132,22 @@ namespace goalongapi.Models
         public string TicketId { get; set; }
     }
 
+    // ผูกหลาย Sale Order เข้ากับ 1 Project (many SO -> 1 project)
+    public class ApppoList
+    {
+        public string UpdUser { get; set; }
+        public string ProjectNo { get; set; }
+        public string CustCode { get; set; }
+        public string Description { get; set; }
+        public string CmpId { get; set; }
+        public string PurchaseNo { get; set; }
+        public string QuotationNo { get; set; }
+        public string ReferCode { get; set; }
+        public string StateActive { get; set; }
+        public List<string> SaleOrderNos { get; set; }
+        public string TicketId { get; set; }
+    }
+
     public class AppInvoice
     {
         public string UpdUser { get; set; }

@@ -197,19 +197,61 @@ namespace goalongapi.Interfaces
             return BuildToken(claims);
         }
 
+        public async Task<string> GenerateNisTokenAsync(Account account)
+        {
+            var role = await GetNisRoleAsync(account.AccountId);
+            return BuildToken([
+                new Claim(JwtRegisteredClaimNames.Sub, account.Username),
+                new Claim("role", role),
+                new Claim("additional", "todo"),
+            ]);
+        }
 
-        public string GenerateTokenSession(Account account, AccountSession session)
+
+        private string GenerateTokenSession(Account account, AccountSession session, string role)
         {
             var claims = new[]
             {
                 new Claim(JwtRegisteredClaimNames.Sub, account.Username),
-                new Claim("role", account.Role.Name),
+                // NIS role is derived from SystemRole.StateManager via
+                // SystemPermission, not from the display name of the role.
+                new Claim("role", role),
                 new Claim("additional", "todo"),
                 new Claim("aid", account.AccountId.ToString()),
                 new Claim("sid", session.SessionId.ToString()),
             };
 
             return BuildToken(claims);
+        }
+
+        private async Task<string> GetNisRoleAsync(long accountId)
+        {
+            const string sql = @"
+SELECT CASE WHEN MAX(CASE WHEN ISNULL(role.StateManager, 0) = 1 THEN 1 ELSE 0 END) = 1
+            THEN 'mng' ELSE 'staff' END
+FROM Accounts AS userlist
+LEFT JOIN SystemPermission AS per ON userlist.AccountID = per.AccountID
+LEFT JOIN SystemRole AS role ON per.RoleId = role.RoleId
+WHERE userlist.AccountID = @AccountId;";
+
+            var connection = databaseContext.Database.GetDbConnection();
+            var shouldClose = connection.State != System.Data.ConnectionState.Open;
+            if (shouldClose) await connection.OpenAsync();
+            try
+            {
+                await using var command = connection.CreateCommand();
+                command.CommandText = sql;
+                var parameter = command.CreateParameter();
+                parameter.ParameterName = "@AccountId";
+                parameter.Value = accountId;
+                command.Parameters.Add(parameter);
+                var value = await command.ExecuteScalarAsync();
+                return string.Equals(value?.ToString(), "mng", StringComparison.OrdinalIgnoreCase) ? "mng" : "staff";
+            }
+            finally
+            {
+                if (shouldClose) await connection.CloseAsync();
+            }
         }
 
 
@@ -509,14 +551,16 @@ namespace goalongapi.Interfaces
             }
 
             // ออก JWT ที่มี sid=sessionId
-            var token = GenerateTokenSession(account, session);
+            var role = await GetNisRoleAsync(account.AccountId);
+            var token = GenerateTokenSession(account, session, role);
 
             return new IssueTokenResult
             {
                 Status = "OK",
                 Token = token,
                 RefreshToken = refreshToken,
-                SessionId = newSessionId
+                SessionId = newSessionId,
+                Role = role,
             };
         }
 

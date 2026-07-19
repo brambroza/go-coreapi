@@ -2710,6 +2710,101 @@ namespace goalongapi.Controllers
             }
         }
 
+        // ผูกหลาย Sale Order เข้ากับ 1 Project — วน stored procedure เดิม (SetProjectAppByPO) ต่อ SO
+        [HttpPost("[action]")]
+        public ActionResult setSoListToProject(ApppoList project)
+        {
+            MsgReturn msgretrun = new MsgReturn();
+
+            try
+            {
+                if (project?.SaleOrderNos == null || project.SaleOrderNos.Count == 0)
+                {
+                    msgretrun.ReturnCode = "400";
+                    msgretrun.Msg = "SaleOrderNos required";
+                    return Ok(msgretrun);
+                }
+
+                bool allOk = true;
+
+                foreach (string saleOrderNo in project.SaleOrderNos)
+                {
+                    if (string.IsNullOrWhiteSpace(saleOrderNo)) continue;
+
+                    // escape single-quote ตามค่าที่วนเข้ามา (คง pattern raw-SQL เดิมของ controller นี้)
+                    string so = saleOrderNo.Replace("'", "''");
+
+                    string _cmd = "exec  dbo.SetProjectAppByPO";
+                    _cmd += " @UpdUser  ='" + project.UpdUser + "'";
+                    _cmd += ",@ProjectNo  ='" + project.ProjectNo + "'";
+                    _cmd += ",@CustCode  ='" + project.CustCode + "'";
+                    _cmd += ",@Description  ='" + project.Description + "'";
+                    _cmd += ",@CmpId ='" + project.CmpId + "'";
+                    _cmd += ",@PurchaseNo  ='" + project.PurchaseNo + "'";
+                    _cmd += ",@QuotationNo  ='" + project.QuotationNo + "'";
+                    _cmd += ",@ReferCode  ='" + project.ReferCode + "'";
+                    _cmd += ",@StateActive =" + project.StateActive;
+                    _cmd += ",@SaleOrderNo  ='" + so + "'";
+                    _cmd += ",@TicketId  ='" + project.TicketId + "'";
+
+                    if (!DB.DBConn.ExecuteOnly(_cmd)) allOk = false;
+                }
+
+                msgretrun.ReturnCode = allOk ? "200" : "400";
+                msgretrun.Msg = allOk ? "Save Success !!" : "Error !!";
+                return Ok(msgretrun);
+            }
+            catch
+            {
+                msgretrun.ReturnCode = "400";
+                msgretrun.Msg = "Error !!";
+                return Ok(msgretrun);
+            }
+        }
+
+        // ถอด 1 Sale Order ออกจาก Project (unlink) — คืน state SO กลับ "รอเปิดโปรเจค" + ลบ project detail ของ SO นั้น
+        // NOTE(DBA): ต้องสร้าง stored procedure dbo.RemoveSoFromProject ก่อน (ดู DB/migrations/RemoveSoFromProject.sql)
+        [HttpPost("[action]")]
+        public ActionResult removeSoFromProject(Apppo project)
+        {
+            MsgReturn msgretrun = new MsgReturn();
+
+            try
+            {
+                if (project == null || string.IsNullOrWhiteSpace(project.ProjectNo) || string.IsNullOrWhiteSpace(project.SaleOrderNo))
+                {
+                    msgretrun.ReturnCode = "400";
+                    msgretrun.Msg = "ProjectNo and SaleOrderNo required";
+                    return Ok(msgretrun);
+                }
+
+                string _cmd = "exec  dbo.RemoveSoFromProject";
+                _cmd += " @UpdUser  ='" + project.UpdUser + "'";
+                _cmd += ",@ProjectNo  ='" + project.ProjectNo.Replace("'", "''") + "'";
+                _cmd += ",@SaleOrderNo  ='" + project.SaleOrderNo.Replace("'", "''") + "'";
+                _cmd += ",@CmpId ='" + project.CmpId + "'";
+
+                if (DB.DBConn.ExecuteOnly(_cmd))
+                {
+                    msgretrun.ReturnCode = "200";
+                    msgretrun.Msg = "Save Success !!";
+                    return Ok(msgretrun);
+                }
+                else
+                {
+                    msgretrun.ReturnCode = "400";
+                    msgretrun.Msg = "Error !!";
+                    return Ok(msgretrun);
+                }
+            }
+            catch
+            {
+                msgretrun.ReturnCode = "400";
+                msgretrun.Msg = "Error !!";
+                return Ok(msgretrun);
+            }
+        }
+
         [HttpPost("[action]")]
         public ActionResult apptoinvoice(AppInvoice project)
         {

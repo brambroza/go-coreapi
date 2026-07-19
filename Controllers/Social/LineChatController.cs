@@ -34,7 +34,7 @@ namespace goalongapi.Controllers
 
 
         [HttpGet("[action]")]
-        public IActionResult getContactSocial([FromQuery] string cmpid, [FromQuery] string user)
+        public IActionResult getContactSocial([FromQuery] string cmpid , [FromQuery] string user)
         {
             string _cmd;
             _cmd = "exec dbo.[getSocailContact] @cmpid='" + cmpid + "'";
@@ -109,7 +109,7 @@ namespace goalongapi.Controllers
                 customer.StateVendor = r["StateVendor"].ToString();
                 customer.SourceCode = r["SourceCode"].ToString();
                 customer.StateGenQRCode = Convert.ToInt32(r["StateGenQRCode"].ToString());
-                customer.StateOutOfService = r["StateOutOfService"].ToString();
+
 
                 var prodlist = new List<Dictionary<string, object>>();
                 foreach (DataRow row in dtx.Select(
@@ -170,39 +170,7 @@ namespace goalongapi.Controllers
 
 
 
-        [HttpPost("[action]")]
-        public IActionResult setoutofservice(OutOfService outOf)
-        {
-            MsgReturn msgretrun = new MsgReturn();
-            try
-            {
-                string _cmd = "";
-                _cmd = "exec  dbo.set_customer_outofservice";
-                _cmd += " @UpdUser  ='" + outOf.UpdUser + "'";
-                _cmd += ",@CmpId  ='" + outOf.CmpId + "'";
-                _cmd += ",@CustomerCode  ='" + outOf.CustomerCode + "'";
 
-                if (DB.DBConn.ExecuteOnly(_cmd))
-                {
-                    msgretrun.ReturnCode = "200";
-                    msgretrun.Msg = "Save Success !!";
-                    return Ok(msgretrun);
-                }
-                else
-                {
-                    msgretrun.ReturnCode = "400";
-                    msgretrun.Msg = "Error !!";
-                    return StatusCode(400, new { Message = msgretrun.Msg, Error = msgretrun.Msg });
-                }
-
-            }
-            catch
-            {
-                msgretrun.ReturnCode = "400";
-                msgretrun.Msg = "Error !!";
-                return StatusCode(400, new { Message = msgretrun.Msg, Error = msgretrun.Msg });
-            }
-        }
 
 
 
@@ -275,6 +243,7 @@ namespace goalongapi.Controllers
 
 
         }
+
 
 
 

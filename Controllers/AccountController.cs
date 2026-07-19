@@ -20,6 +20,7 @@ using Microsoft.EntityFrameworkCore;
 using goalongapi.Data;
 using System.Security.Claims;
 using System.Security.Cryptography;
+using goalongapi.Helpers;
 
 
 namespace goalongapi.Controllers
@@ -33,15 +34,19 @@ namespace goalongapi.Controllers
         private readonly DatabaseContext databaseContext;
         private readonly EmailSettingRepository _repo;
         private readonly AesCrypto _crypto;
+        private readonly IConfiguration _configuration;
+        private readonly GoogleOAuthMailService _googleOAuthMail;
  
 
 
-        public AccountController(IAccountService accountService, DatabaseContext databaseContext, EmailSettingRepository repo, AesCrypto crypto)
+        public AccountController(IAccountService accountService, DatabaseContext databaseContext, EmailSettingRepository repo, AesCrypto crypto, IConfiguration configuration, GoogleOAuthMailService googleOAuthMail)
         {
             this.accountService = accountService;
             this.databaseContext = databaseContext;
             this._repo = repo;
             this._crypto = crypto; 
+            this._configuration = configuration;
+            this._googleOAuthMail = googleOAuthMail;
         }
 
 
@@ -246,7 +251,8 @@ namespace goalongapi.Controllers
                 sessionId = result.SessionId,
                 CmpId = account.CmpId,
                 imgurl = account.imgPath,
-                userId = account.AccountId
+                userId = account.AccountId,
+                role = result.Role
             });
         }
 
@@ -301,7 +307,7 @@ namespace goalongapi.Controllers
             if (account.refreshToken != model.RefreshToken || account.refreshTokenExpiry < DateTime.UtcNow)
                 return Unauthorized();
 
-            var newAccessToken = accountService.GenerateToken(account);
+            var newAccessToken = await accountService.GenerateNisTokenAsync(account);
             var newRefreshToken = accountService.GenerateRefreshToken(account);
 
             return Ok(new
@@ -634,6 +640,8 @@ namespace goalongapi.Controllers
                 Username = setting.Username,
                 UpdatedAt = setting.UpdatedAt,
                 IsActive = setting.IsActive,
+                CalendarId = setting.CalendarId,
+                GoogleOAuthClientId = setting.GoogleOAuthClientId,
 
             };
 
@@ -652,6 +660,7 @@ namespace goalongapi.Controllers
                 return BadRequest(new { ok = false, message = "Username is required." });
 
             var updatePassword = !string.IsNullOrWhiteSpace(dto.AppPasswordPlain);
+            var updateGoogleOAuthSecret = !string.IsNullOrWhiteSpace(dto.GoogleOAuthClientSecret);
 
             // ถ้ามี password ก็เข้ารหัส
             byte[] cipher = Array.Empty<byte>();
@@ -660,6 +669,13 @@ namespace goalongapi.Controllers
             if (updatePassword)
             {
                 (cipher, iv) = _crypto.Encrypt(dto.AppPasswordPlain!.Trim().Replace(" ", ""));
+            }
+
+            byte[] googleOAuthSecretCipher = Array.Empty<byte>();
+            byte[] googleOAuthSecretIv = Array.Empty<byte>();
+            if (updateGoogleOAuthSecret)
+            {
+                (googleOAuthSecretCipher, googleOAuthSecretIv) = _crypto.Encrypt(dto.GoogleOAuthClientSecret!.Trim());
             }
 
             var entity = new EmailSmtpSetting
@@ -672,7 +688,9 @@ namespace goalongapi.Controllers
                 SmtpPort = dto.SmtpPort,
                 EnableSsl = dto.EnableSsl,
                 Username = dto.Username.Trim(),
-                IsActive = true
+                IsActive = true,
+                CalendarId = string.IsNullOrWhiteSpace(dto.CalendarId) ? null : dto.CalendarId.Trim(),
+                GoogleOAuthClientId = string.IsNullOrWhiteSpace(dto.GoogleOAuthClientId) ? null : dto.GoogleOAuthClientId.Trim(),
             };
 
             // ใส่ password เฉพาะตอนมีการอัปเดต
@@ -680,6 +698,12 @@ namespace goalongapi.Controllers
             {
                 entity.PasswordEnc = cipher;
                 entity.PasswordIv = iv;
+            }
+
+            if (updateGoogleOAuthSecret)
+            {
+                entity.GoogleOAuthClientSecretEnc = googleOAuthSecretCipher;
+                entity.GoogleOAuthClientSecretIv = googleOAuthSecretIv;
             }
 
             try
@@ -690,6 +714,60 @@ namespace goalongapi.Controllers
             catch (Exception ex)
             {
                 return StatusCode(500, new { ok = false, message = ex.Message });
+            }
+        }
+
+        // Imports the Google OAuth client configuration supplied through application
+        // configuration/environment variables into an existing mail SMTP setting.
+        // The secret is encrypted before writing to dbo.EmailSmtpSettings.
+        [HttpPost("emailsettings/google-oauth/from-config")]
+        public async Task<IActionResult> ImportGoogleOAuthFromConfig([FromQuery] string? cmpId, [FromQuery] string settingName = "nis")
+        {
+            var clientId = _configuration["GoogleOAuth:ClientId"]
+                ?? _configuration["Authentication:Google:ClientId"];
+            var clientSecret = _configuration["GoogleOAuth:ClientSecret"]
+                ?? _configuration["Authentication:Google:ClientSecret"];
+
+            if (string.IsNullOrWhiteSpace(clientId) || string.IsNullOrWhiteSpace(clientSecret))
+                return BadRequest(new { ok = false, message = "Google OAuth config is missing. Set GoogleOAuth:ClientId and GoogleOAuth:ClientSecret." });
+
+            var (cipher, iv) = _crypto.Encrypt(clientSecret.Trim());
+            var updated = await _repo.UpdateGoogleOAuthAsync(cmpId, settingName.Trim(), clientId.Trim(), cipher, iv);
+            if (!updated)
+                return NotFound(new { ok = false, message = "Email SMTP setting not found. Create the mail setting before importing Google OAuth." });
+
+            return Ok(new { ok = true, cmpId, settingName, googleOAuthClientId = clientId.Trim() });
+        }
+
+        [HttpGet("emailsettings/google-oauth/authorize")]
+        public async Task<IActionResult> AuthorizeGoogleOAuth([FromQuery] string? cmpId, [FromQuery] string settingName = "nis")
+        {
+            try
+            {
+                return Redirect(await _googleOAuthMail.CreateAuthorizationUrlAsync(cmpId, settingName.Trim()));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { ok = false, message = ex.Message });
+            }
+        }
+
+        [HttpGet("emailsettings/google-oauth/callback")]
+        public async Task<IActionResult> GoogleOAuthCallback([FromQuery] string? code, [FromQuery] string? state, [FromQuery] string? error)
+        {
+            if (!string.IsNullOrWhiteSpace(error))
+                return BadRequest(new { ok = false, message = "Google authorization was not completed.", error });
+            if (string.IsNullOrWhiteSpace(code) || string.IsNullOrWhiteSpace(state))
+                return BadRequest(new { ok = false, message = "Google OAuth callback is missing code or state." });
+
+            try
+            {
+                await _googleOAuthMail.CompleteAuthorizationAsync(code, state);
+                return Content("Google mail OAuth connected. You may close this window.", "text/plain");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { ok = false, message = ex.Message });
             }
         }
 

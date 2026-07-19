@@ -13,7 +13,7 @@ namespace goalongapi.Controllers
     [ApiController]
     [Route("api/email")]
     public class EmailController : ControllerBase
-    {
+    { 
         [HttpPost("sendBase64")]
 
         public async Task<IActionResult> SendToEmail([FromForm] EmailRequest request,
@@ -23,7 +23,7 @@ namespace goalongapi.Controllers
             {
                 var smtpHost = "smtp-relay.gmail.com"; // ใช้ SMTP Relay
                 var smtpPort = 587;
-                var fromEmail = "info@goalong.co.th"; // ต้องเป็นอีเมลที่ได้รับอนุญาต
+                var fromEmail = "info@nisolution.co.th"; // ต้องเป็นอีเมลที่ได้รับอนุญาต
                 var smtpClient = new SmtpClient(smtpHost, smtpPort)
                 {
                     EnableSsl = true,

@@ -13,6 +13,7 @@ using System.Net;
 using System.Net.Mail;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using goalongapi.Helpers;
 namespace goalongapi.Controllers
 {
 
@@ -22,10 +23,16 @@ namespace goalongapi.Controllers
     public class MailController : ControllerBase
     {
         private readonly GmailServiceHelper _gmailService;
+        private readonly EmailSettingRepository _emailRepo;
+        private readonly AesCrypto _crypto;
+        private readonly GoogleOAuthMailService _googleOAuthMail;
 
-        public MailController(IWebHostEnvironment env)
+        public MailController(IWebHostEnvironment env, EmailSettingRepository emailRepo, AesCrypto crypto, GoogleOAuthMailService googleOAuthMail)
         {
             _gmailService = new GmailServiceHelper(env);
+            _emailRepo = emailRepo;
+            _crypto = crypto;
+            _googleOAuthMail = googleOAuthMail;
         }
 
         [HttpGet("emails")]
@@ -40,18 +47,37 @@ namespace goalongapi.Controllers
         {
             try
             {
-                var smtpHost = "smtp-relay.gmail.com"; // ใช้ SMTP Relay
-                var smtpPort = 587;
-                var fromEmail = "info@goalong.co.th"; // ต้องเป็นอีเมลที่ได้รับอนุญาต
-                var smtpClient = new SmtpClient(smtpHost, smtpPort)
+                // SMTP host / from-address / credentials come from dbo.EmailSmtpSettings
+                // (settingName "nis", falling back to "default") — never hardcoded. Once
+                // the Google consent flow has stored a refresh token, prefer Gmail API OAuth.
+                var settingName = string.IsNullOrWhiteSpace(request.SettingName) ? "nis" : request.SettingName;
+                var setting = await _emailRepo.GetActiveAsync(request.CmpId, settingName)
+                    ?? await _emailRepo.GetActiveAsync(request.CmpId, "default");
+
+                if (setting == null)
+                    return StatusCode(500, $"❌ Email SMTP setting not found (cmpId '{request.CmpId}', settingName '{settingName}' or 'default').");
+
+                if (setting.GoogleOAuthRefreshTokenEnc.Length > 0)
                 {
-                    EnableSsl = true,
+                    await _googleOAuthMail.SendAsync(setting, request.To, request.Subject, request.Body);
+                    return Ok("✅ Email sent successfully.");
+                }
+
+                using var smtpClient = new SmtpClient(setting.SmtpHost, setting.SmtpPort)
+                {
+                    EnableSsl = setting.EnableSsl,
                     UseDefaultCredentials = false
                 };
 
-                // ตั้งค่าผู้ส่งและผู้รับ
-                var fromAddress = new MailAddress(fromEmail, request.Fullname);
-                var message = new MailMessage(fromAddress, new MailAddress(request.To))
+                // Empty PasswordEnc = relay authenticates by IP allowlist, so send no credentials.
+                if (setting.PasswordEnc.Length > 0)
+                {
+                    var appPassword = _crypto.Decrypt(setting.PasswordEnc, setting.PasswordIv);
+                    smtpClient.Credentials = new NetworkCredential(setting.Username, appPassword);
+                }
+
+                var fromAddress = new MailAddress(setting.FromEmail, request.Fullname ?? setting.FromName ?? "GoAlong Support");
+                using var message = new MailMessage(fromAddress, new MailAddress(request.To))
                 {
                     Subject = request.Subject,
                     Body = request.Body,
@@ -64,13 +90,9 @@ namespace goalongapi.Controllers
                     message.Bcc.Add(new MailAddress(request.From));
                 }
 
-
-                
-
-                // ✅ ส่งอีเมล
                 smtpClient.Send(message);
 
-                return Ok("✅ Email sent successfully with attachment.");
+                return Ok("✅ Email sent successfully.");
             }
             catch (Exception ex)
             {
@@ -323,7 +345,9 @@ namespace goalongapi.Controllers
         public string Body { get; set; }
         public string From { get; set; }
         public string Fullname { get; set; }
-      
+        // Selects which dbo.EmailSmtpSettings row to send with (host/from/credentials).
+        public string? CmpId { get; set; }
+        public string? SettingName { get; set; }
     }
 
     public class FileBase64

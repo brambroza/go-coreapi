@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "+h3KzgtZF8I=",
+  "dgSpecHash": "iZOyyF4i1BI=",
   "success": true,
   "projectFilePath": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/goalongapi.csproj",
   "expectedPackageFiles": [
@@ -9,9 +9,10 @@
     "/Users/amnartkongpet/.nuget/packages/azure.core/1.38.0/azure.core.1.38.0.nupkg.sha512",
     "/Users/amnartkongpet/.nuget/packages/azure.identity/1.11.4/azure.identity.1.11.4.nupkg.sha512",
     "/Users/amnartkongpet/.nuget/packages/bouncycastle.cryptography/2.5.0/bouncycastle.cryptography.2.5.0.nupkg.sha512",
-    "/Users/amnartkongpet/.nuget/packages/google.apis/1.68.0/google.apis.1.68.0.nupkg.sha512",
-    "/Users/amnartkongpet/.nuget/packages/google.apis.auth/1.68.0/google.apis.auth.1.68.0.nupkg.sha512",
-    "/Users/amnartkongpet/.nuget/packages/google.apis.core/1.68.0/google.apis.core.1.68.0.nupkg.sha512",
+    "/Users/amnartkongpet/.nuget/packages/google.apis/1.75.0/google.apis.1.75.0.nupkg.sha512",
+    "/Users/amnartkongpet/.nuget/packages/google.apis.auth/1.75.0/google.apis.auth.1.75.0.nupkg.sha512",
+    "/Users/amnartkongpet/.nuget/packages/google.apis.calendar.v3/1.75.0.4206/google.apis.calendar.v3.1.75.0.4206.nupkg.sha512",
+    "/Users/amnartkongpet/.nuget/packages/google.apis.core/1.75.0/google.apis.core.1.75.0.nupkg.sha512",
     "/Users/amnartkongpet/.nuget/packages/google.apis.gmail.v1/1.68.0.3427/google.apis.gmail.v1.1.68.0.3427.nupkg.sha512",
     "/Users/amnartkongpet/.nuget/packages/google.apis.sheets.v4/1.68.0.3658/google.apis.sheets.v4.1.68.0.3658.nupkg.sha512",
     "/Users/amnartkongpet/.nuget/packages/humanizer.core/2.14.1/humanizer.core.2.14.1.nupkg.sha512",
@@ -96,7 +97,7 @@
     "/Users/amnartkongpet/.nuget/packages/net.json.serializer/6.0.0/net.json.serializer.6.0.0.nupkg.sha512",
     "/Users/amnartkongpet/.nuget/packages/net.proxy/6.0.0/net.proxy.6.0.0.nupkg.sha512",
     "/Users/amnartkongpet/.nuget/packages/netstandard.library/1.6.1/netstandard.library.1.6.1.nupkg.sha512",
-    "/Users/amnartkongpet/.nuget/packages/newtonsoft.json/13.0.3/newtonsoft.json.13.0.3.nupkg.sha512",
+    "/Users/amnartkongpet/.nuget/packages/newtonsoft.json/13.0.4/newtonsoft.json.13.0.4.nupkg.sha512",
     "/Users/amnartkongpet/.nuget/packages/newtonsoft.json.bson/1.0.2/newtonsoft.json.bson.1.0.2.nupkg.sha512",
     "/Users/amnartkongpet/.nuget/packages/rabbitmq.client/6.4.0/rabbitmq.client.6.4.0.nupkg.sha512",
     "/Users/amnartkongpet/.nuget/packages/runtime.debian.8-x64.runtime.native.system.security.cryptography.openssl/4.3.0/runtime.debian.8-x64.runtime.native.system.security.cryptography.openssl.4.3.0.nupkg.sha512",
@@ -201,5 +202,16 @@
     "/Users/amnartkongpet/.nuget/packages/system.xml.readerwriter/4.3.0/system.xml.readerwriter.4.3.0.nupkg.sha512",
     "/Users/amnartkongpet/.nuget/packages/system.xml.xdocument/4.3.0/system.xml.xdocument.4.3.0.nupkg.sha512"
   ],
-  "logs": []
+  "logs": [
+    {
+      "code": "NU1902",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Package 'MimeKit' 4.9.0 has a known moderate severity vulnerability, https://github.com/advisories/GHSA-g7hc-96xr-gvvx",
+      "libraryId": "MimeKit",
+      "targetGraphs": [
+        "net9.0"
+      ]
+    }
+  ]
 }

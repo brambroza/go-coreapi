@@ -7,43 +7,43 @@ namespace goalongapi.Models
 {
     public class Customer
     {
-        public string UpdUser { get; set; }
+        public string? UpdUser { get; set; }
         public string CustomerCode { get; set; }
         public string CustomerName { get; set; }
-        public string CustomerAddress { get; set; }
-        public string CustomerTaxNo { get; set; }
-        public string CustomerBranch { get; set; }
-        public string CustomerBranchCode { get; set; }
-        public string CustomerBranchName { get; set; }
-        public string ContactName { get; set; }
-        public string ContactEmail { get; set; }
-        public string ContactPhone { get; set; }
-        public string ContactName1 { get; set; }
-        public string ContactEmail1 { get; set; }
-        public string ContactPhone1 { get; set; }
+        public string? CustomerAddress { get; set; }
+        public string? CustomerTaxNo { get; set; }
+        public string? CustomerBranch { get; set; }
+        public string? CustomerBranchCode { get; set; }
+        public string? CustomerBranchName { get; set; }
+        public string? ContactName { get; set; }
+        public string? ContactEmail { get; set; }
+        public string? ContactPhone { get; set; }
+        public string? ContactName1 { get; set; }
+        public string? ContactEmail1 { get; set; }
+        public string? ContactPhone1 { get; set; }
         public int CreditDay { get; set; }
-        public string PhoneOffice { get; set; }
-        public string FaxOffice { get; set; }
-        public string Website { get; set; }
-        public string AddressShip { get; set; }
-        public string Remark { get; set; }
+        public string? PhoneOffice { get; set; }
+        public string? FaxOffice { get; set; }
+        public string? Website { get; set; }
+        public string? AddressShip { get; set; }
+        public string? Remark { get; set; }
         public string CmpId { get; set; }
-        public string ContactName2 { get; set; }
-        public string ContactEmail2 { get; set; }
-        public string ContactPhone2 { get; set; }
-        public string ContactPosition2 { get; set; }
-        public string ContactPosition1 { get; set; }
-        public string ContactPosition { get; set; }
-        public string AddrSubDistrict { get; set; }
-        public string AddrDistrict { get; set; }
-        public string AddrProvince { get; set; }
-        public string AddrPostCode { get; set; }
+        public string? ContactName2 { get; set; }
+        public string? ContactEmail2 { get; set; }
+        public string? ContactPhone2 { get; set; }
+        public string? ContactPosition2 { get; set; }
+        public string? ContactPosition1 { get; set; }
+        public string? ContactPosition { get; set; }
+        public string? AddrSubDistrict { get; set; }
+        public string? AddrDistrict { get; set; }
+        public string? AddrProvince { get; set; }
+        public string? AddrPostCode { get; set; }
         public string? ImgPath { get; set; }
         public int CreditAccId { get; set; }
         public int DebitAccId { get; set; }
-        public string BusinessGrpCode { get; set; }
-        public string StateCustomer { get; set; }
-        public string StateVendor { get; set; }
+        public string? BusinessGrpCode { get; set; }
+        public string? StateCustomer { get; set; }
+        public string? StateVendor { get; set; }
         public string? SourceCode { get; set; }
 
         public int? StateGenQRCode { get; set; }
@@ -139,13 +139,11 @@ namespace goalongapi.Models
 
         public string StateCustomer { get; set; }
         public string StateVendor { get; set; }
-
-        public string StateOutOfService { get; set; }
         public int? StateGenQRCode { get; set; }
         public List<Dictionary<string, object>> constactline { get; set; } = new();
-
+            
     }
-
+    
 
 
     public class Contact
@@ -212,13 +210,5 @@ namespace goalongapi.Models
         public Int64 AccountID { get; set; }
         public int Priority { get; set; }
         public string UpdUser { get; set; }
-    }
-
-    public class OutOfService
-    {
-        public string CustomerCode { get; set; }
-        public string CmpId { get; set; }
-        public string UpdUser { get; set; }
-
     }
 }

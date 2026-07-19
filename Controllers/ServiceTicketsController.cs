@@ -1,7 +1,9 @@
 using goalongapi.Data;
 using goalongapi.Dtos;
+using goalongapi.Hubs;
 using goalongapi.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,11 +14,17 @@ namespace goalongapi.Controllers;
 public class ServiceTicketsController : ControllerBase
 {
     private readonly DatabaseContext _context;
+    private readonly IHubContext<DispatchKanbanHub> _kanbanHub;
 
-    public ServiceTicketsController(DatabaseContext context)
+    public ServiceTicketsController(DatabaseContext context, IHubContext<DispatchKanbanHub> kanbanHub)
     {
         _context = context;
+        _kanbanHub = kanbanHub;
     }
+
+    private Task BroadcastKanban(string cmpId, string eventType) =>
+        _kanbanHub.Clients.Group($"kanban-{cmpId}")
+            .SendAsync("KanbanBoardChanged", new { eventType, cmpId, ts = DateTimeOffset.UtcNow });
 
     [HttpGet]
     public async Task<ActionResult<IEnumerable<ServiceTicketResponseDto>>> GetAll(
@@ -50,16 +58,60 @@ public class ServiceTicketsController : ControllerBase
     [HttpGet("{id}")]
     public async Task<ActionResult<ServiceTicketResponseDto>> GetById(string id)
     {
+        var subTask = await _context.ServiceTicketSubTasks
+            .AsNoTracking()
+            .FirstOrDefaultAsync(x => x.SubTaskId == id);
+
+        var resolvedTicketId = subTask?.TicketId ?? id;
+
         var entity = await _context.ServiceTickets
             .AsNoTracking()
             .Include(x => x.JobGroups)
             .Include(x => x.Attachments)
+            .Include(x => x.SubTasks)
+                .ThenInclude(x => x.Assignments)
+            .Include(x => x.SubTasks)
+                .ThenInclude(x => x.AttachFiles)
+            .FirstOrDefaultAsync(x => x.TicketId == resolvedTicketId || x.TicketNo == id);
+
+        if (entity != null)
+            return Ok(MapToResponse(entity));
+
+        // Fallback: NIS Service Board tickets (dbo.NisTicket) open the same detail page
+        // (/service-protal/tickets/{id}) but live in a separate table — map a minimal
+        // response so the page renders. SubTasks/Attachments are empty because the
+        // check-in / subtask-action flow only exists for real ServiceTickets.
+        var nisTicket = await _context.NisTickets
+            .AsNoTracking()
             .FirstOrDefaultAsync(x => x.TicketId == id);
 
-        if (entity == null)
+        if (nisTicket == null)
             return NotFound();
 
-        return Ok(MapToResponse(entity));
+        var nisProject = string.IsNullOrEmpty(nisTicket.ProjectId)
+            ? null
+            : await _context.NisProjects
+                .AsNoTracking()
+                .FirstOrDefaultAsync(p => p.ProjectId == nisTicket.ProjectId);
+
+        return Ok(new ServiceTicketResponseDto
+        {
+            TicketId = nisTicket.TicketId,
+            TicketNo = nisTicket.TicketCode,
+            ProjectNo = nisProject?.ProjectNo?.ToString("D4"),
+            CustomerName = nisProject?.Customer ?? string.Empty,
+            JobType = nisTicket.Type ?? string.Empty,
+            AdditionalDetails = nisTicket.Title,
+            Priority = nisTicket.Priority ?? string.Empty,
+            ServiceDate = nisTicket.Due,
+            StartDate = nisTicket.StartDate,
+            EndDate = nisTicket.EndDate,
+            CmpId = nisTicket.CmpId,
+            UpdUser = nisTicket.CreatedBy ?? string.Empty,
+            Status = nisTicket.Status ?? string.Empty,
+            CreatedAt = nisTicket.CreatedDate,
+            UpdatedAt = nisTicket.UpdatedDate,
+        });
     }
 
     [HttpPost]
@@ -537,6 +589,63 @@ public class ServiceTicketsController : ControllerBase
         return Ok(rows.Select(MapToResponse).ToList());
     }
 
+    [HttpGet("kanban/paged")]
+    public async Task<ActionResult<PagedResult<ServiceTicketResponseDto>>> GetPaged(
+        [FromQuery] string? cmpId,
+        [FromQuery] string? status,
+        [FromQuery] string? jobType,
+        [FromQuery] string? keyword,
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 25
+    )
+    {
+        var query = _context.ServiceTickets
+            .AsNoTracking()
+            .Include(x => x.JobGroups)
+            .Include(x => x.Attachments)
+            .Include(x => x.Customer)
+            .Include(x => x.SubTasks)
+                .ThenInclude(x => x.Assignments)
+            .Include(x => x.SubTasks)
+                .ThenInclude(x => x.AttachFiles)
+            .AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(cmpId))
+            query = query.Where(x => x.CmpId == cmpId);
+
+        if (!string.IsNullOrWhiteSpace(status))
+            query = query.Where(x => x.Status == status);
+
+        if (!string.IsNullOrWhiteSpace(jobType))
+            query = query.Where(x => x.JobType == jobType);
+
+        if (!string.IsNullOrWhiteSpace(keyword))
+            query = query.Where(x =>
+                (x.TicketNo ?? "").Contains(keyword) ||
+                (x.CustomerName ?? "").Contains(keyword) ||
+                (x.ProjectNo ?? "").Contains(keyword) ||
+                (x.AdditionalDetails ?? "").Contains(keyword));
+
+        var totalCount = await query.CountAsync();
+
+        var safePage     = Math.Max(1, page);
+        var safePageSize = Math.Clamp(pageSize, 1, 200);
+
+        var rows = await query
+            .OrderByDescending(x => x.UpdatedAt)
+            .Skip((safePage - 1) * safePageSize)
+            .Take(safePageSize)
+            .ToListAsync();
+
+        return Ok(new PagedResult<ServiceTicketResponseDto>
+        {
+            Data       = rows.Select(MapToResponse).ToList(),
+            TotalCount = totalCount,
+            Page       = safePage,
+            PageSize   = safePageSize,
+        });
+    }
+
     [HttpPut("kanban/{id}/status")]
     public async Task<IActionResult> UpdateStatus(string id, [FromBody] UpdateServiceTicketStatusDto dto)
     {
@@ -567,6 +676,7 @@ public class ServiceTicketsController : ControllerBase
         entity.UpdatedAt = DateTime.Now;
 
         await _context.SaveChangesAsync();
+        await BroadcastKanban(entity.CmpId ?? "", "task_moved");
 
         return Ok();
     }
@@ -645,6 +755,7 @@ public class ServiceTicketsController : ControllerBase
 
         _context.ServiceTicketSubTaskAssigns.Add(entity);
         await _context.SaveChangesAsync();
+        await BroadcastKanban(subTask.CmpId ?? "", "task_assigned");
 
         return Ok(new
         {
@@ -758,6 +869,13 @@ public class ServiceTicketsController : ControllerBase
             x.StartDate,
             x.EndDate,
             x.ProgressPercent,
+            x.Remark,
+            x.StateSendApprove,
+            x.DateSendApprove,
+            x.SendApproveBy,
+            x.StateApprove,
+            x.DateApprove,
+            x.ApproveBy,
             Assignments = x.Assignments
             .Where(a => a.IsActive && a.SubTaskId == x.SubTaskId)
             .Select(a => new
@@ -1086,6 +1204,13 @@ public class ServiceTicketsController : ControllerBase
                 ActionDetails = x.ActionDetails,
                 ActionStatus = x.ActionStatus,
                 Tomorrow = x.Tomorrow,
+                WorkDetail = x.WorkDetail,
+                IssueDetail = x.IssueDetail,
+                SignatureFilePath = x.SignatureFilePath,
+                ChecklistItemsJson = x.ChecklistItemsJson,
+                RackPhotosJson = x.RackPhotosJson,
+                DamagedProductJson = x.DamagedProductJson,
+                OthersItemsJson = x.OthersItemsJson,
                 UpdatedAt = x.UpdatedAt,
                 Attachments = x.Attachments
                 .OrderBy(a => a.Seq)
@@ -1130,6 +1255,13 @@ public class ServiceTicketsController : ControllerBase
             ActionDetails = entity.ActionDetails,
             ActionStatus = entity.ActionStatus,
             Tomorrow = entity.Tomorrow,
+            WorkDetail = entity.WorkDetail,
+            IssueDetail = entity.IssueDetail,
+            SignatureFilePath = entity.SignatureFilePath,
+            ChecklistItemsJson = entity.ChecklistItemsJson,
+            RackPhotosJson = entity.RackPhotosJson,
+            DamagedProductJson = entity.DamagedProductJson,
+            OthersItemsJson = entity.OthersItemsJson,
             UpdatedAt = entity.UpdatedAt
         });
     }
@@ -1163,6 +1295,13 @@ public class ServiceTicketsController : ControllerBase
                 ActionDetails = request.ActionDetails,
                 ActionStatus = request.ActionStatus,
                 Tomorrow = request.Tomorrow,
+                WorkDetail = request.WorkDetail,
+                IssueDetail = request.IssueDetail,
+                SignatureFilePath = request.SignatureFilePath,
+                ChecklistItemsJson = request.ChecklistItemsJson,
+                RackPhotosJson = request.RackPhotosJson,
+                DamagedProductJson = request.DamagedProductJson,
+                OthersItemsJson = request.OthersItemsJson,
                 UpdatedAt = DateTime.Now
             };
 
@@ -1178,6 +1317,13 @@ public class ServiceTicketsController : ControllerBase
             entity.ActionDetails = request.ActionDetails;
             entity.ActionStatus = request.ActionStatus;
             entity.Tomorrow = request.Tomorrow;
+            entity.WorkDetail = request.WorkDetail;
+            entity.IssueDetail = request.IssueDetail;
+            entity.SignatureFilePath = request.SignatureFilePath;
+            entity.ChecklistItemsJson = request.ChecklistItemsJson;
+            entity.RackPhotosJson = request.RackPhotosJson;
+            entity.DamagedProductJson = request.DamagedProductJson;
+            entity.OthersItemsJson = request.OthersItemsJson;
             entity.UpdatedAt = DateTime.Now;
         }
 
@@ -1194,6 +1340,13 @@ public class ServiceTicketsController : ControllerBase
             ActionDetails = entity.ActionDetails,
             ActionStatus = entity.ActionStatus,
             Tomorrow = entity.Tomorrow,
+            WorkDetail = entity.WorkDetail,
+            IssueDetail = entity.IssueDetail,
+            SignatureFilePath = entity.SignatureFilePath,
+            ChecklistItemsJson = entity.ChecklistItemsJson,
+            RackPhotosJson = entity.RackPhotosJson,
+            DamagedProductJson = entity.DamagedProductJson,
+            OthersItemsJson = entity.OthersItemsJson,
             UpdatedAt = entity.UpdatedAt
         };
 
@@ -1218,6 +1371,13 @@ public class ServiceTicketsController : ControllerBase
         entity.ActionDetails = request.ActionDetails;
         entity.ActionStatus = request.ActionStatus;
         entity.Tomorrow = request.Tomorrow;
+        entity.WorkDetail = request.WorkDetail;
+        entity.IssueDetail = request.IssueDetail;
+        entity.SignatureFilePath = request.SignatureFilePath;
+        entity.ChecklistItemsJson = request.ChecklistItemsJson;
+        entity.RackPhotosJson = request.RackPhotosJson;
+        entity.DamagedProductJson = request.DamagedProductJson;
+        entity.OthersItemsJson = request.OthersItemsJson;
         entity.UpdatedAt = DateTime.Now;
 
         await _context.SaveChangesAsync();
@@ -1233,6 +1393,13 @@ public class ServiceTicketsController : ControllerBase
             ActionDetails = entity.ActionDetails,
             ActionStatus = entity.ActionStatus,
             Tomorrow = entity.Tomorrow,
+            WorkDetail = entity.WorkDetail,
+            IssueDetail = entity.IssueDetail,
+            SignatureFilePath = entity.SignatureFilePath,
+            ChecklistItemsJson = entity.ChecklistItemsJson,
+            RackPhotosJson = entity.RackPhotosJson,
+            DamagedProductJson = entity.DamagedProductJson,
+            OthersItemsJson = entity.OthersItemsJson,
             UpdatedAt = entity.UpdatedAt
         });
     }
@@ -1485,6 +1652,7 @@ public class ServiceTicketsController : ControllerBase
         entity.UpdatedAt = DateTime.Now;
 
         await _context.SaveChangesAsync();
+        await BroadcastKanban(entity.CmpId ?? "", "task_approved");
 
         return Ok(new
         {
@@ -1497,7 +1665,484 @@ public class ServiceTicketsController : ControllerBase
     }
 
 
-    // end subtask approve 
+    [HttpPut("subtask/reject")]
+    public async Task<ActionResult> RejectSubTask([FromBody] SubTaskRejectDto dto)
+    {
+        if (string.IsNullOrWhiteSpace(dto.SubTaskId))
+        {
+            return BadRequest(new { message = "SubTaskId is required" });
+        }
+
+        var entity = await _context.ServiceTicketSubTasks
+            .FirstOrDefaultAsync(x => x.SubTaskId == dto.SubTaskId);
+
+        if (entity == null)
+        {
+            return NotFound(new { message = "SubTask not found" });
+        }
+
+        entity.StateApprove = "2";
+        entity.RejectBy = dto.RejectBy;
+        entity.RejectReason = dto.RejectReason;
+        entity.DateReject = DateTime.Now;
+        entity.UpdatedAt = DateTime.Now;
+
+        await _context.SaveChangesAsync();
+        await BroadcastKanban(entity.CmpId ?? "", "task_rejected");
+
+        return Ok(new
+        {
+            message = "Rejected successfully",
+            entity.SubTaskId,
+            entity.StateApprove,
+            entity.RejectBy,
+            entity.RejectReason,
+            entity.DateReject
+        });
+    }
+
+    // end subtask approve
+
+    // -----------------------------------------------------------------------
+    // Checklist template
+    // -----------------------------------------------------------------------
+
+    /// <summary>
+    /// Returns a hardcoded checklist template for the given job type.
+    /// Supported types: Install, PM, MA
+    /// </summary>
+    [HttpGet("checklist-template")]
+    public ActionResult ChecklistTemplate([FromQuery] string type)
+    {
+        var installItems = new[]
+        {
+            "ตรวจสอบ Network Diagram",
+            "ติดตั้ง Firewall (ตาม Config Sheet)",
+            "ตั้งค่า VLAN / Inter-VLAN Routing",
+            "ติดตั้ง Switch / WAP",
+            "ทดสอบ Internet Speed",
+            "ทดสอบ VPN / Remote Access",
+            "ตั้งค่า Backup Config อัตโนมัติ",
+            "ตรวจสอบ UPS / Power",
+            "ทำ Cable Management",
+            "ถ่ายรูปก่อน-หลัง",
+            "สรุปและส่งมอบงาน"
+        };
+
+        var pmItems = new[]
+        {
+            "เช็ค Firewall Log / Alert ย้อนหลัง 30 วัน",
+            "อัพเดต Firmware (ถ้ามี)",
+            "Backup Config ล่าสุด",
+            "ตรวจสอบ CPU / Memory Usage",
+            "ทดสอบ Failover / HA",
+            "ตรวจสอบ License หมดอายุ",
+            "สรุปผลและออกรายงาน"
+        };
+
+        var maItems = new[]
+        {
+            "ตรวจสอบสถานะ Device ทั้งหมด",
+            "ตรวจสอบ Port / Interface ที่ Down",
+            "อัพเดต Config ตาม Change Request",
+            "ทดสอบ Connectivity",
+            "ตรวจสอบ Security Policy",
+            "Backup Config",
+            "สรุปและปิดงาน"
+        };
+
+        var items = type?.ToLower() switch
+        {
+            "install" => installItems,
+            "pm"      => pmItems,
+            "ma"      => maItems,
+            _         => null
+        };
+
+        if (items == null)
+            return BadRequest(new { message = "Unsupported type. Use: Install, PM, MA" });
+
+        return Ok(new { type, items });
+    }
+
+    // -----------------------------------------------------------------------
+    // Send report email
+    // -----------------------------------------------------------------------
+
+    /// <summary>
+    /// Sends a service report email, optionally with a base64-encoded PDF attachment.
+    /// Uses smtp-relay.gmail.com:587 from info@goalong.co.th.
+    /// </summary>
+    [HttpPost("send-report-email")]
+    public IActionResult SendReportEmail([FromBody] SendReportEmailDto request)
+    {
+        if (string.IsNullOrWhiteSpace(request.To))
+            return BadRequest(new { message = "To is required" });
+
+        if (string.IsNullOrWhiteSpace(request.Subject))
+            return BadRequest(new { message = "Subject is required" });
+
+        try
+        {
+            var smtpHost = "smtp-relay.gmail.com";
+            var smtpPort = 587;
+            var fromEmail = "info@goalong.co.th";
+
+            var smtpClient = new System.Net.Mail.SmtpClient(smtpHost, smtpPort)
+            {
+                EnableSsl = true,
+                UseDefaultCredentials = false
+            };
+
+            var fromAddress = new System.Net.Mail.MailAddress(fromEmail, "GoAlong Support");
+            var message = new System.Net.Mail.MailMessage(fromAddress, new System.Net.Mail.MailAddress(request.To))
+            {
+                Subject = request.Subject,
+                Body = request.Body ?? string.Empty,
+                IsBodyHtml = true
+            };
+
+            if (!string.IsNullOrWhiteSpace(request.PdfBase64))
+            {
+                var pdfBytes = Convert.FromBase64String(request.PdfBase64);
+                var stream = new System.IO.MemoryStream(pdfBytes);
+                var fileName = string.IsNullOrWhiteSpace(request.FileName) ? "report.pdf" : request.FileName;
+                var attachment = new System.Net.Mail.Attachment(stream, fileName, "application/pdf");
+                message.Attachments.Add(attachment);
+            }
+
+            smtpClient.Send(message);
+
+            return Ok(new { message = "Email sent successfully", ticketId = request.TicketId });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { message = "Failed to send email: " + ex.Message });
+        }
+    }
+
+    // -----------------------------------------------------------------------
+    // Close request (Send Email & Close)
+    // -----------------------------------------------------------------------
+
+    /// <summary>
+    /// อัพ status เป็น "Waiting Close Approval" และส่ง email แจ้งลูกค้าในครั้งเดียว.
+    /// Email failure ไม่ block — ticket status ถูก update เสมอ, emailSent บอกผล.
+    /// </summary>
+    [HttpPost("{id}/close-request")]
+    public async Task<IActionResult> CloseRequest(string id, [FromBody] CloseRequestDto request)
+    {
+        if (string.IsNullOrWhiteSpace(request.To))
+            return BadRequest(new { message = "To (recipient email) is required" });
+
+        var ticket = await _context.ServiceTickets
+            .FirstOrDefaultAsync(x => x.TicketId == id);
+
+        if (ticket == null)
+            return NotFound(new { message = $"Ticket '{id}' not found" });
+
+        // 1. Update status
+        ticket.Status = "Waiting Close Approval";
+        ticket.UpdatedAt = DateTime.Now;
+        if (!string.IsNullOrWhiteSpace(request.UpdatedBy))
+            ticket.UpdUser = request.UpdatedBy;
+
+        await _context.SaveChangesAsync();
+
+        // 2. Send email — best effort (non-blocking)
+        bool emailSent = false;
+        string? emailError = null;
+        try
+        {
+            var subject = string.IsNullOrWhiteSpace(request.Subject)
+                ? $"[Service Report] {ticket.TicketNo ?? id}"
+                : request.Subject;
+
+            var body = !string.IsNullOrWhiteSpace(request.Body)
+                ? request.Body
+                : BuildCloseEmailBody(ticket, request.SignatureBase64, request.SkipSignature);
+
+            var smtpClient = new System.Net.Mail.SmtpClient("smtp-relay.gmail.com", 587)
+            {
+                EnableSsl = true,
+                UseDefaultCredentials = false,
+            };
+
+            var fromAddress = new System.Net.Mail.MailAddress("info@goalong.co.th", "GoAlong Support");
+            var mailMsg = new System.Net.Mail.MailMessage(
+                fromAddress,
+                new System.Net.Mail.MailAddress(request.To))
+            {
+                Subject = subject,
+                Body = body,
+                IsBodyHtml = true,
+            };
+
+            smtpClient.Send(mailMsg);
+            emailSent = true;
+        }
+        catch (Exception ex)
+        {
+            emailError = ex.Message;
+        }
+
+        // 3. Broadcast via SignalR
+        await BroadcastKanban(ticket.CmpId ?? "", "ticket_close_requested");
+
+        return Ok(new CloseRequestResponseDto
+        {
+            TicketId = id,
+            Status = "Waiting Close Approval",
+            EmailSent = emailSent,
+            EmailError = emailError,
+        });
+    }
+
+    private static string BuildCloseEmailBody(ServiceTicket ticket, string? signatureBase64, bool skipSignature)
+    {
+        var startDate = ticket.StartDate?.ToString("yyyy-MM-dd") ?? "-";
+        var endDate = ticket.EndDate?.ToString("yyyy-MM-dd") ?? "-";
+        var jobType = ticket.JobType ?? "-";
+        var priority = ticket.Priority ?? "-";
+
+        var signatureSection = skipSignature
+            ? "<p style=\"color:#64748b;\">* ลูกค้าไม่ได้ลงนาม (skipped)</p>"
+            : !string.IsNullOrWhiteSpace(signatureBase64)
+                ? $"<p style=\"font-weight:600;\">ลายเซ็นลูกค้า:</p><img src=\"{signatureBase64}\" style=\"max-width:300px;border:1px solid #e2e8f0;border-radius:6px;padding:4px;\" />"
+                : "";
+
+        return $"""
+            <div style="font-family:sans-serif;max-width:600px;margin:0 auto;padding:24px;">
+              <h2 style="color:#312e81;margin-bottom:4px;">NIS Service Report</h2>
+              <p style="color:#64748b;margin-top:0;">แจ้งปิดงานบริการ / Close Request Notification</p>
+              <hr style="border:none;border-top:1px solid #e2e8f0;margin:16px 0;" />
+              <p>เรียนลูกค้า / Dear Customer,</p>
+              <p>งานบริการต่อไปนี้ได้เสร็จสิ้นแล้ว และรอการอนุมัติปิดงาน (Waiting Close Approval)</p>
+              <table style="width:100%;border-collapse:collapse;margin:16px 0;font-size:14px;">
+                <tr style="background:#f8fafc;">
+                  <td style="padding:10px 12px;border:1px solid #e2e8f0;font-weight:600;width:160px;">Ticket No</td>
+                  <td style="padding:10px 12px;border:1px solid #e2e8f0;">{ticket.TicketNo ?? ticket.TicketId}</td>
+                </tr>
+                <tr>
+                  <td style="padding:10px 12px;border:1px solid #e2e8f0;font-weight:600;">Customer</td>
+                  <td style="padding:10px 12px;border:1px solid #e2e8f0;">{ticket.CustomerName}</td>
+                </tr>
+                <tr style="background:#f8fafc;">
+                  <td style="padding:10px 12px;border:1px solid #e2e8f0;font-weight:600;">Job Type</td>
+                  <td style="padding:10px 12px;border:1px solid #e2e8f0;">{jobType}</td>
+                </tr>
+                <tr>
+                  <td style="padding:10px 12px;border:1px solid #e2e8f0;font-weight:600;">Priority</td>
+                  <td style="padding:10px 12px;border:1px solid #e2e8f0;">{priority}</td>
+                </tr>
+                <tr style="background:#f8fafc;">
+                  <td style="padding:10px 12px;border:1px solid #e2e8f0;font-weight:600;">Start Date</td>
+                  <td style="padding:10px 12px;border:1px solid #e2e8f0;">{startDate}</td>
+                </tr>
+                <tr>
+                  <td style="padding:10px 12px;border:1px solid #e2e8f0;font-weight:600;">Due Date</td>
+                  <td style="padding:10px 12px;border:1px solid #e2e8f0;">{endDate}</td>
+                </tr>
+              </table>
+              {signatureSection}
+              <hr style="border:none;border-top:1px solid #e2e8f0;margin:16px 0;" />
+              <p style="color:#64748b;font-size:12px;">This is an automated email from GoAlong NIS System. Please do not reply to this email.</p>
+            </div>
+            """;
+    }
+
+    // -----------------------------------------------------------------------
+    // Replacement ticket
+    // -----------------------------------------------------------------------
+
+    /// <summary>
+    /// Creates a replacement or sales service ticket from a source install ticket.
+    /// Warranty "on" → JobType = replacement; "off" → JobType = sales.
+    /// </summary>
+    [HttpPost("replacement-ticket")]
+    public async Task<ActionResult> CreateReplacementTicket([FromBody] CreateReplacementTicketDto request)
+    {
+        if (string.IsNullOrWhiteSpace(request.SourceTicketId))
+            return BadRequest(new { message = "SourceTicketId is required" });
+
+        if (string.IsNullOrWhiteSpace(request.CmpId))
+            return BadRequest(new { message = "CmpId is required" });
+
+        var isWarranty = string.Equals(request.Warranty, "on", StringComparison.OrdinalIgnoreCase);
+        var jobType = isWarranty ? "replacement" : "sales";
+        var label = isWarranty ? "Replacement" : "Sales";
+        var title = $"[{label}] {request.Brand} {request.Model} SN:{request.SerialNo}";
+        var notes = $"จากงานติดตั้ง Ticket {request.SourceTicketId}";
+
+        var newTicketId = Guid.NewGuid().ToString("N");
+        var entity = new ServiceTicket
+        {
+            TicketId = newTicketId,
+            JobType = jobType,
+            AdditionalDetails = $"{title}\n{notes}",
+            CustomerName = request.CustomerName,
+            CmpId = request.CmpId,
+            UpdUser = request.CreatedBy,
+            Priority = "minor",
+            Status = "draft",
+            CreatedAt = DateTime.Now,
+            UpdatedAt = DateTime.Now
+        };
+
+        _context.ServiceTickets.Add(entity);
+        await _context.SaveChangesAsync();
+
+        return CreatedAtAction(nameof(GetById), new { id = entity.TicketId }, new
+        {
+            ticketId = entity.TicketId,
+            jobType = entity.JobType,
+            title,
+            notes,
+            customerName = entity.CustomerName,
+            cmpId = entity.CmpId,
+            status = entity.Status,
+            createdAt = entity.CreatedAt
+        });
+    }
+
+    // -----------------------------------------------------------------------
+    // Helpdesk case
+    // -----------------------------------------------------------------------
+
+    /// <summary>
+    /// Creates a helpdesk case ticket linked to a source ticket.
+    /// Category values: Hardware | Software | Network | Cabling
+    /// </summary>
+    [HttpPost("helpdesk-case")]
+    public async Task<ActionResult> CreateHelpdeskCase([FromBody] CreateHelpdeskCaseDto request)
+    {
+        if (string.IsNullOrWhiteSpace(request.SourceTicketId))
+            return BadRequest(new { message = "SourceTicketId is required" });
+
+        if (string.IsNullOrWhiteSpace(request.Problem))
+            return BadRequest(new { message = "Problem is required" });
+
+        if (string.IsNullOrWhiteSpace(request.CmpId))
+            return BadRequest(new { message = "CmpId is required" });
+
+        var titleProblem = request.Problem.Length > 50
+            ? request.Problem.Substring(0, 50)
+            : request.Problem;
+        var title = $"[Helpdesk] {request.Category}: {titleProblem}";
+
+        var details = $"Reporter: {request.Reporter}\n" +
+                      $"Category: {request.Category}\n" +
+                      $"Problem: {request.Problem}\n" +
+                      $"Solution: {request.Solution}\n" +
+                      $"StartTime: {request.StartTime}\n" +
+                      $"EndTime: {request.EndTime}\n" +
+                      $"Source Ticket: {request.SourceTicketId}";
+
+        var newTicketId = Guid.NewGuid().ToString("N");
+        var entity = new ServiceTicket
+        {
+            TicketId = newTicketId,
+            JobType = "helpdesk",
+            AdditionalDetails = details,
+            CustomerName = request.CustomerName,
+            CmpId = request.CmpId,
+            UpdUser = request.CreatedBy,
+            Priority = "minor",
+            Status = "draft",
+            CreatedAt = DateTime.Now,
+            UpdatedAt = DateTime.Now
+        };
+
+        _context.ServiceTickets.Add(entity);
+        await _context.SaveChangesAsync();
+
+        return CreatedAtAction(nameof(GetById), new { id = entity.TicketId }, new
+        {
+            ticketId = entity.TicketId,
+            jobType = entity.JobType,
+            title,
+            customerName = entity.CustomerName,
+            cmpId = entity.CmpId,
+            status = entity.Status,
+            createdAt = entity.CreatedAt
+        });
+    }
+
+    // -----------------------------------------------------------------------
+    // Bulk actions
+    // -----------------------------------------------------------------------
+
+    [HttpPost("bulk/assign")]
+    public async Task<ActionResult> BulkAssign([FromBody] BulkAssignDto dto)
+    {
+        if (dto.TicketIds == null || dto.TicketIds.Count == 0)
+            return BadRequest(new { message = "TicketIds is required" });
+
+        if (string.IsNullOrWhiteSpace(dto.AssignUserId))
+            return BadRequest(new { message = "AssignUserId is required" });
+
+        var subTasks = await _context.ServiceTicketSubTasks
+            .Where(x => dto.TicketIds.Contains(x.TicketId))
+            .ToListAsync();
+
+        var alreadyAssigned = await _context.ServiceTicketSubTaskAssigns
+            .Where(x => dto.TicketIds.Contains(x.TicketId) && x.AssignUserId == dto.AssignUserId && x.IsActive)
+            .Select(x => x.SubTaskId)
+            .ToHashSetAsync();
+
+        var newAssignments = subTasks
+            .Where(x => !alreadyAssigned.Contains(x.SubTaskId))
+            .Select(x => new ServiceTicketSubTaskAssign
+            {
+                AssignId    = Guid.NewGuid(),
+                SubTaskId   = x.SubTaskId,
+                TicketId    = x.TicketId,
+                AssignUserId   = dto.AssignUserId,
+                AssignUserName = dto.AssignUserName,
+                IsActive    = true,
+                AssignedAt  = DateTime.Now,
+                AssignedBy  = dto.AssignedBy,
+                CreatedAt   = DateTime.Now,
+                UpdatedAt   = DateTime.Now,
+            }).ToList();
+
+        if (newAssignments.Count > 0)
+        {
+            _context.ServiceTicketSubTaskAssigns.AddRange(newAssignments);
+            await _context.SaveChangesAsync();
+
+            var cmpIds = subTasks.Select(x => x.CmpId ?? "").Distinct();
+            foreach (var cmpId in cmpIds)
+                await BroadcastKanban(cmpId, "bulk_assigned");
+        }
+
+        return Ok(new { assigned = newAssignments.Count, skipped = alreadyAssigned.Count });
+    }
+
+    [HttpPost("bulk/status")]
+    public async Task<ActionResult> BulkStatus([FromBody] BulkStatusDto dto)
+    {
+        if (dto.TicketIds == null || dto.TicketIds.Count == 0)
+            return BadRequest(new { message = "TicketIds is required" });
+
+        var tickets = await _context.ServiceTickets
+            .Where(x => dto.TicketIds.Contains(x.TicketId))
+            .ToListAsync();
+
+        foreach (var ticket in tickets)
+        {
+            ticket.Status    = dto.Status;
+            ticket.UpdatedAt = DateTime.Now;
+        }
+
+        await _context.SaveChangesAsync();
+
+        var cmpIds = tickets.Select(x => x.CmpId ?? "").Distinct();
+        foreach (var cmpId in cmpIds)
+            await BroadcastKanban(cmpId, "bulk_status");
+
+        return Ok(new { updated = tickets.Count });
+    }
 
 
 
@@ -1593,6 +2238,9 @@ public class ServiceTicketsController : ControllerBase
                 SendApproveBy = x.SendApproveBy,
                 StateApprove = x.StateApprove,
                 ApproveBy = x.ApproveBy,
+                RejectBy = x.RejectBy,
+                RejectReason = x.RejectReason,
+                DateReject = x.DateReject,
                 Assignments = x.Assignments
                     .Where(a => a.IsActive)
                     .OrderBy(a => a.AssignUserName)

@@ -199,3 +199,4 @@
 /Users/amnartkongpet/Project/GoAlong/coreapi-new/obj/Debug/net9.0/goalongapi.genruntimeconfig.cache
 /Users/amnartkongpet/Project/GoAlong/coreapi-new/obj/Debug/net9.0/ref/goalongapi.dll
 /Users/amnartkongpet/Project/GoAlong/coreapi-new/obj/Debug/net9.0/compressed/83aeb1aimm-iksbalyxwd.gz
+/Users/amnartkongpet/Project/GoAlong/coreapi-new/bin/Debug/net9.0/Google.Apis.Calendar.v3.dll

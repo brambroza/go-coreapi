@@ -62,6 +62,11 @@ namespace goalongapi.Models
 
         public string Status { get; set; } = "draft";
 
+        /// Set by Service Manager — onsite form skips the customer-signature requirement.
+        public bool SkipSignature { get; set; }
+        /// Set by Service Manager — closing this ticket goes through approval instead of direct email.
+        public bool RequireCloseApproval { get; set; }
+
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime UpdatedAt { get; set; } = DateTime.Now;
 
@@ -128,6 +133,10 @@ namespace goalongapi.Models
         public string? StateSendApprove { get; set; }
         public DateTime? DateSendApprove { get; set; }
         public string? SendApproveBy { get; set; }
+
+        public string? RejectBy { get; set; }
+        public string? RejectReason { get; set; }
+        public DateTime? DateReject { get; set; }
 
     }
 
@@ -270,6 +279,29 @@ namespace goalongapi.Models
 
 
         public string? Tomorrow { get; set; }
+
+        // Extended fields
+        public string? WorkDetail { get; set; }
+        public string? IssueDetail { get; set; }
+        public string? SignatureFilePath { get; set; }
+        public string? ChecklistItemsJson { get; set; }
+        public string? RackPhotosJson { get; set; }
+        public string? DamagedProductJson { get; set; }
+        public string? OthersItemsJson { get; set; }
+
+        // Onsite service report fields (NIS onsite form)
+        /// e.g. SR-202607-0001
+        public string? SrNumber { get; set; }
+        /// Customer signature, stored as a base64 data URL (same convention as RackPhotosJson/DamagedProductJson).
+        public string? SignatureImageBase64 { get; set; }
+        /// JSON array of work photo base64 data URLs.
+        public string? WorkPhotosJson { get; set; }
+
+        // GPS captured client-side at check-in / check-out (browser Geolocation API, best-effort).
+        public decimal? CheckInLatitude { get; set; }
+        public decimal? CheckInLongitude { get; set; }
+        public decimal? CheckOutLatitude { get; set; }
+        public decimal? CheckOutLongitude { get; set; }
 
         public DateTime? UpdatedAt { get; set; }
         public ICollection<ServiceTicketSubTaskActionAttachment> Attachments { get; set; }

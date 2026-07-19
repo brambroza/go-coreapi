@@ -14,23 +14,33 @@ public class EmailSettingRepository
     public async Task UpsertAsync(EmailSmtpSetting setting, bool updatePassword)
     {
         const string sql = @"
-IF EXISTS (SELECT 1 FROM dbo.EmailSmtpSettings WHERE CmpId = @CmpId AND SettingName = @SettingName)
+IF EXISTS (
+    SELECT 1 FROM dbo.EmailSmtpSettings
+    WHERE SettingName = @SettingName
+      AND ((@CmpId IS NULL AND CmpId IS NULL) OR CmpId = @CmpId)
+)
 BEGIN
     UPDATE dbo.EmailSmtpSettings
     SET FromEmail=@FromEmail, FromName=@FromName,
         SmtpHost=@SmtpHost, SmtpPort=@SmtpPort, EnableSsl=@EnableSsl,
         Username=@Username,
-        PasswordEnc=@PasswordEnc, PasswordIv=@PasswordIv,
+        PasswordEnc=CASE WHEN @UpdatePassword = 1 THEN @PasswordEnc ELSE PasswordEnc END,
+        PasswordIv=CASE WHEN @UpdatePassword = 1 THEN @PasswordIv ELSE PasswordIv END,
         IsActive=@IsActive,
+        CalendarId=@CalendarId,
+        GoogleOAuthClientId=@GoogleOAuthClientId,
+        GoogleOAuthClientSecretEnc=CASE WHEN @UpdateGoogleOAuthSecret = 1 THEN @GoogleOAuthClientSecretEnc ELSE GoogleOAuthClientSecretEnc END,
+        GoogleOAuthClientSecretIv=CASE WHEN @UpdateGoogleOAuthSecret = 1 THEN @GoogleOAuthClientSecretIv ELSE GoogleOAuthClientSecretIv END,
         UpdatedAt=SYSUTCDATETIME()
-    WHERE CmpId=@CmpId AND SettingName=@SettingName;
+    WHERE SettingName=@SettingName
+      AND ((@CmpId IS NULL AND CmpId IS NULL) OR CmpId = @CmpId);
 END
 ELSE
 BEGIN
     INSERT INTO dbo.EmailSmtpSettings
-    (CmpId, SettingName, FromEmail, FromName, SmtpHost, SmtpPort, EnableSsl, Username, PasswordEnc, PasswordIv, IsActive)
+    (CmpId, SettingName, FromEmail, FromName, SmtpHost, SmtpPort, EnableSsl, Username, PasswordEnc, PasswordIv, IsActive, CalendarId, GoogleOAuthClientId, GoogleOAuthClientSecretEnc, GoogleOAuthClientSecretIv)
     VALUES
-    (@CmpId, @SettingName, @FromEmail, @FromName, @SmtpHost, @SmtpPort, @EnableSsl, @Username, @PasswordEnc, @PasswordIv, @IsActive);
+    (@CmpId, @SettingName, @FromEmail, @FromName, @SmtpHost, @SmtpPort, @EnableSsl, @Username, @PasswordEnc, @PasswordIv, @IsActive, @CalendarId, @GoogleOAuthClientId, @GoogleOAuthClientSecretEnc, @GoogleOAuthClientSecretIv);
 END
 ";
 
@@ -49,8 +59,14 @@ END
 
         cmd.Parameters.Add("@PasswordEnc", SqlDbType.VarBinary, -1).Value = setting.PasswordEnc;
         cmd.Parameters.Add("@PasswordIv", SqlDbType.VarBinary, 32).Value = setting.PasswordIv;
+        cmd.Parameters.AddWithValue("@UpdatePassword", updatePassword);
 
         cmd.Parameters.AddWithValue("@IsActive", setting.IsActive);
+        cmd.Parameters.AddWithValue("@CalendarId", (object?)setting.CalendarId ?? DBNull.Value);
+        cmd.Parameters.AddWithValue("@GoogleOAuthClientId", (object?)setting.GoogleOAuthClientId ?? DBNull.Value);
+        cmd.Parameters.Add("@GoogleOAuthClientSecretEnc", SqlDbType.VarBinary, -1).Value = setting.GoogleOAuthClientSecretEnc;
+        cmd.Parameters.Add("@GoogleOAuthClientSecretIv", SqlDbType.VarBinary, 32).Value = setting.GoogleOAuthClientSecretIv;
+        cmd.Parameters.AddWithValue("@UpdateGoogleOAuthSecret", setting.GoogleOAuthClientSecretEnc.Length > 0);
 
         await cmd.ExecuteNonQueryAsync();
     }
@@ -91,6 +107,60 @@ ORDER BY UpdatedAt DESC;
             IsActive = (bool)rd["IsActive"],
             UpdatedAt = (DateTime)rd["UpdatedAt"],
             CreatedAt = (DateTime)rd["CreatedAt"],
+            CalendarId = rd["CalendarId"] as string,
+            GoogleOAuthClientId = rd["GoogleOAuthClientId"] as string,
+            GoogleOAuthClientSecretEnc = rd["GoogleOAuthClientSecretEnc"] as byte[] ?? Array.Empty<byte>(),
+            GoogleOAuthClientSecretIv = rd["GoogleOAuthClientSecretIv"] as byte[] ?? Array.Empty<byte>(),
+            GoogleOAuthRefreshTokenEnc = rd["GoogleOAuthRefreshTokenEnc"] as byte[] ?? Array.Empty<byte>(),
+            GoogleOAuthRefreshTokenIv = rd["GoogleOAuthRefreshTokenIv"] as byte[] ?? Array.Empty<byte>(),
         };
+    }
+
+    public async Task<bool> UpdateGoogleOAuthAsync(
+        string? cmpId,
+        string settingName,
+        string clientId,
+        byte[] clientSecretEnc,
+        byte[] clientSecretIv)
+    {
+        const string sql = @"
+UPDATE dbo.EmailSmtpSettings
+SET GoogleOAuthClientId = @GoogleOAuthClientId,
+    GoogleOAuthClientSecretEnc = @GoogleOAuthClientSecretEnc,
+    GoogleOAuthClientSecretIv = @GoogleOAuthClientSecretIv,
+    UpdatedAt = SYSUTCDATETIME()
+WHERE SettingName = @SettingName
+  AND ((@CmpId IS NULL AND CmpId IS NULL) OR CmpId = @CmpId);";
+
+        await using var conn = new SqlConnection(_connStr);
+        await conn.OpenAsync();
+        await using var cmd = new SqlCommand(sql, conn);
+        cmd.Parameters.AddWithValue("@CmpId", (object?)cmpId ?? DBNull.Value);
+        cmd.Parameters.AddWithValue("@SettingName", settingName);
+        cmd.Parameters.AddWithValue("@GoogleOAuthClientId", clientId);
+        cmd.Parameters.Add("@GoogleOAuthClientSecretEnc", SqlDbType.VarBinary, -1).Value = clientSecretEnc;
+        cmd.Parameters.Add("@GoogleOAuthClientSecretIv", SqlDbType.VarBinary, 32).Value = clientSecretIv;
+
+        return await cmd.ExecuteNonQueryAsync() > 0;
+    }
+
+    public async Task<bool> UpdateGoogleOAuthRefreshTokenAsync(string? cmpId, string settingName, byte[] refreshTokenEnc, byte[] refreshTokenIv)
+    {
+        const string sql = @"
+UPDATE dbo.EmailSmtpSettings
+SET GoogleOAuthRefreshTokenEnc = @GoogleOAuthRefreshTokenEnc,
+    GoogleOAuthRefreshTokenIv = @GoogleOAuthRefreshTokenIv,
+    UpdatedAt = SYSUTCDATETIME()
+WHERE SettingName = @SettingName
+  AND ((@CmpId IS NULL AND CmpId IS NULL) OR CmpId = @CmpId);";
+
+        await using var conn = new SqlConnection(_connStr);
+        await conn.OpenAsync();
+        await using var cmd = new SqlCommand(sql, conn);
+        cmd.Parameters.AddWithValue("@CmpId", (object?)cmpId ?? DBNull.Value);
+        cmd.Parameters.AddWithValue("@SettingName", settingName);
+        cmd.Parameters.Add("@GoogleOAuthRefreshTokenEnc", SqlDbType.VarBinary, -1).Value = refreshTokenEnc;
+        cmd.Parameters.Add("@GoogleOAuthRefreshTokenIv", SqlDbType.VarBinary, 32).Value = refreshTokenIv;
+        return await cmd.ExecuteNonQueryAsync() == 1;
     }
 }

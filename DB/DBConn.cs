@@ -557,6 +557,87 @@ namespace goalongapi.DB
             return objDT;
         }
 
+        /// <summary>
+        /// Parameterized SELECT — use instead of string-concatenating user input into
+        /// <see cref="GetDataTable(string, string, bool)"/>. Pass a text command with
+        /// @named placeholders and matching <see cref="SqlParameter"/> values.
+        /// </summary>
+        public static DataTable GetDataTableParam(
+            string QryStr,
+            SqlParameter[] parameters,
+            string TableName = "DataTalble1"
+        )
+        {
+            DataTable objDT = new DataTable(TableName);
+
+            SqlConnection _Cnn = new SqlConnection();
+            SqlCommand _Cmd = new SqlCommand();
+            try
+            {
+                _Cnn.ConnectionString = SystemConfig._ConnectionString;
+                _Cnn.Open();
+                _Cmd = _Cnn.CreateCommand();
+                _Cmd.CommandTimeout = 0;
+                _Cmd.CommandType = CommandType.Text;
+                _Cmd.CommandText = QryStr;
+                if (parameters != null && parameters.Length > 0)
+                {
+                    _Cmd.Parameters.AddRange(parameters);
+                }
+
+                var _Adepter = new SqlDataAdapter(_Cmd);
+                _Adepter.Fill(objDT);
+                _Adepter.Dispose();
+            }
+            catch (Exception ex)
+            {
+                // Keep the swallow-and-return-empty behaviour of GetDataTable so callers
+                // that only null-check row counts keep working.
+            }
+            finally
+            {
+                DisposeSqlConnection(_Cmd);
+                DisposeSqlConnection(_Cnn);
+            }
+
+            return objDT;
+        }
+
+        /// <summary>
+        /// Parameterized non-query (INSERT/UPDATE/DELETE or stored-proc exec) — the
+        /// safe replacement for <see cref="ExecuteOnly(string)"/> when the command
+        /// includes user input. Returns false on error, matching ExecuteOnly.
+        /// </summary>
+        public static bool ExecuteOnlyParam(string QryStr, params SqlParameter[] parameters)
+        {
+            SqlConnection _Cnn = new SqlConnection();
+            SqlCommand _Cmd = new SqlCommand();
+            try
+            {
+                _Cnn.ConnectionString = SystemConfig._ConnectionString;
+                _Cnn.Open();
+                _Cmd = _Cnn.CreateCommand();
+                _Cmd.CommandTimeout = 0;
+                _Cmd.CommandType = CommandType.Text;
+                _Cmd.CommandText = QryStr;
+                if (parameters != null && parameters.Length > 0)
+                {
+                    _Cmd.Parameters.AddRange(parameters);
+                }
+                _Cmd.ExecuteNonQuery();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+            finally
+            {
+                DisposeSqlConnection(_Cmd);
+                DisposeSqlConnection(_Cnn);
+            }
+        }
+
         public static void GetDataSet(
             string QryStr,
             ref DataSet objDataSet,

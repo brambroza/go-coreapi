@@ -243,14 +243,17 @@ namespace goalongapi.Controllers
 
             try
             {
+                // Escape single quotes — ข้อความแชทมี ' ได้เสมอ ถ้าไม่ escape SQL concat จะพัง
+                static string Esc(string? s) => (s ?? string.Empty).Replace("'", "''");
+
                 string _cmd = "";
                 _cmd = "exec  dbo.ticket_setComment";
-                _cmd += " @id  ='" + mt.id + "'";
-                _cmd += ",@cmpId ='" + mt.cmpId + "'";
-                _cmd += ",@body ='" + mt.body + "'";
-                _cmd += ",@senderId  ='" + mt.senderId + "'";
-                _cmd += ",@ticketId  ='" + mt.ticketId + "'";
-                _cmd += ",@contentType  ='" + mt.contentType + "'";
+                _cmd += " @id  ='" + Esc(mt.id) + "'";
+                _cmd += ",@cmpId ='" + Esc(mt.cmpId) + "'";
+                _cmd += ",@body ='" + Esc(mt.body) + "'";
+                _cmd += ",@senderId  ='" + Esc(mt.senderId) + "'";
+                _cmd += ",@ticketId  ='" + Esc(mt.ticketId) + "'";
+                _cmd += ",@contentType  ='" + Esc(mt.contentType) + "'";
                 _cmd +=
                     ",@createdAt  ='"
                     + mt.createdAt.ToString("yyyy-MM-dd HH:mm:ss", thaiCulture)
