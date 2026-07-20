@@ -28,10 +28,11 @@ builder.Services.AddCors(p =>
                   "https://erp.nisolution.co.th", "https://app.nisolution.co.th",
                   "http://nisolution.fortiddns.com:8284",
                   "http://localhost:8080", "http://192.168.1.179:8080",
-                    "http://localhost:8081",
+                   "http://localhost:8081",
                   "http://192.168.55.219:8285", "http://10.0.2.2:8000",
                   "http://127.0.0.1:51052", "https://liff.line.me",
-                  "http://127.0.0.1:65060", "http://127.0.0.1:9101" // simulator ios 
+                  "http://127.0.0.1:65060", "http://127.0.0.1:9101", // simulator ios
+                  "http://localhost:5173", "http://localhost:5174"   // mockup-nis Vite dev
               )
 
                .AllowAnyMethod()
@@ -60,6 +61,32 @@ builder.Services.AddSingleton<AesCrypto>(sp =>
 {
     var config = sp.GetRequiredService<IConfiguration>();
     return new AesCrypto(config["EmailCrypto:KeyBase64"]!);
+});
+
+// Pooled HttpClient factory — avoids socket exhaustion from `new HttpClient()`
+// per request in the Google OAuth mail/calendar services.
+builder.Services.AddHttpClient();
+
+// NIS Onsite push (Track B) — Expo Push sender + overdue watcher (วันละครั้ง/ตั๋ว ทุก 15 นาที)
+builder.Services.AddScoped<goalongapi.Services.ExpoPushService>();
+builder.Services.AddHostedService<goalongapi.Services.NisOverduePushService>();
+builder.Services.AddScoped<goalongapi.Helpers.GoogleCalendarApiKeyClient>();
+builder.Services.AddDataProtection();
+builder.Services.AddScoped<goalongapi.Helpers.GoogleOAuthMailService>();
+builder.Services.AddScoped<goalongapi.Helpers.GoogleCalendarEventMappingRepository>(sp =>
+{
+    var config = sp.GetRequiredService<IConfiguration>();
+    return new goalongapi.Helpers.GoogleCalendarEventMappingRepository(config.GetConnectionString("ConnectionSQLServer")!);
+});
+builder.Services.AddScoped<goalongapi.Helpers.GoogleOAuthCalendarService>();
+// NIS Onsite — persists client-generated Service Report PDFs (blob + sha256) for attach/resend/audit.
+builder.Services.AddScoped<goalongapi.Helpers.NisReportPdfStorage>();
+
+// Cap request body so a large base64 PDF (+ photos) fails as a controlled 413 instead of an
+// obscure connection reset. Kestrel default (~28.6 MB) is otherwise never overridden in this repo.
+builder.Services.Configure<Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerOptions>(o =>
+{
+    o.Limits.MaxRequestBodySize = builder.Configuration.GetValue<long?>("NisOnsite:MaxRequestBodyBytes") ?? 32L * 1024 * 1024;
 });
 
 
@@ -115,7 +142,12 @@ app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "goalong api
 // }
 app.UseCors("_MyAllowSpecificOrigins");
 app.UseStaticFiles();
-app.UseHttpsRedirection();
+// Dev: ไม่ redirect HTTP→HTTPS เพื่อให้ iPad/มือถือยิง http://<LAN-IP>:5052 ได้ตรง
+// (HTTPS 7046 เป็น self-signed cert ที่ Expo Go ไม่ trust) · prod ยัง redirect ปกติ
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+}
 
 app.UseRouting();
 
@@ -132,6 +164,7 @@ app.UseEndpoints(endpoints =>
     endpoints.MapHub<TicketCommentHub>("/ticketcommenthub");
     endpoints.MapHub<ChatHub>("/chathub");
     endpoints.MapHub<SessionHub>("/sessionhub");
+    endpoints.MapHub<DispatchKanbanHub>("/dispatchkanbanhub");
 
 });
 
