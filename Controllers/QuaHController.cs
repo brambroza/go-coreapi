@@ -17,7 +17,7 @@ namespace goalongapi.Controllers
     [Authorize]
     public class QuaHController : ControllerBase
     {
- 
+
         [HttpGet("[action]")]
         public ActionResult getQuaH([FromQuery] string id, [FromQuery] string user)
         {
@@ -45,9 +45,10 @@ namespace goalongapi.Controllers
         }
 
 
-          [HttpGet("[action]")]
+        [HttpGet("[action]")]
         public ActionResult GetQuaHRev(string cmpid, string DocNo, int RevNo)
         {
+
             string _cmd;
 
             QuotationList quotaion = new QuotationList();
@@ -71,9 +72,9 @@ namespace goalongapi.Controllers
                 + "'";
             DataTable datatableDetail = DB.DBConn.GetDataTable(_cmd);
 
-             foreach (DataRow r in datatable.Rows)
+            foreach (DataRow r in datatable.Rows)
             {
-             
+
 
                 quotaion.QuotationNo = r["QuotationNo"].ToString();
                 quotaion.QuotationDate = r["QuotationDate"].ToString();
@@ -190,7 +191,7 @@ namespace goalongapi.Controllers
                     quotaion.Items.Add(item);
                 }
 
-              
+
             }
 
             return Ok(quotaion);
@@ -204,6 +205,13 @@ namespace goalongapi.Controllers
         [HttpGet("[action]")]
         public ActionResult getQuaHList([FromQuery] string id, [FromQuery] string user)
         {
+
+            System.Globalization.CultureInfo thaiCulture = new System.Globalization.CultureInfo(
+             "th-TH"
+         );
+            thaiCulture.DateTimeFormat.Calendar = new System.Globalization.GregorianCalendar();
+
+
             string _cmd;
             List<QuotationList> quotationList = new List<QuotationList>();
 
@@ -220,7 +228,14 @@ namespace goalongapi.Controllers
                 var quotaion = new QuotationList();
 
                 quotaion.QuotationNo = r["QuotationNo"].ToString();
-                quotaion.QuotationDate = r["QuotationDate"].ToString();
+                //  quotaion.QuotationDate = r["QuotationDate"].ToString();
+                quotaion.QuotationDate = r["QuotationDate"] == DBNull.Value
+                ? null
+                : Convert.ToDateTime(r["QuotationDate"])
+                    .ToString("yyyy-MM-dd HH:mm:ss.fff", thaiCulture);
+                // ได้: "2026-07-17 18:55:24.000"
+
+
                 quotaion.QuotationBy = r["QuotationBy"].ToString();
                 quotaion.QuotationState = r["QuotationState"].ToString();
                 quotaion.CustomerCode = r["CustomerCode"].ToString();
@@ -251,7 +266,14 @@ namespace goalongapi.Controllers
                 quotaion.RevNoMax = Convert.ToInt32(r["RevNoMax"]);
                 quotaion.StateApprove = Convert.ToInt32(r["StateApprove"]);
 
-                quotaion.DateApprove = r["DateApprove"].ToString();
+                //  quotaion.DateApprove = r["DateApprove"].ToString();
+                quotaion.DateApprove = r["DateApprove"] == DBNull.Value
+                ? null
+                : Convert.ToDateTime(r["DateApprove"])
+                    .ToString("yyyy-MM-dd HH:mm:ss.fff", thaiCulture);
+                // ได้: "2026-07-17 18:55:24.000"
+
+
                 quotaion.ApproveBy = r["ApproveBy"].ToString();
                 quotaion.CustomerContactName = r["CustomerContactName"].ToString();
                 quotaion.StateApproveToPO = Convert.ToInt32(r["StateApproveToPO"]);
@@ -375,7 +397,7 @@ namespace goalongapi.Controllers
             {
                 var quotaion = new QuotationList();
 
-                 quotaion.QuotationNo = r["QuotationNo"].ToString();
+                quotaion.QuotationNo = r["QuotationNo"].ToString();
                 quotaion.QuotationDate = r["QuotationDate"].ToString();
                 quotaion.QuotationBy = r["QuotationBy"].ToString();
                 quotaion.QuotationState = r["QuotationState"].ToString();
@@ -784,7 +806,7 @@ namespace goalongapi.Controllers
                     + ",@User='"
                     + quoH.user
                     + "'";
-                    _cmd += " , @UserTo='" + quoH.userTo + "'";
+                _cmd += " , @UserTo='" + quoH.userTo + "'";
 
                 System.Data.DataTable dt = DB.DBConn.GetDataTable(_cmd);
                 if (dt.Rows.Count > 0)
@@ -851,11 +873,11 @@ namespace goalongapi.Controllers
             }
         }
 
-      
+
 
 
         [HttpGet("[action]")]
-        public ActionResult getQuaHListjForSaleOrder([FromQuery] string id, [FromQuery] string user, [FromQuery] string customercode , [FromQuery] string quotationNo)
+        public ActionResult getQuaHListjForSaleOrder([FromQuery] string id, [FromQuery] string user, [FromQuery] string customercode, [FromQuery] string quotationNo)
         {
             string _cmd;
             List<QuotationList> quotationList = new List<QuotationList>();
@@ -981,7 +1003,7 @@ namespace goalongapi.Controllers
                     item.MainProdCode = d["MainProdCode"].ToString();
                     item.MainSeq = Convert.ToInt32(d["MainSeq"]);
                     item.SeqSort = Convert.ToInt32(d["SeqSort"]);
-                  
+
                     quotaion.Items.Add(item);
                 }
 

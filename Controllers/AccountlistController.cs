@@ -17,11 +17,11 @@ namespace goalongapi.Controllers
     public class AccountlistController : ControllerBase
     {
         [HttpGet("[action]")]
-        public IActionResult getAccountlist([FromQuery] string user, [FromQuery] string CmpId)
+        public IActionResult getAccountlist([FromQuery] string user, [FromQuery] string CmpId, [FromQuery] string serviceteam)
         {
             DataTable dt = new System.Data.DataTable();
             string _cmd;
-            _cmd = "exec dbo.getAccountlist @User='" + user + "' , @CmpId='" + CmpId + "'";
+            _cmd = "exec dbo.getAccountlist @User='" + user + "' , @CmpId='" + CmpId + "' , @serviceteam='" + serviceteam + "'";
             dt = DB.DBConn.GetDataTable(_cmd);
             string JSONString = string.Empty;
             JSONString = JsonConvert.SerializeObject(dt);
