@@ -27,6 +27,7 @@ public class NisController : ControllerBase
     private readonly EmailSettingRepository _emailRepo;
     private readonly AesCrypto _crypto;
     private readonly GoogleOAuthMailService _googleOAuthMail;
+    private readonly GoogleOAuthCalendarService _googleOAuthCalendar;
     private readonly goalongapi.Services.ExpoPushService _push;
     private readonly NisReportPdfStorage _pdfStorage;
     private readonly ILogger<NisController> _logger;
@@ -40,6 +41,7 @@ public class NisController : ControllerBase
         EmailSettingRepository emailRepo,
         AesCrypto crypto,
         GoogleOAuthMailService googleOAuthMail,
+        GoogleOAuthCalendarService googleOAuthCalendar,
         goalongapi.Services.ExpoPushService push,
         NisReportPdfStorage pdfStorage,
         IConfiguration configuration,
@@ -49,6 +51,7 @@ public class NisController : ControllerBase
         _emailRepo = emailRepo;
         _crypto = crypto;
         _googleOAuthMail = googleOAuthMail;
+        _googleOAuthCalendar = googleOAuthCalendar;
         _push = push;
         _pdfStorage = pdfStorage;
         _logger = logger;
@@ -477,6 +480,35 @@ public class NisController : ControllerBase
                 body: $"{ticket.TicketCode} · {ticket.Title}",
                 ticketId: ticket.TicketId,
                 data: new Dictionary<string, string> { ["type"] = "assign" });
+        }
+
+        // NIS Google Calendar sync — สร้าง/อัปเดต event ที่ผูกกับ ticket ตอนมอบหมาย
+        // (upsert per-ticket ผ่าน mapping → assign/แก้วันซ้ำก็ patch event เดิม ไม่สร้างซ้ำ).
+        // best-effort: Google พลาด (ยังไม่ต่อ OAuth ฯลฯ) ต้องไม่ทำให้การ assign ล้ม — log ไว้เฉยๆ
+        if (dto.Assignee != "-" && ticket.StartDate.HasValue && ticket.EndDate.HasValue)
+        {
+            try
+            {
+                var appt = await _googleOAuthCalendar.CreateOrUpdateEventAsync(new GoogleCalendarAppointmentCreateDto
+                {
+                    CmpId = ticket.CmpId,
+                    SettingName = "nis",
+                    TicketId = ticket.TicketId,
+                    Title = $"{ticket.TicketCode} {ticket.Title}".Trim(),
+                    Description = $"ผู้รับผิดชอบ: {dto.Assignee}",
+                    Location = "",
+                    Start = ticket.StartDate.Value,
+                    End = ticket.EndDate.Value,
+                    AllDay = true,
+                });
+                _logger.LogInformation(
+                    "NIS assign: Google Calendar synced ticket {TicketId} (cmp {CmpId}) → event {EventId} on calendar {CalendarId} [{Start:yyyy-MM-dd}..{End:yyyy-MM-dd}]",
+                    ticket.TicketId, ticket.CmpId, appt.GoogleEventId, appt.CalendarId, appt.Start, appt.End);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "NIS assign: Google Calendar sync failed for ticket {TicketId}", ticket.TicketId);
+            }
         }
 
         return Ok(new { message = "Assigned successfully" });

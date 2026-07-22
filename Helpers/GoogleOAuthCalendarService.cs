@@ -2,6 +2,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using goalongapi.Models;
+using Microsoft.Extensions.Logging;
 
 namespace goalongapi.Helpers;
 
@@ -11,36 +12,47 @@ public sealed class GoogleOAuthCalendarService
     private readonly GoogleOAuthMailService _oauth;
     private readonly GoogleCalendarEventMappingRepository _mappingRepo;
     private readonly IHttpClientFactory _httpClientFactory;
+    private readonly ILogger<GoogleOAuthCalendarService> _logger;
 
-    public GoogleOAuthCalendarService(EmailSettingRepository repo, GoogleOAuthMailService oauth, GoogleCalendarEventMappingRepository mappingRepo, IHttpClientFactory httpClientFactory)
+    public GoogleOAuthCalendarService(EmailSettingRepository repo, GoogleOAuthMailService oauth, GoogleCalendarEventMappingRepository mappingRepo, IHttpClientFactory httpClientFactory, ILogger<GoogleOAuthCalendarService> logger)
     {
         _repo = repo;
         _oauth = oauth;
         _mappingRepo = mappingRepo;
         _httpClientFactory = httpClientFactory;
+        _logger = logger;
     }
 
     public async Task<IReadOnlyList<GoogleCalendarAppointment>> GetEventsAsync(string? cmpId, string settingName, DateTime start, DateTime end)
     {
         var setting = await GetConnectedSettingAsync(cmpId, settingName);
         var calendarId = string.IsNullOrWhiteSpace(setting.CalendarId) ? "primary" : setting.CalendarId;
+        var timeMin = start.ToUniversalTime().ToString("O");
+        var timeMax = end.ToUniversalTime().ToString("O");
         var url = $"https://www.googleapis.com/calendar/v3/calendars/{Uri.EscapeDataString(calendarId)}/events" +
-                  $"?singleEvents=true&orderBy=startTime&timeMin={Uri.EscapeDataString(start.ToUniversalTime().ToString("O"))}" +
-                  $"&timeMax={Uri.EscapeDataString(end.ToUniversalTime().ToString("O"))}";
+                  $"?singleEvents=true&orderBy=startTime&timeMin={Uri.EscapeDataString(timeMin)}" +
+                  $"&timeMax={Uri.EscapeDataString(timeMax)}";
         using var response = await SendAsync(setting, HttpMethod.Get, url, null);
         var payload = await response.Content.ReadAsStringAsync();
         if (!response.IsSuccessStatusCode) throw new InvalidOperationException("Google Calendar read failed: " + payload);
 
         using var json = JsonDocument.Parse(payload);
-        return json.RootElement.TryGetProperty("items", out var items)
+        var events = json.RootElement.TryGetProperty("items", out var items)
             ? items.EnumerateArray().Select(MapEvent).ToList()
-            : [];
+            : new List<GoogleCalendarAppointment>();
+        _logger.LogInformation(
+            "NIS calendar READ: cmp {CmpId} calendar {CalendarId} range [{TimeMin}..{TimeMax}] → {Count} event(s), payloadLen {Len}",
+            cmpId, calendarId, timeMin, timeMax, events.Count, payload.Length);
+        return events;
     }
 
     public async Task<GoogleCalendarAppointment> CreateOrUpdateEventAsync(GoogleCalendarAppointmentCreateDto dto)
     {
         if (string.IsNullOrWhiteSpace(dto.Title)) throw new InvalidOperationException("Appointment title is required.");
-        if (dto.End <= dto.Start) throw new InvalidOperationException("Appointment end must be later than start.");
+        // All-day ยึด end แบบ inclusive (โค้ดสร้าง body บวก 1 วันให้เอง) → งานวันเดียว start == end ถือว่าถูกต้อง
+        // เฉพาะ timed event เท่านั้นที่ต้องการ end มากกว่า start จริงๆ
+        if (dto.AllDay ? dto.End < dto.Start : dto.End <= dto.Start)
+            throw new InvalidOperationException("Appointment end must be later than start.");
 
         var setting = await GetConnectedSettingAsync(dto.CmpId, dto.SettingName);
         var calendarId = string.IsNullOrWhiteSpace(setting.CalendarId) ? "primary" : setting.CalendarId;
