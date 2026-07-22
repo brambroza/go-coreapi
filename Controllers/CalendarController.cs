@@ -88,7 +88,7 @@ namespace goalongapi.Controllers
         {
             try
             {
-                await _googleOAuthCalendar.DeleteEventForTicketAsync(cmpid, settingName, ticketId);
+               // await _googleOAuthCalendar.DeleteEventForTicketAsync(cmpid, settingName, ticketId);
                 return NoContent();
             }
             catch (InvalidOperationException ex)

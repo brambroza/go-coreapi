@@ -12,9 +12,10 @@ public class NisProject
     [MaxLength(50)]
     public string ProjectId { get; set; } = Guid.NewGuid().ToString();
 
-    /// Sequential running number per CmpId (e.g. 7 → displayed as "0007").
-    /// Assigned by the backend on create — used to build ticket codes such as TK-BK-0007-01.
-    public int? ProjectNo { get; set; }
+    /// Yearly sequential number per CmpId, stored as varchar (e.g. "NIS-2600001").
+    /// Format: NIS-YYXXXXX, where XXXXX resets to 00001 each Bangkok calendar year.
+    [MaxLength(50)]
+    public string? ProjectNo { get; set; }
 
     [MaxLength(200)]
     public string Name { get; set; } = string.Empty;

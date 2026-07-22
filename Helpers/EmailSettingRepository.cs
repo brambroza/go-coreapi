@@ -1,4 +1,5 @@
 using System.Data;
+using System.Globalization;
 using goalongapi.Models;
 using Microsoft.Data.SqlClient;
 
@@ -93,13 +94,13 @@ ORDER BY UpdatedAt DESC;
 
         return new EmailSmtpSetting
         {
-            Id = (int)rd["Id"],
+            Id = Convert.ToInt32(rd["Id"], CultureInfo.InvariantCulture),
             CmpId = rd["CmpId"] as string,
             SettingName = (string)rd["SettingName"],
             FromEmail = (string)rd["FromEmail"],
             FromName = rd["FromName"] as string,
             SmtpHost = (string)rd["SmtpHost"],
-            SmtpPort = (int)rd["SmtpPort"],
+            SmtpPort = Convert.ToInt32(rd["SmtpPort"], CultureInfo.InvariantCulture),
             EnableSsl = (bool)rd["EnableSsl"],
             Username = (string)rd["Username"],
             PasswordEnc = (byte[])rd["PasswordEnc"],

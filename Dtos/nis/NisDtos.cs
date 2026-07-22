@@ -89,7 +89,7 @@ public class NisTicketCloseDto
 public class NisProjectResponseDto
 {
     public string Id { get; set; } = string.Empty;
-    /// Zero-padded running number per company, e.g. "0007"
+    /// Yearly running number per company, e.g. "NIS-2600001"
     public string? ProjectNo { get; set; }
     public string Name { get; set; } = string.Empty;
     public string Customer { get; set; } = string.Empty;
@@ -113,6 +113,7 @@ public class NisProjectCreateDto
 {
     public string Name { get; set; } = string.Empty;
     public string Customer { get; set; } = string.Empty;
+    public string CustomerCode { get; set; } = string.Empty;
     public string Type { get; set; } = "Implement";
     public string Priority { get; set; } = "Medium";
     public int Progress { get; set; } = 0;

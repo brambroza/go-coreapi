@@ -98,7 +98,7 @@ public class ServiceTicketsController : ControllerBase
         {
             TicketId = nisTicket.TicketId,
             TicketNo = nisTicket.TicketCode,
-            ProjectNo = nisProject?.ProjectNo?.ToString("D4"),
+            ProjectNo = nisProject?.ProjectNo,
             CustomerName = nisProject?.Customer ?? string.Empty,
             JobType = nisTicket.Type ?? string.Empty,
             AdditionalDetails = nisTicket.Title,

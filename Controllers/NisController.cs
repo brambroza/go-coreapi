@@ -57,6 +57,9 @@ public class NisController : ControllerBase
 
     // ── Helpers ──────────────────────────────────────────────────────────────
 
+    private static DateTime BangkokNow() =>
+        DateTimeOffset.UtcNow.ToOffset(TimeSpan.FromHours(7)).DateTime;
+
     private static List<string> SplitTags(string? raw) =>
         string.IsNullOrWhiteSpace(raw)
             ? new List<string>()
@@ -71,8 +74,10 @@ public class NisController : ControllerBase
     private static string FormatDateTime(DateTime? d) =>
         d?.ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture) ?? string.Empty;
 
-    private static string FormatProjectNo(int? no) =>
-        no.HasValue ? no.Value.ToString("D4") : string.Empty;
+    private static string FormatProjectNo(string? no) =>
+        int.TryParse(no, NumberStyles.Integer, CultureInfo.InvariantCulture, out var value)
+            ? value.ToString("D4", CultureInfo.InvariantCulture)
+            : no?.Trim() ?? string.Empty;
 
     /// Short code prefix per ticket Type, used to build TicketCode (TK-{Prefix}-{ProjectNo}-{RunNo}).
     private static readonly Dictionary<string, string> TicketTypePrefixes = new()
@@ -92,7 +97,7 @@ public class NisController : ControllerBase
             ? prefix
             : "TK";
 
-    private static string BuildTicketCode(string? type, int? projectNo, int runNo) =>
+    private static string BuildTicketCode(string? type, string? projectNo, int runNo) =>
         $"TK-{TicketPrefixFor(type)}-{FormatProjectNo(projectNo)}-{runNo:D2}";
 
     private static NisTicketResponseDto MapTicket(NisTicket t) => new()
@@ -208,11 +213,21 @@ public class NisController : ControllerBase
         // concurrent CreateProject call for the same CmpId (avoids duplicate project numbers).
         using var transaction = await _context.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable);
 
-        var lastProjectNo = await _context.NisProjects
-            .Where(p => p.CmpId == cmpId)
-            .Select(p => (int?)p.ProjectNo)
-            .MaxAsync() ?? 0;
-        var nextProjectNo = lastProjectNo + 1;
+        var bangkokNow = BangkokNow();
+        var projectPrefix = $"NIS-{bangkokNow.ToString("yy", CultureInfo.InvariantCulture)}";
+        var existingProjectNos = await _context.NisProjects
+            .Where(p => p.CmpId == cmpId && p.ProjectNo != null && p.ProjectNo.StartsWith(projectPrefix))
+            .Select(p => p.ProjectNo)
+            .ToListAsync();
+        var lastProjectNo = existingProjectNos
+            .Select(no => no != null
+                && no.StartsWith(projectPrefix, StringComparison.OrdinalIgnoreCase)
+                && int.TryParse(no[projectPrefix.Length..], NumberStyles.None, CultureInfo.InvariantCulture, out var value)
+                    ? value
+                    : 0)
+            .DefaultIfEmpty(0)
+            .Max();
+        var nextProjectNo = $"{projectPrefix}{lastProjectNo + 1:D5}";
 
         var entity = new NisProject
         {
@@ -242,8 +257,8 @@ public class NisController : ControllerBase
             EngineerPhone = dto.Engineer?.Phone,
             CmpId = dto.CmpId ?? string.Empty,
             CreatedBy = dto.CreatedBy ?? string.Empty,
-            CreatedDate = DateTime.Now,
-            UpdatedDate = DateTime.Now,
+            CreatedDate = bangkokNow,
+            UpdatedDate = bangkokNow,
         };
 
         // Add initial tickets (e.g. auto-generated tickets from wizard step 3)
@@ -272,10 +287,18 @@ public class NisController : ControllerBase
                 TagsRaw = JoinTags(t.Tags),
                 CmpId = cmpId,
                 CreatedBy = dto.CreatedBy ?? string.Empty,
-                CreatedDate = DateTime.Now,
-                UpdatedDate = DateTime.Now,
+                CreatedDate = bangkokNow,
+                UpdatedDate = bangkokNow,
             });
         }
+
+        var updatedCustomers = await _context.customers
+            .Where(c => c.CmpId == cmpId && c.CustomerCode == dto.CustomerCode)
+            .ExecuteUpdateAsync(setters => setters
+                .SetProperty(c => c.StateGenQRCode, 1));
+
+        if (updatedCustomers == 0)
+            return BadRequest(new { message = $"Customer '{dto.Customer}' not found in master" });
 
         _context.NisProjects.Add(entity);
         await _context.SaveChangesAsync();
@@ -654,7 +677,7 @@ public class NisController : ControllerBase
         // would throw SqlNullValueException when materialized.
         var customers = await _context.customers
             .AsNoTracking()
-            .Where(c => c.CmpId == cmpid && c.StateGenQRCode == '1')
+            .Where(c => c.CmpId == cmpid && c.StateGenQRCode == 1)
             .OrderBy(c => c.CustomerName)
             .Select(c => new
             {
@@ -791,7 +814,7 @@ public class NisController : ControllerBase
 
 
         var customer = await _context.customers
-   .FirstOrDefaultAsync(c =>
+      .FirstOrDefaultAsync(c =>
        c.CmpId == cmpId &&
        c.CustomerCode == code);
 
@@ -1525,11 +1548,13 @@ public class NisController : ControllerBase
             {
                 try
                 {
-                    var project = await _context.NisProjects
+                    var customerName = await _context.NisProjects
                         .AsNoTracking()
-                        .FirstOrDefaultAsync(p => p.ProjectId == nisTicket.ProjectId);
+                        .Where(p => p.ProjectId == nisTicket.ProjectId)
+                        .Select(p => p.Customer)
+                        .FirstOrDefaultAsync();
                     var subject = string.IsNullOrWhiteSpace(dto.EmailSubject) ? $"[Service Report] {dto.SrNumber}" : dto.EmailSubject;
-                    var body = BuildOnsiteReportEmailBody(nisTicket.TicketCode ?? nisTicket.TicketId, project?.Customer ?? string.Empty, dto);
+                    var body = BuildOnsiteReportEmailBody(nisTicket.TicketCode ?? nisTicket.TicketId, customerName ?? string.Empty, dto);
                     var attachments = attachPdf ? new List<EmailAttachment> { pdfAttachment! } : null;
                     nisEmailSent = await SendOnsiteEmailAsync(nisCmpId, dto.RecipientEmail, subject, body, attachments);
                 }
@@ -1907,5 +1932,149 @@ public class NisController : ControllerBase
             srNumber = dto.SrNumber,
         });
     }
+
+    // ── NIS onsite progress (cross-device draft) ─────────────────────────────
+    // Draft ความคืบหน้างาน onsite ที่ยังไม่ปิดงาน ต่อ 1 ตั๋ว/1 ช่าง — เก็บ snapshot
+    // ทั้งก้อนแบบ opaque JSON (schema เป็นของ client · server เช็คแค่ savedAt)
+    // ผู้ใช้: CRM เขียน+อ่าน (dual-write/reconcile ข้ามเครื่อง) · RN อ่านอย่างเดียว
+    // {id} = ticketCode ("TK-BK-0014-10") — คีย์กลางที่ CRM/RN ตกลงใช้ร่วมกัน
+    // Contract: go-crm-24v4/docs/nis-onsite-progress-api-contract.md
+
+    /// อ่าน snapshot (CmpId, TicketId, UserLogin) → 200 JSON เดิมที่เคย save · ไม่มี = 204
+    [HttpGet("onsite/{id}/progress")]
+    public async Task<IActionResult> GetOnsiteProgress(
+        string id,
+        [FromQuery] string? cmpid,
+        [FromQuery] string? user)
+    {
+        if (string.IsNullOrWhiteSpace(cmpid) || string.IsNullOrWhiteSpace(user))
+            return BadRequest(new { message = "cmpid and user are required" });
+
+        var row = await _context.NisOnsiteProgresses
+            .AsNoTracking()
+            .FirstOrDefaultAsync(p => p.CmpId == cmpid && p.TicketId == id && p.UserLogin == user);
+
+        if (row == null || string.IsNullOrEmpty(row.SnapshotJson)) return NoContent();
+        // คืน raw JSON ตรงที่ client save ไว้ (ไม่ re-serialize — กัน field เพี้ยน/หาย)
+        return Content(row.SnapshotJson, "application/json");
+    }
+
+    /// upsert snapshot — body = snapshot ทั้งก้อน + { cmpid, user } (client แนบมากับ root)
+    /// เขียนทับเสมอด้วยก้อนล่าสุดตาม contract (client เป็นผู้คุม savedAt/ลำดับ)
+    [HttpPost("onsite/{id}/progress")]
+    public async Task<IActionResult> SaveOnsiteProgress(string id, [FromBody] JsonElement body)
+    {
+        if (body.ValueKind != JsonValueKind.Object)
+            return BadRequest(new { message = "snapshot body is required" });
+
+        // cmpid/user มากับ root ของ body (CRM แนบ {...snapshot, cmpid, user})
+        var cmpid = ReadJsonString(body, "cmpid") ?? ReadJsonString(body, "cmpId");
+        var user = ReadJsonString(body, "user");
+        if (string.IsNullOrWhiteSpace(cmpid) || string.IsNullOrWhiteSpace(user))
+            return BadRequest(new { message = "cmpid and user are required" });
+
+        // savedAt ต้องเป็นเลข > 0 — client ใช้ตัวนี้ reconcile ฝั่งอ่าน
+        long savedAt = 0;
+        if (body.TryGetProperty("savedAt", out var savedAtProp) && savedAtProp.ValueKind == JsonValueKind.Number)
+            savedAtProp.TryGetInt64(out savedAt);
+        if (savedAt <= 0)
+            return BadRequest(new { message = "savedAt (epoch ms) is required" });
+
+        var row = await _context.NisOnsiteProgresses
+            .FirstOrDefaultAsync(p => p.CmpId == cmpid && p.TicketId == id && p.UserLogin == user);
+
+        if (row == null)
+        {
+            row = new NisOnsiteProgress { CmpId = cmpid, TicketId = id, UserLogin = user };
+            _context.NisOnsiteProgresses.Add(row);
+        }
+
+        row.SnapshotJson = body.GetRawText();
+        row.SavedAt = savedAt;
+        row.UpdatedAt = DateTime.UtcNow;
+
+        // sync % ไปตั๋วจริง — ให้ NisTicket.Pct สะท้อน progress ล่าสุดของ draft
+        // {id} = ticketCode ("TK-…") ตาม contract · เพดาน 90 (100 เกิดเฉพาะ flow ปิดงาน)
+        // ตั๋วที่พ้นมือช่างแล้ว (Waiting Close Approval / Done / Closed) ไม่แตะ — กัน autosave ค้างเขียนทับ
+        var ticket = await _context.NisTickets
+            .FirstOrDefaultAsync(t => t.CmpId == cmpid && (t.TicketCode == id || t.TicketId == id));
+        if (ticket != null
+            && ticket.Status != "Waiting Close Approval"
+            && ticket.Status != "Done"
+            && ticket.Status != "Closed")
+        {
+            ticket.Pct = ComputeOnsiteProgressPct(body);
+            ticket.UpdatedDate = DateTime.Now;
+        }
+
+        await _context.SaveChangesAsync();
+        return Ok(new { ok = true });
+    }
+
+    /// ล้าง draft — client เรียกตอนปิดงานสำเร็จ/ส่งขออนุมัติปิดงาน (idempotent: ไม่เจอก็ 200)
+    [HttpDelete("onsite/{id}/progress")]
+    public async Task<IActionResult> DeleteOnsiteProgress(
+        string id,
+        [FromQuery] string? cmpid,
+        [FromQuery] string? user)
+    {
+        if (string.IsNullOrWhiteSpace(cmpid) || string.IsNullOrWhiteSpace(user))
+            return BadRequest(new { message = "cmpid and user are required" });
+
+        var row = await _context.NisOnsiteProgresses
+            .FirstOrDefaultAsync(p => p.CmpId == cmpid && p.TicketId == id && p.UserLogin == user);
+
+        if (row != null)
+        {
+            _context.NisOnsiteProgresses.Remove(row);
+            await _context.SaveChangesAsync();
+        }
+        return Ok(new { ok = true });
+    }
+
+    /// คำนวณ % ความคืบหน้างาน onsite จาก snapshot draft (milestone-based)
+    /// น้ำหนัก: check-in 20 · checklist 40 ตามสัดส่วนที่ติ๊ก · รายละเอียดงาน 10 · รูป 10 · ลายเซ็น 10
+    /// check-out แล้ว = อย่างน้อย 90 (convention เดียวกับ RN/CRM) · เพดาน 90 — 100 เฉพาะ flow ปิดงาน
+    private static int ComputeOnsiteProgressPct(JsonElement s)
+    {
+        var pct = 0;
+
+        if (!string.IsNullOrEmpty(ReadJsonString(s, "checkInTime"))) pct += 20;
+
+        if (s.TryGetProperty("checklist", out var checklist) && checklist.ValueKind == JsonValueKind.Array)
+        {
+            int total = 0, done = 0;
+            foreach (var item in checklist.EnumerateArray())
+            {
+                total++;
+                if (item.ValueKind == JsonValueKind.Object
+                    && item.TryGetProperty("checked", out var c)
+                    && c.ValueKind == JsonValueKind.True)
+                    done++;
+            }
+            if (total > 0) pct += (int)Math.Round(40.0 * done / total);
+        }
+
+        if (!string.IsNullOrWhiteSpace(ReadJsonString(s, "workDetail"))) pct += 10;
+
+        var hasPhoto =
+            (s.TryGetProperty("photos", out var photos)
+                && photos.ValueKind == JsonValueKind.Array && photos.GetArrayLength() > 0)
+            || (s.TryGetProperty("rackPhotos", out var racks)
+                && racks.ValueKind == JsonValueKind.Array && racks.GetArrayLength() > 0);
+        if (hasPhoto) pct += 10;
+
+        if (!string.IsNullOrEmpty(ReadJsonString(s, "signatureImg"))) pct += 10;
+
+        if (!string.IsNullOrEmpty(ReadJsonString(s, "checkOutTime"))) pct = Math.Max(pct, 90);
+
+        return Math.Min(pct, 90);
+    }
+
+    /// อ่าน string property จาก JsonElement แบบปลอดภัย (ไม่มี/ไม่ใช่ string → null)
+    private static string? ReadJsonString(JsonElement obj, string name)
+        => obj.TryGetProperty(name, out var prop) && prop.ValueKind == JsonValueKind.String
+            ? prop.GetString()
+            : null;
 
 }

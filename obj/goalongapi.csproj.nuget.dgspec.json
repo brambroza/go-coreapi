@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/Users/amnartkongpet/Project/GoAlong/coreapi-new/goalongapi.csproj": {}
+    "/Users/amnartkongpet/Project/GoAlong/2024/coreapi-new/goalongapi.csproj": {}
   },
   "projects": {
-    "/Users/amnartkongpet/Project/GoAlong/coreapi-new/goalongapi.csproj": {
+    "/Users/amnartkongpet/Project/GoAlong/2024/coreapi-new/goalongapi.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/goalongapi.csproj",
+        "projectUniqueName": "/Users/amnartkongpet/Project/GoAlong/2024/coreapi-new/goalongapi.csproj",
         "projectName": "goalongapi",
-        "projectPath": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/goalongapi.csproj",
+        "projectPath": "/Users/amnartkongpet/Project/GoAlong/2024/coreapi-new/goalongapi.csproj",
         "packagesPath": "/Users/amnartkongpet/.nuget/packages/",
-        "outputPath": "/Users/amnartkongpet/Project/GoAlong/coreapi-new/obj/",
+        "outputPath": "/Users/amnartkongpet/Project/GoAlong/2024/coreapi-new/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/Users/amnartkongpet/.nuget/NuGet/NuGet.Config"

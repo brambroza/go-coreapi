@@ -73,6 +73,7 @@ namespace goalongapi.Data
         public DbSet<NisPersonalNote> NisPersonalNotes { get; set; }
         public DbSet<NisPushToken> NisPushTokens { get; set; }
         public DbSet<NisPushLog> NisPushLogs { get; set; }
+        public DbSet<NisOnsiteProgress> NisOnsiteProgresses { get; set; }
         public DbSet<EmailSendLog> EmailSendLogs { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -633,6 +634,7 @@ namespace goalongapi.Data
                 entity.ToTable("NisProject", "dbo", tb => tb.UseSqlOutputClause(false));
                 entity.HasKey(e => e.ProjectId);
 
+                entity.Property(e => e.ProjectNo).HasMaxLength(50);
                 entity.Property(e => e.Name).HasMaxLength(200).IsRequired();
                 entity.Property(e => e.Customer).HasMaxLength(200).IsRequired();
                 entity.Property(e => e.Type).HasMaxLength(50).IsRequired();
@@ -801,6 +803,21 @@ namespace goalongapi.Data
                 entity.Property(e => e.EventKey).HasMaxLength(255).IsRequired();
                 // unique = insert ซ้ำล้ม → ข้ามการส่ง (dedupe first-writer-wins)
                 entity.HasIndex(e => e.EventKey).IsUnique();
+            });
+
+            modelBuilder.Entity<NisOnsiteProgress>(entity =>
+            {
+                entity.ToTable("NisOnsiteProgress", "dbo", tb => tb.UseSqlOutputClause(false));
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.CmpId).HasMaxLength(100).IsRequired();
+                entity.Property(e => e.TicketId).HasMaxLength(100).IsRequired();
+                entity.Property(e => e.UserLogin).HasMaxLength(200).IsRequired();
+                entity.Property(e => e.SnapshotJson).HasColumnType("nvarchar(max)").IsRequired();
+                entity.Property(e => e.UpdatedAt).HasColumnType("datetime2");
+                // upsert key: ตั๋วเดิม + ช่างคนเดิม = แถวเดิม (last-write-wins)
+                entity.HasIndex(e => new { e.CmpId, e.TicketId, e.UserLogin }).IsUnique();
+                // เกณฑ์ cron ล้าง draft ค้าง (WHERE UpdatedAt < cutoff)
+                entity.HasIndex(e => e.UpdatedAt);
             });
 
             modelBuilder.Entity<EmailSendLog>(entity =>
