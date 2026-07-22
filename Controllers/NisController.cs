@@ -489,6 +489,13 @@ public class NisController : ControllerBase
         {
             try
             {
+                // Assignee is stored as Account.FullName; Accounts.Username holds the
+                // account's email address, which is what gets tagged on the event.
+                var assigneeEmail = await _context.Accounts
+                    .Where(a => a.CmpId == ticket.CmpId && a.FullName == dto.Assignee)
+                    .Select(a => a.Username)
+                    .FirstOrDefaultAsync();
+
                 var appt = await _googleOAuthCalendar.CreateOrUpdateEventAsync(new GoogleCalendarAppointmentCreateDto
                 {
                     CmpId = ticket.CmpId,
@@ -500,6 +507,7 @@ public class NisController : ControllerBase
                     Start = ticket.StartDate.Value,
                     End = ticket.EndDate.Value,
                     AllDay = true,
+                    AttendeeEmails = assigneeEmail == null ? [] : [assigneeEmail],
                 });
                 _logger.LogInformation(
                     "NIS assign: Google Calendar synced ticket {TicketId} (cmp {CmpId}) → event {EventId} on calendar {CalendarId} [{Start:yyyy-MM-dd}..{End:yyyy-MM-dd}]",

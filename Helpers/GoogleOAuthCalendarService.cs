@@ -40,6 +40,19 @@ public sealed class GoogleOAuthCalendarService
         var events = json.RootElement.TryGetProperty("items", out var items)
             ? items.EnumerateArray().Select(MapEvent).ToList()
             : new List<GoogleCalendarAppointment>();
+
+        // Google ไม่คืน ticketId มากับ event → เติมจากตาราง mapping (event ที่ sync มาจาก ticket)
+        // ให้ client แยก event ที่ mirror จาก ticket ออกจากนัดหมายทั่วไปได้โดยไม่ต้องเดาจาก title
+        var ticketIdByEventId = await _mappingRepo.GetTicketIdByEventIdAsync(cmpId, settingName);
+        if (ticketIdByEventId.Count > 0)
+        {
+            foreach (var ev in events)
+            {
+                if (ticketIdByEventId.TryGetValue(ev.GoogleEventId, out var ticketId))
+                    ev.TicketId = ticketId;
+            }
+        }
+
         _logger.LogInformation(
             "NIS calendar READ: cmp {CmpId} calendar {CalendarId} range [{TimeMin}..{TimeMax}] → {Count} event(s), payloadLen {Len}",
             cmpId, calendarId, timeMin, timeMax, events.Count, payload.Length);
