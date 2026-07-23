@@ -4267,6 +4267,88 @@
       ]
     },
     {
+      "Route": "230015/nis/NIS-2600003/Service-Report-SR-202607-0007.frcg6eqoi2.pdf",
+      "AssetFile": "230015/nis/NIS-2600003/Service-Report-SR-202607-0007.pdf",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "39310"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/pdf"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"mwICkr2/99ldzvwE8L4f0JfYOsjtsR7t/Xn6t/mtmVU=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Thu, 23 Jul 2026 04:54:25 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "frcg6eqoi2"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-mwICkr2/99ldzvwE8L4f0JfYOsjtsR7t/Xn6t/mtmVU="
+        },
+        {
+          "Name": "label",
+          "Value": "230015/nis/NIS-2600003/Service-Report-SR-202607-0007.pdf"
+        }
+      ]
+    },
+    {
+      "Route": "230015/nis/NIS-2600003/Service-Report-SR-202607-0007.pdf",
+      "AssetFile": "230015/nis/NIS-2600003/Service-Report-SR-202607-0007.pdf",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "39310"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/pdf"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"mwICkr2/99ldzvwE8L4f0JfYOsjtsR7t/Xn6t/mtmVU=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Thu, 23 Jul 2026 04:54:25 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-mwICkr2/99ldzvwE8L4f0JfYOsjtsR7t/Xn6t/mtmVU="
+        }
+      ]
+    },
+    {
       "Route": "230015/product/images/00dd0718-6c76-4072-a181-3237435654b5.p9z55iiuh2.png",
       "AssetFile": "230015/product/images/00dd0718-6c76-4072-a181-3237435654b5.png",
       "Selectors": [],

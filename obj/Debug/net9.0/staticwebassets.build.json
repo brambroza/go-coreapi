@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "tDA4r6id8uny06BnRmmiQZ8fZ1+5ZPePgKzwTltDoQ4=",
+  "Hash": "adHoD2B55+/RT+7DAKItNxgzm9PbnVL7Xf1Vu2LyMgI=",
   "Source": "goalongapi",
   "BasePath": "_content/goalongapi",
   "Mode": "Default",
@@ -1170,6 +1170,27 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot/230015/NIS-2500009/comment/attachment/DELL EMC PowerEdge T350.jpg"
+    },
+    {
+      "Identity": "/Users/amnartkongpet/Project/GoAlong/2024/coreapi-new/wwwroot/230015/nis/NIS-2600003/Service-Report-SR-202607-0007.pdf",
+      "SourceId": "goalongapi",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/amnartkongpet/Project/GoAlong/2024/coreapi-new/wwwroot/",
+      "BasePath": "_content/goalongapi",
+      "RelativePath": "230015/nis/NIS-2600003/Service-Report-SR-202607-0007#[.{fingerprint}]?.pdf",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "frcg6eqoi2",
+      "Integrity": "mwICkr2/99ldzvwE8L4f0JfYOsjtsR7t/Xn6t/mtmVU=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/230015/nis/NIS-2600003/Service-Report-SR-202607-0007.pdf"
     },
     {
       "Identity": "/Users/amnartkongpet/Project/GoAlong/2024/coreapi-new/wwwroot/230015/product/images/00dd0718-6c76-4072-a181-3237435654b5.png",
@@ -14821,6 +14842,88 @@
         {
           "Name": "integrity",
           "Value": "sha256-A5a0X7GOFlrS4tvbzlMlIaI7t3DKC6b9WsmswNwFgVk="
+        }
+      ]
+    },
+    {
+      "Route": "230015/nis/NIS-2600003/Service-Report-SR-202607-0007.frcg6eqoi2.pdf",
+      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/2024/coreapi-new/wwwroot/230015/nis/NIS-2600003/Service-Report-SR-202607-0007.pdf",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "39310"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/pdf"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"mwICkr2/99ldzvwE8L4f0JfYOsjtsR7t/Xn6t/mtmVU=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Thu, 23 Jul 2026 04:54:25 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "frcg6eqoi2"
+        },
+        {
+          "Name": "label",
+          "Value": "230015/nis/NIS-2600003/Service-Report-SR-202607-0007.pdf"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-mwICkr2/99ldzvwE8L4f0JfYOsjtsR7t/Xn6t/mtmVU="
+        }
+      ]
+    },
+    {
+      "Route": "230015/nis/NIS-2600003/Service-Report-SR-202607-0007.pdf",
+      "AssetFile": "/Users/amnartkongpet/Project/GoAlong/2024/coreapi-new/wwwroot/230015/nis/NIS-2600003/Service-Report-SR-202607-0007.pdf",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "39310"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/pdf"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"mwICkr2/99ldzvwE8L4f0JfYOsjtsR7t/Xn6t/mtmVU=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Thu, 23 Jul 2026 04:54:25 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-mwICkr2/99ldzvwE8L4f0JfYOsjtsR7t/Xn6t/mtmVU="
         }
       ]
     },

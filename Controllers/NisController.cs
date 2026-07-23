@@ -29,6 +29,7 @@ public class NisController : ControllerBase
     private readonly GoogleOAuthMailService _googleOAuthMail;
     private readonly GoogleOAuthCalendarService _googleOAuthCalendar;
     private readonly goalongapi.Services.ExpoPushService _push;
+    private readonly goalongapi.Services.NisRealtimeNotifyService _nisRealtimeNotify;
     private readonly NisReportPdfStorage _pdfStorage;
     private readonly ILogger<NisController> _logger;
 
@@ -43,6 +44,7 @@ public class NisController : ControllerBase
         GoogleOAuthMailService googleOAuthMail,
         GoogleOAuthCalendarService googleOAuthCalendar,
         goalongapi.Services.ExpoPushService push,
+        goalongapi.Services.NisRealtimeNotifyService nisRealtimeNotify,
         NisReportPdfStorage pdfStorage,
         IConfiguration configuration,
         ILogger<NisController> logger)
@@ -53,6 +55,7 @@ public class NisController : ControllerBase
         _googleOAuthMail = googleOAuthMail;
         _googleOAuthCalendar = googleOAuthCalendar;
         _push = push;
+        _nisRealtimeNotify = nisRealtimeNotify;
         _pdfStorage = pdfStorage;
         _logger = logger;
         _attachReportPdf = configuration.GetValue<bool?>("NisOnsite:AttachReportPdf") ?? true;
@@ -547,6 +550,26 @@ public class NisController : ControllerBase
                 body: $"{ticket.TicketCode} · {ticket.Title}",
                 ticketId: ticket.TicketId,
                 data: new Dictionary<string, string> { ["type"] = "assign" });
+
+            // NIS realtime notify (go-chat-api socket.io bridge) — refresh instantly for any
+            // RN client currently connected (foreground), on top of the Expo push above.
+            // Socket room keys off Username (Accounts.Username), not the FullName stored on
+            // the ticket, so resolve it the same way the Google Calendar sync below does.
+            var assigneeUsername = await _context.Accounts
+                .Where(a => a.CmpId == ticket.CmpId && a.FullName == dto.Assignee)
+                .Select(a => a.Username)
+                .FirstOrDefaultAsync();
+
+            if (!string.IsNullOrWhiteSpace(assigneeUsername))
+            {
+                await _nisRealtimeNotify.NotifyAsync(
+                    ticket.CmpId,
+                    users: [assigneeUsername],
+                    type: "assign",
+                    ticketId: ticket.TicketId,
+                    title: "🔔 งานใหม่รอตอบรับ",
+                    body: $"{ticket.TicketCode} · {ticket.Title}");
+            }
         }
 
         // NIS Google Calendar sync — สร้าง/อัปเดต event ที่ผูกกับ ticket ตอนมอบหมาย
