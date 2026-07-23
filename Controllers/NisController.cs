@@ -156,6 +156,19 @@ public class NisController : ControllerBase
             Phone = p.EngineerPhone,
         },
         Tickets = p.Tickets.Select(MapTicket).ToList(),
+        Attachments = p.Files
+            .OrderBy(f => f.Seq)
+            .Select(MapAttachment)
+            .ToList(),
+    };
+
+    private static NisAttachmentDto MapAttachment(NisProjectFile f) => new()
+    {
+        Id = f.FileId,
+        FileName = f.FileName,
+        FilePath = f.FilePath,
+        Seq = f.Seq,
+        FileSize = f.FileSize,
     };
 
     // ── GET api/nis/projects ─────────────────────────────────────────────────
@@ -172,6 +185,7 @@ public class NisController : ControllerBase
         var projects = await _context.NisProjects
             .AsNoTracking()
             .Include(p => p.Tickets)
+            .Include(p => p.Files)
             .Where(p => p.CmpId == cmpid)
             .OrderByDescending(p => p.CreatedDate)
             .ToListAsync();
@@ -190,6 +204,7 @@ public class NisController : ControllerBase
         var project = await _context.NisProjects
             .AsNoTracking()
             .Include(p => p.Tickets)
+            .Include(p => p.Files)
             .FirstOrDefaultAsync(p => p.ProjectId == id);
 
         if (project == null)
@@ -308,6 +323,58 @@ public class NisController : ControllerBase
         await transaction.CommitAsync();
 
         return CreatedAtAction(nameof(GetProject), new { id = entity.ProjectId }, MapProject(entity));
+    }
+
+    // ── POST api/nis/projects/{id}/attachments ───────────────────────────────
+
+    /// <summary>
+    /// Saves attachment metadata for a project. The binary is already uploaded by the
+    /// client via the shared /uploadallfile + /movefile endpoints; this only persists
+    /// FileName/FilePath so the project list can show and link to the documents.
+    /// Matches frontend attachNisProjectFiles (called right after createNisProject).
+    /// </summary>
+    [HttpPost("projects/{id}/attachments")]
+    public async Task<ActionResult<IEnumerable<NisAttachmentDto>>> AttachFiles(
+        string id,
+        [FromBody] List<NisAttachmentDto> attachments)
+    {
+        var project = await _context.NisProjects
+            .AsNoTracking()
+            .FirstOrDefaultAsync(p => p.ProjectId == id);
+
+        if (project == null)
+            return NotFound(new { message = $"Project {id} not found" });
+
+        if (attachments == null || attachments.Count == 0)
+            return Ok(Array.Empty<NisAttachmentDto>());
+
+        // Seq continues from whatever attachments the project already has.
+        var existingCount = await _context.NisProjectFiles.CountAsync(f => f.ProjectId == id);
+        var now = BangkokNow();
+
+        var entities = attachments
+            .Where(a => !string.IsNullOrWhiteSpace(a.FileName) && !string.IsNullOrWhiteSpace(a.FilePath))
+            .Select((a, i) => new NisProjectFile
+            {
+                FileId = Guid.NewGuid().ToString(),
+                ProjectId = id,
+                FileName = a.FileName,
+                FilePath = a.FilePath,
+                Seq = existingCount + i + 1,
+                FileSize = a.FileSize,
+                CmpId = project.CmpId,
+                CreatedBy = project.CreatedBy,
+                CreatedDate = now,
+            })
+            .ToList();
+
+        if (entities.Count == 0)
+            return Ok(Array.Empty<NisAttachmentDto>());
+
+        _context.NisProjectFiles.AddRange(entities);
+        await _context.SaveChangesAsync();
+
+        return Ok(entities.Select(MapAttachment));
     }
 
     // ── POST api/nis/projects/{id}/tickets ───────────────────────────────────

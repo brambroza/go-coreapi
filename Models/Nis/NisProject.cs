@@ -105,6 +105,46 @@ public class NisProject
     public DateTime UpdatedDate { get; set; } = DateTime.Now;
 
     public virtual ICollection<NisTicket> Tickets { get; set; } = new List<NisTicket>();
+
+    /// Documents attached when the project was created (PDF/Excel/Word/Visio/Image).
+    public virtual ICollection<NisProjectFile> Files { get; set; } = new List<NisProjectFile>();
+}
+
+// ── NisProjectFile ────────────────────────────────────────────────────────────
+// One attached document for a NIS project. Binary is stored on disk via the shared
+// upload endpoints (/uploadallfile + /movefile); this row only keeps the metadata.
+
+public class NisProjectFile
+{
+    [Key]
+    [MaxLength(50)]
+    public string FileId { get; set; } = Guid.NewGuid().ToString();
+
+    [MaxLength(50)]
+    public string ProjectId { get; set; } = string.Empty;
+
+    /// Original file name shown to the user, e.g. "Network-Diagram.pdf"
+    [MaxLength(300)]
+    public string FileName { get; set; } = string.Empty;
+
+    /// Full URL/path where the file was moved, e.g. "{serverUrl}/{cmpId}/nis/{projectNo}/{fileName}"
+    [MaxLength(1000)]
+    public string FilePath { get; set; } = string.Empty;
+
+    /// Display ordering (1-based) in the attachment list.
+    public int Seq { get; set; } = 1;
+
+    public long FileSize { get; set; } = 0;
+
+    [MaxLength(50)]
+    public string CmpId { get; set; } = string.Empty;
+
+    [MaxLength(100)]
+    public string CreatedBy { get; set; } = string.Empty;
+
+    public DateTime CreatedDate { get; set; } = DateTime.Now;
+
+    public virtual NisProject? Project { get; set; }
 }
 
 // ── NisTicket ─────────────────────────────────────────────────────────────────

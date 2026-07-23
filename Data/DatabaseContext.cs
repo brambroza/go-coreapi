@@ -62,6 +62,7 @@ namespace goalongapi.Data
         // NIS — Service Project Portal
         public DbSet<NisProject> NisProjects { get; set; }
         public DbSet<NisTicket> NisTickets { get; set; }
+        public DbSet<NisProjectFile> NisProjectFiles { get; set; }
         public DbSet<NisSalesOrder> NisSalesOrders { get; set; }
         public DbSet<NisSystemConfig> NisSystemConfigs { get; set; }
         public DbSet<NisPendingRequest> NisPendingRequests { get; set; }
@@ -656,9 +657,29 @@ namespace goalongapi.Data
                     .HasForeignKey(e => e.ProjectId)
                     .OnDelete(DeleteBehavior.Cascade);
 
+                entity.HasMany(e => e.Files)
+                    .WithOne(e => e.Project)
+                    .HasForeignKey(e => e.ProjectId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
                 entity.HasIndex(e => e.CmpId);
                 entity.HasIndex(e => new { e.CmpId, e.Status });
                 entity.HasIndex(e => new { e.CmpId, e.ProjectNo }).IsUnique();
+            });
+
+            modelBuilder.Entity<NisProjectFile>(entity =>
+            {
+                entity.ToTable("NisProjectFile", "dbo", tb => tb.UseSqlOutputClause(false));
+                entity.HasKey(e => e.FileId);
+
+                entity.Property(e => e.ProjectId).HasMaxLength(50).IsRequired();
+                entity.Property(e => e.FileName).HasMaxLength(300).IsRequired();
+                entity.Property(e => e.FilePath).HasMaxLength(1000).IsRequired();
+                entity.Property(e => e.CmpId).HasMaxLength(50);
+                entity.Property(e => e.CreatedBy).HasMaxLength(100);
+                entity.Property(e => e.CreatedDate).HasColumnType("datetime");
+
+                entity.HasIndex(e => e.ProjectId);
             });
 
             modelBuilder.Entity<NisTicket>(entity =>

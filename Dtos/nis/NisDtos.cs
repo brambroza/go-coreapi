@@ -24,6 +24,19 @@ public class NisEngineerDto
     public string? Phone { get; set; }
 }
 
+// ── Attachment DTOs (match frontend INisAttachment) ──────────────────────────
+// File binary is uploaded separately via the shared /uploadallfile + /movefile
+// endpoints; only this metadata is persisted against the project.
+
+public class NisAttachmentDto
+{
+    public string? Id { get; set; }
+    public string FileName { get; set; } = string.Empty;
+    public string FilePath { get; set; } = string.Empty;
+    public int Seq { get; set; } = 1;
+    public long FileSize { get; set; } = 0;
+}
+
 // ── Ticket DTOs ──────────────────────────────────────────────────────────────
 
 public class NisTicketResponseDto
@@ -107,6 +120,7 @@ public class NisProjectResponseDto
     public NisEngineerDto? Engineer { get; set; }
     public string? Location { get; set; }
     public List<NisTicketResponseDto> Tickets { get; set; } = new();
+    public List<NisAttachmentDto> Attachments { get; set; } = new();
 }
 
 public class NisProjectCreateDto
