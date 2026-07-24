@@ -23,6 +23,11 @@ public class NisProject
     [MaxLength(200)]
     public string Customer { get; set; } = string.Empty;
 
+    /// Master customer code (msb.mCustomer.CustomerCode). Kept so the project can
+    /// resolve the customer's saved locations (msb.mCustomerLocations) later.
+    [MaxLength(50)]
+    public string? CustomerCode { get; set; }
+
     /// Runrate | Implement | MA-Device | MA-Fortigate | MA-Software | MA-Network
     [MaxLength(50)]
     public string Type { get; set; } = "Implement";

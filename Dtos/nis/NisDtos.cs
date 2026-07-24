@@ -106,6 +106,7 @@ public class NisProjectResponseDto
     public string? ProjectNo { get; set; }
     public string Name { get; set; } = string.Empty;
     public string Customer { get; set; } = string.Empty;
+    public string? CustomerCode { get; set; }
     public string Type { get; set; } = string.Empty;
     public string Priority { get; set; } = string.Empty;
     public int Progress { get; set; }

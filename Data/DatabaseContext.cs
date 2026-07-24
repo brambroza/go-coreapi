@@ -638,6 +638,7 @@ namespace goalongapi.Data
                 entity.Property(e => e.ProjectNo).HasMaxLength(50);
                 entity.Property(e => e.Name).HasMaxLength(200).IsRequired();
                 entity.Property(e => e.Customer).HasMaxLength(200).IsRequired();
+                entity.Property(e => e.CustomerCode).HasMaxLength(50);
                 entity.Property(e => e.Type).HasMaxLength(50).IsRequired();
                 entity.Property(e => e.Priority).HasMaxLength(20);
                 entity.Property(e => e.Status).HasMaxLength(50);
