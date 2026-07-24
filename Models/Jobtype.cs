@@ -13,5 +13,7 @@ namespace goalongapi.Models
     public string JobTypeDescripton { get; set; }
     public int JobTypeStateActive { get; set; }
     public string CmpId {get;set;}
+    /// หมวดของ job type ใช้แยกกลุ่มการใช้งาน เช่น "service" สำหรับงานบริการ NIS
+    public string JobTypeGroup { get; set; }
     }
 }
