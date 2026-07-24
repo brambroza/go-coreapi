@@ -328,6 +328,41 @@ public class NisController : ControllerBase
         return CreatedAtAction(nameof(GetProject), new { id = entity.ProjectId }, MapProject(entity));
     }
 
+    // ── PUT api/nis/projects/{id} ────────────────────────────────────────────
+
+    /// <summary>
+    /// Partial update of an existing project. Only non-null fields in the body are
+    /// applied. Currently supports editing the project Location from the project
+    /// list view. Matches frontend updateNisProjectLocation.
+    /// </summary>
+    [HttpPut("projects/{id}")]
+    public async Task<ActionResult<NisProjectResponseDto>> UpdateProject(
+        string id,
+        [FromBody] NisProjectUpdateDto dto)
+    {
+        var project = await _context.NisProjects
+            .Include(p => p.Tickets)
+            .Include(p => p.Files)
+            .FirstOrDefaultAsync(p => p.ProjectId == id);
+
+        if (project == null)
+            return NotFound(new { message = $"Project {id} not found" });
+
+        if (!string.IsNullOrWhiteSpace(dto.CmpId) && project.CmpId != dto.CmpId)
+            return Forbid();
+
+        // Only apply fields the client actually sent (partial update).
+        if (dto.Location != null)
+            project.Location = dto.Location;
+
+        project.UpdatedBy = dto.UpdatedBy ?? project.UpdatedBy;
+        project.UpdatedDate = BangkokNow();
+
+        await _context.SaveChangesAsync();
+
+        return Ok(MapProject(project));
+    }
+
     // ── POST api/nis/projects/{id}/attachments ───────────────────────────────
 
     /// <summary>
@@ -378,6 +413,28 @@ public class NisController : ControllerBase
         await _context.SaveChangesAsync();
 
         return Ok(entities.Select(MapAttachment));
+    }
+
+    // ── DELETE api/nis/projects/{id}/attachments/{fileId} ────────────────────
+
+    /// <summary>
+    /// Removes an attachment's metadata from a project. Matches frontend
+    /// deleteNisProjectFile. Returns 204 whether or not the row existed so the
+    /// client can treat delete as idempotent.
+    /// </summary>
+    [HttpDelete("projects/{id}/attachments/{fileId}")]
+    public async Task<IActionResult> DeleteAttachment(string id, string fileId)
+    {
+        var file = await _context.NisProjectFiles
+            .FirstOrDefaultAsync(f => f.ProjectId == id && f.FileId == fileId);
+
+        if (file != null)
+        {
+            _context.NisProjectFiles.Remove(file);
+            await _context.SaveChangesAsync();
+        }
+
+        return NoContent();
     }
 
     // ── POST api/nis/projects/{id}/tickets ───────────────────────────────────

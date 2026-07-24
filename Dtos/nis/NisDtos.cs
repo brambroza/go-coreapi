@@ -146,6 +146,18 @@ public class NisProjectCreateDto
     public string? CreatedBy { get; set; }
 }
 
+/// <summary>
+/// Partial update for an existing NIS project. Only non-null fields are applied,
+/// so the client can PUT just the changed field (e.g. Location) without resending
+/// the whole project. Matches frontend updateNisProjectLocation.
+/// </summary>
+public class NisProjectUpdateDto
+{
+    public string? Location { get; set; }
+    public string? CmpId { get; set; }
+    public string? UpdatedBy { get; set; }
+}
+
 // ── System Config DTOs ───────────────────────────────────────────────────────
 
 public class NisWarningDaysDto
