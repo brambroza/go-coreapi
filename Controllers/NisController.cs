@@ -777,12 +777,16 @@ public class NisController : ControllerBase
         if (request.Status != "Pending")
             return BadRequest(new { message = $"Request already {request.Status}" });
 
+        var cmpId = dto.CmpId ?? request.CmpId;
+
         var project = await _context.NisProjects
             .AsNoTracking()
             .FirstOrDefaultAsync(p => p.ProjectId == request.ProjectId);
 
-        if (project == null)
-            return BadRequest(new { message = "Request has no valid project — cannot create a ticket" });
+        // คำขอที่ยิงมาจากแอปหน้างาน (RN) พก projectId แบบ mock/offline (เช่น "PRJ-GENERAL")
+        // ที่ไม่มีอยู่ใน DB จริง — แทนที่จะบล็อกการอนุมัติ ให้ fallback ไปผูกกับโปรเจกต์
+        // "งานทั่วไป" ต่อบริษัท (get-or-create) เพื่อให้ ticket ที่สร้างยังโผล่บนบอร์ด
+        project ??= await GetOrCreateGeneralProjectAsync(cmpId, dto.ApprovedBy);
 
         // RunNo continues from however many tickets of this Type already exist in the project.
         var ticketType = request.TicketType;
@@ -807,7 +811,7 @@ public class NisController : ControllerBase
             Due = request.Due,
             Pct = 0,
             Type = ticketType,
-            CmpId = dto.CmpId ?? request.CmpId,
+            CmpId = cmpId,
             CreatedBy = dto.ApprovedBy ?? string.Empty,
             CreatedDate = DateTime.Now,
             UpdatedDate = DateTime.Now,
@@ -822,6 +826,39 @@ public class NisController : ControllerBase
         await _context.SaveChangesAsync();
 
         return Ok(MapTicket(ticket));
+    }
+
+    // ── General (catch-all) project ──────────────────────────────────────────
+    // โปรเจกต์ "งานทั่วไป" ต่อบริษัท ใช้รองรับตั๋วที่คำขอไม่ได้ระบุโปรเจกต์จริง
+    // (เช่น คำขอจากแอปหน้างานที่ projectId เป็นค่า mock) — ผูก ticket ไว้ที่นี่
+    // เพื่อให้ยังแสดงบนบอร์ด. Get-or-create ครั้งเดียวต่อ CmpId ด้วย id ที่คาดเดาได้.
+    private const string GeneralProjectNo = "GENERAL";
+
+    private async Task<NisProject> GetOrCreateGeneralProjectAsync(string cmpId, string? createdBy)
+    {
+        var generalId = $"NIS-GENERAL-{cmpId}";
+
+        var existing = await _context.NisProjects
+            .FirstOrDefaultAsync(p => p.ProjectId == generalId);
+        if (existing != null)
+            return existing;
+
+        var general = new NisProject
+        {
+            ProjectId = generalId,
+            ProjectNo = GeneralProjectNo,
+            Name = "งานทั่วไป (ไม่ระบุโปรเจกต์)",
+            Type = "Runrate",
+            Status = "Active",
+            CmpId = cmpId,
+            CreatedBy = createdBy ?? string.Empty,
+            CreatedDate = DateTime.Now,
+            UpdatedDate = DateTime.Now,
+        };
+
+        // เพิ่มเข้า context — จะถูก persist พร้อม ticket ใน SaveChanges เดียวของ caller
+        _context.NisProjects.Add(general);
+        return general;
     }
 
     // ── DELETE api/nis/pending-requests/{id} ─────────────────────────────────
