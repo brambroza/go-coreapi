@@ -4,8 +4,10 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.Data.SqlClient;
+using goalongapi.Data;
 using goalongapi.Helpers;
 using goalongapi.Models;
+using Microsoft.EntityFrameworkCore;
 using Google;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
@@ -23,12 +25,14 @@ namespace goalongapi.Controllers
         private readonly EmailSettingRepository _mailRepo;
         private readonly GoogleCalendarApiKeyClient _calendarClient;
         private readonly GoogleOAuthCalendarService _googleOAuthCalendar;
+        private readonly DatabaseContext _context;
 
-        public CalendarController(EmailSettingRepository mailRepo, GoogleCalendarApiKeyClient calendarClient, GoogleOAuthCalendarService googleOAuthCalendar)
+        public CalendarController(EmailSettingRepository mailRepo, GoogleCalendarApiKeyClient calendarClient, GoogleOAuthCalendarService googleOAuthCalendar, DatabaseContext context)
         {
             _mailRepo = mailRepo;
             _calendarClient = calendarClient;
             _googleOAuthCalendar = googleOAuthCalendar;
+            _context = context;
         }
 
         [HttpGet("google-events")]
@@ -57,7 +61,24 @@ namespace goalongapi.Controllers
         {
             try
             {
-                var appointment = await _googleOAuthCalendar.CreateOrUpdateEventAsync(dto);
+                await ResolveAssigneeEmailsAsync(dto);
+
+                var appointment = await _googleOAuthCalendar.CreateOrUpdateEventAsync(new GoogleCalendarAppointmentCreateDto
+                {
+                    CmpId = dto.CmpId,
+                    SettingName = "NIS ERP",
+                    TicketId = dto.TicketId,
+                    Title = $"{dto.TicketCode} {dto.Title}".Trim(),
+                    Description = string.IsNullOrWhiteSpace(dto.Assignee)
+                        ? dto.Description
+                        : $"ผู้รับผิดชอบ: {dto.Assignee}",
+                    Location = dto.Location ?? "",
+                    Start = dto.Start,
+                    End = dto.End,
+                    AllDay = dto.AllDay,
+                    AttendeeEmails = dto.AttendeeEmails,
+                });
+
                 return Created($"google-events/{appointment.GoogleEventId}", appointment);
             }
             catch (InvalidOperationException ex)
@@ -66,12 +87,37 @@ namespace goalongapi.Controllers
             }
         }
 
+        /// <summary>
+        /// แปลงชื่อผู้รับผิดชอบใน dto.Assignee (รองรับหลายคนคั่นด้วย ",") เป็นอีเมล (Account.Username)
+        /// แล้วเติมลง dto.AttendeeEmails สำหรับเชิญเข้าร่วมใน Google Calendar
+        /// — ทำเฉพาะเมื่อยังไม่มีการส่ง AttendeeEmails มาโดยตรง และคนที่หาอีเมลไม่เจอจะถูกข้ามไป
+        /// </summary>
+        private async Task ResolveAssigneeEmailsAsync(GoogleCalendarAppointmentCreateDto dto)
+        {
+            if (dto.AttendeeEmails.Count > 0 || string.IsNullOrWhiteSpace(dto.Assignee))
+                return;
+
+            var assigneeNames = dto.Assignee
+                .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                .Where(n => n != "-")
+                .Distinct()
+                .ToList();
+
+            if (assigneeNames.Count == 0) return;
+
+            dto.AttendeeEmails = await _context.Accounts
+                .Where(a => a.CmpId == dto.CmpId && assigneeNames.Contains(a.FullName))
+                .Select(a => a.Username)
+                .ToListAsync();
+        }
+
         [HttpPut("google-events/ticket/{ticketId}")]
         public async Task<IActionResult> UpdateGoogleEventForTicket(string ticketId, [FromBody] GoogleCalendarAppointmentCreateDto dto)
         {
             dto.TicketId = ticketId;
             try
             {
+                await ResolveAssigneeEmailsAsync(dto);
                 return Ok(await _googleOAuthCalendar.CreateOrUpdateEventAsync(dto));
             }
             catch (InvalidOperationException ex)
