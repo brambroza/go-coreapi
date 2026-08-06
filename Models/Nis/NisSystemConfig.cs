@@ -32,6 +32,14 @@ public class NisSystemConfig
     [MaxLength(8000)]
     public string PmChecklistRaw { get; set; } = string.Empty;
 
+    /// JSON object ของ checklist มาตรฐานตามประเภท ticket
+    /// เช่น {"Install":["..."],"PM":["..."],"MA Onsite":[...],"Backup":[...],"Report":[...],"Delivery":[...]}
+    public string? ChecklistByTicketTypeJson { get; set; }
+
+    /// JSON object ของ checklist เฉพาะลูกค้า — customerCode → (ticketType → items)
+    /// เช่น {"CUST001":{"Install":["..."],"PM":["..."]}}. ว่าง/ไม่มี = ใช้ ChecklistByTicketType
+    public string? ChecklistByCustomerJson { get; set; }
+
     /// Pipe-delimited SLA options, e.g. "8x5xNBD|8x5|24x7x4|24x7xNBD"
     [MaxLength(500)]
     public string SlaOptionsRaw { get; set; } = "8x5xNBD|8x5|24x7x4|24x7xNBD";

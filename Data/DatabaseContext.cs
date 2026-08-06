@@ -696,11 +696,15 @@ namespace goalongapi.Data
                 entity.Property(e => e.TicketCode).HasMaxLength(50);
                 entity.Property(e => e.Priority).HasMaxLength(20);
                 entity.Property(e => e.TagsRaw).HasMaxLength(500);
+                // WorkDetail / ChecklistJson เก็บเนื้อหายาว → nvarchar(max)
+                entity.Property(e => e.WorkDetail).HasColumnType("nvarchar(max)");
+                entity.Property(e => e.ChecklistJson).HasColumnType("nvarchar(max)");
                 entity.Property(e => e.StartDate).HasColumnType("datetime");
                 entity.Property(e => e.EndDate).HasColumnType("datetime");
                 entity.Property(e => e.Due).HasColumnType("datetime");
                 entity.Property(e => e.CmpId).HasMaxLength(50);
                 entity.Property(e => e.CreatedBy).HasMaxLength(100);
+                entity.Property(e => e.UpdatedBy).HasMaxLength(100);
                 entity.Property(e => e.CreatedDate).HasColumnType("datetime");
                 entity.Property(e => e.UpdatedDate).HasColumnType("datetime");
 
@@ -911,6 +915,8 @@ namespace goalongapi.Data
                 entity.Property(e => e.ImplementChecklistRaw).HasMaxLength(8000);
                 entity.Property(e => e.MaChecklistRaw).HasMaxLength(8000);
                 entity.Property(e => e.PmChecklistRaw).HasMaxLength(8000);
+                entity.Property(e => e.ChecklistByTicketTypeJson).HasColumnType("nvarchar(max)");
+                entity.Property(e => e.ChecklistByCustomerJson).HasColumnType("nvarchar(max)");
                 entity.Property(e => e.SlaOptionsRaw).HasMaxLength(500);
                 entity.Property(e => e.UpdatedBy).HasMaxLength(100);
                 entity.Property(e => e.UpdatedDate).HasColumnType("datetime");

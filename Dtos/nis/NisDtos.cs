@@ -55,6 +55,27 @@ public class NisTicketResponseDto
     public string? TicketType { get; set; }
     public string? Priority { get; set; }
     public List<string>? Tags { get; set; }
+    /// รายละเอียดงานที่ระบุก่อนมอบหมาย
+    public string? WorkDetail { get; set; }
+    /// Checklist ก่อนมอบหมายงาน
+    public List<NisChecklistItemDto> Checklist { get; set; } = new();
+}
+
+/// รายการ checklist หนึ่งข้อ (ก่อนมอบหมายงาน)
+public class NisChecklistItemDto
+{
+    public string Id { get; set; } = string.Empty;
+    public string Text { get; set; } = string.Empty;
+    public bool Done { get; set; }
+}
+
+/// อัปเดตรายละเอียดงาน + checklist ของ ticket (ก่อนมอบหมาย)
+public class NisTicketTaskUpdateDto
+{
+    public string? WorkDetail { get; set; }
+    public List<NisChecklistItemDto> Checklist { get; set; } = new();
+    public string? CmpId { get; set; }
+    public string? UpdatedBy { get; set; }
 }
 
 public class NisTicketCreateDto
@@ -69,6 +90,8 @@ public class NisTicketCreateDto
     public string? Type { get; set; }
     public string? Priority { get; set; }
     public List<string>? Tags { get; set; }
+    /// Checklist เตรียมไว้ก่อนมอบหมาย (resolve ตาม ticket type + customer ฝั่ง frontend)
+    public List<NisChecklistItemDto> Checklist { get; set; } = new();
     public string? CmpId { get; set; }
 }
 
@@ -174,6 +197,10 @@ public class NisSystemConfigResponseDto
     public List<string> ImplementChecklist { get; set; } = new();
     public List<string> MaChecklist { get; set; } = new();
     public List<string> PmChecklist { get; set; } = new();
+    /// checklist มาตรฐานตามประเภท ticket — ticketType → items
+    public Dictionary<string, List<string>> ChecklistByTicketType { get; set; } = new();
+    /// checklist เฉพาะลูกค้า — customerCode → (ticketType → items)
+    public Dictionary<string, Dictionary<string, List<string>>> ChecklistByCustomer { get; set; } = new();
     public List<string> SlaOptions { get; set; } = new();
     public NisWarningDaysDto WarningDays { get; set; } = new();
 }
@@ -185,6 +212,10 @@ public class NisSystemConfigSaveDto
     public List<string> ImplementChecklist { get; set; } = new();
     public List<string> MaChecklist { get; set; } = new();
     public List<string> PmChecklist { get; set; } = new();
+    /// checklist มาตรฐานตามประเภท ticket — ticketType → items
+    public Dictionary<string, List<string>> ChecklistByTicketType { get; set; } = new();
+    /// checklist เฉพาะลูกค้า — customerCode → (ticketType → items)
+    public Dictionary<string, Dictionary<string, List<string>>> ChecklistByCustomer { get; set; } = new();
     public List<string> SlaOptions { get; set; } = new();
     public NisWarningDaysDto WarningDays { get; set; } = new();
     public string CmpId { get; set; } = string.Empty;

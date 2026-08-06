@@ -121,7 +121,24 @@ public class NisController : ControllerBase
         TicketType = t.Type,
         Priority = t.Priority,
         Tags = SplitTags(t.TagsRaw),
+        WorkDetail = t.WorkDetail,
+        Checklist = ParseChecklist(t.ChecklistJson),
     };
+
+    /// แปลง ChecklistJson (nvarchar) → รายการ checklist; ค่าว่าง/พังคืน list ว่าง (ไม่ throw)
+    private static List<NisChecklistItemDto> ParseChecklist(string? json)
+    {
+        if (string.IsNullOrWhiteSpace(json))
+            return new();
+        try
+        {
+            return JsonSerializer.Deserialize<List<NisChecklistItemDto>>(json) ?? new();
+        }
+        catch (JsonException)
+        {
+            return new();
+        }
+    }
 
     private static NisProjectResponseDto MapProject(NisProject p) => new()
     {
@@ -308,6 +325,7 @@ public class NisController : ControllerBase
                 Type = t.Type,
                 Priority = t.Priority,
                 TagsRaw = JoinTags(t.Tags),
+                ChecklistJson = t.Checklist.Count == 0 ? null : JsonSerializer.Serialize(t.Checklist),
                 CmpId = cmpId,
                 CreatedBy = dto.CreatedBy ?? string.Empty,
                 CreatedDate = bangkokNow,
@@ -669,6 +687,46 @@ public class NisController : ControllerBase
         }
 
         return Ok(new { message = "Assigned successfully" });
+    }
+
+    // ── PUT api/nis/tickets/{id}/task ────────────────────────────────────────
+
+    /// <summary>
+    /// อัปเดตรายละเอียดงาน + checklist ของ ticket (ก่อนมอบหมาย). ไม่แตะ assignee/สถานะ —
+    /// เป็นการเตรียมงาน (scope + checklist) ให้ช่างก่อนกดมอบหมาย. Matches frontend updateNisTicketTask.
+    /// </summary>
+    [HttpPut("tickets/{id}/task")]
+    public async Task<IActionResult> UpdateTicketTask(
+        string id,
+        [FromBody] NisTicketTaskUpdateDto dto)
+    {
+        var ticket = await _context.NisTickets.FindAsync(id);
+
+        if (ticket == null)
+            return NotFound(new { message = $"Ticket {id} not found" });
+
+        ticket.WorkDetail = string.IsNullOrWhiteSpace(dto.WorkDetail) ? null : dto.WorkDetail;
+
+        // Normalize: ตัดข้อที่ text ว่าง, การันตี Id ทุกข้อ (กันข้อว่างค้างจากฟอร์ม)
+        var items = (dto.Checklist ?? new())
+            .Where(c => !string.IsNullOrWhiteSpace(c.Text))
+            .Select(c => new NisChecklistItemDto
+            {
+                Id = string.IsNullOrWhiteSpace(c.Id) ? Guid.NewGuid().ToString() : c.Id,
+                Text = c.Text.Trim(),
+                Done = c.Done,
+            })
+            .ToList();
+
+        ticket.ChecklistJson = items.Count == 0 ? null : JsonSerializer.Serialize(items);
+
+        if (!string.IsNullOrWhiteSpace(dto.UpdatedBy))
+            ticket.UpdatedBy = dto.UpdatedBy;
+        ticket.UpdatedDate = DateTime.Now;
+
+        await _context.SaveChangesAsync();
+
+        return Ok(new { message = "Task updated", checklist = items, workDetail = ticket.WorkDetail });
     }
 
     // ── Pending Requests (Staff "open ticket" request → manager approve/reject) ──
@@ -1369,6 +1427,8 @@ public class NisController : ControllerBase
         entity.ImplementChecklistRaw = JoinTags(dto.ImplementChecklist);
         entity.MaChecklistRaw = JoinTags(dto.MaChecklist);
         entity.PmChecklistRaw = JoinTags(dto.PmChecklist);
+        entity.ChecklistByTicketTypeJson = SerializeChecklistMap(dto.ChecklistByTicketType);
+        entity.ChecklistByCustomerJson = SerializeCustomerChecklistMap(dto.ChecklistByCustomer);
         entity.SlaOptionsRaw = JoinTags(dto.SlaOptions);
         entity.WarningDaysService = dto.WarningDays.Service;
         entity.WarningDaysProduct = dto.WarningDays.Product;
@@ -1389,6 +1449,8 @@ public class NisController : ControllerBase
         ImplementChecklist = SplitTags(e.ImplementChecklistRaw),
         MaChecklist = SplitTags(e.MaChecklistRaw),
         PmChecklist = SplitTags(e.PmChecklistRaw),
+        ChecklistByTicketType = ParseChecklistMap(e.ChecklistByTicketTypeJson, DefaultChecklistByTicketType()),
+        ChecklistByCustomer = ParseCustomerChecklistMap(e.ChecklistByCustomerJson),
         SlaOptions = SplitTags(e.SlaOptionsRaw),
         WarningDays = new NisWarningDaysDto
         {
@@ -1396,6 +1458,42 @@ public class NisController : ControllerBase
             Product = e.WarningDaysProduct,
         },
     };
+
+    // ── Checklist map (ticket type / customer) helpers ────────────────────────
+    // เก็บเป็น JSON บน NisSystemConfig; ค่าว่าง/พังคืน fallback (ไม่ throw)
+
+    private static Dictionary<string, List<string>> ParseChecklistMap(
+        string? json, Dictionary<string, List<string>> fallback)
+    {
+        if (string.IsNullOrWhiteSpace(json)) return fallback;
+        try
+        {
+            return JsonSerializer.Deserialize<Dictionary<string, List<string>>>(json) ?? fallback;
+        }
+        catch (JsonException)
+        {
+            return fallback;
+        }
+    }
+
+    private static Dictionary<string, Dictionary<string, List<string>>> ParseCustomerChecklistMap(string? json)
+    {
+        if (string.IsNullOrWhiteSpace(json)) return new();
+        try
+        {
+            return JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, List<string>>>>(json) ?? new();
+        }
+        catch (JsonException)
+        {
+            return new();
+        }
+    }
+
+    private static string? SerializeChecklistMap(Dictionary<string, List<string>> map)
+        => map.Count == 0 ? null : JsonSerializer.Serialize(map);
+
+    private static string? SerializeCustomerChecklistMap(Dictionary<string, Dictionary<string, List<string>>> map)
+        => map.Count == 0 ? null : JsonSerializer.Serialize(map);
 
     private static NisSystemConfigResponseDto BuildDefaultConfig() => new()
     {
@@ -1435,8 +1533,68 @@ public class NisController : ControllerBase
             "ทดสอบ Backup / Restore",
             "จัดทำ PM Report",
         ],
+        ChecklistByTicketType = DefaultChecklistByTicketType(),
+        ChecklistByCustomer = new(),
         SlaOptions = ["8x5xNBD", "8x5", "24x7x4", "24x7xNBD"],
         WarningDays = new NisWarningDaysDto { Service = 60, Product = 30 },
+    };
+
+    /// checklist มาตรฐานเริ่มต้นตามประเภท ticket — ใช้เป็น seed และ fallback
+    private static Dictionary<string, List<string>> DefaultChecklistByTicketType() => new()
+    {
+        ["Install"] =
+        [
+            "ตรวจสอบรายการสินค้า / อุปกรณ์ครบถ้วน",
+            "ดำเนินการ PreConfig อุปกรณ์ก่อนออกงาน",
+            "ติดตั้ง Rack / ขึ้นแร็ค",
+            "เดินสาย Fiber / UTP",
+            "Config Network Address / VLAN",
+            "Config ระบบ Firewall Policy",
+            "ทดสอบการเชื่อมต่อ Internet / WAN",
+            "ทดสอบ Internal Network",
+            "จัดทำ Network Diagram ตาม AS-BUILT",
+            "บันทึก IP / User / Password เข้าระบบ",
+            "ส่งมอบงานและให้ลูกค้าเซ็นรับ",
+        ],
+        ["PM"] =
+        [
+            "ทำความสะอาดอุปกรณ์ใน Rack",
+            "ตรวจสอบสถานะ LED / Fan",
+            "ตรวจสอบ Cable / Fiber Connection",
+            "ตรวจสอบ Power Supply / UPS",
+            "ตรวจสอบอุณหภูมิห้อง Server Room",
+            "ทดสอบ Backup / Restore",
+            "จัดทำ PM Report",
+        ],
+        ["MA Onsite"] =
+        [
+            "ตรวจสอบ Log / Event ย้อนหลัง",
+            "ตรวจสอบ CPU / Memory / Disk Usage",
+            "Update Firmware / Signature ล่าสุด",
+            "ตรวจสอบ HA Cluster / Failover",
+            "Remote Backup Config",
+            "ทดสอบ Failover System",
+            "บันทึกผลการตรวจสอบลง Monthly Report",
+        ],
+        ["Backup"] =
+        [
+            "ตรวจสอบพื้นที่จัดเก็บ Backup",
+            "สำรอง Config อุปกรณ์ล่าสุด",
+            "ทดสอบ Restore จากไฟล์ Backup",
+            "บันทึกผลการ Backup ลงรายงาน",
+        ],
+        ["Report"] =
+        [
+            "รวบรวมข้อมูลการให้บริการประจำเดือน",
+            "จัดทำ Monthly Report",
+            "ส่ง Report ให้ลูกค้าตามกำหนด",
+        ],
+        ["Delivery"] =
+        [
+            "ตรวจสอบรายการสินค้าก่อนจัดส่ง",
+            "จัดส่งสินค้าตามที่อยู่ลูกค้า",
+            "ให้ลูกค้าเซ็นรับสินค้า",
+        ],
     };
 
     private static DateTime? ParseDate(string? value)

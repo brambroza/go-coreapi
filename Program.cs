@@ -121,7 +121,9 @@ builder.Host.ConfigureContainer<ContainerBuilder>(builder =>
 {
     builder
         .RegisterAssemblyTypes(Assembly.GetEntryAssembly())
-        .Where(t => t.Name.EndsWith("Service"))
+        // Hosted services are already registered explicitly with AddHostedService.
+        // Registering them again here creates duplicate background workers.
+        .Where(t => t.Name.EndsWith("Service") && !typeof(IHostedService).IsAssignableFrom(t))
         .AsImplementedInterfaces();
 });
 

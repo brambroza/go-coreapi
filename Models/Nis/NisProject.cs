@@ -197,11 +197,20 @@ public class NisTicket
     [MaxLength(500)]
     public string? TagsRaw { get; set; }
 
+    /// รายละเอียดงานที่ระบุก่อนมอบหมาย (ดู/แก้จากการ์ดบนบอร์ด) — nvarchar(max)
+    public string? WorkDetail { get; set; }
+
+    /// Checklist ก่อนมอบหมายงาน เก็บเป็น JSON array ของ { id, text, done } — nvarchar(max)
+    public string? ChecklistJson { get; set; }
+
     [MaxLength(50)]
     public string CmpId { get; set; } = string.Empty;
 
     [MaxLength(100)]
     public string CreatedBy { get; set; } = string.Empty;
+
+    [MaxLength(100)]
+    public string? UpdatedBy { get; set; }
 
     public DateTime CreatedDate { get; set; } = DateTime.Now;
     public DateTime UpdatedDate { get; set; } = DateTime.Now;

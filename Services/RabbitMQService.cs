@@ -2,19 +2,46 @@ using System.Text;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 
-public class RabbitMQService
+public sealed class RabbitMQService : IDisposable
 {
-    private readonly IConnection _connection;
-    private readonly IModel _channel;
+    private readonly object _sync = new();
+    private readonly ConnectionFactory _connectionFactory;
     private readonly string _queueName;
+    private IConnection? _connection;
+    private IModel? _channel;
 
     public RabbitMQService(IConfiguration configuration)
     {
-        var factory = new ConnectionFactory() { HostName = configuration["RabbitMQ:Host"] };
-        _connection = factory.CreateConnection();
-        _channel = _connection.CreateModel();
-        _queueName = configuration["RabbitMQ:QueueName"];
+        _connectionFactory = RabbitMQConnectionFactory.Create(configuration);
+        _queueName = configuration["RabbitMQ:QueueName"]
+            ?? throw new InvalidOperationException("RabbitMQ:QueueName is not configured");
+    }
 
+    public void SendLog(LogRequest log)
+    {
+        var message = JsonConvert.SerializeObject(log);
+        var body = Encoding.UTF8.GetBytes(message);
+
+        lock (_sync)
+        {
+            EnsureChannel();
+            _channel!.BasicPublish(
+                exchange: "",
+                routingKey: _queueName,
+                basicProperties: null,
+                body: body
+            );
+        }
+    }
+
+    private void EnsureChannel()
+    {
+        if (_connection?.IsOpen == true && _channel?.IsOpen == true)
+            return;
+
+        CloseSafely();
+        _connection = _connectionFactory.CreateConnection();
+        _channel = _connection.CreateModel();
         _channel.QueueDeclare(
             queue: _queueName,
             durable: true,
@@ -24,19 +51,21 @@ public class RabbitMQService
         );
     }
 
-    public void SendLog(LogRequest log)
+    public void Dispose()
     {
-        var message = JsonConvert.SerializeObject(log);
-        var body = Encoding.UTF8.GetBytes(message);
-
-        _channel.BasicPublish(
-            exchange: "",
-            routingKey: _queueName,
-            basicProperties: null,
-            body: body
-        );
+        lock (_sync)
+        {
+            CloseSafely();
+        }
     }
 
- 
-
+    private void CloseSafely()
+    {
+        try { _channel?.Close(); } catch { }
+        try { _connection?.Close(); } catch { }
+        try { _channel?.Dispose(); } catch { }
+        try { _connection?.Dispose(); } catch { }
+        _channel = null;
+        _connection = null;
+    }
 }
