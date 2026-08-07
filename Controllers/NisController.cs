@@ -533,12 +533,47 @@ public class NisController : ControllerBase
         if (ticket == null)
             return NotFound(new { message = $"Ticket {id} not found" });
 
+        var cmpId = dto?.CmpId ?? ticket.CmpId ?? string.Empty;
+
+        // การอนุมัติปิดงาน = จุดที่ต้อง "ออกเลข + persist Service Report" ให้จบ.
+        // ตอนช่างขออนุมัติ (request-close) เราเก็บ report ไว้แล้วสถานะ pending_approval แต่ SrNumber ว่าง
+        // (เลข SR ออกตอนอนุมัติ). เดิม endpoint นี้ตั้งแค่สถานะตั๋ว → report ไม่เคยได้เลข = หายตอน sync.
+        // แก้: หา report ล่าสุดของตั๋วนี้ (รวม submitted เพื่อรองรับ retry แบบ idempotent)
+        // แล้ว gen เลข SR ฝั่ง server + finalize เป็น submitted.
+        var report = await _context.NisOnsiteReports
+            .Where(r => r.NisTicketId == ticket.TicketId
+                && (r.Status == "pending_approval" || r.Status == "submitted"))
+            .OrderByDescending(r => r.CreatedDate)
+            .FirstOrDefaultAsync();
+
+        // edge: ไม่พบ report รออนุมัติ (เช่น request-close ไม่เคยถึง server ตอน offline) →
+        // สร้าง report ขั้นต่ำจากตั๋ว เพื่อให้ SR ยัง persist + โผล่ในลิสต์ (ข้อมูลหน้างานอาจไม่ครบ)
+        if (report == null)
+        {
+            report = new NisOnsiteReport
+            {
+                ReportId = Guid.NewGuid().ToString(),
+                NisTicketId = ticket.TicketId,
+                TicketCode = ticket.TicketCode,
+                CmpId = cmpId,
+                Engineer = ticket.Assignee,
+                Status = "pending_approval",
+                CreatedDate = DateTime.Now,
+            };
+            _context.NisOnsiteReports.Add(report);
+        }
+
+        // gen เลขเฉพาะเมื่อยังไม่มี (idempotent ต่อการกดอนุมัติซ้ำ — ไม่ consume เลขใหม่)
+        if (string.IsNullOrWhiteSpace(report.SrNumber))
+            report.SrNumber = await NextSrNumberAsync(cmpId);
+        report.Status = "submitted";
+
         ticket.Status = "Closed";
         ticket.Pct = 100;
         ticket.UpdatedDate = DateTime.Now;
 
         await _context.SaveChangesAsync();
-        return Ok(new { message = "Ticket closed" });
+        return Ok(new { message = "Ticket closed", srNumber = report.SrNumber });
     }
 
     // ── PUT api/nis/tickets/{id}/close-reject ────────────────────────────────
@@ -1864,11 +1899,18 @@ public class NisController : ControllerBase
     [HttpPost("onsite/sr-number")]
     public async Task<ActionResult> GenerateOnsiteSrNumber([FromBody] NisOnsiteSrNumberRequestDto dto)
     {
-        var cmpId = dto.CmpId ?? string.Empty;
+        return Ok(new { srNumber = await NextSrNumberAsync(dto.CmpId ?? string.Empty) });
+    }
+
+    /// <summary>
+    /// เลข Service Report ถัดไปของบริษัท (prefix SR-yyyyMM-) — นับข้ามทั้งตาราง ServiceTicket
+    /// และ NIS report ให้เลขไม่ชนกันไม่ว่ามาจาก flow ปิดงานทางไหน. ยัง count+1 (ไม่ reserve เอง)
+    /// ผู้เรียกต้อง persist report ที่ถือเลขนี้ทันทีในทรานแซกชันเดียวกันเพื่อกันเลขซ้ำรอบถัดไป.
+    /// </summary>
+    private async Task<string> NextSrNumberAsync(string cmpId)
+    {
         var prefix = $"SR-{DateTime.Now:yyyyMM}-";
 
-        // Count across both the ServiceTicket and NIS report tables so SR numbers
-        // stay unique regardless of which onsite flow generated them.
         var svcCount = await _context.ServiceTicketSubTaskActions
             .Where(a => a.CmpId == cmpId && a.SrNumber != null && a.SrNumber.StartsWith(prefix))
             .CountAsync();
@@ -1877,7 +1919,7 @@ public class NisController : ControllerBase
             .Where(r => r.CmpId == cmpId && r.SrNumber != null && r.SrNumber.StartsWith(prefix))
             .CountAsync();
 
-        return Ok(new { srNumber = $"{prefix}{(svcCount + nisCount + 1):D4}" });
+        return $"{prefix}{(svcCount + nisCount + 1):D4}";
     }
 
     // ── POST api/nis/onsite/submit ───────────────────────────────────────────
@@ -2198,6 +2240,15 @@ public class NisController : ControllerBase
 
     private static string BuildOnsiteReportEmailBody(string ticketNo, string customerName, NisOnsiteSubmitDto dto)
     {
+        // ข้อความมาจากผู้ใช้ ต้อง encode ก่อนใส่ HTML และคงการขึ้นบรรทัดใหม่ไว้
+        var emailMessage = System.Net.WebUtility.HtmlEncode(dto.EmailMessage ?? string.Empty)
+            .Replace("\r\n", "\n")
+            .Replace("\r", "\n")
+            .Replace("\n", "<br />");
+        var emailMessageSection = string.IsNullOrWhiteSpace(dto.EmailMessage)
+            ? string.Empty
+            : $"<div style=\"margin:16px 0;padding:14px 16px;background:#f8fafc;border-left:4px solid #f59e0b;line-height:1.6;\">{emailMessage}</div>";
+
         var signatureSection = dto.SkipSignature
             ? "<p style=\"color:#64748b;\">* ลูกค้าไม่ได้ลงนาม (skipped)</p>"
             : !string.IsNullOrWhiteSpace(dto.SignatureImg)
@@ -2209,6 +2260,7 @@ public class NisController : ControllerBase
               <h2 style="color:#312e81;margin-bottom:4px;">NIS Service Report</h2>
               <p style="color:#64748b;margin-top:0;">SR: {dto.SrNumber}</p>
               <hr style="border:none;border-top:1px solid #e2e8f0;margin:16px 0;" />
+              {emailMessageSection}
               <table style="width:100%;border-collapse:collapse;margin:16px 0;font-size:14px;">
                 <tr style="background:#f8fafc;">
                   <td style="padding:10px 12px;border:1px solid #e2e8f0;font-weight:600;width:160px;">Ticket No</td>

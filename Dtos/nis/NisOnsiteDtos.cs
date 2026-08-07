@@ -108,6 +108,8 @@ public class NisOnsiteSubmitDto : NisOnsiteReportBaseDto
 {
     public string RecipientEmail { get; set; } = string.Empty;
     public string EmailSubject { get; set; } = string.Empty;
+    /// Optional message entered by the engineer in the close-job email modal.
+    public string EmailMessage { get; set; } = string.Empty;
 
     /// Client-generated Service Report PDF, base64 (no data-URI prefix). Optional: older
     /// clients omit it and the email is sent without an attachment (backward-compatible).
