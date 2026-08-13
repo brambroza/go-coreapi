@@ -59,6 +59,8 @@ public class NisTicketResponseDto
     public string? WorkDetail { get; set; }
     /// Checklist ก่อนมอบหมายงาน
     public List<NisChecklistItemDto> Checklist { get; set; } = new();
+    /// วันเวลาที่สร้าง ticket (yyyy-MM-dd HH:mm) — ใช้ทำ badge "มาใหม่" บนบอร์ด
+    public string CreatedDate { get; set; } = string.Empty;
 }
 
 /// รายการ checklist หนึ่งข้อ (ก่อนมอบหมายงาน)
@@ -108,6 +110,14 @@ public class NisTicketStatusDto
     public string Status { get; set; } = string.Empty;
     public string? CmpId { get; set; }
     public string? UpdatedBy { get; set; }
+}
+
+/// ช่างกดรับงาน (accept) จากแอปหน้างาน — Scheduled → In Progress + แจ้งเตือน SM
+public class NisTicketAcceptDto
+{
+    /// FullName ของช่างที่กดรับ (ใช้ยืนยันว่าเป็นผู้รับผิดชอบตั๋ว + แสดงในข้อความแจ้งเตือน)
+    public string? AcceptedBy { get; set; }
+    public string? CmpId { get; set; }
 }
 
 /// Manager decision on a ticket's close-approval request (from the onsite form).

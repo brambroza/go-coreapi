@@ -30,6 +30,7 @@ public class NisController : ControllerBase
     private readonly GoogleOAuthCalendarService _googleOAuthCalendar;
     private readonly goalongapi.Services.ExpoPushService _push;
     private readonly goalongapi.Services.NisRealtimeNotifyService _nisRealtimeNotify;
+    private readonly goalongapi.Services.NisCrmNotifyService _crmNotify;
     private readonly NisReportPdfStorage _pdfStorage;
     private readonly ILogger<NisController> _logger;
 
@@ -45,6 +46,7 @@ public class NisController : ControllerBase
         GoogleOAuthCalendarService googleOAuthCalendar,
         goalongapi.Services.ExpoPushService push,
         goalongapi.Services.NisRealtimeNotifyService nisRealtimeNotify,
+        goalongapi.Services.NisCrmNotifyService crmNotify,
         NisReportPdfStorage pdfStorage,
         IConfiguration configuration,
         ILogger<NisController> logger)
@@ -56,6 +58,7 @@ public class NisController : ControllerBase
         _googleOAuthCalendar = googleOAuthCalendar;
         _push = push;
         _nisRealtimeNotify = nisRealtimeNotify;
+        _crmNotify = crmNotify;
         _pdfStorage = pdfStorage;
         _logger = logger;
         _attachReportPdf = configuration.GetValue<bool?>("NisOnsite:AttachReportPdf") ?? true;
@@ -123,6 +126,7 @@ public class NisController : ControllerBase
         Tags = SplitTags(t.TagsRaw),
         WorkDetail = t.WorkDetail,
         Checklist = ParseChecklist(t.ChecklistJson),
+        CreatedDate = FormatDateTime(t.CreatedDate),
     };
 
     /// แปลง ChecklistJson (nvarchar) → รายการ checklist; ค่าว่าง/พังคืน list ว่าง (ไม่ throw)
@@ -521,6 +525,119 @@ public class NisController : ControllerBase
 
         await _context.SaveChangesAsync();
         return Ok(new { message = "Status updated" });
+    }
+
+    // ── PUT api/nis/tickets/{id}/accept ─────────────────────────────────────
+
+    /// <summary>
+    /// ช่างกดรับงานจากแอปหน้างาน — Scheduled → In Progress แล้วแจ้งเตือน Service Manager
+    /// ทุกช่องทาง (Expo push บนแอป SM · socket.io ของ RN · กระดิ่ง CRM)
+    ///
+    /// แยก endpoint จาก PUT tickets/{id}/status เพราะ status ถูกใช้จากการลาก Kanban ด้วย —
+    /// ไม่ควรทำให้การลากบอร์ดยิงแจ้งเตือน "ช่างรับงาน" ตามไปด้วย
+    /// </summary>
+    [HttpPut("tickets/{id}/accept")]
+    public async Task<IActionResult> AcceptTicket(string id, [FromBody] NisTicketAcceptDto? dto)
+    {
+        var ticket = await _context.NisTickets.FindAsync(id);
+        if (ticket == null)
+            return NotFound(new { message = $"Ticket {id} not found" });
+
+        var acceptedBy = string.IsNullOrWhiteSpace(dto?.AcceptedBy) ? ticket.Assignee : dto!.AcceptedBy!;
+
+        // กดรับซ้ำ (retry ตอนเน็ตกระตุก / ปุ่มโดนกดสองครั้ง) → ไม่ถือเป็น error แต่ไม่ต้องแจ้งซ้ำ
+        // (ตัวกัน dedupe จริงอยู่ที่ EventKey ของ push อีกชั้น)
+        var alreadyAccepted = ticket.Status != "Scheduled";
+
+        if (!alreadyAccepted)
+        {
+            ticket.Status = "In Progress";
+            ticket.UpdatedBy = acceptedBy;
+            ticket.UpdatedDate = DateTime.Now;
+            await _context.SaveChangesAsync();
+        }
+
+        if (!alreadyAccepted)
+            await NotifyManagersTicketAcceptedAsync(ticket, acceptedBy);
+
+        return Ok(new { message = "Ticket accepted", status = ticket.Status });
+    }
+
+    /// <summary>
+    /// แจ้ง Service Manager ทุกคนในบริษัทว่าช่างกดรับงานแล้ว — best-effort ทั้งหมด
+    /// (push ไม่สำเร็จห้ามทำให้การกดรับงานล้ม)
+    /// ผู้รับ = Accounts ที่ Role.Name เป็น mng/admin (ตรงกับ roleMap ฝั่งแอป)
+    /// </summary>
+    private async Task NotifyManagersTicketAcceptedAsync(NisTicket ticket, string acceptedBy)
+    {
+        try
+        {
+            var managers = await _context.Accounts
+                .Where(a => a.CmpId == ticket.CmpId
+                    && (a.Role.Name == "mng" || a.Role.Name == "admin"))
+                .Select(a => new { a.Username, a.FullName })
+                .ToListAsync();
+
+            if (managers.Count == 0) return;
+
+            var title = "✅ ช่างรับงานแล้ว";
+            var body = $"{acceptedBy} รับงาน {ticket.TicketCode} · {ticket.Title}";
+            // dedupe ระดับนาที — กันยิงซ้ำจากกดรัวๆ/retry แต่ถ้าตั๋วถูก assign ใหม่แล้วรับอีกรอบยังแจ้งได้
+            var stamp = DateTime.Now.ToString("yyyyMMddHHmm");
+
+            // 1) Expo push — SM ที่ใช้แอปมือถือ
+            foreach (var m in managers.Where(m => !string.IsNullOrWhiteSpace(m.FullName)))
+            {
+                await _push.SendToStaffAsync(
+                    ticket.CmpId,
+                    m.FullName,
+                    eventKey: $"accept:{ticket.TicketId}:{m.FullName}:{stamp}",
+                    title: title,
+                    body: body,
+                    ticketId: ticket.TicketId,
+                    data: new Dictionary<string, string> { ["type"] = "accept" });
+            }
+
+            // 2) socket.io /nis — SM ที่เปิดแอปค้างอยู่ (refresh ทันที ไม่ต้องรอ poll)
+            var managerUsernames = managers
+                .Select(m => m.Username)
+                .Where(u => !string.IsNullOrWhiteSpace(u))
+                .ToList();
+
+            if (managerUsernames.Count > 0)
+            {
+                await _nisRealtimeNotify.NotifyAsync(
+                    ticket.CmpId,
+                    users: managerUsernames,
+                    type: "accept",
+                    ticketId: ticket.TicketId,
+                    title: title,
+                    body: body);
+            }
+
+            // 3) กระดิ่ง CRM — SM ที่นั่งหน้าเว็บบอร์ด
+            var acceptedByUsername = await _context.Accounts
+                .Where(a => a.CmpId == ticket.CmpId && a.FullName == acceptedBy)
+                .Select(a => a.Username)
+                .FirstOrDefaultAsync() ?? acceptedBy;
+
+            foreach (var username in managerUsernames)
+            {
+                await _crmNotify.NotifyAsync(
+                    ticket.CmpId,
+                    toUsername: username,
+                    fromUsername: acceptedByUsername,
+                    title: body,
+                    // ตรงกับ paths.gocrm.nis.ticketDetail ฝั่ง CRM (/productservice/service-protal/tickets/{id})
+                    linkTo: $"/productservice/service-protal/tickets/{ticket.TicketId}",
+                    moduleFormName: "nis/serviceboard",
+                    docNo: ticket.TicketCode ?? ticket.TicketId);
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "NIS accept: แจ้งเตือน SM ไม่สำเร็จ (ticket {TicketId})", ticket.TicketId);
+        }
     }
 
     // ── PUT api/nis/tickets/{id}/close-approve ───────────────────────────────

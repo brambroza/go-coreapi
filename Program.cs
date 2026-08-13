@@ -73,6 +73,8 @@ builder.Services.AddHostedService<goalongapi.Services.NisOverduePushService>();
 // NIS Onsite realtime bridge — best-effort POST → go-chat-api emits socket.io nis:notify
 // (foreground refresh, complements ExpoPushService for background/killed app)
 builder.Services.AddScoped<goalongapi.Services.NisRealtimeNotifyService>();
+// NIS → กระดิ่ง CRM (SystemNotification + SignalR NotificationHub) — ใช้ตอนช่างกดรับงาน
+builder.Services.AddScoped<goalongapi.Services.NisCrmNotifyService>();
 builder.Services.AddScoped<goalongapi.Helpers.GoogleCalendarApiKeyClient>();
 builder.Services.AddDataProtection();
 builder.Services.AddScoped<goalongapi.Helpers.GoogleOAuthMailService>();
