@@ -2590,7 +2590,7 @@ public class NisController : ControllerBase
               <p style="white-space:pre-wrap;">{dto.WorkDetail}</p>
               {signatureSection}
               <hr style="border:none;border-top:1px solid #e2e8f0;margin:16px 0;" />
-              <p style="color:#64748b;font-size:12px;">This is an automated email from GoAlong NIS System. Please do not reply to this email.</p>
+              <p style="color:#64748b;font-size:12px;">This is an automated email from NIS System. Please do not reply to this email.</p>
             </div>
             """;
     }
