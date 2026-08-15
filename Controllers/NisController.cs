@@ -38,6 +38,10 @@ public class NisController : ControllerBase
     /// instantly if the shared mail path misbehaves, without a redeploy.
     private readonly bool _attachReportPdf;
 
+    /// base URL สาธารณะของ API (NisOnsite:PublicBaseUrl) — ใช้ประกอบ URL โลโก้บริษัทในลายเซ็นอีเมล
+    /// เว้นว่างได้ (จะ fallback ไป host ของ request) แต่ตั้งไว้จะแน่นอนกว่าเมื่ออยู่หลัง reverse proxy
+    private readonly string? _publicBaseUrl;
+
     public NisController(
         DatabaseContext context,
         EmailSettingRepository emailRepo,
@@ -62,6 +66,7 @@ public class NisController : ControllerBase
         _pdfStorage = pdfStorage;
         _logger = logger;
         _attachReportPdf = configuration.GetValue<bool?>("NisOnsite:AttachReportPdf") ?? true;
+        _publicBaseUrl = configuration.GetValue<string?>("NisOnsite:PublicBaseUrl");
     }
 
     // ── Helpers ──────────────────────────────────────────────────────────────
@@ -2450,6 +2455,78 @@ public class NisController : ControllerBase
     }
 
     /// <summary>
+    /// อ่านข้อมูลบริษัทของ tenant (SP dbo.getcmpinfo) เพื่อใช้เป็น fallback ของบล็อกบริษัทในลายเซ็นอีเมล
+    /// เมื่อช่องในหน้า System Config ถูกปล่อยว่าง — ตรงกับพฤติกรรมของ CRM ที่ประกอบลายเซ็นเอง
+    /// อ่านไม่ได้ (SP ผิดพลาด / ไม่มีข้อมูล) → คืน null แล้วปล่อยให้ใช้ค่าจาก config อย่างเดียว
+    /// </summary>
+    /// <param name="cmpId">รหัสบริษัทของ tenant</param>
+    /// <returns>ข้อมูลบริษัทสำหรับลายเซ็น หรือ null เมื่อไม่พบ</returns>
+    private async Task<NisEmailTemplateRenderer.NisEmailCompany?> LoadEmailSignatureCompanyAsync(string cmpId)
+    {
+        if (string.IsNullOrWhiteSpace(cmpId)) return null;
+
+        try
+        {
+            var conn = _context.Database.GetDbConnection();
+            if (conn.State != System.Data.ConnectionState.Open) await conn.OpenAsync();
+
+            await using var cmd = conn.CreateCommand();
+            cmd.CommandText = "EXEC dbo.getcmpinfo @CmpId = @cmpid";
+            var param = cmd.CreateParameter();
+            param.ParameterName = "@cmpid";
+            param.Value = cmpId;
+            cmd.Parameters.Add(param);
+
+            await using var reader = await cmd.ExecuteReaderAsync();
+            if (!await reader.ReadAsync()) return null;
+
+            // SP คืนคอลัมน์ต่างชุดกันตามเวอร์ชัน DB → อ่านแบบทนคอลัมน์หาย
+            var columns = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            for (var i = 0; i < reader.FieldCount; i++) columns.Add(reader.GetName(i));
+            string Col(string name)
+            {
+                if (!columns.Contains(name)) return string.Empty;
+                var value = reader[name];
+                return value == DBNull.Value ? string.Empty : (value.ToString() ?? string.Empty).Trim();
+            }
+
+            var logoFile = Col("CmpImg");
+            var logoUrl = string.IsNullOrWhiteSpace(logoFile)
+                ? string.Empty
+                : logoFile.StartsWith("http", StringComparison.OrdinalIgnoreCase)
+                    ? logoFile
+                    : $"{PublicBaseUrl()}/images/{logoFile}";
+
+            var phone = Col("Phone");
+            if (phone.Length == 0) phone = Col("TelOffice");
+
+            return new NisEmailTemplateRenderer.NisEmailCompany(
+                CompanyNameTh: Col("CmpName"),
+                CompanyNameEn: Col("CmpNameEN"),
+                Address: Col("CmpAddress"),
+                Phone: phone,
+                Website: Col("WebSite"),
+                LogoUrl: logoUrl);
+        }
+        catch (Exception ex)
+        {
+            // อีเมลต้องส่งได้เสมอ — ขาด fallback บริษัทไม่ควรทำให้ปิดงานล้ม
+            _logger.LogWarning(ex, "NIS email signature: load company info failed (cmpId={CmpId})", cmpId);
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// base URL สาธารณะของ API สำหรับประกอบ URL รูปในอีเมล (โลโก้บริษัทอยู่ที่ wwwroot/images)
+    /// ตั้งค่าได้ที่ NisOnsite:PublicBaseUrl — ไม่ตั้งไว้จะใช้ host ของ request ปัจจุบัน
+    /// </summary>
+    /// <returns>base URL ที่ไม่มี / ปิดท้าย</returns>
+    private string PublicBaseUrl() =>
+        (string.IsNullOrWhiteSpace(_publicBaseUrl)
+            ? $"{Request.Scheme}://{Request.Host}"
+            : _publicBaseUrl).TrimEnd('/');
+
+    /// <summary>
     /// ประกอบ subject + body ของอีเมลปิดงาน onsite จาก email template + ลายเซ็นในหน้า System Config
     /// (ใช้ร่วมกันทั้ง RN และ CRM เพราะทั้งคู่ปิดงานผ่าน POST api/nis/onsite/submit)
     /// ไม่มี config / template ถูกปิดใช้งาน → fallback เป็น body มาตรฐานเดิม แต่ยังต่อลายเซ็นให้
@@ -2489,7 +2566,9 @@ public class NisController : ControllerBase
         }
 
         var sender = new NisEmailTemplateRenderer.NisEmailSender(senderName, dto.SenderPosition, dto.SenderMobile);
-        var signatureHtml = NisEmailTemplateRenderer.BuildSignatureHtml(signature, sender);
+        // ช่องบริษัทที่ปล่อยว่างในหน้า config → ใช้ข้อมูลบริษัทของ tenant (ตรงกับที่ CRM ประกอบเอง)
+        var company = await LoadEmailSignatureCompanyAsync(cmpId);
+        var signatureHtml = NisEmailTemplateRenderer.BuildSignatureHtml(signature, sender, company);
 
         if (template == null)
         {

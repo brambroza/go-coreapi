@@ -23,6 +23,24 @@ public static class NisEmailTemplateRenderer
     /// <param name="Mobile">เบอร์มือถือของผู้ล็อกอิน</param>
     public sealed record NisEmailSender(string? FullName, string? Position, string? Mobile);
 
+    /// <summary>
+    /// ข้อมูลบริษัทของ tenant — ใช้เป็น fallback ของบล็อกบริษัทในลายเซ็นเมื่อช่องใน System Config
+    /// ถูกปล่อยว่าง (ตรงกับที่ CRM ทำใน buildNisSignatureHtml: sig.x || sender.x)
+    /// </summary>
+    /// <param name="CompanyNameTh">ชื่อบริษัทภาษาไทย (Company.CmpName)</param>
+    /// <param name="CompanyNameEn">ชื่อบริษัทภาษาอังกฤษ (Company.CmpNameEN)</param>
+    /// <param name="Address">ที่อยู่ (Company.CmpAddress)</param>
+    /// <param name="Phone">เบอร์โทร / แฟกซ์ (Company.Phone หรือ TelOffice)</param>
+    /// <param name="Website">เว็บไซต์ (Company.WebSite)</param>
+    /// <param name="LogoUrl">URL โลโก้แบบเต็ม (Company.CmpImg ต่อกับ base url ของ API)</param>
+    public sealed record NisEmailCompany(
+        string? CompanyNameTh,
+        string? CompanyNameEn,
+        string? Address,
+        string? Phone,
+        string? Website,
+        string? LogoUrl);
+
     /// <summary>escape ค่าที่ผู้ใช้/ลูกค้าป้อน ก่อนยัดลง HTML body (กัน HTML injection ในเมล)</summary>
     /// <param name="value">ข้อความดิบ</param>
     /// <returns>ข้อความที่ escape แล้ว</returns>
@@ -66,12 +84,17 @@ public static class NisEmailTemplateRenderer
 
     /// <summary>
     /// สร้าง HTML ลายเซ็นอีเมล — ชื่อ/ตำแหน่ง/มือถือ ยึดผู้ล็อกอินเมื่อ UseLoginName = true
-    /// (ค่าที่ตั้งไว้ในหน้า config เป็น fallback), ข้อมูลบริษัทมาจาก config อย่างเดียว
+    /// (ค่าที่ตั้งไว้ในหน้า config เป็น fallback), บล็อกบริษัทที่ปล่อยว่างใน config จะ fallback
+    /// ไปข้อมูลบริษัทของ tenant เหมือนที่ CRM ประกอบลายเซ็นเอง
     /// </summary>
     /// <param name="sig">ค่าลายเซ็นจาก System Config (null = ไม่ใส่ลายเซ็น)</param>
     /// <param name="sender">ข้อมูลผู้ล็อกอินที่ปิดงาน</param>
+    /// <param name="company">ข้อมูลบริษัทของ tenant (null = ไม่มี fallback ใช้ค่าจาก config อย่างเดียว)</param>
     /// <returns>HTML ของลายเซ็น หรือ string ว่างเมื่อปิดใช้งาน</returns>
-    public static string BuildSignatureHtml(NisEmailSignatureDto? sig, NisEmailSender sender)
+    public static string BuildSignatureHtml(
+        NisEmailSignatureDto? sig,
+        NisEmailSender sender,
+        NisEmailCompany? company = null)
     {
         if (sig == null || !sig.Enabled) return string.Empty;
 
@@ -79,12 +102,12 @@ public static class NisEmailTemplateRenderer
         var position = FirstNonEmpty(sig.UseLoginName ? sender.Position : null, sig.Position);
         var mobile = FirstNonEmpty(sig.UseLoginName ? sender.Mobile : null, sig.Mobile);
 
-        var companyTh = sig.CompanyNameTh ?? string.Empty;
-        var companyEn = sig.CompanyNameEn ?? string.Empty;
-        var address = sig.Address ?? string.Empty;
-        var phone = sig.Phone ?? string.Empty;
-        var website = sig.Website ?? string.Empty;
-        var logoUrl = sig.LogoUrl ?? string.Empty;
+        var companyTh = FirstNonEmpty(sig.CompanyNameTh, company?.CompanyNameTh);
+        var companyEn = FirstNonEmpty(sig.CompanyNameEn, company?.CompanyNameEn);
+        var address = FirstNonEmpty(sig.Address, company?.Address);
+        var phone = FirstNonEmpty(sig.Phone, company?.Phone);
+        var website = FirstNonEmpty(sig.Website, company?.Website);
+        var logoUrl = FirstNonEmpty(sig.LogoUrl, company?.LogoUrl);
         var qrUrl = sig.QrUrl ?? string.Empty;
 
         var websiteHref = website.StartsWith("http", StringComparison.OrdinalIgnoreCase) ? website : $"https://{website}";
