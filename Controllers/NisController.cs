@@ -1738,7 +1738,8 @@ public class NisController : ControllerBase
         {
             Id = "close-job",
             Name = "ส่งปิดงานให้ลูกค้า (Service Report)",
-            Subject = "Service Report [TK_NUMBER] - [COMPANY]",
+            // หัวเรื่อง = ชื่องานของตั๋ว + ลูกค้า (เช่น "Onsite MA รอบที่ 2 - บริษัท ก")
+            Subject = "[PROJECT] - [COMPANY]",
             Body = "<p>เรียน คุณ[CONTACT]</p>"
                 + "<p>บริษัทฯ ขอส่งใบรายงานการให้บริการ (Service Report) สำหรับงานที่ดำเนินการเสร็จสิ้นแล้ว ดังนี้</p>"
                 + "<p>เลขที่ Ticket: <strong>[TK_NUMBER]</strong><br/>โครงการ / งาน: [PROJECT]<br/>"
@@ -2455,6 +2456,24 @@ public class NisController : ControllerBase
     }
 
     /// <summary>
+    /// หัวเรื่องอีเมลปิดงานเมื่อไม่มี template ที่เปิดใช้งาน — "ชื่องาน - ลูกค้า"
+    /// ไม่มีทั้งชื่องานและชื่อลูกค้า → ตกไปใช้เลขใบรายงานเพื่อไม่ให้หัวเรื่องว่าง
+    /// </summary>
+    /// <param name="projectTitle">ชื่องาน / ชื่อตั๋ว เช่น "Onsite MA รอบที่ 2"</param>
+    /// <param name="customerName">ชื่อลูกค้า</param>
+    /// <param name="srNumber">เลขใบรายงานบริการ</param>
+    /// <returns>หัวเรื่องอีเมล</returns>
+    private static string OnsiteCloseSubjectFallback(string? projectTitle, string? customerName, string? srNumber)
+    {
+        var parts = new[] { projectTitle, customerName }
+            .Where(p => !string.IsNullOrWhiteSpace(p))
+            .Select(p => p!.Trim())
+            .ToList();
+        if (parts.Count > 0) return string.Join(" - ", parts);
+        return string.IsNullOrWhiteSpace(srNumber) ? "Service Report" : $"Service Report {srNumber}";
+    }
+
+    /// <summary>
     /// อ่านข้อมูลบริษัทของ tenant (SP dbo.getcmpinfo) เพื่อใช้เป็น fallback ของบล็อกบริษัทในลายเซ็นอีเมล
     /// เมื่อช่องในหน้า System Config ถูกปล่อยว่าง — ตรงกับพฤติกรรมของ CRM ที่ประกอบลายเซ็นเอง
     /// อ่านไม่ได้ (SP ผิดพลาด / ไม่มีข้อมูล) → คืน null แล้วปล่อยให้ใช้ค่าจาก config อย่างเดียว
@@ -2572,8 +2591,9 @@ public class NisController : ControllerBase
 
         if (template == null)
         {
+            // ไม่มี template → หัวเรื่อง = ชื่องาน + ลูกค้า (รูปแบบเดียวกับ template "close-job")
             var fallbackSubject = string.IsNullOrWhiteSpace(dto.EmailSubject)
-                ? $"[Service Report] {dto.SrNumber}"
+                ? OnsiteCloseSubjectFallback(projectTitle, customerName, dto.SrNumber)
                 : dto.EmailSubject;
             return (fallbackSubject, BuildOnsiteReportEmailBody(ticketNo, customerName, dto) + signatureHtml);
         }
