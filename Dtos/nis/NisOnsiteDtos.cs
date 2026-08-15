@@ -111,6 +111,15 @@ public class NisOnsiteSubmitDto : NisOnsiteReportBaseDto
     /// Optional message entered by the engineer in the close-job email modal.
     public string EmailMessage { get; set; } = string.Empty;
 
+    /// ชื่อผู้ติดต่อฝั่งลูกค้า — เติมตัวแปร [CONTACT] ใน email template (ว่าง = ใช้ชื่อลูกค้าแทน)
+    public string? ContactName { get; set; }
+
+    /// ชื่อ/ตำแหน่ง/มือถือ ของผู้ล็อกอินที่ปิดงาน — ใช้เติมลายเซ็นอีเมลเมื่อ UseLoginName = true
+    /// (ว่าง = backend หา FullName จาก Accounts เอง แล้ว fallback ค่าที่ตั้งไว้ในหน้า System Config)
+    public string? SenderName { get; set; }
+    public string? SenderPosition { get; set; }
+    public string? SenderMobile { get; set; }
+
     /// Client-generated Service Report PDF, base64 (no data-URI prefix). Optional: older
     /// clients omit it and the email is sent without an attachment (backward-compatible).
     public string? ReportPdfBase64 { get; set; }

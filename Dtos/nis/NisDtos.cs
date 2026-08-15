@@ -61,6 +61,9 @@ public class NisTicketResponseDto
     public List<NisChecklistItemDto> Checklist { get; set; } = new();
     /// วันเวลาที่สร้าง ticket (yyyy-MM-dd HH:mm) — ใช้ทำ badge "มาใหม่" บนบอร์ด
     public string CreatedDate { get; set; } = string.Empty;
+    /// วันเวลาที่แก้ไขล่าสุด (yyyy-MM-dd HH:mm) — การมอบหมายงานเขียนค่านี้ทุกครั้ง
+    /// แอปช่างใช้เป็นเวลา "เพิ่งได้รับมอบหมาย" สำหรับ badge งานใหม่ (ตั๋วที่ยังไม่กดรับ)
+    public string UpdatedDate { get; set; } = string.Empty;
 }
 
 /// รายการ checklist หนึ่งข้อ (ก่อนมอบหมายงาน)
@@ -200,6 +203,34 @@ public class NisWarningDaysDto
     public int Product { get; set; } = 30;
 }
 
+/// Template อีเมลของระบบ NIS — Id เป็นคีย์คงที่ที่ฝั่ง client ใช้ค้นหา (เช่น "close-job")
+public class NisEmailTemplateDto
+{
+    public string Id { get; set; } = string.Empty;
+    public string Name { get; set; } = string.Empty;
+    public string Subject { get; set; } = string.Empty;
+    /// HTML body — ใส่ตัวแปรรูปแบบ [TK_NUMBER] ได้
+    public string Body { get; set; } = string.Empty;
+    public bool Enabled { get; set; } = true;
+}
+
+/// ลายเซ็นอีเมล — ชื่อ/ตำแหน่ง/มือถือ ปล่อยว่างได้เมื่อ UseLoginName = true (client เติมจากผู้ล็อกอิน)
+public class NisEmailSignatureDto
+{
+    public bool Enabled { get; set; } = true;
+    public bool UseLoginName { get; set; } = true;
+    public string SenderName { get; set; } = string.Empty;
+    public string Position { get; set; } = string.Empty;
+    public string Mobile { get; set; } = string.Empty;
+    public string CompanyNameTh { get; set; } = string.Empty;
+    public string CompanyNameEn { get; set; } = string.Empty;
+    public string Address { get; set; } = string.Empty;
+    public string Phone { get; set; } = string.Empty;
+    public string Website { get; set; } = string.Empty;
+    public string LogoUrl { get; set; } = string.Empty;
+    public string QrUrl { get; set; } = string.Empty;
+}
+
 public class NisSystemConfigResponseDto
 {
     public List<string> JobTypes { get; set; } = new();
@@ -213,6 +244,10 @@ public class NisSystemConfigResponseDto
     public Dictionary<string, Dictionary<string, List<string>>> ChecklistByCustomer { get; set; } = new();
     public List<string> SlaOptions { get; set; } = new();
     public NisWarningDaysDto WarningDays { get; set; } = new();
+    /// template อีเมลของระบบ (ปิดงาน / ใบเสนอราคา / ต่ออายุ MA / รับงาน)
+    public List<NisEmailTemplateDto> EmailTemplates { get; set; } = new();
+    /// ลายเซ็นที่ต่อท้าย body ของทุก template
+    public NisEmailSignatureDto EmailSignature { get; set; } = new();
 }
 
 public class NisSystemConfigSaveDto
@@ -228,6 +263,10 @@ public class NisSystemConfigSaveDto
     public Dictionary<string, Dictionary<string, List<string>>> ChecklistByCustomer { get; set; } = new();
     public List<string> SlaOptions { get; set; } = new();
     public NisWarningDaysDto WarningDays { get; set; } = new();
+    /// template อีเมลของระบบ (ปิดงาน / ใบเสนอราคา / ต่ออายุ MA / รับงาน)
+    public List<NisEmailTemplateDto> EmailTemplates { get; set; } = new();
+    /// ลายเซ็นที่ต่อท้าย body ของทุก template
+    public NisEmailSignatureDto EmailSignature { get; set; } = new();
     public string CmpId { get; set; } = string.Empty;
     public string UpdatedBy { get; set; } = string.Empty;
 }

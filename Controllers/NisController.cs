@@ -127,6 +127,7 @@ public class NisController : ControllerBase
         WorkDetail = t.WorkDetail,
         Checklist = ParseChecklist(t.ChecklistJson),
         CreatedDate = FormatDateTime(t.CreatedDate),
+        UpdatedDate = FormatDateTime(t.UpdatedDate),
     };
 
     /// แปลง ChecklistJson (nvarchar) → รายการ checklist; ค่าว่าง/พังคืน list ว่าง (ไม่ throw)
@@ -1581,6 +1582,8 @@ public class NisController : ControllerBase
         entity.PmChecklistRaw = JoinTags(dto.PmChecklist);
         entity.ChecklistByTicketTypeJson = SerializeChecklistMap(dto.ChecklistByTicketType);
         entity.ChecklistByCustomerJson = SerializeCustomerChecklistMap(dto.ChecklistByCustomer);
+        entity.EmailTemplatesJson = SerializeJson(dto.EmailTemplates);
+        entity.EmailSignatureJson = SerializeJson(dto.EmailSignature);
         entity.SlaOptionsRaw = JoinTags(dto.SlaOptions);
         entity.WarningDaysService = dto.WarningDays.Service;
         entity.WarningDaysProduct = dto.WarningDays.Product;
@@ -1603,6 +1606,8 @@ public class NisController : ControllerBase
         PmChecklist = SplitTags(e.PmChecklistRaw),
         ChecklistByTicketType = ParseChecklistMap(e.ChecklistByTicketTypeJson, DefaultChecklistByTicketType()),
         ChecklistByCustomer = ParseCustomerChecklistMap(e.ChecklistByCustomerJson),
+        EmailTemplates = ParseJson(e.EmailTemplatesJson, DefaultEmailTemplates()),
+        EmailSignature = ParseJson(e.EmailSignatureJson, new NisEmailSignatureDto()),
         SlaOptions = SplitTags(e.SlaOptionsRaw),
         WarningDays = new NisWarningDaysDto
         {
@@ -1687,9 +1692,87 @@ public class NisController : ControllerBase
         ],
         ChecklistByTicketType = DefaultChecklistByTicketType(),
         ChecklistByCustomer = new(),
+        EmailTemplates = DefaultEmailTemplates(),
+        EmailSignature = new NisEmailSignatureDto(),
         SlaOptions = ["8x5xNBD", "8x5", "24x7x4", "24x7xNBD"],
         WarningDays = new NisWarningDaysDto { Service = 60, Product = 30 },
     };
+
+    // ── Email template helpers ───────────────────────────────────────────────
+    // เก็บเป็น JSON บน NisSystemConfig; ค่าว่าง/พังคืน fallback (ไม่ throw)
+
+    private static string SerializeJson<T>(T value)
+    {
+        try
+        {
+            return JsonSerializer.Serialize(value);
+        }
+        catch (NotSupportedException)
+        {
+            return string.Empty;
+        }
+    }
+
+    private static T ParseJson<T>(string? json, T fallback)
+    {
+        if (string.IsNullOrWhiteSpace(json)) return fallback;
+        try
+        {
+            return JsonSerializer.Deserialize<T>(json) ?? fallback;
+        }
+        catch (JsonException)
+        {
+            return fallback;
+        }
+    }
+
+    /// template อีเมลเริ่มต้น — id ต้องตรงกับที่ฝั่ง CRM อ้างถึง ("close-job" ใช้ตอนส่งปิดงาน)
+    private static List<NisEmailTemplateDto> DefaultEmailTemplates() =>
+    [
+        new NisEmailTemplateDto
+        {
+            Id = "close-job",
+            Name = "ส่งปิดงานให้ลูกค้า (Service Report)",
+            Subject = "Service Report [TK_NUMBER] - [COMPANY]",
+            Body = "<p>เรียน คุณ[CONTACT]</p>"
+                + "<p>บริษัทฯ ขอส่งใบรายงานการให้บริการ (Service Report) สำหรับงานที่ดำเนินการเสร็จสิ้นแล้ว ดังนี้</p>"
+                + "<p>เลขที่ Ticket: <strong>[TK_NUMBER]</strong><br/>โครงการ / งาน: [PROJECT]<br/>"
+                + "ลูกค้า: [COMPANY]<br/>วันที่ปฏิบัติงาน: [DATE]<br/>ช่างผู้ปฏิบัติงาน: [ENGINEER]</p>"
+                + "<p>รายละเอียดงาน: [SERVICE_DETAIL]</p>"
+                + "<p>รบกวนตรวจสอบและยืนยันการปิดงาน หากมีข้อสงสัยเพิ่มเติมติดต่อกลับได้ตามเบอร์ด้านล่างครับ</p>"
+                + "<p>ขอบคุณครับ</p>",
+            Enabled = true,
+        },
+        new NisEmailTemplateDto
+        {
+            Id = "quotation",
+            Name = "ส่งใบเสนอราคา",
+            Subject = "ใบเสนอราคา [QT_NUMBER] - [COMPANY]",
+            Body = "<p>เรียน คุณ[CONTACT]</p>"
+                + "<p>บริษัทฯ ขอส่งใบเสนอราคาเลขที่ <strong>[QT_NUMBER]</strong> มาเพื่อพิจารณา</p>"
+                + "<p>ขอบคุณครับ</p>",
+            Enabled = true,
+        },
+        new NisEmailTemplateDto
+        {
+            Id = "ma-renewal",
+            Name = "แจ้งเตือนต่ออายุ MA",
+            Subject = "แจ้งเตือน: สัญญา MA ใกล้หมดอายุ - [COMPANY]",
+            Body = "<p>เรียน คุณ[CONTACT]</p>"
+                + "<p>สัญญาบริการ (MA) ของ [COMPANY] จะครบกำหนดในวันที่ [DATE]</p>"
+                + "<p>หากประสงค์ต่ออายุ กรุณาแจ้งกลับเพื่อจัดทำใบเสนอราคาครับ</p>",
+            Enabled = true,
+        },
+        new NisEmailTemplateDto
+        {
+            Id = "customer-accept",
+            Name = "ลูกค้าเซ็นรับงาน",
+            Subject = "ยืนยันการรับงาน - [PROJECT] - [COMPANY]",
+            Body = "<p>เรียน คุณ[CONTACT]</p>"
+                + "<p>ขอขอบคุณที่ลงนามรับงาน <strong>[PROJECT]</strong> เมื่อวันที่ [DATE]</p>",
+            Enabled = true,
+        },
+    ];
 
     /// checklist มาตรฐานเริ่มต้นตามประเภท ticket — ใช้เป็น seed และ fallback
     private static Dictionary<string, List<string>> DefaultChecklistByTicketType() => new()
@@ -2096,8 +2179,13 @@ public class NisController : ControllerBase
                         .Where(p => p.ProjectId == nisTicket.ProjectId)
                         .Select(p => p.Customer)
                         .FirstOrDefaultAsync();
-                    var subject = string.IsNullOrWhiteSpace(dto.EmailSubject) ? $"[Service Report] {dto.SrNumber}" : dto.EmailSubject;
-                    var body = BuildOnsiteReportEmailBody(nisTicket.TicketCode ?? nisTicket.TicketId, customerName ?? string.Empty, dto);
+                    var (subject, body) = await BuildOnsiteCloseEmailAsync(
+                        nisCmpId,
+                        nisTicket.TicketCode ?? nisTicket.TicketId,
+                        customerName ?? string.Empty,
+                        nisTicket.Title,
+                        nisTicket.Assignee,
+                        dto);
                     var attachments = attachPdf ? new List<EmailAttachment> { pdfAttachment! } : null;
                     nisEmailSent = await SendOnsiteEmailAsync(nisCmpId, dto.RecipientEmail, subject, body, attachments);
                 }
@@ -2203,8 +2291,14 @@ public class NisController : ControllerBase
         {
             try
             {
-                var subject = string.IsNullOrWhiteSpace(dto.EmailSubject) ? $"[Service Report] {dto.SrNumber}" : dto.EmailSubject;
-                emailSent = await SendOnsiteEmailAsync(cmpId, dto.RecipientEmail, subject, BuildOnsiteReportEmailBody(ticket.TicketNo ?? ticket.TicketId, ticket.CustomerName, dto));
+                var (subject, body) = await BuildOnsiteCloseEmailAsync(
+                    cmpId,
+                    ticket.TicketNo ?? ticket.TicketId,
+                    ticket.CustomerName,
+                    subTask?.Title ?? ticket.AdditionalDetails,
+                    subTask?.DoneBy ?? user,
+                    dto);
+                emailSent = await SendOnsiteEmailAsync(cmpId, dto.RecipientEmail, subject, body);
             }
             catch (Exception ex)
             {
@@ -2355,22 +2449,119 @@ public class NisController : ControllerBase
         return cleaned;
     }
 
-    private static string BuildOnsiteReportEmailBody(string ticketNo, string customerName, NisOnsiteSubmitDto dto)
+    /// <summary>
+    /// ประกอบ subject + body ของอีเมลปิดงาน onsite จาก email template + ลายเซ็นในหน้า System Config
+    /// (ใช้ร่วมกันทั้ง RN และ CRM เพราะทั้งคู่ปิดงานผ่าน POST api/nis/onsite/submit)
+    /// ไม่มี config / template ถูกปิดใช้งาน → fallback เป็น body มาตรฐานเดิม แต่ยังต่อลายเซ็นให้
+    /// </summary>
+    /// <param name="cmpId">รหัสบริษัท — ใช้หา NisSystemConfig ของ tenant</param>
+    /// <param name="ticketNo">เลขที่ตั๋วที่แสดงให้ลูกค้า ([TK_NUMBER])</param>
+    /// <param name="customerName">ชื่อลูกค้า ([COMPANY])</param>
+    /// <param name="projectTitle">ชื่องาน / โครงการ ([PROJECT])</param>
+    /// <param name="assignee">ช่างที่รับผิดชอบตั๋ว ([ENGINEER]) — ว่างได้</param>
+    /// <param name="dto">payload ปิดงานจาก client</param>
+    /// <returns>subject และ body (HTML) ที่พร้อมส่ง</returns>
+    private async Task<(string Subject, string Body)> BuildOnsiteCloseEmailAsync(
+        string cmpId,
+        string ticketNo,
+        string customerName,
+        string? projectTitle,
+        string? assignee,
+        NisOnsiteSubmitDto dto)
     {
-        // ข้อความมาจากผู้ใช้ ต้อง encode ก่อนใส่ HTML และคงการขึ้นบรรทัดใหม่ไว้
-        var emailMessage = System.Net.WebUtility.HtmlEncode(dto.EmailMessage ?? string.Empty)
-            .Replace("\r\n", "\n")
-            .Replace("\r", "\n")
-            .Replace("\n", "<br />");
-        var emailMessageSection = string.IsNullOrWhiteSpace(dto.EmailMessage)
-            ? string.Empty
-            : $"<div style=\"margin:16px 0;padding:14px 16px;background:#f8fafc;border-left:4px solid #f59e0b;line-height:1.6;\">{emailMessage}</div>";
+        var config = await _context.NisSystemConfigs
+            .AsNoTracking()
+            .FirstOrDefaultAsync(c => c.CmpId == cmpId);
 
-        var signatureSection = dto.SkipSignature
+        var templates = ParseJson(config?.EmailTemplatesJson, DefaultEmailTemplates());
+        var signature = ParseJson(config?.EmailSignatureJson, new NisEmailSignatureDto());
+        var template = NisEmailTemplateRenderer.FindTemplate(templates, NisEmailTemplateRenderer.CloseJobTemplateId);
+
+        // ชื่อผู้ส่ง: ค่าที่ client ส่งมา > Accounts.FullName ของ user ที่ปิดงาน > ค่าที่ตั้งไว้ในหน้า config
+        var senderName = dto.SenderName;
+        if (string.IsNullOrWhiteSpace(senderName) && !string.IsNullOrWhiteSpace(dto.User))
+        {
+            senderName = await _context.Accounts
+                .AsNoTracking()
+                .Where(a => a.CmpId == cmpId && a.Username == dto.User)
+                .Select(a => a.FullName)
+                .FirstOrDefaultAsync();
+        }
+
+        var sender = new NisEmailTemplateRenderer.NisEmailSender(senderName, dto.SenderPosition, dto.SenderMobile);
+        var signatureHtml = NisEmailTemplateRenderer.BuildSignatureHtml(signature, sender);
+
+        if (template == null)
+        {
+            var fallbackSubject = string.IsNullOrWhiteSpace(dto.EmailSubject)
+                ? $"[Service Report] {dto.SrNumber}"
+                : dto.EmailSubject;
+            return (fallbackSubject, BuildOnsiteReportEmailBody(ticketNo, customerName, dto) + signatureHtml);
+        }
+
+        var vars = new Dictionary<string, string?>
+        {
+            ["TK_NUMBER"] = ticketNo,
+            ["SR_NUMBER"] = dto.SrNumber,
+            ["PROJECT"] = projectTitle,
+            ["COMPANY"] = customerName,
+            // ใบรายงานอาจไม่มีชื่อผู้ติดต่อ → ใช้ชื่อลูกค้าแทน (เหมือนหน้า Report tab ของ CRM)
+            ["CONTACT"] = string.IsNullOrWhiteSpace(dto.ContactName) ? customerName : dto.ContactName,
+            ["ENGINEER"] = string.IsNullOrWhiteSpace(assignee) ? senderName : assignee,
+            ["DATE"] = string.IsNullOrWhiteSpace(dto.CheckOutTime) ? BangkokNow().ToString("dd/MM/yyyy") : dto.CheckOutTime,
+            ["SERVICE_DETAIL"] = dto.WorkDetail,
+            ["SENDER"] = senderName,
+            ["SENDER_MOBILE"] = dto.SenderMobile,
+        };
+
+        var subject = string.IsNullOrWhiteSpace(dto.EmailSubject)
+            ? NisEmailTemplateRenderer.Render(template.Subject, vars)
+            : dto.EmailSubject;
+
+        var body = $"""
+            <div style="font-family:sans-serif;max-width:640px;margin:0 auto;padding:24px;color:#111;">
+              {NisEmailTemplateRenderer.Render(template.Body, vars, html: true)}
+              {OnsiteEmailMessageSection(dto)}
+              <table style="width:100%;border-collapse:collapse;margin:16px 0;font-size:14px;">
+                <tr style="background:#f8fafc;">
+                  <td style="padding:10px 12px;border:1px solid #e2e8f0;font-weight:600;width:160px;">เลขที่ใบรายงาน</td>
+                  <td style="padding:10px 12px;border:1px solid #e2e8f0;">{NisEmailTemplateRenderer.EscapeHtml(dto.SrNumber)}</td>
+                </tr>
+                <tr>
+                  <td style="padding:10px 12px;border:1px solid #e2e8f0;font-weight:600;">Check-in</td>
+                  <td style="padding:10px 12px;border:1px solid #e2e8f0;">{NisEmailTemplateRenderer.EscapeHtml(dto.CheckInTime)}</td>
+                </tr>
+                <tr style="background:#f8fafc;">
+                  <td style="padding:10px 12px;border:1px solid #e2e8f0;font-weight:600;">Check-out</td>
+                  <td style="padding:10px 12px;border:1px solid #e2e8f0;">{NisEmailTemplateRenderer.EscapeHtml(dto.CheckOutTime)}</td>
+                </tr>
+              </table>
+              {OnsiteCustomerSignatureSection(dto)}
+              {signatureHtml}
+            </div>
+            """;
+
+        return (subject, body);
+    }
+
+    /// ข้อความเพิ่มเติมที่ช่างพิมพ์ในกล่องส่งเมล — escape แล้วคงการขึ้นบรรทัดใหม่ไว้
+    private static string OnsiteEmailMessageSection(NisOnsiteSubmitDto dto) =>
+        string.IsNullOrWhiteSpace(dto.EmailMessage)
+            ? string.Empty
+            : $"<div style=\"margin:16px 0;padding:14px 16px;background:#f8fafc;border-left:4px solid #f59e0b;line-height:1.6;\">{NisEmailTemplateRenderer.PlainTextToHtml(dto.EmailMessage)}</div>";
+
+    /// ลายเซ็นลูกค้าที่เซ็นรับงานหน้างาน (คนละส่วนกับลายเซ็นอีเมลในหน้า config)
+    private static string OnsiteCustomerSignatureSection(NisOnsiteSubmitDto dto) =>
+        dto.SkipSignature
             ? "<p style=\"color:#64748b;\">* ลูกค้าไม่ได้ลงนาม (skipped)</p>"
             : !string.IsNullOrWhiteSpace(dto.SignatureImg)
                 ? $"<p style=\"font-weight:600;\">ลายเซ็นลูกค้า:</p><img src=\"{dto.SignatureImg}\" style=\"max-width:300px;border:1px solid #e2e8f0;border-radius:6px;padding:4px;\" />"
-                : "";
+                : string.Empty;
+
+    private static string BuildOnsiteReportEmailBody(string ticketNo, string customerName, NisOnsiteSubmitDto dto)
+    {
+        var emailMessageSection = OnsiteEmailMessageSection(dto);
+        var signatureSection = OnsiteCustomerSignatureSection(dto);
 
         return $"""
             <div style="font-family:sans-serif;max-width:600px;margin:0 auto;padding:24px;">

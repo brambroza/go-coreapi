@@ -40,6 +40,12 @@ public class NisSystemConfig
     /// เช่น {"CUST001":{"Install":["..."],"PM":["..."]}}. ว่าง/ไม่มี = ใช้ ChecklistByTicketType
     public string? ChecklistByCustomerJson { get; set; }
 
+    /// JSON array ของ email template — [{"id":"close-job","name":"...","subject":"...","body":"...","enabled":true}]
+    public string? EmailTemplatesJson { get; set; }
+
+    /// JSON object ของลายเซ็นอีเมล (ชื่อ/ตำแหน่ง/มือถือ ปล่อยว่างได้ — ใช้ของผู้ล็อกอินตอนส่ง)
+    public string? EmailSignatureJson { get; set; }
+
     /// Pipe-delimited SLA options, e.g. "8x5xNBD|8x5|24x7x4|24x7xNBD"
     [MaxLength(500)]
     public string SlaOptionsRaw { get; set; } = "8x5xNBD|8x5|24x7x4|24x7xNBD";

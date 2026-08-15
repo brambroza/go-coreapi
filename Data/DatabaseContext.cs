@@ -917,6 +917,8 @@ namespace goalongapi.Data
                 entity.Property(e => e.PmChecklistRaw).HasMaxLength(8000);
                 entity.Property(e => e.ChecklistByTicketTypeJson).HasColumnType("nvarchar(max)");
                 entity.Property(e => e.ChecklistByCustomerJson).HasColumnType("nvarchar(max)");
+                entity.Property(e => e.EmailTemplatesJson).HasColumnType("nvarchar(max)");
+                entity.Property(e => e.EmailSignatureJson).HasColumnType("nvarchar(max)");
                 entity.Property(e => e.SlaOptionsRaw).HasMaxLength(500);
                 entity.Property(e => e.UpdatedBy).HasMaxLength(100);
                 entity.Property(e => e.UpdatedDate).HasColumnType("datetime");
