@@ -106,6 +106,17 @@ public class NisController : ControllerBase
         ["MA"] = "MA",
     };
 
+    // ── ความคืบหน้าตั๋ว NIS (NisTicket.Pct) — milestone ชุดเดียวใช้ทุก client ────────────
+    // 0 ยังไม่รับงาน · 10 ช่างกดรับงาน · 25 เช็คอินถึงหน้างาน
+    // · 25→85 ติ๊ก checklist ตามสัดส่วน · 90 เช็คเอาท์/รออนุมัติปิด · 100 ปิดงาน
+    // ค่าเดียวกันนี้ mirror อยู่ฝั่ง RN ที่ NIS-OnsiteService/src/utils/progress.ts — แก้ต้องแก้คู่กัน
+    private const int NIS_PCT_NOT_ACCEPTED = 0;
+    private const int NIS_PCT_ACCEPTED = 10;
+    private const int NIS_PCT_CHECKED_IN = 25;
+    private const int NIS_PCT_CHECKLIST_DONE = 85;
+    private const int NIS_PCT_CHECKED_OUT = 90;
+    private const int NIS_PCT_CLOSED = 100;
+
     private static string TicketPrefixFor(string? type) =>
         !string.IsNullOrWhiteSpace(type) && TicketTypePrefixes.TryGetValue(type, out var prefix)
             ? prefix
@@ -527,10 +538,51 @@ public class NisController : ControllerBase
             return NotFound(new { message = $"Ticket {id} not found" });
 
         ticket.Status = dto.Status;
+        // ลาก Kanban ข้ามคอลัมน์ → ให้ % ตรงกับ milestone ของสถานะปลายทาง
+        // (Open/Scheduled = ยังไม่รับงาน · Done/Closed = ปิดแล้ว · In Progress = อย่างน้อยรับงานแล้ว)
+        ticket.Pct = dto.Status switch
+        {
+            "Open" or "Scheduled" => NIS_PCT_NOT_ACCEPTED,
+            "Done" or "Closed" => NIS_PCT_CLOSED,
+            "In Progress" => Math.Max(ticket.Pct, NIS_PCT_ACCEPTED),
+            _ => ticket.Pct,
+        };
         ticket.UpdatedDate = DateTime.Now;
 
         await _context.SaveChangesAsync();
         return Ok(new { message = "Status updated" });
+    }
+
+    // ── PUT api/nis/tickets/{id}/progress ───────────────────────────────────
+
+    /// <summary>
+    /// อัปเดต % ความคืบหน้าของตั๋วจากแอปช่าง (NIS-OnsiteService) — แอปคำนวณ milestone เอง
+    /// ด้วยสูตรเดียวกับ ComputeOnsiteProgressPct (utils/progress.ts) แล้วส่งค่ามาที่นี่
+    ///
+    /// แยกจาก POST onsite/{id}/progress (ที่ CRM ใช้) เพราะอันนั้นเขียนทั้ง snapshot draft —
+    /// ถ้าแอปช่างยิง snapshot บาง ๆ ทับ จะทำให้ draft ของ CRM (รูป/ลายเซ็น) หาย
+    /// </summary>
+    [HttpPut("tickets/{id}/progress")]
+    public async Task<IActionResult> UpdateTicketProgress(
+        string id,
+        [FromBody] NisTicketProgressDto dto)
+    {
+        var ticket = await _context.NisTickets.FindAsync(id);
+
+        if (ticket == null)
+            return NotFound(new { message = $"Ticket {id} not found" });
+
+        // ตั๋วที่พ้นมือช่างแล้วห้ามให้แอปเขียนทับ (กัน autosave ค้างลด % ของงานที่ปิดไปแล้ว)
+        if (ticket.Status is "Waiting Close Approval" or "Done" or "Closed")
+            return Ok(new { message = "Ticket already closed — progress unchanged", pct = ticket.Pct });
+
+        // 100 ออกได้เฉพาะ flow ปิดงานจริงเท่านั้น — จากแอปตัดที่ 90
+        ticket.Pct = Math.Clamp(dto.Pct, NIS_PCT_NOT_ACCEPTED, NIS_PCT_CHECKED_OUT);
+        ticket.UpdatedBy = dto.UpdatedBy ?? ticket.UpdatedBy;
+        ticket.UpdatedDate = DateTime.Now;
+
+        await _context.SaveChangesAsync();
+        return Ok(new { message = "Progress updated", pct = ticket.Pct });
     }
 
     // ── PUT api/nis/tickets/{id}/accept ─────────────────────────────────────
@@ -558,6 +610,8 @@ public class NisController : ControllerBase
         if (!alreadyAccepted)
         {
             ticket.Status = "In Progress";
+            // milestone "รับงานแล้ว" — ไม่ลดค่าที่สูงกว่านี้อยู่แล้ว (กดรับซ้ำหลัง check-in)
+            ticket.Pct = Math.Max(ticket.Pct, NIS_PCT_ACCEPTED);
             ticket.UpdatedBy = acceptedBy;
             ticket.UpdatedDate = DateTime.Now;
             await _context.SaveChangesAsync();
@@ -692,7 +746,7 @@ public class NisController : ControllerBase
         report.Status = "submitted";
 
         ticket.Status = "Closed";
-        ticket.Pct = 100;
+        ticket.Pct = NIS_PCT_CLOSED;
         ticket.UpdatedDate = DateTime.Now;
 
         await _context.SaveChangesAsync();
@@ -754,12 +808,15 @@ public class NisController : ControllerBase
         {
             // Unassigned → back to the Open / Assigned backlog.
             ticket.Status = "Open";
+            ticket.Pct = NIS_PCT_NOT_ACCEPTED;
         }
         else if (previousAssignee != dto.Assignee
                  || ticket.Status == "Open"
                  || ticket.Status == "Scheduled"
                  || string.IsNullOrWhiteSpace(ticket.Status))
         {
+            // ยังไม่มีใครรับงาน (หรือเปลี่ยนมือช่าง) → ความคืบหน้าเริ่มนับใหม่ที่ 0
+            ticket.Pct = NIS_PCT_NOT_ACCEPTED;
             // Freshly assigned (or handed to a different engineer) → awaits the
             // assignee's acceptance in the Staff Portal, which surfaces the
             // "accept task" notification. Accepting moves it to "In Progress"
@@ -2167,7 +2224,7 @@ public class NisController : ControllerBase
 
             _context.NisOnsiteReports.Add(report);
             nisTicket.Status = "Closed";
-            nisTicket.Pct = 100;
+            nisTicket.Pct = NIS_PCT_CLOSED;
             nisTicket.UpdatedDate = DateTime.Now;
 
             await _context.SaveChangesAsync();
@@ -2712,6 +2769,8 @@ public class NisController : ControllerBase
             _context.NisOnsiteReports.Add(BuildNisOnsiteReport(nisTicket, dto, nisCmpId, "pending_approval"));
 
             nisTicket.Status = "Waiting Close Approval";
+            // งานหน้างานจบแล้ว รอ SM อนุมัติ — ค้างที่ 90 จนกว่าจะปิดจริง (100)
+            nisTicket.Pct = NIS_PCT_CHECKED_OUT;
             nisTicket.UpdatedDate = DateTime.Now;
 
             await _context.SaveChangesAsync();
@@ -2875,14 +2934,16 @@ public class NisController : ControllerBase
         return Ok(new { ok = true });
     }
 
-    /// คำนวณ % ความคืบหน้างาน onsite จาก snapshot draft (milestone-based)
-    /// น้ำหนัก: check-in 20 · checklist 40 ตามสัดส่วนที่ติ๊ก · รายละเอียดงาน 10 · รูป 10 · ลายเซ็น 10
-    /// check-out แล้ว = อย่างน้อย 90 (convention เดียวกับ RN/CRM) · เพดาน 90 — 100 เฉพาะ flow ปิดงาน
+    /// คำนวณ % ความคืบหน้างาน onsite จาก snapshot draft (milestone-based ตาม NIS_PCT_*)
+    /// เช็คอิน 25 · checklist ดันจาก 25 → 85 ตามสัดส่วนที่ติ๊ก · เช็คเอาท์ 90
+    /// draft มีอยู่ = ช่างรับงานแล้ว จึงเริ่มที่ 10 · เพดาน 90 — 100 เฉพาะ flow ปิดงาน
     private static int ComputeOnsiteProgressPct(JsonElement s)
     {
-        var pct = 0;
+        // autosave draft เกิดได้ก็ต่อเมื่อช่างเปิดฟอร์มงานที่รับแล้ว
+        var pct = NIS_PCT_ACCEPTED;
 
-        if (!string.IsNullOrEmpty(ReadJsonString(s, "checkInTime"))) pct += 20;
+        if (!string.IsNullOrEmpty(ReadJsonString(s, "checkInTime")))
+            pct = NIS_PCT_CHECKED_IN;
 
         if (s.TryGetProperty("checklist", out var checklist) && checklist.ValueKind == JsonValueKind.Array)
         {
@@ -2895,23 +2956,20 @@ public class NisController : ControllerBase
                     && c.ValueKind == JsonValueKind.True)
                     done++;
             }
-            if (total > 0) pct += (int)Math.Round(40.0 * done / total);
+
+            // ติ๊กแล้วอย่างน้อย 1 ข้อจึงดัน % (ยังไม่ติ๊กเลย = คงค่าตาม milestone ก่อนหน้า)
+            if (total > 0 && done > 0)
+            {
+                var band = NIS_PCT_CHECKED_IN
+                    + (int)Math.Round((double)(NIS_PCT_CHECKLIST_DONE - NIS_PCT_CHECKED_IN) * done / total);
+                pct = Math.Max(pct, band);
+            }
         }
 
-        if (!string.IsNullOrWhiteSpace(ReadJsonString(s, "workDetail"))) pct += 10;
+        if (!string.IsNullOrEmpty(ReadJsonString(s, "checkOutTime")))
+            pct = Math.Max(pct, NIS_PCT_CHECKED_OUT);
 
-        var hasPhoto =
-            (s.TryGetProperty("photos", out var photos)
-                && photos.ValueKind == JsonValueKind.Array && photos.GetArrayLength() > 0)
-            || (s.TryGetProperty("rackPhotos", out var racks)
-                && racks.ValueKind == JsonValueKind.Array && racks.GetArrayLength() > 0);
-        if (hasPhoto) pct += 10;
-
-        if (!string.IsNullOrEmpty(ReadJsonString(s, "signatureImg"))) pct += 10;
-
-        if (!string.IsNullOrEmpty(ReadJsonString(s, "checkOutTime"))) pct = Math.Max(pct, 90);
-
-        return Math.Min(pct, 90);
+        return Math.Min(pct, NIS_PCT_CHECKED_OUT);
     }
 
     /// อ่าน string property จาก JsonElement แบบปลอดภัย (ไม่มี/ไม่ใช่ string → null)

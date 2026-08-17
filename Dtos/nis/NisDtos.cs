@@ -115,6 +115,14 @@ public class NisTicketStatusDto
     public string? UpdatedBy { get; set; }
 }
 
+/// % ความคืบหน้าที่แอปช่างคำนวณเอง (milestone: รับงาน 10 · เช็คอิน 25 · checklist 25→85 · เช็คเอาท์ 90)
+public class NisTicketProgressDto
+{
+    public int Pct { get; set; }
+    public string? CmpId { get; set; }
+    public string? UpdatedBy { get; set; }
+}
+
 /// ช่างกดรับงาน (accept) จากแอปหน้างาน — Scheduled → In Progress + แจ้งเตือน SM
 public class NisTicketAcceptDto
 {
