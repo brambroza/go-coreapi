@@ -106,6 +106,10 @@ public class NisTicketAssignDto
     public string? StartDate { get; set; }
     public string? EndDate { get; set; }
     public string? CmpId { get; set; }
+
+    /// Accounts.Username ของผู้กดมอบหมาย (CRM ส่ง userlogin · RN ส่ง username จาก session)
+    /// เก็บลง NisTicket.AssignedBy → ใช้เป็นผู้รับแจ้งเตือนตอนช่างกดรับงาน
+    public string? UpdatedBy { get; set; }
 }
 
 public class NisTicketStatusDto

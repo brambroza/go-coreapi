@@ -618,25 +618,23 @@ public class NisController : ControllerBase
         }
 
         if (!alreadyAccepted)
-            await NotifyManagersTicketAcceptedAsync(ticket, acceptedBy);
+            await NotifyTicketAcceptedAsync(ticket, acceptedBy);
 
         return Ok(new { message = "Ticket accepted", status = ticket.Status });
     }
 
     /// <summary>
-    /// แจ้ง Service Manager ทุกคนในบริษัทว่าช่างกดรับงานแล้ว — best-effort ทั้งหมด
-    /// (push ไม่สำเร็จห้ามทำให้การกดรับงานล้ม)
-    /// ผู้รับ = Accounts ที่ Role.Name เป็น mng/admin (ตรงกับ roleMap ฝั่งแอป)
+    /// แจ้งว่าช่างกดรับงานแล้ว — best-effort ทั้งหมด (push ไม่สำเร็จห้ามทำให้การกดรับงานล้ม)
+    ///
+    /// ผู้รับ = SM ที่เป็นคนมอบหมายตั๋วใบนี้เท่านั้น (NisTicket.AssignedBy)
+    /// ตั๋วเก่าก่อนมีคอลัมน์ AssignedBy → fallback ไปที่ SM จริงของบริษัท
+    /// (SystemRole.StateManager = 1 — แหล่งเดียวกับ claim role ที่ CRM/RN ใช้)
     /// </summary>
-    private async Task NotifyManagersTicketAcceptedAsync(NisTicket ticket, string acceptedBy)
+    private async Task NotifyTicketAcceptedAsync(NisTicket ticket, string acceptedBy)
     {
         try
         {
-            var managers = await _context.Accounts
-                .Where(a => a.CmpId == ticket.CmpId
-                    && (a.Role.Name == "mng" || a.Role.Name == "admin"))
-                .Select(a => new { a.Username, a.FullName })
-                .ToListAsync();
+            var managers = await ResolveAcceptNotifyTargetsAsync(ticket);
 
             if (managers.Count == 0) return;
 
@@ -698,6 +696,78 @@ public class NisController : ControllerBase
         {
             _logger.LogWarning(ex, "NIS accept: แจ้งเตือน SM ไม่สำเร็จ (ticket {TicketId})", ticket.TicketId);
         }
+    }
+
+    /// ผู้รับแจ้งเตือน "ช่างรับงาน" — Username ใช้กับ socket room/กระดิ่ง CRM · FullName ใช้กับ Expo push
+    private sealed record NisNotifyTarget(string Username, string FullName);
+
+    /// <summary>
+    /// หาผู้รับแจ้งเตือนตอนช่างกดรับงาน: คนที่มอบหมายตั๋วใบนี้ (NisTicket.AssignedBy) เป็นหลัก
+    /// ถ้าตั๋วไม่มีค่านั้น (ตั๋วเก่าก่อน migration / assign มาจาก client รุ่นที่ยังไม่ส่ง updatedBy)
+    /// จึง fallback ไปที่ SM ทุกคนของบริษัท
+    /// </summary>
+    private async Task<List<NisNotifyTarget>> ResolveAcceptNotifyTargetsAsync(NisTicket ticket)
+    {
+        if (!string.IsNullOrWhiteSpace(ticket.AssignedBy))
+        {
+            var assigner = await _context.Accounts
+                .Where(a => a.CmpId == ticket.CmpId && a.Username == ticket.AssignedBy)
+                .Select(a => new NisNotifyTarget(a.Username, a.FullName ?? string.Empty))
+                .FirstOrDefaultAsync();
+
+            if (assigner != null) return [assigner];
+
+            // AssignedBy ค้างชื่อ account ที่ถูกลบไปแล้ว → ตกไป fallback ด้านล่าง ดีกว่าเงียบ
+            _logger.LogWarning(
+                "NIS accept: ไม่พบ account ผู้มอบหมาย (ticket {TicketId}) — fallback ไป SM ทั้งบริษัท",
+                ticket.TicketId);
+        }
+
+        return await GetNisManagersAsync(ticket.CmpId);
+    }
+
+    /// <summary>
+    /// SM ของบริษัทตามนิยามเดียวกับ claim role ที่ CRM/RN ใช้ — SystemRole.StateManager = 1
+    /// ผ่าน SystemPermission (มิเรอร์ AccountService.GetNisRoleAsync) ไม่ใช่ Accounts.Role.Name
+    /// ซึ่งเป็น role เดิมของ CRM และกว้างเกินไป (ทุก account ที่ชื่อ role = admin)
+    /// </summary>
+    private async Task<List<NisNotifyTarget>> GetNisManagersAsync(string cmpId)
+    {
+        const string sql = @"
+SELECT DISTINCT a.Username, ISNULL(a.FullName, '') AS FullName
+FROM Accounts AS a
+JOIN SystemPermission AS per ON per.AccountID = a.AccountID
+JOIN SystemRole AS role      ON role.RoleId   = per.RoleId
+WHERE a.CmpId = @CmpId
+  AND ISNULL(role.StateManager, 0) = 1;";
+
+        var result = new List<NisNotifyTarget>();
+        var connection = _context.Database.GetDbConnection();
+        var shouldClose = connection.State != System.Data.ConnectionState.Open;
+        if (shouldClose) await connection.OpenAsync();
+        try
+        {
+            await using var command = connection.CreateCommand();
+            command.CommandText = sql;
+            var parameter = command.CreateParameter();
+            parameter.ParameterName = "@CmpId";
+            parameter.Value = cmpId ?? string.Empty;
+            command.Parameters.Add(parameter);
+
+            await using var reader = await command.ExecuteReaderAsync();
+            while (await reader.ReadAsync())
+            {
+                var username = reader.GetString(0);
+                if (string.IsNullOrWhiteSpace(username)) continue;
+                result.Add(new NisNotifyTarget(username, reader.GetString(1)));
+            }
+        }
+        finally
+        {
+            if (shouldClose) await connection.CloseAsync();
+        }
+
+        return result;
     }
 
     // ── PUT api/nis/tickets/{id}/close-approve ───────────────────────────────
@@ -809,6 +879,8 @@ public class NisController : ControllerBase
             // Unassigned → back to the Open / Assigned backlog.
             ticket.Status = "Open";
             ticket.Pct = NIS_PCT_NOT_ACCEPTED;
+            // การมอบหมายรอบเก่าจบแล้ว — ล้างผู้มอบหมายทิ้ง กันแจ้งเตือนไปหาคนที่ไม่ได้มอบหมายรอบใหม่
+            ticket.AssignedBy = null;
         }
         else if (previousAssignee != dto.Assignee
                  || ticket.Status == "Open"
@@ -826,6 +898,11 @@ public class NisController : ControllerBase
         // else: same assignee already working (In Progress / Pending / …) — a
         // date-only edit must not reset their progress, so keep the status.
 
+        // ผู้มอบหมาย = ผู้รับแจ้งเตือนตอนช่างกดรับงาน (ไม่ทับด้วย null จาก client รุ่นเก่าที่ยังไม่ส่งค่า)
+        if (dto.Assignee != "-" && !string.IsNullOrWhiteSpace(dto.UpdatedBy))
+            ticket.AssignedBy = dto.UpdatedBy;
+
+        ticket.UpdatedBy = dto.UpdatedBy ?? ticket.UpdatedBy;
         ticket.UpdatedDate = DateTime.Now;
 
         await _context.SaveChangesAsync();

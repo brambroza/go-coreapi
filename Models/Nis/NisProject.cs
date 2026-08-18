@@ -178,6 +178,11 @@ public class NisTicket
     [MaxLength(200)]
     public string Assignee { get; set; } = "-";
 
+    /// Accounts.Username ของ SM ที่กดมอบหมายตั๋วนี้ (ไม่ใช่ FullName — ต่างจาก Assignee)
+    /// ใช้เป็นผู้รับแจ้งเตือนตอนช่างกดรับงาน · null = ตั๋วเก่าก่อนมี column นี้ หรือถูก unassign แล้ว
+    [MaxLength(100)]
+    public string? AssignedBy { get; set; }
+
     public DateTime? StartDate { get; set; }
     public DateTime? EndDate { get; set; }
 
