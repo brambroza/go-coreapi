@@ -92,6 +92,10 @@ public class NisProject
     [MaxLength(50)]
     public string? EngineerPhone { get; set; }
 
+    /// JSON object เงื่อนไขบริการ (สัญญา) ที่เลือกตอนสร้างโครงการ
+    /// (sla/onsitePerYear/pmPerYear/onsiteAccident ฯลฯ) — null = โครงการเก่า
+    public string? ServiceConditionsJson { get; set; }
+
     // ── Location / Tenant ─────────────────────────────────────────────────────
 
     [MaxLength(500)]

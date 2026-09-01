@@ -46,6 +46,10 @@ public class NisSystemConfig
     /// JSON object ของลายเซ็นอีเมล (ชื่อ/ตำแหน่ง/มือถือ ปล่อยว่างได้ — ใช้ของผู้ล็อกอินตอนส่ง)
     public string? EmailSignatureJson { get; set; }
 
+    /// JSON object ของตัวเลือกเงื่อนไขงาน (serviceYears/onsitePerYear/pmPerYear/delivery/defaults ฯลฯ)
+    /// สำหรับ wizard สร้างโครงการ — null = ใช้ default จากโค้ด
+    public string? ServiceConditionOptionsJson { get; set; }
+
     /// Pipe-delimited SLA options, e.g. "8x5xNBD|8x5|24x7x4|24x7xNBD"
     [MaxLength(500)]
     public string SlaOptionsRaw { get; set; } = "8x5xNBD|8x5|24x7x4|24x7xNBD";

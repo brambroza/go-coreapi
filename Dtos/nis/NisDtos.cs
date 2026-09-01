@@ -168,8 +168,27 @@ public class NisProjectResponseDto
     public NisSalesPMDto? SalesPM { get; set; }
     public NisEngineerDto? Engineer { get; set; }
     public string? Location { get; set; }
+    /// เงื่อนไขบริการ (สัญญา) ที่เลือกตอนสร้างโครงการ — null สำหรับโครงการเก่า
+    public NisServiceConditionsDto? ServiceConditions { get; set; }
     public List<NisTicketResponseDto> Tickets { get; set; } = new();
     public List<NisAttachmentDto> Attachments { get; set; } = new();
+}
+
+/// เงื่อนไขบริการของโครงการ (สัญญา) — เก็บเป็น JSON บน NisProject.ServiceConditionsJson
+public class NisServiceConditionsDto
+{
+    public string ServiceYears { get; set; } = string.Empty;
+    public string OnsitePerYear { get; set; } = string.Empty;
+    public string PmPerYear { get; set; } = string.Empty;
+    public string Sla { get; set; } = string.Empty;
+    public string ServiceReplacement { get; set; } = string.Empty;
+    public string RemoteBackup { get; set; } = string.Empty;
+    public string MonthlyReport { get; set; } = string.Empty;
+    public string MonthlyReportDay { get; set; } = string.Empty;
+    public string DeliveryType { get; set; } = string.Empty;
+    public string DeliveryBy { get; set; } = string.Empty;
+    /// เคส Accident — ตั๋ว onsite สร้างครบโควตาแต่ไม่กำหนดรอบ/วันล่วงหน้า
+    public bool OnsiteAccident { get; set; } = false;
 }
 
 public class NisProjectCreateDto
@@ -190,6 +209,8 @@ public class NisProjectCreateDto
     public NisSalesPMDto? SalesPM { get; set; }
     public NisEngineerDto? Engineer { get; set; }
     public string? Location { get; set; }
+    /// เงื่อนไขบริการ (สัญญา) — client เก่าไม่ส่งได้ (null = ไม่บันทึก)
+    public NisServiceConditionsDto? ServiceConditions { get; set; }
     public List<NisTicketCreateDto> Tickets { get; set; } = new();
     public string? CmpId { get; set; }
     public string? CreatedBy { get; set; }
@@ -243,6 +264,47 @@ public class NisEmailSignatureDto
     public string QrUrl { get; set; } = string.Empty;
 }
 
+/// ตัวเลือกแบบ value/label สำหรับ select (deliveryType ฯลฯ)
+public class NisOptionItemDto
+{
+    public string Value { get; set; } = string.Empty;
+    public string Label { get; set; } = string.Empty;
+}
+
+/// ค่า default ของฟอร์มเงื่อนไขในหน้า New Project
+public class NisServiceCondDefaultsDto
+{
+    public string ServiceYears { get; set; } = "1";
+    public string OnsitePerYear { get; set; } = "4";
+    public string PmPerYear { get; set; } = "4";
+    public string Sla { get; set; } = "8x5xNBD";
+    public string ServiceReplacement { get; set; } = "company";
+    public string RemoteBackup { get; set; } = "4";
+    public string MonthlyReport { get; set; } = "4";
+    public string MonthlyReportDay { get; set; } = "5";
+    public string DeliveryType { get; set; } = "onsite_install";
+    public string DeliveryBy { get; set; } = "nis_team";
+    /// ค่าเริ่มต้นของ checkbox "เคส Accident" ใน wizard สร้างโครงการ
+    public bool OnsiteAccident { get; set; } = false;
+}
+
+/// ตัวเลือกเงื่อนไขงานของ wizard สร้างโครงการ — JSON บน NisSystemConfig.ServiceConditionOptionsJson
+public class NisServiceConditionOptionsDto
+{
+    public List<string> ServiceYears { get; set; } = new();
+    public List<string> OnsitePerYearImplement { get; set; } = new();
+    public List<string> OnsitePerYearMa { get; set; } = new();
+    public List<string> PmPerYearImplement { get; set; } = new();
+    public List<string> PmPerYearMa { get; set; } = new();
+    public List<string> RemoteBackupImplement { get; set; } = new();
+    public List<string> RemoteBackupMa { get; set; } = new();
+    public List<string> MonthlyReport { get; set; } = new();
+    public List<NisOptionItemDto> ServiceReplacement { get; set; } = new();
+    public List<NisOptionItemDto> DeliveryType { get; set; } = new();
+    public List<NisOptionItemDto> DeliveryBy { get; set; } = new();
+    public NisServiceCondDefaultsDto Defaults { get; set; } = new();
+}
+
 public class NisSystemConfigResponseDto
 {
     public List<string> JobTypes { get; set; } = new();
@@ -260,6 +322,8 @@ public class NisSystemConfigResponseDto
     public List<NisEmailTemplateDto> EmailTemplates { get; set; } = new();
     /// ลายเซ็นที่ต่อท้าย body ของทุก template
     public NisEmailSignatureDto EmailSignature { get; set; } = new();
+    /// ตัวเลือกเงื่อนไขงานของ wizard สร้างโครงการ — GET เติม default เสมอ
+    public NisServiceConditionOptionsDto ServiceConditionOptions { get; set; } = new();
 }
 
 public class NisSystemConfigSaveDto
@@ -279,6 +343,8 @@ public class NisSystemConfigSaveDto
     public List<NisEmailTemplateDto> EmailTemplates { get; set; } = new();
     /// ลายเซ็นที่ต่อท้าย body ของทุก template
     public NisEmailSignatureDto EmailSignature { get; set; } = new();
+    /// nullable โดยตั้งใจ — client เก่าที่ PUT โดยไม่มี field นี้ต้องไม่ลบค่าที่บันทึกไว้ (null-preserve)
+    public NisServiceConditionOptionsDto? ServiceConditionOptions { get; set; }
     public string CmpId { get; set; } = string.Empty;
     public string UpdatedBy { get; set; } = string.Empty;
 }

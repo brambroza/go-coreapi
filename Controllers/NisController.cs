@@ -178,6 +178,7 @@ public class NisController : ControllerBase
         SoRef = p.SoRef,
         Tags = SplitTags(p.TagsRaw),
         Location = p.Location,
+        ServiceConditions = ParseJson<NisServiceConditionsDto?>(p.ServiceConditionsJson, null),
         Contact = string.IsNullOrEmpty(p.ContactName) ? null : new NisContactDto
         {
             Name = p.ContactName ?? string.Empty,
@@ -306,6 +307,7 @@ public class NisController : ControllerBase
             SoRef = dto.SoRef,
             TagsRaw = JoinTags(dto.Tags),
             Location = dto.Location,
+            ServiceConditionsJson = dto.ServiceConditions == null ? null : SerializeJson(dto.ServiceConditions),
             ContactName = dto.Contact?.Name,
             ContactPhone = dto.Contact?.Phone,
             ContactEmail = dto.Contact?.Email,
@@ -1723,6 +1725,9 @@ WHERE a.CmpId = @CmpId
         entity.ChecklistByCustomerJson = SerializeCustomerChecklistMap(dto.ChecklistByCustomer);
         entity.EmailTemplatesJson = SerializeJson(dto.EmailTemplates);
         entity.EmailSignatureJson = SerializeJson(dto.EmailSignature);
+        // null-preserve: client เก่าที่ PUT โดยไม่มี field นี้ต้องไม่ลบค่าที่ tenant บันทึกไว้
+        if (dto.ServiceConditionOptions != null)
+            entity.ServiceConditionOptionsJson = SerializeJson(dto.ServiceConditionOptions);
         entity.SlaOptionsRaw = JoinTags(dto.SlaOptions);
         entity.WarningDaysService = dto.WarningDays.Service;
         entity.WarningDaysProduct = dto.WarningDays.Product;
@@ -1747,6 +1752,7 @@ WHERE a.CmpId = @CmpId
         ChecklistByCustomer = ParseCustomerChecklistMap(e.ChecklistByCustomerJson),
         EmailTemplates = ParseJson(e.EmailTemplatesJson, DefaultEmailTemplates()),
         EmailSignature = ParseJson(e.EmailSignatureJson, new NisEmailSignatureDto()),
+        ServiceConditionOptions = ParseJson(e.ServiceConditionOptionsJson, DefaultServiceConditionOptions()),
         SlaOptions = SplitTags(e.SlaOptionsRaw),
         WarningDays = new NisWarningDaysDto
         {
@@ -1833,8 +1839,43 @@ WHERE a.CmpId = @CmpId
         ChecklistByCustomer = new(),
         EmailTemplates = DefaultEmailTemplates(),
         EmailSignature = new NisEmailSignatureDto(),
+        ServiceConditionOptions = DefaultServiceConditionOptions(),
         SlaOptions = ["8x5xNBD", "8x5", "24x7x4", "24x7xNBD"],
         WarningDays = new NisWarningDaysDto { Service = 60, Product = 30 },
+    };
+
+    /// ตัวเลือกเงื่อนไขงานเริ่มต้นของ wizard สร้างโครงการ — ค่าตรงกับที่เคย hardcode ในหน้า CRM
+    private static NisServiceConditionOptionsDto DefaultServiceConditionOptions() => new()
+    {
+        ServiceYears = ["1", "2", "3"],
+        OnsitePerYearImplement = ["0", "2", "4", "6", "12"],
+        OnsitePerYearMa = ["0", "2", "3", "4", "12"],
+        PmPerYearImplement = ["0", "2", "4", "12"],
+        PmPerYearMa = ["0", "2", "4", "12"],
+        RemoteBackupImplement = ["0", "2", "4", "12"],
+        RemoteBackupMa = ["0", "4", "12"],
+        MonthlyReport = ["4", "12"],
+        ServiceReplacement =
+        [
+            new NisOptionItemDto { Value = "company", Label = "จากคลังบริษัทฯ" },
+            new NisOptionItemDto { Value = "vendor", Label = "จาก Vendor" },
+            new NisOptionItemDto { Value = "both", Label = "ทั้งสองแบบ (เลือกตามรายการสินค้า)" },
+        ],
+        DeliveryType =
+        [
+            new NisOptionItemDto { Value = "no_install", Label = "จัดส่ง โดยไม่ต้องติดตั้ง" },
+            new NisOptionItemDto { Value = "preconfig", Label = "PreConfig ก่อนจัดส่ง" },
+            new NisOptionItemDto { Value = "onsite_install", Label = "PreConfig จัดส่ง พร้อมติดตั้งหน้างาน" },
+            new NisOptionItemDto { Value = "remote_config", Label = "จัดส่งสินค้า และ Remote Config" },
+            new NisOptionItemDto { Value = "full_install", Label = "จัดส่งสินค้าและติดตั้ง" },
+        ],
+        DeliveryBy =
+        [
+            new NisOptionItemDto { Value = "nis_team", Label = "NIS Team (Auto Ticket → Service Manager)" },
+            new NisOptionItemDto { Value = "messenger", Label = "Messenger (Auto Ticket → จัดซื้อ)" },
+            new NisOptionItemDto { Value = "postal", Label = "ไปรษณีย์ (Auto Ticket → จัดซื้อ)" },
+        ],
+        Defaults = new NisServiceCondDefaultsDto(),
     };
 
     // ── Email template helpers ───────────────────────────────────────────────
