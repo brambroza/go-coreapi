@@ -138,7 +138,7 @@ namespace goalongapi.Controllers
                 _cmd += ",@AccountCodeAR  ='" + productList.AccountCodeAR + "'";
                 _cmd += ",@AccountCodeAP  ='" + productList.AccountCodeAP + "'";
                 _cmd += ",@ProdCateCode  ='" + productList.ProdCateCode + "'";
-                _cmd += ",@Warrantry  ='" + productList.Warranty + "'";
+                _cmd += ",@Warrantry  ='" + Tool.Tool.validateStr(productList.Warranty) + "'";
                 _cmd += ",@BrandName  ='" + productList.BrandName + "'";
                 _cmd += ",@ProductStateActive =" + productList.ProductStateActive;
                 _cmd += ",@CmpId = '" + productList.CmpId + "'";
