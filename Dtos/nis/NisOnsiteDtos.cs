@@ -20,6 +20,7 @@ public class NisOnsiteTicketResponseDto
     public string? SalesName { get; set; }
     public string? SalesNickname { get; set; }
     public string? SalesPhone { get; set; }
+    public string? SalesEmail { get; set; }
     public string? SalesRole { get; set; }
     public string EngineerName { get; set; } = "-";
     public string EngineerNick { get; set; } = string.Empty;
@@ -98,6 +99,13 @@ public class NisOnsiteReportBaseDto
     public List<NisOnsitePmItemDto> PmItems { get; set; } = new();
     public NisOnsiteDamagedProductDto? DamagedProduct { get; set; }
     public List<NisOnsiteSupportCaseDto> SupportCases { get; set; } = new();
+
+    // รูปเดี่ยวระดับ report (ก่อน/ระหว่าง/หลังงาน) — คนละความหมายกับ NisOnsitePmItemDto.BeforePhoto/
+    // AfterPhoto (รูปต่อ PM item)
+    public string? BeforePhoto { get; set; }
+    public string? DuringPhoto { get; set; }
+    public string? AfterPhoto { get; set; }
+
     public string? SignatureImg { get; set; }
     public bool SkipSignature { get; set; }
     public string? CmpId { get; set; }
@@ -160,6 +168,14 @@ public class NisServiceReportDto
     public List<NisServiceReportChecklistDto> Checklist { get; set; } = new();
     public string? SignatureImg { get; set; }
     public bool SkipSignature { get; set; }
+
+    public List<string> Photos { get; set; } = new();
+    public List<NisOnsitePmItemDto> PmItems { get; set; } = new();
+    public NisOnsiteDamagedProductDto? DamagedProduct { get; set; }
+    public string? BeforePhoto { get; set; }
+    public string? DuringPhoto { get; set; }
+    public string? AfterPhoto { get; set; }
+
     /// 'YYYY-MM-DD'
     public string Date { get; set; } = string.Empty;
     public string Status { get; set; } = "Closed";

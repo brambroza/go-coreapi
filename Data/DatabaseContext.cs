@@ -68,6 +68,7 @@ namespace goalongapi.Data
         public DbSet<NisPendingRequest> NisPendingRequests { get; set; }
         public DbSet<NisOnsiteReport> NisOnsiteReports { get; set; }
         public DbSet<NisCustomerLocation> NisCustomerLocations { get; set; }
+        public DbSet<NisEquipment> NisEquipments { get; set; }
         public DbSet<NisCustomerAssignEmp> NisCustomerAssignEmps { get; set; }
         public DbSet<NisContactRow> NisContacts { get; set; }
         public DbSet<NisPersonalTodo> NisPersonalTodos { get; set; }
@@ -875,6 +876,13 @@ namespace goalongapi.Data
                 entity.Property(e => e.Remark).HasMaxLength(500);
                 entity.Property(e => e.LocationURL).HasMaxLength(200);
                 entity.Property(e => e.UpdUser).HasMaxLength(50);
+            });
+
+            modelBuilder.Entity<NisEquipment>(entity =>
+            {
+                entity.ToTable("NisEquipment", "dbo");
+                entity.HasKey(e => e.Id);
+                entity.HasIndex(e => new { e.CmpId, e.CustomerCode });
             });
 
             modelBuilder.Entity<NisCustomerAssignEmp>(entity =>

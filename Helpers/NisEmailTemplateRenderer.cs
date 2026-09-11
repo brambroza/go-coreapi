@@ -83,6 +83,27 @@ public static class NisEmailTemplateRenderer
     }
 
     /// <summary>
+    /// หา template อีเมลปิดงานแบบ type-aware — ลองหา "close-job-{ticketType}" ก่อน
+    /// (เช่น "close-job-PM", "close-job-Install") ถ้าไม่มีหรือไม่ถูกเปิดใช้งาน จะ fallback ไปที่
+    /// template เดิม (<see cref="CloseJobTemplateId"/>) เหมือนเดิมทุกกรณี — เพื่อให้ tenant ที่ยังไม่ตั้ง
+    /// template แยกตามประเภทงานยังใช้งานได้ปกติโดยไม่ต้องแก้ config เพิ่ม
+    /// </summary>
+    /// <param name="templates">รายการ template จาก System Config</param>
+    /// <param name="ticketType">ประเภทตั๋ว/งาน เช่น "PM", "Install", "MA Onsite" (ว่างได้ — จะข้ามไปใช้ default เลย)</param>
+    /// <returns>template เฉพาะประเภทถ้ามีและเปิดใช้งาน ไม่งั้น template "close-job" เดิม หรือ null ถ้าไม่มีทั้งคู่</returns>
+    public static NisEmailTemplateDto? FindCloseJobTemplateForType(
+        IEnumerable<NisEmailTemplateDto>? templates, string? ticketType)
+    {
+        if (!string.IsNullOrWhiteSpace(ticketType))
+        {
+            var typed = FindTemplate(templates, $"{CloseJobTemplateId}-{ticketType}");
+            if (typed != null) return typed;
+        }
+
+        return FindTemplate(templates, CloseJobTemplateId);
+    }
+
+    /// <summary>
     /// สร้าง HTML ลายเซ็นอีเมล — ชื่อ/ตำแหน่ง/มือถือ ยึดผู้ล็อกอินเมื่อ UseLoginName = true
     /// (ค่าที่ตั้งไว้ในหน้า config เป็น fallback), บล็อกบริษัทที่ปล่อยว่างใน config จะ fallback
     /// ไปข้อมูลบริษัทของ tenant เหมือนที่ CRM ประกอบลายเซ็นเอง

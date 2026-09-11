@@ -60,6 +60,12 @@ public class NisOnsiteReport
     public string? PhotosJson { get; set; }
     public string? SignatureImageBase64 { get; set; }
 
+    // รูปเดี่ยวระดับ report (ก่อน/ระหว่าง/หลังงาน) — คนละความหมายกับ NisOnsitePmItemDto.BeforePhoto/
+    // AfterPhoto (รูปต่อ PM item ที่เก็บใน PmItemsJson)
+    public string? BeforePhoto { get; set; }
+    public string? DuringPhoto { get; set; }
+    public string? AfterPhoto { get; set; }
+
     public bool SkipSignature { get; set; }
 
     // ── Persisted Service Report PDF (client-generated, attached to the closing email) ──

@@ -402,3 +402,11 @@
 /Users/amnartkongpet/Project/GoAlong/2024/coreapi-new/obj/Debug/net9.0/goalongapi.pdb
 /Users/amnartkongpet/Project/GoAlong/2024/coreapi-new/obj/Debug/net9.0/goalongapi.genruntimeconfig.cache
 /Users/amnartkongpet/Project/GoAlong/2024/coreapi-new/obj/Debug/net9.0/ref/goalongapi.dll
+/Users/amnartkongpet/Project/GoAlong/2024/coreapi-new/bin/Debug/net9.0/ClosedXML.dll
+/Users/amnartkongpet/Project/GoAlong/2024/coreapi-new/bin/Debug/net9.0/ClosedXML.Parser.dll
+/Users/amnartkongpet/Project/GoAlong/2024/coreapi-new/bin/Debug/net9.0/DocumentFormat.OpenXml.dll
+/Users/amnartkongpet/Project/GoAlong/2024/coreapi-new/bin/Debug/net9.0/DocumentFormat.OpenXml.Framework.dll
+/Users/amnartkongpet/Project/GoAlong/2024/coreapi-new/bin/Debug/net9.0/ExcelNumberFormat.dll
+/Users/amnartkongpet/Project/GoAlong/2024/coreapi-new/bin/Debug/net9.0/RBush.dll
+/Users/amnartkongpet/Project/GoAlong/2024/coreapi-new/bin/Debug/net9.0/SixLabors.Fonts.dll
+/Users/amnartkongpet/Project/GoAlong/2024/coreapi-new/bin/Debug/net9.0/System.IO.Packaging.dll

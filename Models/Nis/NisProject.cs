@@ -78,6 +78,9 @@ public class NisProject
     [MaxLength(50)]
     public string? SalesPMPhone { get; set; }
 
+    [MaxLength(200)]
+    public string? SalesPMEmail { get; set; }
+
     [MaxLength(100)]
     public string? SalesPMRole { get; set; }
 
@@ -95,6 +98,9 @@ public class NisProject
     /// JSON object เงื่อนไขบริการ (สัญญา) ที่เลือกตอนสร้างโครงการ
     /// (sla/onsitePerYear/pmPerYear/onsiteAccident ฯลฯ) — null = โครงการเก่า
     public string? ServiceConditionsJson { get; set; }
+
+    /// JSON array ของ NisEquipment.Id ที่เลือกตอนสร้างโครงการ (PM) — null = ไม่ได้เลือก/โครงการเก่า
+    public string? EquipmentIdsJson { get; set; }
 
     // ── Location / Tenant ─────────────────────────────────────────────────────
 

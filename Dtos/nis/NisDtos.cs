@@ -14,6 +14,8 @@ public class NisSalesPMDto
     public string Name { get; set; } = string.Empty;
     public string? Nickname { get; set; }
     public string? Phone { get; set; }
+    /// อีเมลเซลผู้ดูแล — แสดงตามไปทุกหน้า ticket/project (CRM + RN)
+    public string? Email { get; set; }
     public string? Role { get; set; }
 }
 
@@ -168,8 +170,12 @@ public class NisProjectResponseDto
     public NisSalesPMDto? SalesPM { get; set; }
     public NisEngineerDto? Engineer { get; set; }
     public string? Location { get; set; }
+    /// วันที่สร้างโครงการ (yyyy-MM-dd HH:mm)
+    public string CreatedDate { get; set; } = string.Empty;
     /// เงื่อนไขบริการ (สัญญา) ที่เลือกตอนสร้างโครงการ — null สำหรับโครงการเก่า
     public NisServiceConditionsDto? ServiceConditions { get; set; }
+    /// NisEquipment.Id ที่เลือกไว้ตอนสร้างโครงการ (PM) — ว่าง = ไม่ได้เลือก/โครงการเก่า
+    public List<string> EquipmentIds { get; set; } = new();
     public List<NisTicketResponseDto> Tickets { get; set; } = new();
     public List<NisAttachmentDto> Attachments { get; set; } = new();
 }
@@ -211,6 +217,8 @@ public class NisProjectCreateDto
     public string? Location { get; set; }
     /// เงื่อนไขบริการ (สัญญา) — client เก่าไม่ส่งได้ (null = ไม่บันทึก)
     public NisServiceConditionsDto? ServiceConditions { get; set; }
+    /// NisEquipment.Id ที่เลือกไว้ตอนสร้างโครงการ (PM) — client เก่าไม่ส่งได้
+    public List<string> EquipmentIds { get; set; } = new();
     public List<NisTicketCreateDto> Tickets { get; set; } = new();
     public string? CmpId { get; set; }
     public string? CreatedBy { get; set; }
@@ -452,7 +460,9 @@ public class NisCustomerSaveDto
     public string? Id { get; set; }
     public string? Name { get; set; }
     public string? TaxId { get; set; }
-    public List<NisCustomerContactDto> Contacts { get; set; } = new();
+    /// null = ไม่แตะผู้ติดต่อ (dbo.Contact) เลย — ใช้ตอนบันทึกเฉพาะสถานที่
+    /// ส่ง list มา = แทนที่ผู้ติดต่อทั้งชุดตามเดิม
+    public List<NisCustomerContactDto>? Contacts { get; set; }
     public List<NisCustomerLocationDto> Locations { get; set; } = new();
     public string? Cmpid { get; set; }
     public string? CreatedBy { get; set; }
@@ -469,4 +479,43 @@ public class NisBoardCustomerDto
     public List<string> AssignedStaff { get; set; } = new();
     public List<NisCustomerContactDto> Contacts { get; set; } = new();
     public List<NisCustomerLocationDto> Locations { get; set; } = new();
+}
+
+// ── Equipment master DTOs (dbo.NisEquipment) — อุปกรณ์ใน Rack ต่อลูกค้า ──────────
+// Matches frontend INisEquipment. ผูกกับ customerCode อย่างเดียว ไม่แยกตาม location.
+
+public class NisEquipmentDto
+{
+    /// null/ว่าง เมื่อเป็นแถวใหม่ที่ยังไม่บันทึก
+    public string? Id { get; set; }
+    public string RackName { get; set; } = string.Empty;
+    public string DeviceName { get; set; } = string.Empty;
+    public string SerialNo { get; set; } = string.Empty;
+    public string Model { get; set; } = string.Empty;
+    public string Brand { get; set; } = string.Empty;
+    public string Note { get; set; } = string.Empty;
+}
+
+/// Save payload สำหรับหน้า master — replace-all รายการอุปกรณ์ทั้งชุดของลูกค้ารายนี้
+public class NisEquipmentSaveDto
+{
+    public string? Cmpid { get; set; }
+    public string CustomerCode { get; set; } = string.Empty;
+    public string? UpdatedBy { get; set; }
+    public List<NisEquipmentDto> Items { get; set; } = new();
+}
+
+/// ผลลัพธ์ import Excel — เพิ่มเข้าไปในของเดิม (append) ไม่ลบของเก่า
+public class NisEquipmentImportResultDto
+{
+    public int Imported { get; set; }
+    public List<NisEquipmentDto> Items { get; set; } = new();
+}
+
+/// สรุปจำนวนอุปกรณ์ต่อลูกค้า — ใช้แสดงหน้าแรกของ Equipment Master ว่าลูกค้าเจ้าไหนบันทึกไว้แล้วบ้าง
+public class NisEquipmentCustomerSummaryDto
+{
+    public string CustomerCode { get; set; } = string.Empty;
+    public string CustomerName { get; set; } = string.Empty;
+    public int Count { get; set; }
 }

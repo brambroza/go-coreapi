@@ -70,6 +70,8 @@ builder.Services.AddHttpClient();
 // NIS Onsite push (Track B) — Expo Push sender + overdue watcher (วันละครั้ง/ตั๋ว ทุก 15 นาที)
 builder.Services.AddScoped<goalongapi.Services.ExpoPushService>();
 builder.Services.AddHostedService<goalongapi.Services.NisOverduePushService>();
+// NIS Onsite — auto-close ตั๋วเคส Accident หลังโปรเจคหมดสัญญา (เช็ควันละครั้ง, bypass ขั้นตอนอนุมัติ)
+builder.Services.AddHostedService<goalongapi.Services.NisAccidentAutoCloseService>();
 // NIS Onsite realtime bridge — best-effort POST → go-chat-api emits socket.io nis:notify
 // (foreground refresh, complements ExpoPushService for background/killed app)
 builder.Services.AddScoped<goalongapi.Services.NisRealtimeNotifyService>();

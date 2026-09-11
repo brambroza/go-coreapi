@@ -1,5 +1,6 @@
 using System.Text.Json;
 using System.Globalization;
+using ClosedXML.Excel;
 
 using goalongapi.Data;
 using goalongapi.Dtos.Nis;
@@ -178,7 +179,9 @@ public class NisController : ControllerBase
         SoRef = p.SoRef,
         Tags = SplitTags(p.TagsRaw),
         Location = p.Location,
+        CreatedDate = FormatDateTime(p.CreatedDate),
         ServiceConditions = ParseJson<NisServiceConditionsDto?>(p.ServiceConditionsJson, null),
+        EquipmentIds = ParseJson<List<string>?>(p.EquipmentIdsJson, null) ?? new(),
         Contact = string.IsNullOrEmpty(p.ContactName) ? null : new NisContactDto
         {
             Name = p.ContactName ?? string.Empty,
@@ -190,6 +193,7 @@ public class NisController : ControllerBase
             Name = p.SalesPMName ?? string.Empty,
             Nickname = p.SalesPMNickname,
             Phone = p.SalesPMPhone,
+            Email = p.SalesPMEmail,
             Role = p.SalesPMRole,
         },
         Engineer = string.IsNullOrEmpty(p.EngineerName) ? null : new NisEngineerDto
@@ -308,12 +312,14 @@ public class NisController : ControllerBase
             TagsRaw = JoinTags(dto.Tags),
             Location = dto.Location,
             ServiceConditionsJson = dto.ServiceConditions == null ? null : SerializeJson(dto.ServiceConditions),
+            EquipmentIdsJson = dto.EquipmentIds.Count == 0 ? null : SerializeJson(dto.EquipmentIds),
             ContactName = dto.Contact?.Name,
             ContactPhone = dto.Contact?.Phone,
             ContactEmail = dto.Contact?.Email,
             SalesPMName = dto.SalesPM?.Name,
             SalesPMNickname = dto.SalesPM?.Nickname,
             SalesPMPhone = dto.SalesPM?.Phone,
+            SalesPMEmail = dto.SalesPM?.Email,
             SalesPMRole = dto.SalesPM?.Role,
             EngineerName = dto.Engineer?.Name,
             EngineerNickname = dto.Engineer?.Nickname,
@@ -541,12 +547,16 @@ public class NisController : ControllerBase
 
         ticket.Status = dto.Status;
         // ลาก Kanban ข้ามคอลัมน์ → ให้ % ตรงกับ milestone ของสถานะปลายทาง
-        // (Open/Scheduled = ยังไม่รับงาน · Done/Closed = ปิดแล้ว · In Progress = อย่างน้อยรับงานแล้ว)
+        // (Open/Scheduled = ยังไม่รับงาน · Done/Closed = ปิดแล้ว)
+        // "In Progress" ตั้งใจ "ไม่" bump Pct ขึ้นเป็น NIS_PCT_ACCEPTED ที่นี่ — การลาก Kanban
+        // เฉย ๆ ไม่ได้แปลว่าช่างรับงานจริง (ไม่มี check-in/checklist) ปล่อยให้ Pct มาจาก action
+        // จริงของช่างเท่านั้น: PUT tickets/{id}/accept (กดรับงาน) หรือ tickets/{id}/progress
+        // (checklist ระหว่างทำงาน) — ดู PR ที่แก้บั๊ก "ลาก Kanban แล้วโชว์ 10% ทั้งที่ยังไม่รับงาน"
         ticket.Pct = dto.Status switch
         {
             "Open" or "Scheduled" => NIS_PCT_NOT_ACCEPTED,
             "Done" or "Closed" => NIS_PCT_CLOSED,
-            "In Progress" => Math.Max(ticket.Pct, NIS_PCT_ACCEPTED),
+            "In Progress" => ticket.Pct,
             _ => ticket.Pct,
         };
         ticket.UpdatedDate = DateTime.Now;
@@ -1409,10 +1419,14 @@ WHERE a.CmpId = @CmpId
         customer.StateGenQRCode = 1;
 
         // Replace contacts (delete-then-insert so it survives re-saves cleanly).
-        var oldContacts = await _context.NisContacts
-            .Where(c => c.CmpId == cmpId && c.DocType == "customer" && c.DocNo == code)
-            .ToListAsync();
-        _context.NisContacts.RemoveRange(oldContacts);
+        // dto.Contacts == null = caller บันทึกเฉพาะสถานที่ → ห้ามลบผู้ติดต่อเดิม
+        if (dto.Contacts != null)
+        {
+            var oldContacts = await _context.NisContacts
+                .Where(c => c.CmpId == cmpId && c.DocType == "customer" && c.DocNo == code)
+                .ToListAsync();
+            _context.NisContacts.RemoveRange(oldContacts);
+        }
 
         var oldLocations = await _context.NisCustomerLocations
             .Where(l => l.CmpId == cmpId && l.CustomerCode == code)
@@ -1421,7 +1435,7 @@ WHERE a.CmpId = @CmpId
 
         await _context.SaveChangesAsync();
 
-        foreach (var con in dto.Contacts.Where(c => !string.IsNullOrWhiteSpace(c.Name)))
+        foreach (var con in (dto.Contacts ?? new()).Where(c => !string.IsNullOrWhiteSpace(c.Name)))
         {
             _context.NisContacts.Add(new NisContactRow
             {
@@ -1481,11 +1495,28 @@ WHERE a.CmpId = @CmpId
             Name = dto.Name ?? string.Empty,
             TaxId = dto.TaxId ?? string.Empty,
             AssignedStaff = assignedStaff,
-            Contacts = dto.Contacts,
+            // ไม่ได้ส่ง contacts มา → คืนผู้ติดต่อจริงจาก DB ให้ client เก็บ record ล่าสุด
+            Contacts = dto.Contacts ?? await LoadNisCustomerContactsAsync(cmpId, code),
             Locations = dto.Locations,
         });
     }
 
+
+    /// <summary>ผู้ติดต่อของลูกค้า (dbo.Contact, DocType='customer') ในรูป DTO ของ Customer tab</summary>
+    private async Task<List<NisCustomerContactDto>> LoadNisCustomerContactsAsync(string cmpId, string code)
+    {
+        return await _context.NisContacts
+            .AsNoTracking()
+            .Where(c => c.CmpId == cmpId && c.DocType == "customer" && c.DocNo == code)
+            .Select(x => new NisCustomerContactDto
+            {
+                Name = x.ContactName ?? string.Empty,
+                Phone = x.ContactPhone ?? string.Empty,
+                Email = x.ContactEmail ?? string.Empty,
+                Role = x.ContactPosition ?? string.Empty,
+            })
+            .ToListAsync();
+    }
 
     private async Task<IActionResult> SaveNisCustomerAsyncNew(
         string? code,
@@ -1525,14 +1556,18 @@ WHERE a.CmpId = @CmpId
             // customer.UpdUser = user;
             // customer.UpdDate = DateTime.Now;
 
-            var oldContacts = await _context.NisContacts
-                .Where(c =>
-                    c.CmpId == cmpId &&
-                    c.DocType == "customer" &&
-                    c.DocNo == code)
-                .ToListAsync();
+            // dto.Contacts == null = caller บันทึกเฉพาะสถานที่ → ห้ามลบผู้ติดต่อเดิม
+            if (dto.Contacts != null)
+            {
+                var oldContacts = await _context.NisContacts
+                    .Where(c =>
+                        c.CmpId == cmpId &&
+                        c.DocType == "customer" &&
+                        c.DocNo == code)
+                    .ToListAsync();
 
-            _context.NisContacts.RemoveRange(oldContacts);
+                _context.NisContacts.RemoveRange(oldContacts);
+            }
 
             var oldLocations = await _context.NisCustomerLocations
                 .Where(l =>
@@ -1542,7 +1577,7 @@ WHERE a.CmpId = @CmpId
 
             _context.NisCustomerLocations.RemoveRange(oldLocations);
 
-            foreach (var con in dto.Contacts
+            foreach (var con in (dto.Contacts ?? new())
                          .Where(c => !string.IsNullOrWhiteSpace(c.Name)))
             {
                 _context.NisContacts.Add(new NisContactRow
@@ -1637,10 +1672,285 @@ WHERE a.CmpId = @CmpId
             Name = dto.Name ?? string.Empty,
             TaxId = dto.TaxId ?? string.Empty,
             AssignedStaff = assignedStaff,
-            Contacts = dto.Contacts,
+            // ไม่ได้ส่ง contacts มา → คืนผู้ติดต่อจริงจาก DB ให้ client เก็บ record ล่าสุด
+            Contacts = dto.Contacts ?? await LoadNisCustomerContactsAsync(cmpId, code),
             Locations = dto.Locations,
         });
     }
+
+    // ── Equipment master (dbo.NisEquipment) — อุปกรณ์ใน Rack ต่อลูกค้า ──────────
+
+    private static NisEquipmentDto MapEquipment(NisEquipment e) => new()
+    {
+        Id = e.Id.ToString(),
+        RackName = e.RackName,
+        DeviceName = e.DeviceName,
+        SerialNo = e.SerialNo,
+        Model = e.Model,
+        Brand = e.Brand,
+        Note = e.Note,
+    };
+
+    /// <summary>
+    /// Returns one row per customer that has at least one saved equipment row, with the count —
+    /// used to render the customer list on the Equipment Master landing page. Matches frontend
+    /// fetchNisEquipmentCustomers.
+    /// </summary>
+    [HttpGet("equipment/customers")]
+    public async Task<ActionResult<IEnumerable<NisEquipmentCustomerSummaryDto>>> GetNisEquipmentCustomers(
+        [FromQuery] string? cmpid)
+    {
+        if (string.IsNullOrWhiteSpace(cmpid))
+            return BadRequest(new { message = "cmpid is required" });
+
+        var counts = await _context.NisEquipments
+            .AsNoTracking()
+            .Where(e => e.CmpId == cmpid)
+            .GroupBy(e => e.CustomerCode)
+            .Select(g => new { CustomerCode = g.Key, Count = g.Count() })
+            .ToListAsync();
+
+        var codes = counts.Select(c => c.CustomerCode).ToList();
+        var names = await _context.customers
+            .AsNoTracking()
+            .Where(c => c.CmpId == cmpid && codes.Contains(c.CustomerCode))
+            .Select(c => new { c.CustomerCode, c.CustomerName })
+            .ToDictionaryAsync(c => c.CustomerCode, c => c.CustomerName ?? string.Empty);
+
+        var result = counts
+            .Select(c => new NisEquipmentCustomerSummaryDto
+            {
+                CustomerCode = c.CustomerCode,
+                CustomerName = names.TryGetValue(c.CustomerCode, out var n) ? n : c.CustomerCode,
+                Count = c.Count,
+            })
+            .OrderBy(c => c.CustomerName)
+            .ToList();
+
+        return Ok(result);
+    }
+
+    /// <summary>Returns the equipment list for one customer. Matches frontend fetchNisEquipment.</summary>
+    [HttpGet("equipment")]
+    public async Task<ActionResult<IEnumerable<NisEquipmentDto>>> GetNisEquipment(
+        [FromQuery] string? cmpid,
+        [FromQuery] string? customerCode)
+    {
+        if (string.IsNullOrWhiteSpace(cmpid))
+            return BadRequest(new { message = "cmpid is required" });
+        if (string.IsNullOrWhiteSpace(customerCode))
+            return BadRequest(new { message = "customerCode is required" });
+
+        var items = await _context.NisEquipments
+            .AsNoTracking()
+            .Where(e => e.CmpId == cmpid && e.CustomerCode == customerCode)
+            .OrderBy(e => e.RackName)
+            .ThenBy(e => e.DeviceName)
+            .ToListAsync();
+
+        return Ok(items.Select(MapEquipment));
+    }
+
+    /// <summary>Replaces the full equipment list for one customer. Matches frontend saveNisEquipment.</summary>
+    [HttpPost("equipment")]
+    public async Task<ActionResult<IEnumerable<NisEquipmentDto>>> SaveNisEquipment([FromBody] NisEquipmentSaveDto dto)
+    {
+        var cmpId = dto.Cmpid ?? string.Empty;
+        if (string.IsNullOrWhiteSpace(cmpId))
+            return BadRequest(new { message = "cmpid is required" });
+        if (string.IsNullOrWhiteSpace(dto.CustomerCode))
+            return BadRequest(new { message = "customerCode is required" });
+
+        var user = dto.UpdatedBy ?? string.Empty;
+        var now = BangkokNow();
+
+        await using var tx = await _context.Database.BeginTransactionAsync();
+        try
+        {
+            var old = await _context.NisEquipments
+                .Where(e => e.CmpId == cmpId && e.CustomerCode == dto.CustomerCode)
+                .ToListAsync();
+            _context.NisEquipments.RemoveRange(old);
+
+            foreach (var item in dto.Items.Where(i =>
+                         !string.IsNullOrWhiteSpace(i.RackName) ||
+                         !string.IsNullOrWhiteSpace(i.DeviceName) ||
+                         !string.IsNullOrWhiteSpace(i.SerialNo)))
+            {
+                _context.NisEquipments.Add(new NisEquipment
+                {
+                    Id = Guid.NewGuid(),
+                    CmpId = cmpId,
+                    CustomerCode = dto.CustomerCode,
+                    RackName = item.RackName,
+                    DeviceName = item.DeviceName,
+                    SerialNo = item.SerialNo,
+                    Model = item.Model,
+                    Brand = item.Brand,
+                    Note = item.Note,
+                    CreatedBy = user,
+                    CreatedDate = now,
+                    UpdatedBy = user,
+                    UpdatedDate = now,
+                });
+            }
+
+            await _context.SaveChangesAsync();
+            await tx.CommitAsync();
+        }
+        catch (Exception ex)
+        {
+            await tx.RollbackAsync();
+            return StatusCode(StatusCodes.Status500InternalServerError, new
+            {
+                message = "Unable to save equipment",
+                detail = ex.Message,
+            });
+        }
+
+        var saved = await _context.NisEquipments
+            .AsNoTracking()
+            .Where(e => e.CmpId == cmpId && e.CustomerCode == dto.CustomerCode)
+            .OrderBy(e => e.RackName)
+            .ThenBy(e => e.DeviceName)
+            .ToListAsync();
+
+        return Ok(saved.Select(MapEquipment));
+    }
+
+    /// <summary>
+    /// Imports equipment rows from an uploaded Excel file (.xlsx/.xls) — appends to the
+    /// customer's existing list (does NOT replace). Header row required; columns matched
+    /// case-insensitively by Thai/English name. Matches frontend importNisEquipment.
+    /// </summary>
+    [HttpPost("equipment/import")]
+    public async Task<ActionResult<NisEquipmentImportResultDto>> ImportNisEquipment(
+        IFormFile file,
+        [FromForm] string cmpid,
+        [FromForm] string customerCode,
+        [FromForm] string? updatedBy)
+    {
+        if (string.IsNullOrWhiteSpace(cmpid))
+            return BadRequest(new { message = "cmpid is required" });
+        if (string.IsNullOrWhiteSpace(customerCode))
+            return BadRequest(new { message = "customerCode is required" });
+        if (file == null || file.Length == 0)
+            return BadRequest(new { message = "file is required" });
+
+        var ext = Path.GetExtension(file.FileName).ToLowerInvariant();
+        if (ext != ".xlsx" && ext != ".xls")
+            return BadRequest(new { message = "รองรับเฉพาะไฟล์ .xlsx / .xls" });
+
+        List<NisEquipment> parsed;
+        try
+        {
+            parsed = ParseEquipmentExcel(file, cmpid, customerCode, updatedBy ?? string.Empty);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { message = "ไม่สามารถอ่านไฟล์ Excel ได้", detail = ex.Message });
+        }
+
+        if (parsed.Count == 0)
+            return BadRequest(new { message = "ไม่พบข้อมูลอุปกรณ์ในไฟล์ (ต้องมีแถวหัวตาราง + อย่างน้อย 1 แถวข้อมูล)" });
+
+        await using var tx = await _context.Database.BeginTransactionAsync();
+        try
+        {
+            _context.NisEquipments.AddRange(parsed);
+            await _context.SaveChangesAsync();
+            await tx.CommitAsync();
+        }
+        catch (Exception ex)
+        {
+            await tx.RollbackAsync();
+            return StatusCode(StatusCodes.Status500InternalServerError, new
+            {
+                message = "Unable to import equipment",
+                detail = ex.Message,
+            });
+        }
+
+        return Ok(new NisEquipmentImportResultDto
+        {
+            Imported = parsed.Count,
+            Items = parsed.Select(MapEquipment).ToList(),
+        });
+    }
+
+    /// อ่าน worksheet แรกของไฟล์ Excel — แถวแรกเป็น header, map คอลัมน์แบบ case-insensitive
+    /// ตามชื่อไทย/อังกฤษที่ทีมตกลง (rack/ชื่อตู้, device/อุปกรณ์, sn, model/รุ่น, brand/ยี่ห้อ, note/หมายเหตุ)
+    private static List<NisEquipment> ParseEquipmentExcel(IFormFile file, string cmpid, string customerCode, string updatedBy)
+    {
+        var result = new List<NisEquipment>();
+        var now = DateTimeOffset.UtcNow.ToOffset(TimeSpan.FromHours(7)).DateTime;
+
+        using var stream = file.OpenReadStream();
+        using var workbook = new ClosedXML.Excel.XLWorkbook(stream);
+        var ws = workbook.Worksheets.First();
+        var firstRow = ws.FirstRowUsed();
+        if (firstRow == null) return result;
+
+        var headerRow = firstRow.RowNumber();
+        var colIndex = new Dictionary<string, int>();
+        foreach (var cell in firstRow.CellsUsed())
+        {
+            var key = cell.GetString().Trim().ToLowerInvariant();
+            if (!string.IsNullOrEmpty(key)) colIndex[key] = cell.Address.ColumnNumber;
+        }
+
+        int? FindCol(params string[] names) =>
+            names.Select(n => n.ToLowerInvariant())
+                .Where(colIndex.ContainsKey)
+                .Select(n => colIndex[n])
+                .Cast<int?>()
+                .FirstOrDefault();
+
+        var rackCol = FindCol("rackname", "rack", "ชื่อตู้", "ตู้", "ตู้ rack");
+        var deviceCol = FindCol("devicename", "device", "ชื่ออุปกรณ์", "อุปกรณ์");
+        var snCol = FindCol("serialno", "sn", "serial", "หมายเลขเครื่อง");
+        var modelCol = FindCol("model", "รุ่น");
+        var brandCol = FindCol("brand", "ยี่ห้อ");
+        var noteCol = FindCol("note", "remark", "หมายเหตุ");
+
+        string CellText(IXLRow row, int? col) =>
+            col == null ? string.Empty : row.Cell(col.Value).GetString().Trim();
+
+        var lastRow = ws.LastRowUsed()?.RowNumber() ?? headerRow;
+        for (var r = headerRow + 1; r <= lastRow; r++)
+        {
+            var row = ws.Row(r);
+            var rack = CellText(row, rackCol);
+            var device = CellText(row, deviceCol);
+            var sn = CellText(row, snCol);
+            var model = CellText(row, modelCol);
+            var brand = CellText(row, brandCol);
+            var note = CellText(row, noteCol);
+
+            if (string.IsNullOrWhiteSpace(rack) && string.IsNullOrWhiteSpace(device) && string.IsNullOrWhiteSpace(sn))
+                continue; // แถวว่าง — ข้าม
+
+            result.Add(new NisEquipment
+            {
+                Id = Guid.NewGuid(),
+                CmpId = cmpid,
+                CustomerCode = customerCode,
+                RackName = rack,
+                DeviceName = device,
+                SerialNo = sn,
+                Model = model,
+                Brand = brand,
+                Note = note,
+                CreatedBy = updatedBy,
+                CreatedDate = now,
+                UpdatedBy = updatedBy,
+                UpdatedDate = now,
+            });
+        }
+
+        return result;
+    }
+
     // ── GET api/nis/sales-orders ─────────────────────────────────────────────
 
     /// <summary>Returns NIS sales orders for SO picker in NewProject wizard. Matches frontend fetchNisSalesOrders.</summary>
@@ -1917,7 +2227,7 @@ WHERE a.CmpId = @CmpId
             Subject = "[PROJECT] - [COMPANY]",
             Body = "<p>เรียน คุณ[CONTACT]</p>"
                 + "<p>บริษัทฯ ขอส่งใบรายงานการให้บริการ (Service Report) สำหรับงานที่ดำเนินการเสร็จสิ้นแล้ว ดังนี้</p>"
-                + "<p>เลขที่ Ticket: <strong>[TK_NUMBER]</strong><br/>โครงการ / งาน: [PROJECT]<br/>"
+                + "<p>โครงการ / งาน: [PROJECT]<br/>"
                 + "ลูกค้า: [COMPANY]<br/>วันที่ปฏิบัติงาน: [DATE]<br/>ช่างผู้ปฏิบัติงาน: [ENGINEER]</p>"
                 + "<p>รายละเอียดงาน: [SERVICE_DETAIL]</p>"
                 + "<p>รบกวนตรวจสอบและยืนยันการปิดงาน หากมีข้อสงสัยเพิ่มเติมติดต่อกลับได้ตามเบอร์ด้านล่างครับ</p>"
@@ -2101,6 +2411,9 @@ WHERE a.CmpId = @CmpId
             DamagedProductJson = dto.DamagedProduct != null ? JsonSerializer.Serialize(dto.DamagedProduct) : null,
             SupportCasesJson = JsonSerializer.Serialize(dto.SupportCases),
             PhotosJson = JsonSerializer.Serialize(dto.Photos),
+            BeforePhoto = dto.BeforePhoto,
+            DuringPhoto = dto.DuringPhoto,
+            AfterPhoto = dto.AfterPhoto,
             SignatureImageBase64 = dto.SignatureImg,
             SkipSignature = dto.SkipSignature,
             Status = status,
@@ -2120,7 +2433,10 @@ WHERE a.CmpId = @CmpId
         if (string.IsNullOrWhiteSpace(cmpid))
             return BadRequest(new { message = "cmpid is required" });
 
-        var query = _context.NisOnsiteReports.AsNoTracking().Where(r => r.CmpId == cmpid);
+        // เฉพาะใบที่ปิดจริง (submitted) — ตัดแถว pending_approval ที่ค้างจากรอบ request-close ที่ถูก
+        // SM ตีกลับ (close-reject ไม่ลบ/ปรับสถานะแถวเดิม) ไม่งั้นนับซ้ำ/แสดงใบที่ยังไม่ปิดจริง
+        var query = _context.NisOnsiteReports.AsNoTracking()
+            .Where(r => r.CmpId == cmpid && r.Status == "submitted");
         if (!string.IsNullOrWhiteSpace(user))
             query = query.Where(r => r.Engineer == user);
 
@@ -2156,6 +2472,27 @@ WHERE a.CmpId = @CmpId
                 catch { /* checklist ผิดรูป → ปล่อยว่าง */ }
             }
 
+            var photos = new List<string>();
+            if (!string.IsNullOrWhiteSpace(r.PhotosJson))
+            {
+                try { photos = JsonSerializer.Deserialize<List<string>>(r.PhotosJson!) ?? new(); }
+                catch { /* photos ผิดรูป → ปล่อยว่าง */ }
+            }
+
+            var pmItems = new List<NisOnsitePmItemDto>();
+            if (!string.IsNullOrWhiteSpace(r.PmItemsJson))
+            {
+                try { pmItems = JsonSerializer.Deserialize<List<NisOnsitePmItemDto>>(r.PmItemsJson!) ?? new(); }
+                catch { /* pmItems ผิดรูป → ปล่อยว่าง */ }
+            }
+
+            NisOnsiteDamagedProductDto? damagedProduct = null;
+            if (!string.IsNullOrWhiteSpace(r.DamagedProductJson))
+            {
+                try { damagedProduct = JsonSerializer.Deserialize<NisOnsiteDamagedProductDto>(r.DamagedProductJson!); }
+                catch { /* damagedProduct ผิดรูป → ปล่อยว่าง */ }
+            }
+
             var ticketType = tk?.Type ?? string.Empty;
             return new NisServiceReportDto
             {
@@ -2177,6 +2514,12 @@ WHERE a.CmpId = @CmpId
                 Checklist = checklist,
                 SignatureImg = r.SignatureImageBase64,
                 SkipSignature = r.SkipSignature,
+                Photos = photos,
+                PmItems = pmItems,
+                DamagedProduct = damagedProduct,
+                BeforePhoto = r.BeforePhoto,
+                DuringPhoto = r.DuringPhoto,
+                AfterPhoto = r.AfterPhoto,
                 Date = r.CreatedDate.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture),
                 Status = "Closed",
             };
@@ -2214,6 +2557,7 @@ WHERE a.CmpId = @CmpId
                 SalesName = project?.SalesPMName,
                 SalesNickname = project?.SalesPMNickname,
                 SalesPhone = project?.SalesPMPhone,
+                SalesEmail = project?.SalesPMEmail,
                 SalesRole = project?.SalesPMRole,
                 EngineerName = string.IsNullOrWhiteSpace(project?.EngineerName) ? nisTicket.Assignee : project!.EngineerName,
                 EngineerNick = project?.EngineerNickname ?? string.Empty,
@@ -2366,7 +2710,8 @@ WHERE a.CmpId = @CmpId
                         customerName ?? string.Empty,
                         nisTicket.Title,
                         nisTicket.Assignee,
-                        dto);
+                        dto,
+                        nisTicket.Type);
                     var attachments = attachPdf ? new List<EmailAttachment> { pdfAttachment! } : null;
                     nisEmailSent = await SendOnsiteEmailAsync(nisCmpId, dto.RecipientEmail, subject, body, attachments);
                 }
@@ -2478,7 +2823,8 @@ WHERE a.CmpId = @CmpId
                     ticket.CustomerName,
                     subTask?.Title ?? ticket.AdditionalDetails,
                     subTask?.DoneBy ?? user,
-                    dto);
+                    dto,
+                    DeriveOnsiteTicketType(ticket));
                 emailSent = await SendOnsiteEmailAsync(cmpId, dto.RecipientEmail, subject, body);
             }
             catch (Exception ex)
@@ -2731,6 +3077,11 @@ WHERE a.CmpId = @CmpId
     /// <param name="projectTitle">ชื่องาน / โครงการ ([PROJECT])</param>
     /// <param name="assignee">ช่างที่รับผิดชอบตั๋ว ([ENGINEER]) — ว่างได้</param>
     /// <param name="dto">payload ปิดงานจาก client</param>
+    /// <param name="ticketType">
+    /// ประเภทตั๋ว/งาน (Install/PM/MA Onsite/Support/Backup/Report/Delivery/MA) — ใช้เลือก template
+    /// เฉพาะประเภทก่อน (close-job-{ticketType}) แล้ว fallback เป็น close-job เดิมถ้าไม่มี ว่างได้
+    /// (จะข้ามไปใช้ default เลย)
+    /// </param>
     /// <returns>subject และ body (HTML) ที่พร้อมส่ง</returns>
     private async Task<(string Subject, string Body)> BuildOnsiteCloseEmailAsync(
         string cmpId,
@@ -2738,7 +3089,8 @@ WHERE a.CmpId = @CmpId
         string customerName,
         string? projectTitle,
         string? assignee,
-        NisOnsiteSubmitDto dto)
+        NisOnsiteSubmitDto dto,
+        string? ticketType = null)
     {
         var config = await _context.NisSystemConfigs
             .AsNoTracking()
@@ -2746,7 +3098,7 @@ WHERE a.CmpId = @CmpId
 
         var templates = ParseJson(config?.EmailTemplatesJson, DefaultEmailTemplates());
         var signature = ParseJson(config?.EmailSignatureJson, new NisEmailSignatureDto());
-        var template = NisEmailTemplateRenderer.FindTemplate(templates, NisEmailTemplateRenderer.CloseJobTemplateId);
+        var template = NisEmailTemplateRenderer.FindCloseJobTemplateForType(templates, ticketType);
 
         // ชื่อผู้ส่ง: ค่าที่ client ส่งมา > Accounts.FullName ของ user ที่ปิดงาน > ค่าที่ตั้งไว้ในหน้า config
         var senderName = dto.SenderName;
@@ -3023,7 +3375,9 @@ WHERE a.CmpId = @CmpId
             && ticket.Status != "Done"
             && ticket.Status != "Closed")
         {
-            ticket.Pct = ComputeOnsiteProgressPct(body);
+            // ยังไม่รับงาน (Open/Scheduled) → ฐาน 0 · รับแล้ว → ฐาน 10 (ตรง AcceptTicket / pctForStatus)
+            var accepted = ticket.Status != "Open" && ticket.Status != "Scheduled";
+            ticket.Pct = ComputeOnsiteProgressPct(body, accepted);
             ticket.UpdatedDate = DateTime.Now;
         }
 
@@ -3054,11 +3408,12 @@ WHERE a.CmpId = @CmpId
 
     /// คำนวณ % ความคืบหน้างาน onsite จาก snapshot draft (milestone-based ตาม NIS_PCT_*)
     /// เช็คอิน 25 · checklist ดันจาก 25 → 85 ตามสัดส่วนที่ติ๊ก · เช็คเอาท์ 90
-    /// draft มีอยู่ = ช่างรับงานแล้ว จึงเริ่มที่ 10 · เพดาน 90 — 100 เฉพาะ flow ปิดงาน
-    private static int ComputeOnsiteProgressPct(JsonElement s)
+    /// ฐานเริ่มที่ 10 เฉพาะตั๋วที่ช่างรับงานแล้ว (accepted) — ตั๋ว Open/Scheduled ที่แค่ถูกเปิดดู
+    /// แล้ว client ยิง draft เปล่ามา ต้องคง 0 (parity NIS-OnsiteService utils/progress.ts computeTicketPct)
+    /// เพดาน 90 — 100 เฉพาะ flow ปิดงาน
+    private static int ComputeOnsiteProgressPct(JsonElement s, bool accepted)
     {
-        // autosave draft เกิดได้ก็ต่อเมื่อช่างเปิดฟอร์มงานที่รับแล้ว
-        var pct = NIS_PCT_ACCEPTED;
+        var pct = accepted ? NIS_PCT_ACCEPTED : NIS_PCT_NOT_ACCEPTED;
 
         if (!string.IsNullOrEmpty(ReadJsonString(s, "checkInTime")))
             pct = NIS_PCT_CHECKED_IN;
