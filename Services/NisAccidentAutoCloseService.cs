@@ -110,6 +110,8 @@ public class NisAccidentAutoCloseService : BackgroundService
                 : $"{ticket.WorkDetail}\n\n{closeNote}";
             ticket.UpdatedBy = SystemActor;
             ticket.UpdatedDate = now;
+            // ตั๋ว Done ที่ถูกปิดซ้ำ คงเวลาปิดเดิมไว้
+            ticket.ClosedDate ??= now;
         }
 
         await context.SaveChangesAsync(ct);

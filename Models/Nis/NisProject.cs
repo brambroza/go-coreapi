@@ -230,6 +230,10 @@ public class NisTicket
     public DateTime CreatedDate { get; set; } = DateTime.Now;
     public DateTime UpdatedDate { get; set; } = DateTime.Now;
 
+    /// เวลาที่ตั๋วเข้าสถานะ Closed / Done (เวลาไทย) · null = ยังไม่ปิด หรือถูกเปิดกลับ
+    /// ใช้เรียงงานที่ปิดแล้ว — UpdatedDate ใช้แทนไม่ได้เพราะเปลี่ยนทุกครั้งที่ตั๋วถูกแก้
+    public DateTime? ClosedDate { get; set; }
+
     public virtual NisProject? Project { get; set; }
 }
 

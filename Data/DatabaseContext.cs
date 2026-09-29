@@ -708,6 +708,7 @@ namespace goalongapi.Data
                 entity.Property(e => e.UpdatedBy).HasMaxLength(100);
                 entity.Property(e => e.CreatedDate).HasColumnType("datetime");
                 entity.Property(e => e.UpdatedDate).HasColumnType("datetime");
+                entity.Property(e => e.ClosedDate).HasColumnType("datetime");
 
                 entity.HasIndex(e => e.ProjectId);
                 entity.HasIndex(e => new { e.CmpId, e.Status });

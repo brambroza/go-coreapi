@@ -66,6 +66,8 @@ public class NisTicketResponseDto
     /// วันเวลาที่แก้ไขล่าสุด (yyyy-MM-dd HH:mm) — การมอบหมายงานเขียนค่านี้ทุกครั้ง
     /// แอปช่างใช้เป็นเวลา "เพิ่งได้รับมอบหมาย" สำหรับ badge งานใหม่ (ตั๋วที่ยังไม่กดรับ)
     public string UpdatedDate { get; set; } = string.Empty;
+    /// วันเวลาที่ปิดงาน (yyyy-MM-dd HH:mm) — ค่าว่าง = ยังไม่ปิด · ใช้เรียงงานที่ปิดแล้วล่าสุดก่อน
+    public string ClosedDate { get; set; } = string.Empty;
 }
 
 /// รายการ checklist หนึ่งข้อ (ก่อนมอบหมายงาน)

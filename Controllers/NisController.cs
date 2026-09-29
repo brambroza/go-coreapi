@@ -145,7 +145,20 @@ public class NisController : ControllerBase
         Checklist = ParseChecklist(t.ChecklistJson),
         CreatedDate = FormatDateTime(t.CreatedDate),
         UpdatedDate = FormatDateTime(t.UpdatedDate),
+        ClosedDate = FormatDateTime(t.ClosedDate),
     };
+
+    /// <summary>
+    /// sync ClosedDate ให้ตรงกับสถานะปัจจุบันของตั๋ว — เรียกทุกครั้งหลังเขียน Status
+    /// Closed/Done → ตั้งเวลาไทยตอนนี้ถ้ายังว่าง (ปิดซ้ำไม่ทับเวลาปิดเดิม) · สถานะอื่น → ล้างทิ้ง (reopen)
+    /// </summary>
+    private static void ApplyClosedDate(NisTicket ticket)
+    {
+        if (ticket.Status is "Closed" or "Done")
+            ticket.ClosedDate ??= BangkokNow();
+        else
+            ticket.ClosedDate = null;
+    }
 
     /// แปลง ChecklistJson (nvarchar) → รายการ checklist; ค่าว่าง/พังคืน list ว่าง (ไม่ throw)
     private static List<NisChecklistItemDto> ParseChecklist(string? json)
@@ -359,6 +372,7 @@ public class NisController : ControllerBase
                 CreatedBy = dto.CreatedBy ?? string.Empty,
                 CreatedDate = bangkokNow,
                 UpdatedDate = bangkokNow,
+                ClosedDate = t.Status is "Closed" or "Done" ? bangkokNow : null,
             });
         }
 
@@ -525,6 +539,7 @@ public class NisController : ControllerBase
             CreatedDate = DateTime.Now,
             UpdatedDate = DateTime.Now,
         };
+        ApplyClosedDate(ticket);
 
         _context.NisTickets.Add(ticket);
         await _context.SaveChangesAsync();
@@ -559,6 +574,7 @@ public class NisController : ControllerBase
             "In Progress" => ticket.Pct,
             _ => ticket.Pct,
         };
+        ApplyClosedDate(ticket);
         ticket.UpdatedDate = DateTime.Now;
 
         await _context.SaveChangesAsync();
@@ -829,6 +845,7 @@ WHERE a.CmpId = @CmpId
 
         ticket.Status = "Closed";
         ticket.Pct = NIS_PCT_CLOSED;
+        ApplyClosedDate(ticket);
         ticket.UpdatedDate = DateTime.Now;
 
         await _context.SaveChangesAsync();
@@ -846,6 +863,7 @@ WHERE a.CmpId = @CmpId
             return NotFound(new { message = $"Ticket {id} not found" });
 
         ticket.Status = "In Progress";
+        ApplyClosedDate(ticket);
         ticket.UpdatedDate = DateTime.Now;
 
         await _context.SaveChangesAsync();
@@ -913,6 +931,9 @@ WHERE a.CmpId = @CmpId
         // ผู้มอบหมาย = ผู้รับแจ้งเตือนตอนช่างกดรับงาน (ไม่ทับด้วย null จาก client รุ่นเก่าที่ยังไม่ส่งค่า)
         if (dto.Assignee != "-" && !string.IsNullOrWhiteSpace(dto.UpdatedBy))
             ticket.AssignedBy = dto.UpdatedBy;
+
+        // ตั๋วที่ปิดแล้วถูก unassign / เปลี่ยนมือช่าง = เปิดกลับ → ล้างเวลาปิด (แก้วันอย่างเดียวคงค่าเดิม)
+        ApplyClosedDate(ticket);
 
         ticket.UpdatedBy = dto.UpdatedBy ?? ticket.UpdatedBy;
         ticket.UpdatedDate = DateTime.Now;
@@ -2687,6 +2708,7 @@ WHERE a.CmpId = @CmpId
             _context.NisOnsiteReports.Add(report);
             nisTicket.Status = "Closed";
             nisTicket.Pct = NIS_PCT_CLOSED;
+            ApplyClosedDate(nisTicket);
             nisTicket.UpdatedDate = DateTime.Now;
 
             await _context.SaveChangesAsync();
@@ -3122,7 +3144,7 @@ WHERE a.CmpId = @CmpId
             var fallbackSubject = string.IsNullOrWhiteSpace(dto.EmailSubject)
                 ? OnsiteCloseSubjectFallback(projectTitle, customerName, dto.SrNumber)
                 : dto.EmailSubject;
-            return (fallbackSubject, BuildOnsiteReportEmailBody(ticketNo, customerName, dto) + signatureHtml);
+            return (fallbackSubject, BuildOnsiteReportEmailBody(customerName, dto) + signatureHtml);
         }
 
         var vars = new Dictionary<string, string?>
@@ -3184,7 +3206,7 @@ WHERE a.CmpId = @CmpId
                 ? $"<p style=\"font-weight:600;\">ลายเซ็นลูกค้า:</p><img src=\"{dto.SignatureImg}\" style=\"max-width:300px;border:1px solid #e2e8f0;border-radius:6px;padding:4px;\" />"
                 : string.Empty;
 
-    private static string BuildOnsiteReportEmailBody(string ticketNo, string customerName, NisOnsiteSubmitDto dto)
+    private static string BuildOnsiteReportEmailBody(string customerName, NisOnsiteSubmitDto dto)
     {
         var emailMessageSection = OnsiteEmailMessageSection(dto);
         var signatureSection = OnsiteCustomerSignatureSection(dto);
@@ -3197,18 +3219,14 @@ WHERE a.CmpId = @CmpId
               {emailMessageSection}
               <table style="width:100%;border-collapse:collapse;margin:16px 0;font-size:14px;">
                 <tr style="background:#f8fafc;">
-                  <td style="padding:10px 12px;border:1px solid #e2e8f0;font-weight:600;width:160px;">Ticket No</td>
-                  <td style="padding:10px 12px;border:1px solid #e2e8f0;">{ticketNo}</td>
-                </tr>
-                <tr>
-                  <td style="padding:10px 12px;border:1px solid #e2e8f0;font-weight:600;">Customer</td>
+                  <td style="padding:10px 12px;border:1px solid #e2e8f0;font-weight:600;width:160px;">Customer</td>
                   <td style="padding:10px 12px;border:1px solid #e2e8f0;">{customerName}</td>
                 </tr>
-                <tr style="background:#f8fafc;">
+                <tr>
                   <td style="padding:10px 12px;border:1px solid #e2e8f0;font-weight:600;">Check-in</td>
                   <td style="padding:10px 12px;border:1px solid #e2e8f0;">{dto.CheckInTime}</td>
                 </tr>
-                <tr>
+                <tr style="background:#f8fafc;">
                   <td style="padding:10px 12px;border:1px solid #e2e8f0;font-weight:600;">Check-out</td>
                   <td style="padding:10px 12px;border:1px solid #e2e8f0;">{dto.CheckOutTime}</td>
                 </tr>
@@ -3241,6 +3259,7 @@ WHERE a.CmpId = @CmpId
             nisTicket.Status = "Waiting Close Approval";
             // งานหน้างานจบแล้ว รอ SM อนุมัติ — ค้างที่ 90 จนกว่าจะปิดจริง (100)
             nisTicket.Pct = NIS_PCT_CHECKED_OUT;
+            ApplyClosedDate(nisTicket);
             nisTicket.UpdatedDate = DateTime.Now;
 
             await _context.SaveChangesAsync();
