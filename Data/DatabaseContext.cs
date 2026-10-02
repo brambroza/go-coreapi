@@ -69,6 +69,7 @@ namespace goalongapi.Data
         public DbSet<NisOnsiteReport> NisOnsiteReports { get; set; }
         public DbSet<NisCustomerLocation> NisCustomerLocations { get; set; }
         public DbSet<NisEquipment> NisEquipments { get; set; }
+        public DbSet<NisEquipmentChangeRequest> NisEquipmentChangeRequests { get; set; }
         public DbSet<NisCustomerAssignEmp> NisCustomerAssignEmps { get; set; }
         public DbSet<NisContactRow> NisContacts { get; set; }
         public DbSet<NisPersonalTodo> NisPersonalTodos { get; set; }
@@ -709,6 +710,9 @@ namespace goalongapi.Data
                 entity.Property(e => e.CreatedDate).HasColumnType("datetime");
                 entity.Property(e => e.UpdatedDate).HasColumnType("datetime");
                 entity.Property(e => e.ClosedDate).HasColumnType("datetime");
+                entity.Property(e => e.CheckInTime).HasColumnType("datetime");
+                entity.Property(e => e.CheckInLocation).HasMaxLength(500);
+                entity.Property(e => e.CheckInBy).HasMaxLength(200);
 
                 entity.HasIndex(e => e.ProjectId);
                 entity.HasIndex(e => new { e.CmpId, e.Status });

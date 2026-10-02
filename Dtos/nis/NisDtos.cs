@@ -68,6 +68,12 @@ public class NisTicketResponseDto
     public string UpdatedDate { get; set; } = string.Empty;
     /// วันเวลาที่ปิดงาน (yyyy-MM-dd HH:mm) — ค่าว่าง = ยังไม่ปิด · ใช้เรียงงานที่ปิดแล้วล่าสุดก่อน
     public string ClosedDate { get; set; } = string.Empty;
+    /// วันเวลาที่ช่าง Check-in (yyyy-MM-dd HH:mm) — ค่าว่าง = ยังไม่เช็คอิน
+    public string CheckInTime { get; set; } = string.Empty;
+    public double? CheckInLat { get; set; }
+    public double? CheckInLng { get; set; }
+    public string? CheckInLocation { get; set; }
+    public string? CheckInBy { get; set; }
 }
 
 /// รายการ checklist หนึ่งข้อ (ก่อนมอบหมายงาน)
@@ -129,6 +135,19 @@ public class NisTicketProgressDto
     public int Pct { get; set; }
     public string? CmpId { get; set; }
     public string? UpdatedBy { get; set; }
+}
+
+/// ช่าง Check-in (PUT tickets/{id}/checkin) — เวลาเช็คอินใช้เวลา server เสมอ (client ส่งแค่พิกัด/สถานที่)
+public class NisTicketCheckInDto
+{
+    public string? CmpId { get; set; }
+    /// ผู้เช็คอิน (username หรือ FullName ของช่าง)
+    public string? CheckInBy { get; set; }
+    /// null = เช็คอินโดยไม่มีพิกัด GPS
+    public double? Lat { get; set; }
+    public double? Lng { get; set; }
+    /// ชื่อสถานที่ที่ช่างยืนเช็คอิน (reverse geocode)
+    public string? Location { get; set; }
 }
 
 /// ช่างกดรับงาน (accept) จากแอปหน้างาน — Scheduled → In Progress + แจ้งเตือน SM
@@ -491,6 +510,10 @@ public class NisEquipmentDto
     /// null/ว่าง เมื่อเป็นแถวใหม่ที่ยังไม่บันทึก
     public string? Id { get; set; }
     public string RackName { get; set; } = string.Empty;
+    /// ที่ตั้งของตู้ — ซ้ำกันทุกแถวของตู้เดียวกัน
+    public string RackLocation { get; set; } = string.Empty;
+    /// ตำแหน่ง U ในตู้ — null = ไม่ระบุ
+    public int? UPosition { get; set; }
     public string DeviceName { get; set; } = string.Empty;
     public string SerialNo { get; set; } = string.Empty;
     public string Model { get; set; } = string.Empty;
@@ -520,4 +543,72 @@ public class NisEquipmentCustomerSummaryDto
     public string CustomerCode { get; set; } = string.Empty;
     public string CustomerName { get; set; } = string.Empty;
     public int Count { get; set; }
+}
+
+// ── Equipment change request DTOs (dbo.NisEquipmentChangeRequest) ──────────────
+// ช่างแจ้งแก้ทะเบียนตู้ Rack จากหน้า onsite (PM) → SM อนุมัติใน Service Board
+// ทะเบียน NisEquipment ไม่เปลี่ยนจนกว่าจะอนุมัติ
+
+/// แถวคำขอแก้ทะเบียน + ชื่อลูกค้า/รหัสตั๋ว (join ตอนอ่าน)
+public class NisEquipmentChangeRequestDto
+{
+    public string RequestId { get; set; } = string.Empty;
+    public string CmpId { get; set; } = string.Empty;
+    public string CustomerCode { get; set; } = string.Empty;
+    public string? CustomerName { get; set; }
+    public string? TicketId { get; set; }
+    public string? TicketCode { get; set; }
+    public string RackName { get; set; } = string.Empty;
+    /// missing_in_registry | not_in_rack | incorrect_info
+    public string Reason { get; set; } = string.Empty;
+    /// NisEquipment.Id เป้าหมาย — บังคับเมื่อ Reason ≠ missing_in_registry
+    public string? EquipmentId { get; set; }
+    public string DeviceName { get; set; } = string.Empty;
+    public string Brand { get; set; } = string.Empty;
+    public string Model { get; set; } = string.Empty;
+    public string SerialNo { get; set; } = string.Empty;
+    public int? UPosition { get; set; }
+    public string Note { get; set; } = string.Empty;
+    public string RequestedBy { get; set; } = string.Empty;
+    /// Pending | Approved | Rejected
+    public string Status { get; set; } = "Pending";
+    public string? ApprovedBy { get; set; }
+    public string? RejectedBy { get; set; }
+    public string? RejectReason { get; set; }
+    public DateTime CreatedDate { get; set; }
+    public DateTime UpdatedDate { get; set; }
+}
+
+/// Payload POST api/nis/equipment-change-requests
+public class NisEquipmentChangeRequestCreateDto
+{
+    public string? CmpId { get; set; }
+    public string CustomerCode { get; set; } = string.Empty;
+    public string? TicketId { get; set; }
+    public string RackName { get; set; } = string.Empty;
+    /// missing_in_registry | not_in_rack | incorrect_info
+    public string Reason { get; set; } = string.Empty;
+    public string? EquipmentId { get; set; }
+    public string DeviceName { get; set; } = string.Empty;
+    public string Brand { get; set; } = string.Empty;
+    public string Model { get; set; } = string.Empty;
+    public string SerialNo { get; set; } = string.Empty;
+    public int? UPosition { get; set; }
+    public string Note { get; set; } = string.Empty;
+    public string RequestedBy { get; set; } = string.Empty;
+}
+
+/// Payload PUT api/nis/equipment-change-requests/{id}/approve
+public class NisEquipmentChangeRequestApproveDto
+{
+    public string? CmpId { get; set; }
+    public string ApprovedBy { get; set; } = string.Empty;
+}
+
+/// Payload PUT api/nis/equipment-change-requests/{id}/reject
+public class NisEquipmentChangeRequestRejectDto
+{
+    public string? CmpId { get; set; }
+    public string RejectedBy { get; set; } = string.Empty;
+    public string? RejectReason { get; set; }
 }

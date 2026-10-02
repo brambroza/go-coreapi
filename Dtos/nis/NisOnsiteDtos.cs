@@ -33,6 +33,32 @@ public class NisOnsiteTicketResponseDto
     public bool? NoOnsite { get; set; }
     public int? MaRoundCurrent { get; set; }
     public int? MaRoundTotal { get; set; }
+
+    /// สถานะ Check-in ที่ server รู้ (NisTicket) — ค่าว่าง = ยังไม่เช็คอิน
+    /// CRM ใช้เติมขั้น Check-in เมื่อช่างเช็คอินจากแอป RN (ไม่มี draft บนเครื่อง CRM)
+    public string? CheckInTime { get; set; }
+    public double? CheckInLat { get; set; }
+    public double? CheckInLng { get; set; }
+    public string? CheckInLocation { get; set; }
+    public string? CheckInBy { get; set; }
+
+    /// ทะเบียนอุปกรณ์ในตู้ Rack ของลูกค้า (flat) — เติมเฉพาะตั๋ว PM; client จัดกลุ่มตาม RackName เอง
+    /// null = ไม่ใช่ PM หรือไม่มีทะเบียน
+    public List<NisOnsiteEquipmentDto>? Equipment { get; set; }
+}
+
+/// อุปกรณ์ 1 ชิ้นจากทะเบียน NisEquipment สำหรับหน้า onsite (= NisEquipmentDto + UPosition/RackLocation)
+public class NisOnsiteEquipmentDto
+{
+    public string Id { get; set; } = string.Empty;
+    public string RackName { get; set; } = string.Empty;
+    public string RackLocation { get; set; } = string.Empty;
+    public int? UPosition { get; set; }
+    public string DeviceName { get; set; } = string.Empty;
+    public string SerialNo { get; set; } = string.Empty;
+    public string Model { get; set; } = string.Empty;
+    public string Brand { get; set; } = string.Empty;
+    public string Note { get; set; } = string.Empty;
 }
 
 public class NisOnsiteSrNumberRequestDto
@@ -48,6 +74,7 @@ public class NisOnsiteChecklistItemDto
     public bool Checked { get; set; }
 }
 
+/// 1 item = 1 ตู้ Rack — Name/Location/Remark/BeforePhoto/AfterPhoto = ชื่อตู้/ที่ตั้ง/หมายเหตุ/รูปตู้ (ความหมายเดิม)
 public class NisOnsitePmItemDto
 {
     public long Id { get; set; }
@@ -56,6 +83,30 @@ public class NisOnsitePmItemDto
     public string Remark { get; set; } = string.Empty;
     public string? BeforePhoto { get; set; }
     public string? AfterPhoto { get; set; }
+
+    /// = NisEquipment.RackName — ใช้ merge/dedupe กับทะเบียน (null = item แบบเก่า)
+    public string? RackKey { get; set; }
+
+    /// ผลตรวจอุปกรณ์รายชิ้นในตู้ — null = item แบบเก่า (legacy, ไม่มีการตรวจรายชิ้น)
+    public List<NisOnsitePmDeviceDto>? Devices { get; set; }
+}
+
+/// ผลตรวจอุปกรณ์ 1 ชิ้นในตู้ Rack (งาน PM)
+public class NisOnsitePmDeviceDto
+{
+    /// NisEquipment.Id — null เมื่อช่างกรอกเอง (Source = manual)
+    public string? EquipmentId { get; set; }
+    public int? UPosition { get; set; }
+    public string DeviceName { get; set; } = string.Empty;
+    public string Brand { get; set; } = string.Empty;
+    public string Model { get; set; } = string.Empty;
+    public string SerialNo { get; set; } = string.Empty;
+    /// master | manual
+    public string Source { get; set; } = "master";
+    /// normal | abnormal | null (ยังไม่ตรวจ)
+    public string? Status { get; set; }
+    /// อาการที่พบ — บังคับเมื่อ Status = abnormal
+    public string Symptom { get; set; } = string.Empty;
 }
 
 public class NisOnsiteDamagedProductDto

@@ -146,6 +146,11 @@ public class NisController : ControllerBase
         CreatedDate = FormatDateTime(t.CreatedDate),
         UpdatedDate = FormatDateTime(t.UpdatedDate),
         ClosedDate = FormatDateTime(t.ClosedDate),
+        CheckInTime = FormatDateTime(t.CheckInTime),
+        CheckInLat = t.CheckInLat,
+        CheckInLng = t.CheckInLng,
+        CheckInLocation = t.CheckInLocation,
+        CheckInBy = t.CheckInBy,
     };
 
     /// <summary>
@@ -158,6 +163,17 @@ public class NisController : ControllerBase
             ticket.ClosedDate ??= BangkokNow();
         else
             ticket.ClosedDate = null;
+    }
+
+    /// ล้างสถานะ Check-in — ตั๋วกลับไปยังไม่รับงาน (Open/Scheduled) = งานรอบใหม่ ช่างต้องเช็คอินใหม่
+    private static void ResetCheckInIfNotStarted(NisTicket ticket)
+    {
+        if (ticket.Status is not ("Open" or "Scheduled")) return;
+        ticket.CheckInTime = null;
+        ticket.CheckInLat = null;
+        ticket.CheckInLng = null;
+        ticket.CheckInLocation = null;
+        ticket.CheckInBy = null;
     }
 
     /// แปลง ChecklistJson (nvarchar) → รายการ checklist; ค่าว่าง/พังคืน list ว่าง (ไม่ throw)
@@ -575,6 +591,7 @@ public class NisController : ControllerBase
             _ => ticket.Pct,
         };
         ApplyClosedDate(ticket);
+        ResetCheckInIfNotStarted(ticket);
         ticket.UpdatedDate = DateTime.Now;
 
         await _context.SaveChangesAsync();
@@ -611,6 +628,77 @@ public class NisController : ControllerBase
 
         await _context.SaveChangesAsync();
         return Ok(new { message = "Progress updated", pct = ticket.Pct });
+    }
+
+    // ── PUT api/nis/tickets/{id}/checkin ────────────────────────────────────
+
+    /// <summary>
+    /// ช่าง Check-in (RN หรือ CRM) — บันทึกเวลา/พิกัดลงตั๋วให้ทุก client เห็นสถานะเดียวกัน
+    /// เดิม check-in อยู่แค่ใน draft ของเครื่อง (RN = AsyncStorage · CRM = progress snapshot ต่อ user)
+    /// จึงเช็คอินจาก RN แล้วหน้า CRM ไม่เห็นจนกว่าจะปิดงาน
+    ///
+    /// - {id} = TicketId หรือ TicketCode
+    /// - เวลาใช้เวลา server (เวลาไทย) — client แต่ละตัว format เวลาไม่เหมือนกัน
+    /// - idempotent: เช็คอินแล้วไม่ทับเวลาเดิม (retry / กดซ้ำ / เครื่องที่สอง) แต่เติมพิกัดถ้ารอบแรกไม่มี
+    /// - ต้องรับงานก่อน (Open/Scheduled → 409) · ตั๋วที่พ้นมือช่างแล้วไม่แตะ
+    /// </summary>
+    [HttpPut("tickets/{id}/checkin")]
+    public async Task<IActionResult> CheckInTicket(string id, [FromBody] NisTicketCheckInDto? dto)
+    {
+        var ticket = await ResolveNisOnsiteTicketAsync(id);
+        if (ticket == null)
+            return NotFound(new { message = $"Ticket {id} not found" });
+
+        if (!string.IsNullOrWhiteSpace(dto?.CmpId) && !string.IsNullOrWhiteSpace(ticket.CmpId) && dto!.CmpId != ticket.CmpId)
+            return NotFound(new { message = $"Ticket {id} not found" });
+
+        if (ticket.Status is "Open" or "Scheduled")
+            return Conflict(new { message = "Ticket must be accepted before check-in" });
+
+        if (ticket.Status is "Waiting Close Approval" or "Done" or "Closed")
+            return Ok(new { message = "Ticket already closed — check-in unchanged", checkInTime = FormatDateTime(ticket.CheckInTime) });
+
+        // พิกัดต้องอยู่ในช่วงจริง — นอกช่วง = ถือว่าไม่มีพิกัด (ไม่เก็บค่าขยะ)
+        double? lat = dto?.Lat is >= -90 and <= 90 ? dto.Lat : null;
+        double? lng = dto?.Lng is >= -180 and <= 180 ? dto.Lng : null;
+        if (lat == null || lng == null) { lat = null; lng = null; }
+
+        var location = dto?.Location?.Trim();
+        if (location?.Length > 500) location = location[..500];
+        var checkInBy = dto?.CheckInBy?.Trim();
+        if (checkInBy?.Length > 200) checkInBy = checkInBy[..200];
+
+        if (ticket.CheckInTime == null)
+        {
+            ticket.CheckInTime = BangkokNow();
+            ticket.CheckInLat = lat;
+            ticket.CheckInLng = lng;
+            ticket.CheckInLocation = string.IsNullOrEmpty(location) ? null : location;
+            ticket.CheckInBy = string.IsNullOrEmpty(checkInBy) ? null : checkInBy;
+        }
+        else if (ticket.CheckInLat == null && lat != null)
+        {
+            ticket.CheckInLat = lat;
+            ticket.CheckInLng = lng;
+            if (!string.IsNullOrEmpty(location)) ticket.CheckInLocation = location;
+        }
+
+        // milestone "เช็คอินแล้ว" — ไม่ลดค่าที่สูงกว่า
+        ticket.Pct = Math.Max(ticket.Pct, NIS_PCT_CHECKED_IN);
+        if (ticket.Status == "Pending") ticket.Status = "In Progress";
+        ticket.UpdatedBy = string.IsNullOrEmpty(checkInBy) ? ticket.UpdatedBy : checkInBy;
+        ticket.UpdatedDate = DateTime.Now;
+
+        await _context.SaveChangesAsync();
+        return Ok(new
+        {
+            message = "Checked in",
+            checkInTime = FormatDateTime(ticket.CheckInTime),
+            checkInLat = ticket.CheckInLat,
+            checkInLng = ticket.CheckInLng,
+            checkInLocation = ticket.CheckInLocation,
+            pct = ticket.Pct,
+        });
     }
 
     // ── PUT api/nis/tickets/{id}/accept ─────────────────────────────────────
@@ -934,6 +1022,8 @@ WHERE a.CmpId = @CmpId
 
         // ตั๋วที่ปิดแล้วถูก unassign / เปลี่ยนมือช่าง = เปิดกลับ → ล้างเวลาปิด (แก้วันอย่างเดียวคงค่าเดิม)
         ApplyClosedDate(ticket);
+        // กลับไปรอรับงาน (unassign / เปลี่ยนช่าง) → check-in รอบเก่าใช้ไม่ได้แล้ว
+        ResetCheckInIfNotStarted(ticket);
 
         ticket.UpdatedBy = dto.UpdatedBy ?? ticket.UpdatedBy;
         ticket.UpdatedDate = DateTime.Now;
@@ -1705,6 +1795,8 @@ WHERE a.CmpId = @CmpId
     {
         Id = e.Id.ToString(),
         RackName = e.RackName,
+        RackLocation = e.RackLocation,
+        UPosition = e.UPosition,
         DeviceName = e.DeviceName,
         SerialNo = e.SerialNo,
         Model = e.Model,
@@ -1804,6 +1896,8 @@ WHERE a.CmpId = @CmpId
                     CmpId = cmpId,
                     CustomerCode = dto.CustomerCode,
                     RackName = item.RackName,
+                    RackLocation = item.RackLocation ?? string.Empty,
+                    UPosition = item.UPosition,
                     DeviceName = item.DeviceName,
                     SerialNo = item.SerialNo,
                     Model = item.Model,
@@ -1901,6 +1995,7 @@ WHERE a.CmpId = @CmpId
 
     /// อ่าน worksheet แรกของไฟล์ Excel — แถวแรกเป็น header, map คอลัมน์แบบ case-insensitive
     /// ตามชื่อไทย/อังกฤษที่ทีมตกลง (rack/ชื่อตู้, device/อุปกรณ์, sn, model/รุ่น, brand/ยี่ห้อ, note/หมายเหตุ)
+    /// คอลัมน์เสริม (ไม่บังคับ): U/UPosition/ตำแหน่ง U → UPosition, Location/RackLocation/ตำแหน่งตู้ → RackLocation
     private static List<NisEquipment> ParseEquipmentExcel(IFormFile file, string cmpid, string customerCode, string updatedBy)
     {
         var result = new List<NisEquipment>();
@@ -1928,6 +2023,8 @@ WHERE a.CmpId = @CmpId
                 .FirstOrDefault();
 
         var rackCol = FindCol("rackname", "rack", "ชื่อตู้", "ตู้", "ตู้ rack");
+        var rackLocationCol = FindCol("racklocation", "location", "ตำแหน่งตู้");
+        var uPositionCol = FindCol("uposition", "u", "ตำแหน่ง u");
         var deviceCol = FindCol("devicename", "device", "ชื่ออุปกรณ์", "อุปกรณ์");
         var snCol = FindCol("serialno", "sn", "serial", "หมายเลขเครื่อง");
         var modelCol = FindCol("model", "รุ่น");
@@ -1937,11 +2034,21 @@ WHERE a.CmpId = @CmpId
         string CellText(IXLRow row, int? col) =>
             col == null ? string.Empty : row.Cell(col.Value).GetString().Trim();
 
+        // "U" / "ตำแหน่ง U" — รับทั้งเลขล้วนและรูปแบบ "U12" / "u 12"; อ่านไม่ออก = null
+        static int? ParseUPosition(string raw)
+        {
+            if (string.IsNullOrWhiteSpace(raw)) return null;
+            var digits = raw.Trim().TrimStart('U', 'u').Trim();
+            return int.TryParse(digits, NumberStyles.Integer, CultureInfo.InvariantCulture, out var u) ? u : null;
+        }
+
         var lastRow = ws.LastRowUsed()?.RowNumber() ?? headerRow;
         for (var r = headerRow + 1; r <= lastRow; r++)
         {
             var row = ws.Row(r);
             var rack = CellText(row, rackCol);
+            var rackLocation = CellText(row, rackLocationCol);
+            var uPosition = ParseUPosition(CellText(row, uPositionCol));
             var device = CellText(row, deviceCol);
             var sn = CellText(row, snCol);
             var model = CellText(row, modelCol);
@@ -1957,6 +2064,8 @@ WHERE a.CmpId = @CmpId
                 CmpId = cmpid,
                 CustomerCode = customerCode,
                 RackName = rack,
+                RackLocation = rackLocation,
+                UPosition = uPosition,
                 DeviceName = device,
                 SerialNo = sn,
                 Model = model,
@@ -1971,6 +2080,300 @@ WHERE a.CmpId = @CmpId
 
         return result;
     }
+
+    #region Equipment change requests
+    // ── api/nis/equipment-change-requests (dbo.NisEquipmentChangeRequest) ─────
+    // ช่างแจ้งแก้ทะเบียนตู้ Rack จากหน้าตรวจ PM → SM อนุมัติ/ปฏิเสธใน Service Board
+    // ทะเบียน NisEquipment เปลี่ยนเฉพาะตอน approve (insert / delete / update ตาม Reason)
+
+    private const string EQUIP_CR_REASON_MISSING = "missing_in_registry";
+    private const string EQUIP_CR_REASON_NOT_IN_RACK = "not_in_rack";
+    private const string EQUIP_CR_REASON_INCORRECT = "incorrect_info";
+
+    private static readonly HashSet<string> EquipmentChangeReasons = new(StringComparer.Ordinal)
+    {
+        EQUIP_CR_REASON_MISSING, EQUIP_CR_REASON_NOT_IN_RACK, EQUIP_CR_REASON_INCORRECT,
+    };
+
+    private static NisEquipmentChangeRequestDto MapEquipmentChangeRequest(
+        NisEquipmentChangeRequest r, string? customerName, string? ticketCode) => new()
+    {
+        RequestId = r.RequestId,
+        CmpId = r.CmpId,
+        CustomerCode = r.CustomerCode,
+        CustomerName = customerName,
+        TicketId = r.TicketId,
+        TicketCode = ticketCode,
+        RackName = r.RackName,
+        Reason = r.Reason,
+        EquipmentId = r.EquipmentId,
+        DeviceName = r.DeviceName,
+        Brand = r.Brand,
+        Model = r.Model,
+        SerialNo = r.SerialNo,
+        UPosition = r.UPosition,
+        Note = r.Note,
+        RequestedBy = r.RequestedBy,
+        Status = r.Status,
+        ApprovedBy = r.ApprovedBy,
+        RejectedBy = r.RejectedBy,
+        RejectReason = r.RejectReason,
+        CreatedDate = r.CreatedDate,
+        UpdatedDate = r.UpdatedDate,
+    };
+
+    /// เติม CustomerName (msb customers — แหล่งเดียวกับ GET equipment/customers) + TicketCode (NisTicket)
+    private async Task<List<NisEquipmentChangeRequestDto>> MapEquipmentChangeRequestsAsync(
+        string cmpId, List<NisEquipmentChangeRequest> rows)
+    {
+        if (rows.Count == 0) return new List<NisEquipmentChangeRequestDto>();
+
+        var codes = rows.Select(r => r.CustomerCode).Distinct().ToList();
+        var names = await _context.customers
+            .AsNoTracking()
+            .Where(c => c.CmpId == cmpId && codes.Contains(c.CustomerCode))
+            .Select(c => new { c.CustomerCode, c.CustomerName })
+            .ToDictionaryAsync(c => c.CustomerCode, c => c.CustomerName ?? string.Empty);
+
+        var ticketIds = rows.Where(r => !string.IsNullOrWhiteSpace(r.TicketId)).Select(r => r.TicketId!).Distinct().ToList();
+        var ticketCodes = ticketIds.Count == 0
+            ? new Dictionary<string, string?>()
+            : await _context.NisTickets
+                .AsNoTracking()
+                .Where(t => ticketIds.Contains(t.TicketId))
+                .Select(t => new { t.TicketId, t.TicketCode })
+                .ToDictionaryAsync(t => t.TicketId, t => t.TicketCode);
+
+        return rows.Select(r => MapEquipmentChangeRequest(
+                r,
+                names.TryGetValue(r.CustomerCode, out var n) ? n : null,
+                r.TicketId != null && ticketCodes.TryGetValue(r.TicketId, out var tc) ? tc : null))
+            .ToList();
+    }
+
+    /// <summary>
+    /// Lists equipment change requests for a company, newest first. Optional filters: status
+    /// (Pending|Approved|Rejected), customerCode, ticketId. Used by the Service Board approve tab.
+    /// </summary>
+    [HttpGet("equipment-change-requests")]
+    public async Task<ActionResult<IEnumerable<NisEquipmentChangeRequestDto>>> GetEquipmentChangeRequests(
+        [FromQuery] string? cmpid,
+        [FromQuery] string? status,
+        [FromQuery] string? customerCode,
+        [FromQuery] string? ticketId)
+    {
+        if (string.IsNullOrWhiteSpace(cmpid))
+            return BadRequest(new { message = "cmpid is required" });
+
+        var query = _context.NisEquipmentChangeRequests
+            .AsNoTracking()
+            .Where(r => r.CmpId == cmpid);
+        if (!string.IsNullOrWhiteSpace(status))
+            query = query.Where(r => r.Status == status);
+        if (!string.IsNullOrWhiteSpace(customerCode))
+            query = query.Where(r => r.CustomerCode == customerCode);
+        if (!string.IsNullOrWhiteSpace(ticketId))
+            query = query.Where(r => r.TicketId == ticketId);
+
+        var rows = await query.OrderByDescending(r => r.CreatedDate).ToListAsync();
+        return Ok(await MapEquipmentChangeRequestsAsync(cmpid, rows));
+    }
+
+    /// <summary>
+    /// Creates an equipment change request (Status = Pending) from the onsite PM rack inspection.
+    /// For not_in_rack / incorrect_info the target equipmentId must exist for that company + customer.
+    /// The equipment master is NOT changed until a manager approves.
+    /// </summary>
+    [HttpPost("equipment-change-requests")]
+    public async Task<ActionResult<NisEquipmentChangeRequestDto>> CreateEquipmentChangeRequest(
+        [FromBody] NisEquipmentChangeRequestCreateDto dto)
+    {
+        var cmpId = dto.CmpId ?? string.Empty;
+        if (string.IsNullOrWhiteSpace(cmpId))
+            return BadRequest(new { message = "cmpid is required" });
+        if (string.IsNullOrWhiteSpace(dto.CustomerCode))
+            return BadRequest(new { message = "customerCode is required" });
+        if (string.IsNullOrWhiteSpace(dto.RackName))
+            return BadRequest(new { message = "rackName is required" });
+        if (string.IsNullOrWhiteSpace(dto.DeviceName))
+            return BadRequest(new { message = "deviceName is required" });
+        if (string.IsNullOrWhiteSpace(dto.RequestedBy))
+            return BadRequest(new { message = "requestedBy is required" });
+        if (!EquipmentChangeReasons.Contains(dto.Reason ?? string.Empty))
+            return BadRequest(new { message = "reason must be one of missing_in_registry | not_in_rack | incorrect_info" });
+
+        string? equipmentId = null;
+        if (dto.Reason != EQUIP_CR_REASON_MISSING)
+        {
+            if (string.IsNullOrWhiteSpace(dto.EquipmentId) || !Guid.TryParse(dto.EquipmentId, out var equipGuid))
+                return BadRequest(new { message = "equipmentId is required for this reason" });
+
+            var exists = await _context.NisEquipments
+                .AsNoTracking()
+                .AnyAsync(e => e.Id == equipGuid && e.CmpId == cmpId && e.CustomerCode == dto.CustomerCode);
+            if (!exists)
+                return BadRequest(new { message = "equipmentId not found for this customer" });
+
+            equipmentId = equipGuid.ToString();
+        }
+
+        var now = BangkokNow();
+        var row = new NisEquipmentChangeRequest
+        {
+            RequestId = Guid.NewGuid().ToString(),
+            CmpId = cmpId,
+            CustomerCode = dto.CustomerCode.Trim(),
+            TicketId = string.IsNullOrWhiteSpace(dto.TicketId) ? null : dto.TicketId.Trim(),
+            RackName = dto.RackName.Trim(),
+            Reason = dto.Reason!,
+            EquipmentId = equipmentId,
+            DeviceName = dto.DeviceName.Trim(),
+            Brand = (dto.Brand ?? string.Empty).Trim(),
+            Model = (dto.Model ?? string.Empty).Trim(),
+            SerialNo = (dto.SerialNo ?? string.Empty).Trim(),
+            UPosition = dto.UPosition,
+            Note = (dto.Note ?? string.Empty).Trim(),
+            RequestedBy = dto.RequestedBy.Trim(),
+            Status = "Pending",
+            CreatedDate = now,
+            UpdatedDate = now,
+        };
+
+        _context.NisEquipmentChangeRequests.Add(row);
+        await _context.SaveChangesAsync();
+
+        var mapped = await MapEquipmentChangeRequestsAsync(cmpId, new List<NisEquipmentChangeRequest> { row });
+        return Ok(mapped[0]);
+    }
+
+    /// <summary>
+    /// Approves a pending equipment change request and applies it to the equipment master in one
+    /// transaction: missing_in_registry → insert NisEquipment; not_in_rack → delete the target row;
+    /// incorrect_info → update only the non-blank fields (and UPosition when provided) on the target row.
+    /// </summary>
+    [HttpPut("equipment-change-requests/{id}/approve")]
+    public async Task<ActionResult<NisEquipmentChangeRequestDto>> ApproveEquipmentChangeRequest(
+        string id,
+        [FromBody] NisEquipmentChangeRequestApproveDto dto)
+    {
+        var cmpId = dto.CmpId ?? string.Empty;
+        if (string.IsNullOrWhiteSpace(cmpId))
+            return BadRequest(new { message = "cmpid is required" });
+        if (string.IsNullOrWhiteSpace(dto.ApprovedBy))
+            return BadRequest(new { message = "approvedBy is required" });
+
+        var row = await _context.NisEquipmentChangeRequests
+            .FirstOrDefaultAsync(r => r.RequestId == id && r.CmpId == cmpId);
+        if (row == null)
+            return NotFound(new { message = $"Equipment change request '{id}' not found" });
+        if (row.Status != "Pending")
+            return BadRequest(new { message = $"Request is already {row.Status}" });
+
+        var now = BangkokNow();
+        var approver = dto.ApprovedBy.Trim();
+
+        await using var tx = await _context.Database.BeginTransactionAsync();
+        try
+        {
+            NisEquipment? target = null;
+            if (row.Reason != EQUIP_CR_REASON_MISSING && Guid.TryParse(row.EquipmentId, out var equipGuid))
+            {
+                target = await _context.NisEquipments
+                    .FirstOrDefaultAsync(e => e.Id == equipGuid && e.CmpId == cmpId && e.CustomerCode == row.CustomerCode);
+            }
+
+            switch (row.Reason)
+            {
+                case EQUIP_CR_REASON_MISSING:
+                    _context.NisEquipments.Add(new NisEquipment
+                    {
+                        Id = Guid.NewGuid(),
+                        CmpId = cmpId,
+                        CustomerCode = row.CustomerCode,
+                        RackName = row.RackName,
+                        DeviceName = row.DeviceName,
+                        Brand = row.Brand,
+                        Model = row.Model,
+                        SerialNo = row.SerialNo,
+                        UPosition = row.UPosition,
+                        Note = row.Note,
+                        CreatedBy = approver,
+                        CreatedDate = now,
+                        UpdatedBy = approver,
+                        UpdatedDate = now,
+                    });
+                    break;
+
+                case EQUIP_CR_REASON_NOT_IN_RACK:
+                    // แถวอาจถูกลบไปก่อนแล้ว (เช่น save replace-all จากหน้า master) — ถือว่าสำเร็จ
+                    if (target != null) _context.NisEquipments.Remove(target);
+                    break;
+
+                case EQUIP_CR_REASON_INCORRECT:
+                    if (target != null)
+                    {
+                        if (!string.IsNullOrWhiteSpace(row.DeviceName)) target.DeviceName = row.DeviceName;
+                        if (!string.IsNullOrWhiteSpace(row.Brand)) target.Brand = row.Brand;
+                        if (!string.IsNullOrWhiteSpace(row.Model)) target.Model = row.Model;
+                        if (!string.IsNullOrWhiteSpace(row.SerialNo)) target.SerialNo = row.SerialNo;
+                        if (row.UPosition.HasValue) target.UPosition = row.UPosition;
+                        target.UpdatedBy = approver;
+                        target.UpdatedDate = now;
+                    }
+                    break;
+            }
+
+            row.Status = "Approved";
+            row.ApprovedBy = approver;
+            row.UpdatedDate = now;
+
+            await _context.SaveChangesAsync();
+            await tx.CommitAsync();
+        }
+        catch (Exception ex)
+        {
+            await tx.RollbackAsync();
+            return StatusCode(StatusCodes.Status500InternalServerError, new
+            {
+                message = "Unable to approve equipment change request",
+                detail = ex.Message,
+            });
+        }
+
+        var mapped = await MapEquipmentChangeRequestsAsync(cmpId, new List<NisEquipmentChangeRequest> { row });
+        return Ok(mapped[0]);
+    }
+
+    /// <summary>Rejects a pending equipment change request — the equipment master is left untouched.</summary>
+    [HttpPut("equipment-change-requests/{id}/reject")]
+    public async Task<ActionResult<NisEquipmentChangeRequestDto>> RejectEquipmentChangeRequest(
+        string id,
+        [FromBody] NisEquipmentChangeRequestRejectDto dto)
+    {
+        var cmpId = dto.CmpId ?? string.Empty;
+        if (string.IsNullOrWhiteSpace(cmpId))
+            return BadRequest(new { message = "cmpid is required" });
+        if (string.IsNullOrWhiteSpace(dto.RejectedBy))
+            return BadRequest(new { message = "rejectedBy is required" });
+
+        var row = await _context.NisEquipmentChangeRequests
+            .FirstOrDefaultAsync(r => r.RequestId == id && r.CmpId == cmpId);
+        if (row == null)
+            return NotFound(new { message = $"Equipment change request '{id}' not found" });
+        if (row.Status != "Pending")
+            return BadRequest(new { message = $"Request is already {row.Status}" });
+
+        row.Status = "Rejected";
+        row.RejectedBy = dto.RejectedBy.Trim();
+        row.RejectReason = string.IsNullOrWhiteSpace(dto.RejectReason) ? null : dto.RejectReason.Trim();
+        row.UpdatedDate = BangkokNow();
+        await _context.SaveChangesAsync();
+
+        var mapped = await MapEquipmentChangeRequestsAsync(cmpId, new List<NisEquipmentChangeRequest> { row });
+        return Ok(mapped[0]);
+    }
+
+    #endregion
 
     // ── GET api/nis/sales-orders ─────────────────────────────────────────────
 
@@ -2410,6 +2813,48 @@ WHERE a.CmpId = @CmpId
     private static string MapNisOnsiteType(string? type) =>
         type == "Install" ? "Install" : type == "PM" ? "PM" : "MA";
 
+    /// <summary>
+    /// Gate ปิดงาน PM — คืนรายการ blocker (ว่าง = ผ่าน). Parity กับ computeRackInspectionBlockers
+    /// ใน CRM nis-onsite-flow.ts / RN utils/rackInspection.ts:
+    /// - ไม่มี item ไหนมี Devices (client เก่า / ไม่มีทะเบียน) → กฎเดิม ต้องมีอย่างน้อย 1 ตู้
+    /// - มี Devices → ทุกตู้ต้องมีรูปก่อน/หลัง, ทุกอุปกรณ์ต้องถูกตรวจ (normal|abnormal),
+    ///   abnormal ต้องระบุอาการ
+    /// </summary>
+    private static List<string> ValidatePmRackInspection(List<NisOnsitePmItemDto>? items)
+    {
+        var blockers = new List<string>();
+        var racks = items ?? new List<NisOnsitePmItemDto>();
+
+        if (!racks.Any(r => r.Devices != null))
+        {
+            if (racks.Count == 0)
+                blockers.Add("งาน PM ต้องบันทึกอย่างน้อย 1 ตู้ Rack (พร้อมรูปก่อน/หลัง)");
+            return blockers;
+        }
+
+        foreach (var rack in racks.Where(r => r.Devices != null))
+        {
+            var rackName = string.IsNullOrWhiteSpace(rack.Name) ? (rack.RackKey ?? "ตู้ Rack") : rack.Name;
+
+            if (string.IsNullOrWhiteSpace(rack.BeforePhoto))
+                blockers.Add($"{rackName}: ยังขาดรูปก่อนทำ");
+            if (string.IsNullOrWhiteSpace(rack.AfterPhoto))
+                blockers.Add($"{rackName}: ยังขาดรูปหลังทำ");
+
+            var unchecked_ = rack.Devices!.Count(d => d.Status != "normal" && d.Status != "abnormal");
+            if (unchecked_ > 0)
+                blockers.Add($"{rackName}: ยังไม่ได้ตรวจ {unchecked_} รายการ");
+
+            foreach (var device in rack.Devices!.Where(d => d.Status == "abnormal" && string.IsNullOrWhiteSpace(d.Symptom)))
+            {
+                var uLabel = device.UPosition.HasValue ? $"U{device.UPosition.Value}" : "U-";
+                blockers.Add($"{rackName} {uLabel} {device.DeviceName}: ยังไม่ระบุอาการ");
+            }
+        }
+
+        return blockers;
+    }
+
     private static NisOnsiteReport BuildNisOnsiteReport(
         NisTicket ticket, NisOnsiteReportBaseDto dto, string cmpId, string status) => new()
         {
@@ -2565,13 +3010,54 @@ WHERE a.CmpId = @CmpId
                 .AsNoTracking()
                 .FirstOrDefaultAsync(p => p.ProjectId == nisTicket.ProjectId);
 
+            var nisTicketType = MapNisOnsiteType(nisTicket.Type);
+
+            // ทะเบียนอุปกรณ์ในตู้ Rack — เฉพาะงาน PM: โปรเจคเลือก id ไว้ → เอาเฉพาะชุดนั้น
+            // ไม่ได้เลือก → ทั้งหมดของลูกค้ารายนี้ (client จัดกลุ่มตาม RackName เอง)
+            List<NisOnsiteEquipmentDto>? equipment = null;
+            if (nisTicketType == "PM" && project != null && !string.IsNullOrWhiteSpace(project.CustomerCode))
+            {
+                var equipCmpId = string.IsNullOrWhiteSpace(nisTicket.CmpId) ? project.CmpId : nisTicket.CmpId;
+                var selectedIds = (ParseJson<List<string>?>(project.EquipmentIdsJson, null) ?? new())
+                    .Select(s => Guid.TryParse(s, out var g) ? g : Guid.Empty)
+                    .Where(g => g != Guid.Empty)
+                    .ToList();
+
+                var equipQuery = _context.NisEquipments
+                    .AsNoTracking()
+                    .Where(e => e.CmpId == equipCmpId && e.CustomerCode == project.CustomerCode);
+                if (selectedIds.Count > 0)
+                    equipQuery = equipQuery.Where(e => selectedIds.Contains(e.Id));
+
+                var equipRows = await equipQuery.ToListAsync();
+                equipment = equipRows
+                    .OrderBy(e => e.RackName)
+                    .ThenBy(e => e.UPosition == null)          // null U ไปท้ายตู้
+                    .ThenBy(e => e.UPosition)
+                    .ThenBy(e => e.DeviceName)
+                    .Select(e => new NisOnsiteEquipmentDto
+                    {
+                        Id = e.Id.ToString(),
+                        RackName = e.RackName,
+                        RackLocation = e.RackLocation,
+                        UPosition = e.UPosition,
+                        DeviceName = e.DeviceName,
+                        SerialNo = e.SerialNo,
+                        Model = e.Model,
+                        Brand = e.Brand,
+                        Note = e.Note,
+                    })
+                    .ToList();
+            }
+
             return Ok(new NisOnsiteTicketResponseDto
             {
                 Id = nisTicket.TicketCode ?? nisTicket.TicketId,
                 Title = nisTicket.Title,
                 Customer = project?.Customer ?? string.Empty,
+                CustomerCode = project?.CustomerCode,
                 Location = project?.Location ?? string.Empty,
-                TicketType = MapNisOnsiteType(nisTicket.Type),
+                TicketType = nisTicketType,
                 ContactName = project?.ContactName ?? string.Empty,
                 ContactPhone = project?.ContactPhone ?? string.Empty,
                 ContactEmail = project?.ContactEmail,
@@ -2587,6 +3073,12 @@ WHERE a.CmpId = @CmpId
                 SkipSignature = false,
                 RequireCloseApproval = false,
                 Accepted = true,
+                CheckInTime = nisTicket.CheckInTime.HasValue ? FormatDateTime(nisTicket.CheckInTime) : null,
+                CheckInLat = nisTicket.CheckInLat,
+                CheckInLng = nisTicket.CheckInLng,
+                CheckInLocation = nisTicket.CheckInLocation,
+                CheckInBy = nisTicket.CheckInBy,
+                Equipment = equipment,
             });
         }
 
@@ -2687,6 +3179,15 @@ WHERE a.CmpId = @CmpId
         if (nisTicket != null)
         {
             var nisCmpId = dto.CmpId ?? nisTicket.CmpId ?? string.Empty;
+
+            // Business rule ตรวจซ้ำที่ backend: งาน PM ต้องตรวจตู้ Rack ครบก่อนปิด (ไม่เชื่อ gate ฝั่ง client)
+            if (MapNisOnsiteType(nisTicket.Type) == "PM")
+            {
+                var pmBlockers = ValidatePmRackInspection(dto.PmItems);
+                if (pmBlockers.Count > 0)
+                    return BadRequest(new { message = "PM rack inspection incomplete", blockers = pmBlockers });
+            }
+
             var report = BuildNisOnsiteReport(nisTicket, dto, nisCmpId, "submitted");
 
             // Optional client-generated Service Report PDF: validate → persist blob (for
@@ -3254,6 +3755,15 @@ WHERE a.CmpId = @CmpId
         if (nisTicket != null)
         {
             var nisCmpId = dto.CmpId ?? nisTicket.CmpId ?? string.Empty;
+
+            // Business rule ตรวจซ้ำที่ backend: งาน PM ต้องตรวจตู้ Rack ครบก่อนขออนุมัติปิด
+            if (MapNisOnsiteType(nisTicket.Type) == "PM")
+            {
+                var pmBlockers = ValidatePmRackInspection(dto.PmItems);
+                if (pmBlockers.Count > 0)
+                    return BadRequest(new { message = "PM rack inspection incomplete", blockers = pmBlockers });
+            }
+
             _context.NisOnsiteReports.Add(BuildNisOnsiteReport(nisTicket, dto, nisCmpId, "pending_approval"));
 
             nisTicket.Status = "Waiting Close Approval";

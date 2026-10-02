@@ -22,6 +22,13 @@ public class NisEquipment
     [MaxLength(200)]
     public string RackName { get; set; } = string.Empty;
 
+    /// ที่ตั้งของตู้ (เช่น "ห้อง IT ชั้น 2") — ซ้ำกันทุกแถวของตู้เดียวกัน (ตู้ = group by RackName)
+    [MaxLength(200)]
+    public string RackLocation { get; set; } = string.Empty;
+
+    /// ตำแหน่ง U ในตู้ — null = ไม่ระบุ
+    public int? UPosition { get; set; }
+
     [MaxLength(200)]
     public string DeviceName { get; set; } = string.Empty;
 

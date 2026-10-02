@@ -234,6 +234,23 @@ public class NisTicket
     /// ใช้เรียงงานที่ปิดแล้ว — UpdatedDate ใช้แทนไม่ได้เพราะเปลี่ยนทุกครั้งที่ตั๋วถูกแก้
     public DateTime? ClosedDate { get; set; }
 
+    /// เวลาที่ช่าง Check-in ครั้งแรก (เวลาไทย ตามเวลา server) · null = ยังไม่เช็คอิน
+    /// เขียนผ่าน PUT tickets/{id}/checkin ทั้งจาก RN และ CRM — ให้ทุก client เห็นสถานะเดียวกัน
+    /// (เดิมอยู่แค่ใน draft ของเครื่อง/ของ user จนกว่าจะปิดงาน)
+    public DateTime? CheckInTime { get; set; }
+
+    /// พิกัด GPS ตอนเช็คอิน · null = เช็คอินโดยไม่มีพิกัด
+    public double? CheckInLat { get; set; }
+    public double? CheckInLng { get; set; }
+
+    /// ชื่อสถานที่ที่ช่างยืนเช็คอิน (reverse geocode ฝั่ง client) · null = ไม่ทราบ
+    [MaxLength(500)]
+    public string? CheckInLocation { get; set; }
+
+    /// ผู้เช็คอิน (username/fullName ที่ client ส่งมา)
+    [MaxLength(200)]
+    public string? CheckInBy { get; set; }
+
     public virtual NisProject? Project { get; set; }
 }
 
