@@ -192,8 +192,8 @@ SignalR เก็บ connection ไว้ใน process — ถ้ารัน *
 - ค่าว่าง = in-process เหมือนเดิม — dev ไม่ต้องรัน Redis; app log บรรทัด `SignalR backplane: ...` ตอน start
 - client ต้องต่อแบบ WebSockets + `skipNegotiation` (CRM ทำอยู่แล้ว) ไม่งั้นต้องมี sticky session ที่ LB
 - Redis ล่มระหว่างรัน app ไม่ล้ม (`AbortOnConnectFail=false`) และ reconnect เอง แต่ข้อความข้าม instance จะหายช่วงนั้น
-- ⚠️ backplane **ยังไม่พอ** สำหรับ `ERPAPI_REPLICAS=2` — `NisOverduePushService` และ
-  `NisAccidentAutoCloseService` จะรันซ้ำทุก instance (push ซ้ำ / ปิดเคสชนกัน) ต้องทำให้รันตัวเดียวก่อน
+- background service (`NisOverduePushService`, `NisAccidentAutoCloseService`) ไม่รันพร้อมกันข้าม replica
+  ด้วย `SqlAppLock` และ idempotent — ดูหัวข้อ Background Services
 
 ---
 
@@ -202,10 +202,25 @@ SignalR เก็บ connection ไว้ใน process — ถ้ารัน *
 | Service | หน้าที่ |
 | --- | --- |
 | `LogProcessorService` | `IHostedService` — consume `log_queue` แล้วเขียน system log ลง DB |
-| `NisOverduePushService` | ตรวจตั๋วเกินกำหนดทุก 15 นาที และส่ง push ไม่เกินวันละครั้งต่อตั๋ว |
+| `NisOverduePushService` | ตรวจตั๋วเกินกำหนดทุก 15 นาที และส่ง push ไม่เกินวันละครั้งต่อตั๋ว (lock `goalongapi:nis-overdue-push`) |
+| `NisAccidentAutoCloseService` | ทุก 24 ชม. ปิดตั๋วของโปรเจคเคส Accident ที่หมดสัญญาแล้ว (lock `goalongapi:nis-accident-auto-close`) |
+| `SqlAppLock` | Singleton helper — distributed lock ผ่าน `sp_getapplock` (`@LockOwner='Session'`, `Pooling=false`) ให้ hosted service ไม่รันพร้อมกันข้าม replica |
 | `RabbitMQService` | Singleton publisher สำหรับส่ง log เข้า queue |
 | `ExpoPushService` | ส่ง push notification ไปยัง Expo (NIS Onsite mobile app) |
 | `NisRealtimeNotifyService` | Best-effort POST ไป go-chat-api เพื่อ emit `nis:notify` (foreground refresh) |
+
+### รันหลาย replica
+
+`BackgroundService` ถูกสร้างทุก instance — ตัวที่มี side effect (push, เขียน DB) ครอบแต่ละรอบด้วย
+`SqlAppLock.TryAcquireAsync(resource)`; instance ที่ขอ lock ไม่ได้จะ **ข้ามรอบนั้น** แล้วรอ interval ถัดไป
+(log `ข้ามรอบ — instance อื่นถือ lock อยู่`) lock ผูกกับ SQL session ของ connection ที่เปิดค้างไว้แบบ
+`Pooling=false` (`ApplicationName=goalongapi-applock`) — ปิด connection หรือ process ตาย = lock หลุดแน่นอน
+
+ได้แค่ **"ไม่รันพร้อมกัน"** ไม่ใช่ "รันตัวเดียว": lock ปล่อยตอนจบรอบ instance ที่ถึงรอบทีหลังจะได้ lock แล้ว
+รันซ้ำแบบเรียงกัน → job ที่ครอบด้วย `SqlAppLock` **ต้อง idempotent** (overdue push กันด้วย unique `EventKey`,
+accident auto-close กรอง `Status != "Closed"`) ถ้าวันหน้ามี job ที่รันซ้ำไม่ได้ ค่อยเพิ่มโหมดถือ lock ค้างตลอดอายุ process
+`LogProcessorService` ไม่ต้อง lock เพราะเป็น competing consumer ของ RabbitMQ (prefetch 1, manual ack) อยู่แล้ว
+ดู lock ที่ถืออยู่: `SELECT resource_description, request_session_id FROM sys.dm_tran_locks WHERE resource_type='APPLICATION'`
 
 ---
 

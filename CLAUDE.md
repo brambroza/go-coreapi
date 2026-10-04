@@ -86,6 +86,9 @@ Controller ที่ใหญ่และเสี่ยงสุด (แก้�
 - `IHostedService` ถูก exclude ออกจาก auto-register แล้ว (`Program.cs`) — register hosted service
   ด้วย `AddHostedService` อย่างเดียว ห้าม register ซ้ำ ไม่งั้นได้ background worker ซ้อน
 - Service ใหม่วางที่ `Services/` (infrastructure/background) หรือ `Interfaces/Services/` (domain service ตามของเดิม)
+- prod รันหลาย replica — hosted service ที่มี side effect (push, เขียน DB) **ต้อง idempotent** และครอบแต่ละรอบด้วย
+  `SqlAppLock.TryAcquireAsync("goalongapi:<ชื่องาน>")` (`Services/SqlAppLock.cs`, sp_getapplock) ข้ามรอบเมื่อได้ `null`
+  lock กันแค่ "รันพร้อมกัน" ไม่กัน "รันซ้ำแบบเรียงกัน" — ห้ามเขียน job ที่พึ่ง lock กันรันซ้ำ ดูตัวอย่างใน `NisOverduePushService`
 
 ### 3.5 ทั่วไป
 

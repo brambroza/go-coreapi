@@ -58,6 +58,8 @@ builder.Services.AddCors(p =>
 );
 
 builder.Services.AddScoped<DbConnectionFactory>();
+// distributed lock (sp_getapplock) ให้ BackgroundService ไม่รันพร้อมกันข้าม replica (job ต้อง idempotent) — singleton ไม่ auto-register
+builder.Services.AddSingleton<goalongapi.Services.SqlAppLock>();
 
 // Add services to the container.
 builder.Services.InstallServiceInAssembly(builder.Configuration);

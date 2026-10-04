@@ -26,6 +26,11 @@ public class NisAccidentAutoCloseService : BackgroundService
     private static readonly TimeSpan StartupDelay = TimeSpan.FromMinutes(2);
     private static readonly TimeSpan Interval = TimeSpan.FromHours(24);
 
+    /// ชื่อ lock ใน sp_getapplock — prod รันหลาย replica ต้องไม่รันพร้อมกัน
+    /// (กัน 2 instance โหลดตั๋วชุดเดียวกันแล้ว append หมายเหตุปิดงานซ้ำ) ตัวที่ขอ lock ไม่ได้ข้ามรอบ
+    /// รอบที่เรียงกันรันซ้ำได้ แต่ idempotent เพราะกรอง Status != "Closed" แล้วไม่มีอะไรทำ
+    private const string LockResource = "goalongapi:nis-accident-auto-close";
+
     /// ตรงกับ NisController.NIS_PCT_CLOSED — คนละคลาสกัน (private const) เลย mirror ค่าไว้ที่นี่
     /// ค่าเดียวกันนี้ mirror อยู่ฝั่ง RN ที่ NIS-OnsiteService/src/utils/progress.ts ด้วย
     private const int NisPctClosed = 100;
@@ -34,11 +39,16 @@ public class NisAccidentAutoCloseService : BackgroundService
     private const string SystemActor = "system:accident-auto-close";
 
     private readonly IServiceScopeFactory _scopeFactory;
+    private readonly SqlAppLock _appLock;
     private readonly ILogger<NisAccidentAutoCloseService> _logger;
 
-    public NisAccidentAutoCloseService(IServiceScopeFactory scopeFactory, ILogger<NisAccidentAutoCloseService> logger)
+    public NisAccidentAutoCloseService(
+        IServiceScopeFactory scopeFactory,
+        SqlAppLock appLock,
+        ILogger<NisAccidentAutoCloseService> logger)
     {
         _scopeFactory = scopeFactory;
+        _appLock = appLock;
         _logger = logger;
     }
 
@@ -53,7 +63,16 @@ public class NisAccidentAutoCloseService : BackgroundService
         {
             try
             {
-                await CheckAccidentContractsAsync(stoppingToken);
+                // lock ถือแค่ช่วงรอบนี้ — await using ปล่อยทันทีที่จบ ไม่ถือข้าม interval
+                await using var lockHandle = await _appLock.TryAcquireAsync(LockResource, stoppingToken);
+                if (lockHandle is null)
+                {
+                    _logger.LogInformation("NIS accident auto-close: ข้ามรอบ — instance อื่นถือ lock อยู่");
+                }
+                else
+                {
+                    await CheckAccidentContractsAsync(stoppingToken);
+                }
             }
             catch (Exception ex)
             {
