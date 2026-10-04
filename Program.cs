@@ -6,6 +6,7 @@ using goalongapi.Data;
 using goalongapi.Installers;
 using goalongapi.DB;
 using Microsoft.EntityFrameworkCore;
+using StackExchange.Redis;
 
 
 System.Net.ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolType.Tls12;
@@ -14,7 +15,21 @@ var builder = WebApplication.CreateBuilder(args);
 
 
 builder.Services.AddControllers();
-builder.Services.AddSignalR();
+// SignalR — ใช้ Redis backplane เมื่อตั้ง Redis:Configuration (จำเป็นเมื่อรันมากกว่า 1 replica)
+// ค่าว่าง = in-process เหมือนเดิม (dev ไม่ต้องรัน Redis)
+var signalRBuilder = builder.Services.AddSignalR();
+var redisConfiguration = builder.Configuration["Redis:Configuration"];
+var redisChannelPrefix = builder.Configuration["Redis:ChannelPrefix"] ?? "goalongapi";
+var useRedisBackplane = !string.IsNullOrWhiteSpace(redisConfiguration);
+if (useRedisBackplane)
+{
+    signalRBuilder.AddStackExchangeRedis(redisConfiguration!, options =>
+    {
+        options.Configuration.ChannelPrefix = RedisChannel.Literal(redisChannelPrefix);
+        // Redis ล่มตอน start → app ยังขึ้น แล้ว reconnect เองเมื่อ Redis กลับมา
+        options.Configuration.AbortOnConnectFail = false;
+    });
+}
 builder.Services.AddCors(p =>
     p.AddPolicy(
         "_MyAllowSpecificOrigins",
@@ -139,6 +154,11 @@ builder.Services.AddDbContext<HrDbContext>(options =>
 
 
 var app = builder.Build();
+
+if (useRedisBackplane)
+    app.Logger.LogInformation("SignalR backplane: Redis (ChannelPrefix={Prefix})", redisChannelPrefix);
+else
+    app.Logger.LogWarning("SignalR backplane: in-process only — ห้ามรันเกิน 1 replica (ตั้ง Redis:Configuration เพื่อเปิด Redis backplane)");
 /* 
 app.UseMiddleware<DuplicateRouteNameMiddleware>(); */
 //if (app.Environment.IsDevelopment())

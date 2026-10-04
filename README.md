@@ -143,6 +143,8 @@ Environment Variables (ลำดับหลังทับลำดับก่
 | `NisOnsite:MaxRequestBodyBytes` | Kestrel body limit — กัน base64 PDF ใหญ่เกินให้ตอบ 413 แทน connection reset (default 32 MB) |
 | `NisRealtime:ChatApiBaseUrl` | Base URL ของ go-chat-api สำหรับ bridge event `nis:notify` |
 | `NisRealtime:InternalSecret` | Shared secret ระหว่าง core API ↔ chat API |
+| `Redis:Configuration` | StackExchange.Redis connection string สำหรับ SignalR backplane เช่น `192.168.88.12:6379,password=***,abortConnect=false` (ใช้ IP ไม่ใช้ชื่อเครื่อง — container ใน Swarm มองไม่เห็น `/etc/hosts`) — **ว่าง = in-process** ใส่ค่าจริงผ่าน ENV `Redis__Configuration` ใน `stacks/erp/erpapi.env` เท่านั้น |
+| `Redis:ChannelPrefix` | prefix ของ pub/sub channel — Redis ตัวนี้ใช้ร่วมกับ go-chat-api (prefix `socket.io#`) ไม่ชนกัน (default `goalongapi`) |
 
 ### CORS
 
@@ -178,6 +180,20 @@ docker run -p 7046:6600 goalongwebapi
 | `ChatHub` | `/chathub` | Chat ระหว่างผู้ใช้ |
 | `SessionHub` | `/sessionhub` | Session / presence tracking |
 | `DispatchKanbanHub` | `/dispatchkanbanhub` | อัปเดต Kanban board ของงาน dispatch |
+
+### Redis backplane (scale-out)
+
+SignalR เก็บ connection ไว้ใน process — ถ้ารัน **มากกว่า 1 replica** ต้องเปิด Redis backplane
+(`Microsoft.AspNetCore.SignalR.StackExchangeRedis`) ไม่งั้น `Clients.All` / `Clients.Group`
+ส่งถึงเฉพาะ client ที่ต่ออยู่กับ instance เดียวกัน
+
+- ตั้ง `Redis__Configuration` (เช่น `192.168.88.12:6379,password=***,abortConnect=false`) ใน `stacks/erp/erpapi.env`
+  ของ service `erpapi` — Redis บน erp-db-01 ตัวเดียวกับ go-chat-api ใช้ร่วมกันได้เพราะ prefix ต่างกัน
+- ค่าว่าง = in-process เหมือนเดิม — dev ไม่ต้องรัน Redis; app log บรรทัด `SignalR backplane: ...` ตอน start
+- client ต้องต่อแบบ WebSockets + `skipNegotiation` (CRM ทำอยู่แล้ว) ไม่งั้นต้องมี sticky session ที่ LB
+- Redis ล่มระหว่างรัน app ไม่ล้ม (`AbortOnConnectFail=false`) และ reconnect เอง แต่ข้อความข้าม instance จะหายช่วงนั้น
+- ⚠️ backplane **ยังไม่พอ** สำหรับ `ERPAPI_REPLICAS=2` — `NisOverduePushService` และ
+  `NisAccidentAutoCloseService` จะรันซ้ำทุก instance (push ซ้ำ / ปิดเคสชนกัน) ต้องทำให้รันตัวเดียวก่อน
 
 ---
 

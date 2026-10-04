@@ -13,7 +13,7 @@
 | Runtime | .NET 9.0 (ASP.NET Core Web API) — SDK pin 9.0.101 (`global.json`) |
 | Database | SQL Server — EF Core 9 + ADO.NET (`DbConnectionFactory`) + Stored Procedure |
 | DI | Autofac auto-register ทุก class ที่ชื่อลงท้าย `Service` |
-| Realtime | SignalR 6 hubs |
+| Realtime | SignalR 6 hubs (+ Redis backplane เมื่อตั้ง `Redis:Configuration` — จำเป็นเมื่อ replica > 1) |
 | Queue | RabbitMQ (`log_queue`) |
 | Repo | https://github.com/brambroza/go-coreapi — branch หลัก `main` |
 | Local URL | https://localhost:7046 · http://localhost:5052 · Swagger `/swagger` |
