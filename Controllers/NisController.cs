@@ -151,7 +151,39 @@ public class NisController : ControllerBase
         CheckInLng = t.CheckInLng,
         CheckInLocation = t.CheckInLocation,
         CheckInBy = t.CheckInBy,
+        SourceProblemId = t.SourceProblemId,
+        OverQuota = t.OverQuota,
     };
+
+    /// ประเภทตั๋วที่นับเข้าโควตา Onsite Accident — ตรงกับ NisTicketType ฝั่ง frontend
+    private const string OnsiteTicketType = "MA Onsite";
+
+    /// <summary>
+    /// แปลงค่า quota จาก select ('0', '4', ...) เป็นจำนวน — ตรงกับ parseTicketCount ฝั่ง frontend
+    /// ค่าว่าง/อ่านไม่ออก/ติดลบ → fallback
+    /// </summary>
+    private static int ParseTicketCount(string? value, int fallback = 0)
+    {
+        if (int.TryParse((value ?? string.Empty).Trim(), out var n) && n >= 0) return n;
+        return fallback;
+    }
+
+    /// <summary>
+    /// โควตา Onsite ของโครงการเคส Accident — นับทั้งสัญญาตามระยะโครงการ (ไม่รีเซ็ตรายปี)
+    /// quota = onsitePerYear × serviceYears (serviceYears อ่านไม่ออก = 1) · used = ตั๋ว MA Onsite ที่มีอยู่
+    /// </summary>
+    /// <returns>null เมื่อไม่ใช่โครงการเคส Accident</returns>
+    private static NisOnsiteQuotaDto? ComputeOnsiteQuota(NisServiceConditionsDto? cond, int onsiteTicketCount)
+    {
+        if (cond == null || !cond.OnsiteAccident) return null;
+        var quota = ParseTicketCount(cond.OnsitePerYear) * ParseTicketCount(cond.ServiceYears, 1);
+        return new NisOnsiteQuotaDto
+        {
+            Quota = quota,
+            Used = onsiteTicketCount,
+            Remaining = quota - onsiteTicketCount,
+        };
+    }
 
     /// <summary>
     /// sync ClosedDate ให้ตรงกับสถานะปัจจุบันของตั๋ว — เรียกทุกครั้งหลังเขียน Status
@@ -210,6 +242,9 @@ public class NisController : ControllerBase
         Location = p.Location,
         CreatedDate = FormatDateTime(p.CreatedDate),
         ServiceConditions = ParseJson<NisServiceConditionsDto?>(p.ServiceConditionsJson, null),
+        OnsiteQuota = ComputeOnsiteQuota(
+            ParseJson<NisServiceConditionsDto?>(p.ServiceConditionsJson, null),
+            p.Tickets.Count(t => t.Type == OnsiteTicketType)),
         EquipmentIds = ParseJson<List<string>?>(p.EquipmentIdsJson, null) ?? new(),
         Contact = string.IsNullOrEmpty(p.ContactName) ? null : new NisContactDto
         {
@@ -531,10 +566,40 @@ public class NisController : ControllerBase
         if (project == null)
             return NotFound(new { message = $"Project {id} not found" });
 
+        // ตั๋วที่เปิดจากเคส helpdesk เดิม (SourceProblemId) ในโครงการเดิม → คืนตั๋วเดิม กันกดบันทึก Action ซ้ำแล้วตัดโควตาสองครั้ง
+        if (!string.IsNullOrWhiteSpace(dto.SourceProblemId))
+        {
+            var existing = await _context.NisTickets
+                .AsNoTracking()
+                .FirstOrDefaultAsync(t => t.ProjectId == id && t.SourceProblemId == dto.SourceProblemId);
+            if (existing != null) return Ok(MapTicket(existing));
+        }
+
         // RunNo continues from however many tickets of this Type already exist in the project.
         var existingCount = await _context.NisTickets
             .CountAsync(t => t.ProjectId == id && t.Type == dto.Type);
         var runNo = existingCount + 1;
+
+        // โควตา Onsite Accident (business rule อยู่ที่นี่ — frontend แค่เตือน): หมดแล้วต้องยืนยัน AllowOverQuota
+        var overQuota = false;
+        if (dto.Type == OnsiteTicketType)
+        {
+            var quota = ComputeOnsiteQuota(
+                ParseJson<NisServiceConditionsDto?>(project.ServiceConditionsJson, null),
+                existingCount);
+            if (quota != null && quota.Remaining <= 0)
+            {
+                if (!dto.AllowOverQuota)
+                    return Conflict(new
+                    {
+                        code = "ONSITE_QUOTA_EXCEEDED",
+                        message = $"โควตา Onsite Accident ของโครงการหมดแล้ว (ใช้ไป {quota.Used}/{quota.Quota})",
+                        quota = quota.Quota,
+                        used = quota.Used,
+                    });
+                overQuota = true;
+            }
+        }
 
         var ticket = new NisTicket
         {
@@ -554,6 +619,8 @@ public class NisController : ControllerBase
             CmpId = dto.CmpId ?? string.Empty,
             CreatedDate = DateTime.Now,
             UpdatedDate = DateTime.Now,
+            SourceProblemId = string.IsNullOrWhiteSpace(dto.SourceProblemId) ? null : dto.SourceProblemId.Trim(),
+            OverQuota = overQuota,
         };
         ApplyClosedDate(ticket);
 
@@ -1923,6 +1990,9 @@ WHERE a.CmpId = @CmpId
             });
         }
 
+        // แจ้งหน้า CRM ที่เปิดอยู่ให้ refetch รายการอุปกรณ์ของลูกค้านี้ (SignalR, ไม่บล็อก response)
+        await _crmNotify.BroadcastEquipmentChangedAsync(cmpId, dto.CustomerCode);
+
         var saved = await _context.NisEquipments
             .AsNoTracking()
             .Where(e => e.CmpId == cmpId && e.CustomerCode == dto.CustomerCode)
@@ -1985,6 +2055,8 @@ WHERE a.CmpId = @CmpId
                 detail = ex.Message,
             });
         }
+
+        await _crmNotify.BroadcastEquipmentChangedAsync(cmpid, customerCode);
 
         return Ok(new NisEquipmentImportResultDto
         {
@@ -2340,6 +2412,9 @@ WHERE a.CmpId = @CmpId
             });
         }
 
+        // approve มีผลกับ NisEquipment จริง (insert/update/delete) → แจ้งหน้าที่เปิดอยู่
+        await _crmNotify.BroadcastEquipmentChangedAsync(cmpId, row.CustomerCode);
+
         var mapped = await MapEquipmentChangeRequestsAsync(cmpId, new List<NisEquipmentChangeRequest> { row });
         return Ok(mapped[0]);
     }
@@ -2588,7 +2663,7 @@ WHERE a.CmpId = @CmpId
         PmPerYearMa = ["0", "2", "4", "12"],
         RemoteBackupImplement = ["0", "2", "4", "12"],
         RemoteBackupMa = ["0", "4", "12"],
-        MonthlyReport = ["4", "12"],
+        MonthlyReport = ["0", "4", "12"],
         ServiceReplacement =
         [
             new NisOptionItemDto { Value = "company", Label = "จากคลังบริษัทฯ" },

@@ -84,6 +84,30 @@ public class NisCrmNotifyService
         }
     }
 
+    /// <summary>
+    /// กระจาย event ว่า master อุปกรณ์ (NisEquipment) ของลูกค้าเปลี่ยน — ให้หน้า CRM ที่เปิดอยู่
+    /// (wizard สร้างโครงการ / หน้า master) refetch รายการโดยไม่ต้องรีเฟรช
+    /// ชื่อ event มี cmpId จึงไม่ปนข้ามบริษัท payload มีแค่ customerCode (ไม่มีข้อมูลอุปกรณ์)
+    /// ส่งไม่สำเร็จ = log อย่างเดียว ห้ามพา request หลักล้ม
+    /// </summary>
+    /// <param name="cmpId">รหัสบริษัท</param>
+    /// <param name="customerCode">รหัสลูกค้าที่รายการอุปกรณ์เปลี่ยน</param>
+    public async Task BroadcastEquipmentChangedAsync(string cmpId, string customerCode)
+    {
+        try
+        {
+            if (string.IsNullOrWhiteSpace(cmpId) || string.IsNullOrWhiteSpace(customerCode)) return;
+
+            await _hub.Clients.All.SendAsync(
+                $"NisEquipmentChanged{cmpId}",
+                new { customerCode, at = DateTime.UtcNow.ToString("o") });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "NIS equipment changed broadcast ส่งไม่สำเร็จ (cmp={Cmp}, cust={Cust})", cmpId, customerCode);
+        }
+    }
+
     /// อ่านรายการแจ้งเตือนของผู้ใช้เป็น JSON (รูปแบบเดียวกับ NotificationHub.SendNotifications)
     private static Task<string> GetNotificationsJsonAsync(string cmpId, string username)
     {

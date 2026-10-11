@@ -395,7 +395,10 @@ namespace goalongapi.Controllers
                 _cmd += ",@ProblemId ='" + pr.ProblemId + "'";
                 _cmd += ",@ReceiveDate ='" + pr.ReceiveDate + "'";
                 _cmd += ",@CustCode  ='" + pr.CustomerCode + "'";
-                _cmd += ",@RequestBy  ='" + pr.ContactName + "'";
+                // ผู้แจ้ง: ใช้ RequestBy ที่ client ส่งมา (onsite form / RN เลือก LINE contact หรือพิมพ์เอง)
+                // ถ้าไม่ส่ง (หน้า helpdesk เดิมส่งชื่อผู้แจ้งใน ContactName) fallback ContactName เพื่อคงพฤติกรรมเดิม
+                var requestBy = string.IsNullOrWhiteSpace(pr.RequestBy) ? pr.ContactName : pr.RequestBy;
+                _cmd += ",@RequestBy  ='" + Tool.Tool.validateStr(requestBy) + "'";
                 _cmd += ",@ProblemDetails  ='" + Tool.Tool.validateStr(pr.ProblemDetails) + "'";
                 _cmd += ",@ProblemType  ='" + pr.ProblemType + "'";
                 _cmd += " ,@ReceiveTime  ='" + pr.ReceiveTime + "'";

@@ -234,6 +234,14 @@ public class NisTicket
     /// ใช้เรียงงานที่ปิดแล้ว — UpdatedDate ใช้แทนไม่ได้เพราะเปลี่ยนทุกครั้งที่ตั๋วถูกแก้
     public DateTime? ClosedDate { get; set; }
 
+    /// เลขเคส helpdesk (Problem.ProblemId) ที่เปิดตั๋วนี้ — ตั๋ว MA Onsite ของโครงการเคส Accident
+    /// ที่ตัดโควตาจากฟอร์ม Action ของ /productservice/servicerequest · null = ตั๋วที่เปิดจาก NIS เอง
+    [MaxLength(50)]
+    public string? SourceProblemId { get; set; }
+
+    /// true = เปิดตั๋ว MA Onsite ทั้งที่โควตา Onsite Accident ของโครงการหมดแล้ว (ผู้ใช้ยืนยัน)
+    public bool OverQuota { get; set; } = false;
+
     /// เวลาที่ช่าง Check-in ครั้งแรก (เวลาไทย ตามเวลา server) · null = ยังไม่เช็คอิน
     /// เขียนผ่าน PUT tickets/{id}/checkin ทั้งจาก RN และ CRM — ให้ทุก client เห็นสถานะเดียวกัน
     /// (เดิมอยู่แค่ใน draft ของเครื่อง/ของ user จนกว่าจะปิดงาน)

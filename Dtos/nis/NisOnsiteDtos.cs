@@ -130,6 +130,10 @@ public class NisOnsiteSupportCaseDto
     public string Solution { get; set; } = string.Empty;
     public string StartTime { get; set; } = string.Empty;
     public string EndTime { get; set; } = string.Empty;
+    /// ผลลัพธ์หน้างาน: resolved (ปิดเคส Finish) | followup (เคสค้าง Inprogress) — null = ของเดิมก่อนมีช่องนี้
+    public string? Result { get; set; }
+    /// LINE userId ของผู้แจ้ง เมื่อเลือกจาก LINE contact (ว่าง = พิมพ์ชื่อเอง)
+    public string? ReporterLineUserId { get; set; }
 }
 
 /// Shared base for submit + request-close (mirrors Omit<INisOnsiteSubmitPayload, 'recipientEmail'|'emailSubject'> on the frontend).

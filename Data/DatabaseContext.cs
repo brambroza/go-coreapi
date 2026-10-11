@@ -77,6 +77,16 @@ namespace goalongapi.Data
         public DbSet<NisPushToken> NisPushTokens { get; set; }
         public DbSet<NisPushLog> NisPushLogs { get; set; }
         public DbSet<NisOnsiteProgress> NisOnsiteProgresses { get; set; }
+        // NIS — Service Report (archive · analytics · report builder)
+        public DbSet<NisServiceCase> NisServiceCases { get; set; }
+        public DbSet<NisSyncLog> NisSyncLogs { get; set; }
+        public DbSet<NisHoliday> NisHolidays { get; set; }
+        public DbSet<NisHolidayChangeLog> NisHolidayChangeLogs { get; set; }
+        public DbSet<NisCustomerGroup> NisCustomerGroups { get; set; }
+        public DbSet<NisReportCompany> NisReportCompanies { get; set; }
+        public DbSet<NisReportTemplate> NisReportTemplates { get; set; }
+        public DbSet<NisReport> NisReports { get; set; }
+        public DbSet<NisReportJob> NisReportJobs { get; set; }
         public DbSet<EmailSendLog> EmailSendLogs { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -713,6 +723,8 @@ namespace goalongapi.Data
                 entity.Property(e => e.CheckInTime).HasColumnType("datetime");
                 entity.Property(e => e.CheckInLocation).HasMaxLength(500);
                 entity.Property(e => e.CheckInBy).HasMaxLength(200);
+                entity.Property(e => e.SourceProblemId).HasMaxLength(50);
+                entity.Property(e => e.OverQuota).HasDefaultValue(false);
 
                 entity.HasIndex(e => e.ProjectId);
                 entity.HasIndex(e => new { e.CmpId, e.Status });
@@ -982,6 +994,91 @@ namespace goalongapi.Data
                 entity.Property(e => e.UpdatedAt).HasColumnType("datetime").HasDefaultValueSql("GETDATE()");
                 entity.HasIndex(e => e.SerialNo).IsUnique();
                 entity.HasIndex(e => e.CmpId);
+            });
+
+            // ── NIS Service Report ─────────────────────────────────────────────
+            modelBuilder.Entity<NisServiceCase>(entity =>
+            {
+                entity.ToTable("NisServiceCase", "dbo");
+                entity.HasKey(e => new { e.CmpId, e.SourceId });
+                entity.HasIndex(e => new { e.CmpId, e.ExternalGuid }).IsUnique();
+                entity.HasIndex(e => new { e.CmpId, e.CustomerId, e.CreatedAt });
+                entity.HasIndex(e => new { e.CmpId, e.CreatedAt });
+                entity.HasIndex(e => new { e.CmpId, e.ResolvedAt });
+                entity.HasIndex(e => new { e.CmpId, e.Status });
+                entity.HasIndex(e => new { e.CmpId, e.Priority });
+                entity.HasIndex(e => new { e.CmpId, e.IsTestData });
+            });
+
+            modelBuilder.Entity<NisSyncLog>(entity =>
+            {
+                entity.ToTable("NisSyncLog", "dbo");
+                entity.HasKey(e => e.Id);
+                entity.HasIndex(e => new { e.CmpId, e.StartedAt });
+                entity.HasIndex(e => new { e.CmpId, e.Status, e.StartedAt });
+            });
+
+            modelBuilder.Entity<NisHoliday>(entity =>
+            {
+                entity.ToTable("NisHoliday", "dbo");
+                entity.HasKey(e => new { e.CmpId, e.Date });
+                entity.HasIndex(e => new { e.CmpId, e.Year });
+                entity.HasIndex(e => new { e.CmpId, e.Observed });
+            });
+
+            modelBuilder.Entity<NisHolidayChangeLog>(entity =>
+            {
+                entity.ToTable("NisHolidayChangeLog", "dbo");
+                entity.HasKey(e => e.Id);
+                entity.HasIndex(e => new { e.CmpId, e.Date });
+                entity.HasIndex(e => new { e.CmpId, e.ChangedAt });
+            });
+
+            modelBuilder.Entity<NisCustomerGroup>(entity =>
+            {
+                entity.ToTable("NisCustomerGroup", "dbo");
+                entity.HasKey(e => new { e.CmpId, e.CustomerId });
+                entity.HasIndex(e => new { e.CmpId, e.MergeIntoCustomerId });
+            });
+
+            modelBuilder.Entity<NisReportCompany>(entity =>
+            {
+                entity.ToTable("NisReportCompany", "dbo");
+                entity.HasKey(e => e.CmpId);
+            });
+
+            modelBuilder.Entity<NisReportTemplate>(entity =>
+            {
+                entity.ToTable("NisReportTemplate", "dbo");
+                entity.HasKey(e => e.Id);
+                entity.HasIndex(e => new { e.CmpId, e.CustomerId, e.Name }).IsUnique();
+                entity.HasIndex(e => new { e.CmpId, e.CustomerId });
+                entity.HasIndex(e => new { e.CmpId, e.ArchivedAt });
+            });
+
+            modelBuilder.Entity<NisReport>(entity =>
+            {
+                entity.ToTable("NisReport", "dbo");
+                entity.HasKey(e => e.Id);
+                entity.HasOne(e => e.Template)
+                      .WithMany(t => t.Reports)
+                      .HasForeignKey(e => e.TemplateId)
+                      .OnDelete(DeleteBehavior.Restrict);
+                entity.HasIndex(e => new { e.CmpId, e.CustomerId, e.PeriodStart });
+                entity.HasIndex(e => new { e.CmpId, e.TemplateId });
+                entity.HasIndex(e => new { e.CmpId, e.Status });
+            });
+
+            modelBuilder.Entity<NisReportJob>(entity =>
+            {
+                entity.ToTable("NisReportJob", "dbo");
+                entity.HasKey(e => e.Id);
+                entity.HasOne(e => e.Report)
+                      .WithMany(r => r.Jobs)
+                      .HasForeignKey(e => e.ReportId)
+                      .OnDelete(DeleteBehavior.Restrict);
+                entity.HasIndex(e => new { e.Status, e.CreatedAt });
+                entity.HasIndex(e => new { e.CmpId, e.ReportId });
             });
 
             OnModelCreatingPartial(modelBuilder);

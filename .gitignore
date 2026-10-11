@@ -3,3 +3,5 @@ global.json
 config\
 client_secret.json
 .qodo
+bin/
+obj/

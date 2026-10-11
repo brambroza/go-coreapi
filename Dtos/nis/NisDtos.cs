@@ -74,6 +74,10 @@ public class NisTicketResponseDto
     public double? CheckInLng { get; set; }
     public string? CheckInLocation { get; set; }
     public string? CheckInBy { get; set; }
+    /// เลขเคส helpdesk (Problem.ProblemId) ที่เปิดตั๋วนี้ — ใช้กับตั๋ว MA Onsite ของโครงการ Accident
+    public string? SourceProblemId { get; set; }
+    /// ตั๋วนี้ถูกเปิดเกินโควตา Onsite Accident (ผู้ใช้ยืนยันเปิดต่อ)
+    public bool OverQuota { get; set; }
 }
 
 /// รายการ checklist หนึ่งข้อ (ก่อนมอบหมายงาน)
@@ -108,6 +112,10 @@ public class NisTicketCreateDto
     /// Checklist เตรียมไว้ก่อนมอบหมาย (resolve ตาม ticket type + customer ฝั่ง frontend)
     public List<NisChecklistItemDto> Checklist { get; set; } = new();
     public string? CmpId { get; set; }
+    /// เลขเคส helpdesk ที่เป็นต้นทาง (ตัดโควตา Onsite Accident จากฟอร์ม Action) — ซ้ำในโครงการเดิม = คืนตั๋วเดิม
+    public string? SourceProblemId { get; set; }
+    /// true = ผู้ใช้ยืนยันเปิดตั๋ว MA Onsite ทั้งที่โควตา Accident หมดแล้ว (ไม่ส่ง/false → 409 เมื่อหมด)
+    public bool AllowOverQuota { get; set; } = false;
 }
 
 public class NisTicketAssignDto
@@ -195,10 +203,21 @@ public class NisProjectResponseDto
     public string CreatedDate { get; set; } = string.Empty;
     /// เงื่อนไขบริการ (สัญญา) ที่เลือกตอนสร้างโครงการ — null สำหรับโครงการเก่า
     public NisServiceConditionsDto? ServiceConditions { get; set; }
+    /// โควตา Onsite Accident ทั้งสัญญา (null = ไม่ใช่โครงการเคส Accident)
+    public NisOnsiteQuotaDto? OnsiteQuota { get; set; }
     /// NisEquipment.Id ที่เลือกไว้ตอนสร้างโครงการ (PM) — ว่าง = ไม่ได้เลือก/โครงการเก่า
     public List<string> EquipmentIds { get; set; } = new();
     public List<NisTicketResponseDto> Tickets { get; set; } = new();
     public List<NisAttachmentDto> Attachments { get; set; } = new();
+}
+
+/// โควตา Onsite ของโครงการเคส Accident — นับทั้งสัญญาตามระยะโครงการ ไม่รีเซ็ตรายปี
+/// quota = onsitePerYear × serviceYears · used = จำนวนตั๋ว MA Onsite ในโครงการ · remaining ติดลบได้ (เปิดเกินโควตา)
+public class NisOnsiteQuotaDto
+{
+    public int Quota { get; set; }
+    public int Used { get; set; }
+    public int Remaining { get; set; }
 }
 
 /// เงื่อนไขบริการของโครงการ (สัญญา) — เก็บเป็น JSON บน NisProject.ServiceConditionsJson
@@ -214,7 +233,7 @@ public class NisServiceConditionsDto
     public string MonthlyReportDay { get; set; } = string.Empty;
     public string DeliveryType { get; set; } = string.Empty;
     public string DeliveryBy { get; set; } = string.Empty;
-    /// เคส Accident — ตั๋ว onsite สร้างครบโควตาแต่ไม่กำหนดรอบ/วันล่วงหน้า
+    /// เคส Accident — ไม่สร้างตั๋ว onsite ล่วงหน้า (SM เปิดตั๋วเองเมื่อมีเหตุ)
     public bool OnsiteAccident { get; set; } = false;
 }
 
@@ -301,15 +320,17 @@ public class NisOptionItemDto
 }
 
 /// ค่า default ของฟอร์มเงื่อนไขในหน้า New Project
+/// quota ตั้งต้นเป็น "ไม่มี" ("0") ทั้งหมด — ผู้ใช้เลือกเองตามสัญญา ระบบไม่ auto ตั๋วให้โดยปริยาย
+/// (ต้องตรงกับ NIS_DEFAULT_SERVICE_CONDITION_OPTIONS.defaults ฝั่ง CRM)
 public class NisServiceCondDefaultsDto
 {
     public string ServiceYears { get; set; } = "1";
-    public string OnsitePerYear { get; set; } = "4";
-    public string PmPerYear { get; set; } = "4";
+    public string OnsitePerYear { get; set; } = "0";
+    public string PmPerYear { get; set; } = "0";
     public string Sla { get; set; } = "8x5xNBD";
     public string ServiceReplacement { get; set; } = "company";
-    public string RemoteBackup { get; set; } = "4";
-    public string MonthlyReport { get; set; } = "4";
+    public string RemoteBackup { get; set; } = "0";
+    public string MonthlyReport { get; set; } = "0";
     public string MonthlyReportDay { get; set; } = "5";
     public string DeliveryType { get; set; } = "onsite_install";
     public string DeliveryBy { get; set; } = "nis_team";

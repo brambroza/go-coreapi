@@ -30,6 +30,7 @@ Consumer ของ API นี้: `go-crm-24v4` (Next.js CRM), `NIS-OnsiteServic
 | --- | --- |
 | CRM / Sale | `Controllers/CrmController.cs`, `LeadsController`, `CustomerController`, `QuatationController`, `QuaHController`, `SaleOrderController`, `CRMKanbanController` |
 | Service Ticket / Onsite | `Controllers/ServiceTicketsController.cs`, `NisController.cs`, `NisPersonalController`, `NisPushController`, `ProblemReceiveController`, `Dtos/nis/`, `Models/Nis/` |
+| NIS Service Report (NSR) | `Controllers/NisArchiveController.cs` (`api/nis/archive` — archive เคส/วันหยุด/sync/กลุ่มลูกค้า), `NisAnalyticsController.cs` (`api/nis/analytics`), `NisReportController.cs` (`api/nis/report` — template/report/company/asset/pdf) · `Services/Nis{Archive*,Analytics,Effort,Kb,Workload,CustomerGroup*,Holiday,Report*}Service.cs`, `Services/NisCaseAdapter.cs`, `Helpers/Nis{BusinessHours,HoursStat,BangkokTime,ReportAssetStorage}.cs` · migration `Database/Migrations/20261006_*.sql` · แผน/คำตัดสิน: `go-crm-24v4/MERGE_PLAN.md`, `go-crm-24v4/docs/nsr/` |
 | Inventory / WMS | `Controllers/Inven*.cs`, `invenRtsController`, `BomController`, `Controllers/Master/WarehouseController.cs` |
 | HRM / Attendance | `Controllers/HRM/`, `Dtos/hrm/`, `Data/HRDatabaseContext.cs` (`HrDbContext`) |
 | Accounting | `Controllers/AccountSystem/` (AR, AP, Billing, Credit, Cost) |
@@ -37,7 +38,7 @@ Consumer ของ API นี้: `go-crm-24v4` (Next.js CRM), `NIS-OnsiteServic
 | Auth / Permission | `AuthController`, `AccountController`, `CheckLoginController`, `UserPermisstionController`, `Controllers/securitySystem/RoleController.cs`, `Installers/JwtInstaller.cs` |
 | Dashboard / Report | `Controllers/Dashboard/`, `DashController`, `ReportTemplatesController`, `RevenueMobileController` |
 | Integration | `Helpers/GoogleOAuth*.cs`, `Controllers/Social/`, `HookLineController`, `LineNotiController`, `MailController`, `Controllers/Email/` |
-| Realtime / Background | `hub/`, `Services/` (`LogProcessorService`, `NisOverduePushService`, `ExpoPushService`, `NisRealtimeNotifyService`, `NisCrmNotifyService`, `RabbitMQService`) |
+| Realtime / Background | `hub/`, `Services/` (`LogProcessorService`, `NisOverduePushService`, `ExpoPushService`, `NisRealtimeNotifyService`, `NisCrmNotifyService`, `RabbitMQService`, `NisArchiveSyncService` (คัดลอก Problem → NisServiceCase ทุก 15 นาที), `NisReportPdfQueueService` (คิวเรนเดอร์ PDF ในตาราง NisReportJob + Playwright)) |
 
 Controller ที่ใหญ่และเสี่ยงสุด (แก้ต้องระวัง regression):
 `ProjectController.cs` (~4,000 บรรทัด), `DocNoController.cs` (~3,700),
@@ -89,6 +90,24 @@ Controller ที่ใหญ่และเสี่ยงสุด (แก้�
 - prod รันหลาย replica — hosted service ที่มี side effect (push, เขียน DB) **ต้อง idempotent** และครอบแต่ละรอบด้วย
   `SqlAppLock.TryAcquireAsync("goalongapi:<ชื่องาน>")` (`Services/SqlAppLock.cs`, sp_getapplock) ข้ามรอบเมื่อได้ `null`
   lock กันแค่ "รันพร้อมกัน" ไม่กัน "รันซ้ำแบบเรียงกัน" — ห้ามเขียน job ที่พึ่ง lock กันรันซ้ำ ดูตัวอย่างใน `NisOverduePushService`
+
+### 3.4.1 โมดูล NIS Service Report (NSR) — กฎเพิ่มเติม
+
+- ทุกคอลัมน์เวลาของตาราง `Nis{ServiceCase,SyncLog,Holiday*,CustomerGroup,Report*}` เป็น `datetimeoffset(3)` · คิดขอบวัน/bucket/ปี พ.ศ.
+  ผ่าน `Helpers/NisBangkokTime.cs` เท่านั้น ห้าม `DateTime.Now`
+- analytics อ่านจาก archive `NisServiceCase` (ผ่าน `INisArchiveService.BuildWhere`) ไม่อ่านตาราง Problem ตรง — เพื่อให้ `dataAsOf`/`isTestData`/
+  `resolutionHours` คงที่ · ต้นทางของ sync คือ SP `getProblem*` ชุดเดียวกับ `ProblemReceiveController.gettaskservice`
+  (ต้องตั้ง `NisReport:SyncUsername` ใน config ไม่งั้นทุกรอบ `skipped`)
+- กติกาธุรกิจที่ backend เป็นผู้ตัดสิน (frontend แค่แสดง): ตัวเลขที่อิงเวลาทำการเป็น null เมื่อวันหยุดของปีนั้นยังไม่ `Observed` ครบ
+  (`NisBusinessHours.NumbersBlocked`) · `SlaEnabled=false` → within/breached/pct เป็น null · กลุ่มลูกค้า `Backdated` → ResolutionHours null
+  แต่นับจำนวนปกติ · ตัวเลขรายบุคคล (`api/nis/analytics/workload`) ต้อง claim role = `mng`
+- รายงาน: ไม่มี DELETE (template ใช้ `ArchivedAt`) · snapshot ต้องผ่าน `AssertSnapshotWithinProjection` ก่อนลงฐาน · ด่าน holiday/truncation/
+  freshness/printability/coverContrast/salesContact คืน 422 · PDF เก็บใน `NisReport.PdfBlob` · หน้าพิมพ์บน CRM เปิดด้วย one-time key
+  (`PrintKeyHash` SHA-256, TTL `NisReport:PrintKeyTtlSeconds`) ผ่าน `GET api/nis/report/reports/{id}/print-data?key=` (`[AllowAnonymous]`)
+- ข้อมูลบริษัทบนเอกสาร: ชื่อ/ที่อยู่/โทร/อีเมล/เว็บ/เลขภาษี/LINE ID อ่านจาก SP `dbo.getcmpinfo` ของระบบหลัก
+  (`NisReportCompanyService.ReadMasterAsync`) **ไม่เก็บซ้ำ** · `NisReportCompany.InfoJson` เก็บเฉพาะ `lineQrPath` + `salesContacts`
+  · `PUT api/nis/report/company` ส่งช่องของระบบหลักมา → 400 (`MasterFields`) · snapshot ของรายงาน freeze ก้อนที่รวมแล้ว
+- renderer PDF ต้องการ Chromium + ฟอนต์ไทย 8 ตระกูลใน image — ดู `docs/nsr-pdf-renderer.md` ก่อนแก้ Dockerfile (แจ้งก่อนเสมอ)
 
 ### 3.5 ทั่วไป
 

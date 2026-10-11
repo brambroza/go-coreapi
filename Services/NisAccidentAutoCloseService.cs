@@ -9,8 +9,9 @@ namespace goalongapi.Services;
 /// NIS Onsite — auto-close ตั๋วของโปรเจคเคส Accident หลังหมดสัญญา
 ///
 /// เคส Accident (<c>NisServiceConditionsDto.OnsiteAccident</c> ที่ persist ไว้ใน
-/// <c>NisProject.ServiceConditionsJson</c>) คือโครงการที่ตั๋ว onsite ถูกสร้างครบโควตาแล้ว
-/// แต่ไม่ได้กำหนดรอบ/วันล่วงหน้า — เมื่อสัญญาโครงการหมดอายุ (วันนี้ > NisProject.EndDate)
+/// <c>NisProject.ServiceConditionsJson</c>) คือโครงการที่ไม่สร้างตั๋ว onsite ล่วงหน้า
+/// (SM เปิดตั๋วเองเมื่อมีเหตุ; โครงการเก่าก่อนกติกานี้มีตั๋วที่สร้างครบโควตาไว้แต่ไม่กำหนดวัน)
+/// — เมื่อสัญญาโครงการหมดอายุ (วันนี้ > NisProject.EndDate)
 /// ตั๋วที่ยังค้างอยู่จะไม่มีทางถูกปิดผ่าน flow ปกติอีก (ไม่มีช่างกลับไปทำต่อ) จึงต้อง
 /// auto-close ทิ้งเพื่อไม่ให้ค้างเป็นงานเปิดตลอดไป
 ///
