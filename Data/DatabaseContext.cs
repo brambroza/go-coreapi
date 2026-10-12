@@ -63,6 +63,7 @@ namespace goalongapi.Data
         public DbSet<NisProject> NisProjects { get; set; }
         public DbSet<NisTicket> NisTickets { get; set; }
         public DbSet<NisProjectFile> NisProjectFiles { get; set; }
+        public DbSet<NisTicketFile> NisTicketFiles { get; set; }
         public DbSet<NisSalesOrder> NisSalesOrders { get; set; }
         public DbSet<NisSystemConfig> NisSystemConfigs { get; set; }
         public DbSet<NisPendingRequest> NisPendingRequests { get; set; }
@@ -725,10 +726,33 @@ namespace goalongapi.Data
                 entity.Property(e => e.CheckInBy).HasMaxLength(200);
                 entity.Property(e => e.SourceProblemId).HasMaxLength(50);
                 entity.Property(e => e.OverQuota).HasDefaultValue(false);
+                entity.Property(e => e.CustomerLineUserId).HasMaxLength(100);
+                entity.Property(e => e.CustomerOaLineId).HasMaxLength(100);
 
                 entity.HasIndex(e => e.ProjectId);
                 entity.HasIndex(e => new { e.CmpId, e.Status });
                 entity.HasIndex(e => e.TicketCode);
+
+                entity.HasMany(e => e.Files)
+                    .WithOne(f => f.Ticket)
+                    .HasForeignKey(f => f.TicketId)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            modelBuilder.Entity<NisTicketFile>(entity =>
+            {
+                entity.ToTable("NisTicketFile", "dbo", tb => tb.UseSqlOutputClause(false));
+                entity.HasKey(e => e.FileId);
+
+                entity.Property(e => e.TicketId).HasMaxLength(50).IsRequired();
+                entity.Property(e => e.ProjectId).HasMaxLength(50);
+                entity.Property(e => e.FileName).HasMaxLength(300).IsRequired();
+                entity.Property(e => e.FilePath).HasMaxLength(1000).IsRequired();
+                entity.Property(e => e.CmpId).HasMaxLength(50);
+                entity.Property(e => e.CreatedBy).HasMaxLength(100);
+                entity.Property(e => e.CreatedDate).HasColumnType("datetime");
+
+                entity.HasIndex(e => e.TicketId);
             });
 
             modelBuilder.Entity<NisSalesOrder>(entity =>
@@ -772,12 +796,21 @@ namespace goalongapi.Data
                 entity.Property(e => e.CmpId).HasMaxLength(50).IsRequired();
                 entity.Property(e => e.ApprovedBy).HasMaxLength(100);
                 entity.Property(e => e.RejectedBy).HasMaxLength(100);
+                entity.Property(e => e.RejectReason).HasMaxLength(500);
+                entity.Property(e => e.SourceProblemId).HasMaxLength(50);
+                entity.Property(e => e.CustomerCode).HasMaxLength(50);
+                entity.Property(e => e.CustomerName).HasMaxLength(300);
+                entity.Property(e => e.CustomerLineUserId).HasMaxLength(100);
+                entity.Property(e => e.CustomerOaLineId).HasMaxLength(100);
+                entity.Property(e => e.AllowOverQuota).HasDefaultValue(false);
+                entity.Property(e => e.Priority).HasMaxLength(20);
                 entity.Property(e => e.Due).HasColumnType("datetime");
                 entity.Property(e => e.CreatedDate).HasColumnType("datetime");
                 entity.Property(e => e.UpdatedDate).HasColumnType("datetime");
 
                 entity.HasIndex(e => new { e.CmpId, e.Status });
                 entity.HasIndex(e => new { e.CmpId, e.RequestedBy });
+                entity.HasIndex(e => new { e.CmpId, e.SourceProblemId });
             });
 
             modelBuilder.Entity<NisOnsiteReport>(entity =>

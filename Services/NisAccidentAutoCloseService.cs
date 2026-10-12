@@ -109,8 +109,9 @@ public class NisAccidentAutoCloseService : BackgroundService
 
         // "ยังไม่ปิด" = สถานะใดก็ได้ที่ไม่ใช่ Closed อยู่แล้ว (รวม "Waiting Close Approval" — ต้อง
         // bypass ขั้นตอนนั้นตามที่ตั้งใจ ไม่ใช่รอ manager กดอนุมัติ เพราะเคส Accident ไม่มีช่างไปทำต่อ)
+        // ยกเว้น 'Waiting Approval' — คำขอเปิดเคสจาก helpdesk ที่ SM ยังไม่ตัดสิน ไม่ใช่งานค้าง ปล่อยให้ SM อนุมัติ/ปฏิเสธเอง
         var openTickets = await context.NisTickets
-            .Where(t => projectIds.Contains(t.ProjectId) && t.Status != "Closed")
+            .Where(t => projectIds.Contains(t.ProjectId) && t.Status != "Closed" && t.Status != "Waiting Approval")
             .ToListAsync(ct);
 
         if (openTickets.Count == 0) return;

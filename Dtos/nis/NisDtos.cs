@@ -78,6 +78,11 @@ public class NisTicketResponseDto
     public string? SourceProblemId { get; set; }
     /// ตั๋วนี้ถูกเปิดเกินโควตา Onsite Accident (ผู้ใช้ยืนยันเปิดต่อ)
     public bool OverQuota { get; set; }
+    /// LINE userId / OA id ของลูกค้าที่แจ้งเคส (ตั๋วที่เปิดจาก helpdesk) — null = ไม่มี
+    public string? CustomerLineUserId { get; set; }
+    public string? CustomerOaLineId { get; set; }
+    /// ไฟล์แนบระดับตั๋ว (NisTicketFile) — ว่าง = ไม่มี
+    public List<NisAttachmentDto> Files { get; set; } = new();
 }
 
 /// รายการ checklist หนึ่งข้อ (ก่อนมอบหมายงาน)
@@ -116,6 +121,8 @@ public class NisTicketCreateDto
     public string? SourceProblemId { get; set; }
     /// true = ผู้ใช้ยืนยันเปิดตั๋ว MA Onsite ทั้งที่โควตา Accident หมดแล้ว (ไม่ส่ง/false → 409 เมื่อหมด)
     public bool AllowOverQuota { get; set; } = false;
+    /// Accounts.Username ผู้สร้าง (optional — client เดิมไม่ส่ง)
+    public string? CreatedBy { get; set; }
 }
 
 public class NisTicketAssignDto
@@ -216,8 +223,11 @@ public class NisProjectResponseDto
 public class NisOnsiteQuotaDto
 {
     public int Quota { get; set; }
+    /// ตั๋ว MA Onsite ทั้งหมดของโครงการ — รวมตั๋ว 'Waiting Approval' (ตัดโควตาทันทีตอนขอ)
     public int Used { get; set; }
     public int Remaining { get; set; }
+    /// จำนวนใน Used ที่ยังรอ SM อนุมัติ (ตั๋วสถานะ 'Waiting Approval') — UI แสดง "รออนุมัติ n"
+    public int WaitingApproval { get; set; }
 }
 
 /// เงื่อนไขบริการของโครงการ (สัญญา) — เก็บเป็น JSON บน NisProject.ServiceConditionsJson
@@ -436,6 +446,28 @@ public class NisPendingRequestResponseDto
     public string? ParentTicketId { get; set; }
     /// Pending | Approved | Rejected
     public string? Status { get; set; }
+
+    // ── คำขอจากเคส helpdesk ("เปิดเคส Onsite") — null/ว่างสำหรับคำขอแบบเดิม ──
+    /// เลขเคส helpdesk ต้นทาง
+    public string? SourceProblemId { get; set; }
+    public string? CustomerCode { get; set; }
+    public string? CustomerName { get; set; }
+    public string? CustomerLineUserId { get; set; }
+    public string? CustomerOaLineId { get; set; }
+    public bool AllowOverQuota { get; set; }
+    public string? Priority { get; set; }
+    /// ตั๋วที่ผูกกับคำขอ — คำขอจาก helpdesk มีตั้งแต่สร้าง ('Waiting Approval') · คำขอเดิมมีหลังอนุมัติ
+    public string? CreatedTicketId { get; set; }
+    public string? CreatedTicketCode { get; set; }
+    public string? ApprovedBy { get; set; }
+    public string? RejectedBy { get; set; }
+    public string? RejectReason { get; set; }
+    /// ไฟล์แนบของตั๋วที่ผูก (NisTicketFile)
+    public List<NisAttachmentDto> Attachments { get; set; } = new();
+    /// โควตา Onsite Accident ของโครงการ ณ ตอนอ่าน (null = โครงการไม่ใช่เคส Accident / ไม่มีโครงการ)
+    public NisOnsiteQuotaDto? OnsiteQuota { get; set; }
+    /// ตั๋วที่ผูกถูกเปิดเกินโควตา
+    public bool OverQuota { get; set; }
 }
 
 public class NisPendingRequestCreateDto
@@ -449,6 +481,22 @@ public class NisPendingRequestCreateDto
     public string? Detail { get; set; }
     public string? CmpId { get; set; }
     public string? RequestedBy { get; set; }
+
+    // ── เปิดเคส Onsite จาก helpdesk — ส่ง SourceProblemId แล้ว backend สร้างตั๋ว 'Waiting Approval' ทันที ──
+    /// เลขเคส helpdesk (STProblem.ProblemId) · มีค่า = โหมด helpdesk (ProjectId บังคับ, TicketType ต้องเป็น 'MA Onsite')
+    public string? SourceProblemId { get; set; }
+    public string? CustomerCode { get; set; }
+    public string? CustomerName { get; set; }
+    public string? CustomerLineUserId { get; set; }
+    public string? CustomerOaLineId { get; set; }
+    /// true = ผู้ขอยืนยันเปิดเกินโควตา Onsite Accident (ไม่ส่ง/false → 409 ONSITE_QUOTA_EXCEEDED เมื่อหมด)
+    public bool AllowOverQuota { get; set; } = false;
+    /// High | Medium | Low (ว่าง = ใช้ของโครงการ)
+    public string? Priority { get; set; }
+    /// Checklist ของตั๋ว (resolve ตาม ticket type + ลูกค้า ฝั่ง frontend เหมือน wizard สร้างโครงการ)
+    public List<NisChecklistItemDto> Checklist { get; set; } = new();
+    /// ไฟล์แนบ (metadata — ตัวไฟล์ upload ผ่าน /uploadallfile + /movefile แล้ว)
+    public List<NisAttachmentDto> Attachments { get; set; } = new();
 }
 
 public class NisApprovePendingDto
@@ -469,6 +517,8 @@ public class NisRejectPendingDto
 {
     public string? CmpId { get; set; }
     public string? RejectedBy { get; set; }
+    /// เหตุผลที่ปฏิเสธ (optional — client เดิมไม่ส่ง)
+    public string? Reason { get; set; }
 }
 
 // ── Customer directory DTOs (Service Board → Customer tab) ───────────────────

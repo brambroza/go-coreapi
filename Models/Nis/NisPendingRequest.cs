@@ -66,6 +66,38 @@ public class NisPendingRequest
     [MaxLength(100)]
     public string? RejectedBy { get; set; }
 
+    /// เหตุผลที่ SM ปฏิเสธ — แสดงให้ผู้ขอใน Staff Portal
+    [MaxLength(500)]
+    public string? RejectReason { get; set; }
+
+    // ── คำขอที่เปิดจากเคส helpdesk (ปุ่ม "เปิดเคส Onsite" ใน /productservice/servicerequest) ──
+    // คำขอชนิดนี้สร้าง NisTicket 'MA Onsite' สถานะ 'Waiting Approval' ทันที (CreatedTicketId ชี้ตั๋วนั้น)
+    // SM อนุมัติ → อัปเดตตั๋วเดิม · ปฏิเสธ → ลบตั๋ว (คืนโควตา) แถวนี้คงไว้เป็นประวัติ
+
+    /// เลขเคส helpdesk ต้นทาง (STProblem.ProblemId) · null = คำขอจาก Staff Portal / RN แบบเดิม
+    [MaxLength(50)]
+    public string? SourceProblemId { get; set; }
+
+    [MaxLength(50)]
+    public string? CustomerCode { get; set; }
+
+    [MaxLength(300)]
+    public string? CustomerName { get; set; }
+
+    /// LINE userId ของลูกค้าที่แจ้งเคส (สำเนาไปที่ NisTicket.CustomerLineUserId)
+    [MaxLength(100)]
+    public string? CustomerLineUserId { get; set; }
+
+    [MaxLength(100)]
+    public string? CustomerOaLineId { get; set; }
+
+    /// ผู้ขอยืนยันเปิดทั้งที่โควตา Onsite Accident ของโครงการหมดแล้ว
+    public bool AllowOverQuota { get; set; } = false;
+
+    /// High | Medium | Low — priority ที่ขอ (default = ของโครงการ)
+    [MaxLength(20)]
+    public string? Priority { get; set; }
+
     public DateTime CreatedDate { get; set; } = DateTime.Now;
     public DateTime UpdatedDate { get; set; } = DateTime.Now;
 }

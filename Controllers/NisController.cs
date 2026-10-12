@@ -153,10 +153,38 @@ public class NisController : ControllerBase
         CheckInBy = t.CheckInBy,
         SourceProblemId = t.SourceProblemId,
         OverQuota = t.OverQuota,
+        CustomerLineUserId = t.CustomerLineUserId,
+        CustomerOaLineId = t.CustomerOaLineId,
+        Files = (t.Files ?? Array.Empty<NisTicketFile>()).OrderBy(f => f.Seq).Select(MapTicketFile).ToList(),
+    };
+
+    private static NisAttachmentDto MapTicketFile(NisTicketFile f) => new()
+    {
+        Id = f.FileId,
+        FileName = f.FileName,
+        FilePath = f.FilePath,
+        Seq = f.Seq,
+        FileSize = f.FileSize,
     };
 
     /// ประเภทตั๋วที่นับเข้าโควตา Onsite Accident — ตรงกับ NisTicketType ฝั่ง frontend
     private const string OnsiteTicketType = "MA Onsite";
+
+    /// สถานะตั๋วที่เปิดจากเคส helpdesk (ปุ่ม "เปิดเคส Onsite") และยังรอ SM อนุมัติ
+    /// ตั๋วสถานะนี้ตัดโควตา Onsite Accident แล้ว แต่ห้าม assign / เปลี่ยนสถานะ / accept / check-in
+    /// จนกว่าจะอนุมัติผ่าน POST pending-requests/{id}/approve — ปฏิเสธ = ลบตั๋ว (คืนโควตา)
+    private const string WaitingApprovalStatus = "Waiting Approval";
+
+    /// รหัส error 409 เมื่อ client พยายามทำงานกับตั๋วที่ยังรออนุมัติ
+    private const string TicketWaitingApprovalCode = "TICKET_WAITING_APPROVAL";
+
+    private static bool IsWaitingApproval(NisTicket t) => t.Status == WaitingApprovalStatus;
+
+    private static ObjectResult WaitingApprovalConflict(NisTicket t) => new ConflictObjectResult(new
+    {
+        code = TicketWaitingApprovalCode,
+        message = $"ตั๋ว {t.TicketCode ?? t.TicketId} ยังรอ Service Manager อนุมัติคำขอเปิดเคส — ต้องอนุมัติก่อนจึงทำรายการนี้ได้",
+    });
 
     /// <summary>
     /// แปลงค่า quota จาก select ('0', '4', ...) เป็นจำนวน — ตรงกับ parseTicketCount ฝั่ง frontend
@@ -173,7 +201,10 @@ public class NisController : ControllerBase
     /// quota = onsitePerYear × serviceYears (serviceYears อ่านไม่ออก = 1) · used = ตั๋ว MA Onsite ที่มีอยู่
     /// </summary>
     /// <returns>null เมื่อไม่ใช่โครงการเคส Accident</returns>
-    private static NisOnsiteQuotaDto? ComputeOnsiteQuota(NisServiceConditionsDto? cond, int onsiteTicketCount)
+    private static NisOnsiteQuotaDto? ComputeOnsiteQuota(
+        NisServiceConditionsDto? cond,
+        int onsiteTicketCount,
+        int waitingApprovalCount = 0)
     {
         if (cond == null || !cond.OnsiteAccident) return null;
         var quota = ParseTicketCount(cond.OnsitePerYear) * ParseTicketCount(cond.ServiceYears, 1);
@@ -182,7 +213,18 @@ public class NisController : ControllerBase
             Quota = quota,
             Used = onsiteTicketCount,
             Remaining = quota - onsiteTicketCount,
+            WaitingApproval = waitingApprovalCount,
         };
+    }
+
+    /// โควตา Onsite Accident ของโครงการจากรายการตั๋วที่โหลดมาแล้ว (ใช้ร่วม MapProject / pending-requests)
+    private static NisOnsiteQuotaDto? ComputeOnsiteQuota(NisProject project, IEnumerable<NisTicket> tickets)
+    {
+        var onsite = tickets.Where(t => t.Type == OnsiteTicketType).ToList();
+        return ComputeOnsiteQuota(
+            ParseJson<NisServiceConditionsDto?>(project.ServiceConditionsJson, null),
+            onsite.Count,
+            onsite.Count(IsWaitingApproval));
     }
 
     /// <summary>
@@ -206,6 +248,21 @@ public class NisController : ControllerBase
         ticket.CheckInLng = null;
         ticket.CheckInLocation = null;
         ticket.CheckInBy = null;
+    }
+
+    /// normalize + serialize checklist ที่ client ส่งมา — ตัดข้อว่าง, การันตี Id · ว่าง = null (ตรงกับ UpdateTicketTask)
+    private static string? SerializeChecklist(IEnumerable<NisChecklistItemDto>? items)
+    {
+        var list = (items ?? Array.Empty<NisChecklistItemDto>())
+            .Where(c => !string.IsNullOrWhiteSpace(c.Text))
+            .Select(c => new NisChecklistItemDto
+            {
+                Id = string.IsNullOrWhiteSpace(c.Id) ? Guid.NewGuid().ToString() : c.Id,
+                Text = c.Text.Trim(),
+                Done = c.Done,
+            })
+            .ToList();
+        return list.Count == 0 ? null : JsonSerializer.Serialize(list);
     }
 
     /// แปลง ChecklistJson (nvarchar) → รายการ checklist; ค่าว่าง/พังคืน list ว่าง (ไม่ throw)
@@ -242,9 +299,7 @@ public class NisController : ControllerBase
         Location = p.Location,
         CreatedDate = FormatDateTime(p.CreatedDate),
         ServiceConditions = ParseJson<NisServiceConditionsDto?>(p.ServiceConditionsJson, null),
-        OnsiteQuota = ComputeOnsiteQuota(
-            ParseJson<NisServiceConditionsDto?>(p.ServiceConditionsJson, null),
-            p.Tickets.Count(t => t.Type == OnsiteTicketType)),
+        OnsiteQuota = ComputeOnsiteQuota(p, p.Tickets),
         EquipmentIds = ParseJson<List<string>?>(p.EquipmentIdsJson, null) ?? new(),
         Contact = string.IsNullOrEmpty(p.ContactName) ? null : new NisContactDto
         {
@@ -295,7 +350,7 @@ public class NisController : ControllerBase
 
         var projects = await _context.NisProjects
             .AsNoTracking()
-            .Include(p => p.Tickets)
+            .Include(p => p.Tickets).ThenInclude(t => t.Files)
             .Include(p => p.Files)
             .Where(p => p.CmpId == cmpid)
             .OrderByDescending(p => p.CreatedDate)
@@ -314,7 +369,7 @@ public class NisController : ControllerBase
     {
         var project = await _context.NisProjects
             .AsNoTracking()
-            .Include(p => p.Tickets)
+            .Include(p => p.Tickets).ThenInclude(t => t.Files)
             .Include(p => p.Files)
             .FirstOrDefaultAsync(p => p.ProjectId == id);
 
@@ -617,6 +672,9 @@ public class NisController : ControllerBase
             Priority = dto.Priority,
             TagsRaw = JoinTags(dto.Tags),
             CmpId = dto.CmpId ?? string.Empty,
+            // checklist ที่ frontend resolve ตาม ticket type + ลูกค้า (เดิมรับมาแล้วไม่ได้บันทึก)
+            ChecklistJson = SerializeChecklist(dto.Checklist),
+            CreatedBy = dto.CreatedBy ?? string.Empty,
             CreatedDate = DateTime.Now,
             UpdatedDate = DateTime.Now,
             SourceProblemId = string.IsNullOrWhiteSpace(dto.SourceProblemId) ? null : dto.SourceProblemId.Trim(),
@@ -642,6 +700,10 @@ public class NisController : ControllerBase
 
         if (ticket == null)
             return NotFound(new { message = $"Ticket {id} not found" });
+
+        // ตั๋วที่ยังรอ SM อนุมัติคำขอเปิดเคส — เปลี่ยนสถานะได้ทางอนุมัติ/ปฏิเสธคำขอเท่านั้น
+        if (IsWaitingApproval(ticket))
+            return WaitingApprovalConflict(ticket);
 
         ticket.Status = dto.Status;
         // ลาก Kanban ข้ามคอลัมน์ → ให้ % ตรงกับ milestone ของสถานะปลายทาง
@@ -719,6 +781,9 @@ public class NisController : ControllerBase
         if (!string.IsNullOrWhiteSpace(dto?.CmpId) && !string.IsNullOrWhiteSpace(ticket.CmpId) && dto!.CmpId != ticket.CmpId)
             return NotFound(new { message = $"Ticket {id} not found" });
 
+        if (IsWaitingApproval(ticket))
+            return WaitingApprovalConflict(ticket);
+
         if (ticket.Status is "Open" or "Scheduled")
             return Conflict(new { message = "Ticket must be accepted before check-in" });
 
@@ -783,6 +848,9 @@ public class NisController : ControllerBase
         var ticket = await _context.NisTickets.FindAsync(id);
         if (ticket == null)
             return NotFound(new { message = $"Ticket {id} not found" });
+
+        if (IsWaitingApproval(ticket))
+            return WaitingApprovalConflict(ticket);
 
         var acceptedBy = string.IsNullOrWhiteSpace(dto?.AcceptedBy) ? ticket.Assignee : dto!.AcceptedBy!;
 
@@ -1052,6 +1120,10 @@ WHERE a.CmpId = @CmpId
         if (ticket == null)
             return NotFound(new { message = $"Ticket {id} not found" });
 
+        // ตั๋วรออนุมัติคำขอเปิดเคส — มอบหมายผ่าน POST pending-requests/{id}/approve เท่านั้น
+        if (IsWaitingApproval(ticket))
+            return WaitingApprovalConflict(ticket);
+
         var previousAssignee = ticket.Assignee;
 
         ticket.Assignee = dto.Assignee;
@@ -1230,7 +1302,66 @@ WHERE a.CmpId = @CmpId
         SupportMethod = r.SupportMethod,
         ParentTicketId = r.ParentTicketId,
         Status = r.Status,
+        SourceProblemId = r.SourceProblemId,
+        CustomerCode = r.CustomerCode,
+        CustomerName = r.CustomerName,
+        CustomerLineUserId = r.CustomerLineUserId,
+        CustomerOaLineId = r.CustomerOaLineId,
+        AllowOverQuota = r.AllowOverQuota,
+        Priority = r.Priority,
+        CreatedTicketId = r.CreatedTicketId,
+        ApprovedBy = r.ApprovedBy,
+        RejectedBy = r.RejectedBy,
+        RejectReason = r.RejectReason,
     };
+
+    /// <summary>
+    /// map คำขอพร้อมข้อมูลตั๋วที่ผูก (TicketCode, ไฟล์แนบ, overQuota) และโควตาของโครงการ —
+    /// คำขอจาก helpdesk มีตั๋ว 'Waiting Approval' ตั้งแต่สร้าง แท็บอนุมัติ/Staff Portal ต้องเห็นเลขตั๋ว+ไฟล์
+    /// </summary>
+    private async Task<List<NisPendingRequestResponseDto>> BuildPendingRequestDtosAsync(List<NisPendingRequest> requests)
+    {
+        var ticketIds = requests
+            .Select(r => r.CreatedTicketId)
+            .Where(id => !string.IsNullOrWhiteSpace(id))
+            .Distinct()
+            .ToList();
+        var ticketsById = ticketIds.Count == 0
+            ? new Dictionary<string, NisTicket>()
+            : await _context.NisTickets
+                .AsNoTracking()
+                .Include(t => t.Files)
+                .Where(t => ticketIds.Contains(t.TicketId))
+                .ToDictionaryAsync(t => t.TicketId);
+
+        // โควตาเฉพาะคำขอที่มาจาก helpdesk (มี SourceProblemId) — โหลดโครงการ + ตั๋วทีเดียว
+        var projectIds = requests
+            .Where(r => !string.IsNullOrWhiteSpace(r.SourceProblemId) && !string.IsNullOrWhiteSpace(r.ProjectId))
+            .Select(r => r.ProjectId)
+            .Distinct()
+            .ToList();
+        var projectsById = projectIds.Count == 0
+            ? new Dictionary<string, NisProject>()
+            : await _context.NisProjects
+                .AsNoTracking()
+                .Include(p => p.Tickets)
+                .Where(p => projectIds.Contains(p.ProjectId))
+                .ToDictionaryAsync(p => p.ProjectId);
+
+        return requests.Select(r =>
+        {
+            var dto = MapPendingRequest(r);
+            if (!string.IsNullOrWhiteSpace(r.CreatedTicketId) && ticketsById.TryGetValue(r.CreatedTicketId, out var ticket))
+            {
+                dto.CreatedTicketCode = ticket.TicketCode;
+                dto.OverQuota = ticket.OverQuota;
+                dto.Attachments = ticket.Files.OrderBy(f => f.Seq).Select(MapTicketFile).ToList();
+            }
+            if (projectsById.TryGetValue(r.ProjectId, out var project))
+                dto.OnsiteQuota = ComputeOnsiteQuota(project, project.Tickets);
+            return dto;
+        }).ToList();
+    }
 
     // ── GET api/nis/pending-requests ─────────────────────────────────────────
 
@@ -1239,10 +1370,14 @@ WHERE a.CmpId = @CmpId
     /// Staff view (requestedBy set) → that engineer's requests in every status (history).
     /// Matches frontend fetchNisPendingRequests / fetchMyNisPendingRequests.
     /// </summary>
+    /// <param name="sourceProblemId">เคส helpdesk — คืนคำขอทุกสถานะของเคสนั้น (เช็คซ้ำ/แสดงป้าย)</param>
+    /// <param name="hasSource">true = เฉพาะคำขอที่เปิดจาก helpdesk ทุกสถานะ (หน้ารายการแจ้งปัญหาใช้ทำป้ายต่อแถว)</param>
     [HttpGet("pending-requests")]
     public async Task<ActionResult<IEnumerable<NisPendingRequestResponseDto>>> GetPendingRequests(
         [FromQuery] string? cmpid,
-        [FromQuery] string? requestedBy)
+        [FromQuery] string? requestedBy,
+        [FromQuery] string? sourceProblemId,
+        [FromQuery] bool hasSource = false)
     {
         if (string.IsNullOrWhiteSpace(cmpid))
             return BadRequest(new { message = "cmpid is required" });
@@ -1251,7 +1386,11 @@ WHERE a.CmpId = @CmpId
             .AsNoTracking()
             .Where(r => r.CmpId == cmpid);
 
-        if (!string.IsNullOrWhiteSpace(requestedBy))
+        if (!string.IsNullOrWhiteSpace(sourceProblemId))
+            query = query.Where(r => r.SourceProblemId == sourceProblemId);
+        else if (hasSource)
+            query = query.Where(r => r.SourceProblemId != null && r.SourceProblemId != "");
+        else if (!string.IsNullOrWhiteSpace(requestedBy))
             query = query.Where(r => r.RequestedBy == requestedBy);
         else
             query = query.Where(r => r.Status == "Pending");
@@ -1260,12 +1399,19 @@ WHERE a.CmpId = @CmpId
             .OrderByDescending(r => r.CreatedDate)
             .ToListAsync();
 
-        return Ok(list.Select(MapPendingRequest));
+        return Ok(await BuildPendingRequestDtosAsync(list));
     }
 
     // ── POST api/nis/pending-requests ────────────────────────────────────────
 
-    /// <summary>Staff raises an "open ticket" request. Matches frontend createNisPendingRequest.</summary>
+    /// <summary>
+    /// Staff raises an "open ticket" request. Matches frontend createNisPendingRequest.
+    ///
+    /// โหมด helpdesk (ส่ง <c>sourceProblemId</c>): ปุ่ม "เปิดเคส Onsite" ใน /productservice/servicerequest —
+    /// สร้าง NisTicket 'MA Onsite' สถานะ 'Waiting Approval' ทันทีใต้โครงการที่เลือก (ตัดโควตาทันที)
+    /// พร้อมไฟล์แนบ + LINE ลูกค้า แล้วแจ้ง SM ทุกคน · 409 เมื่อเคสนั้นมีคำขอ Pending อยู่แล้ว
+    /// (REQUEST_ALREADY_PENDING) หรือโควตาหมดและไม่ส่ง allowOverQuota (ONSITE_QUOTA_EXCEEDED)
+    /// </summary>
     [HttpPost("pending-requests")]
     public async Task<ActionResult<NisPendingRequestResponseDto>> CreatePendingRequest(
         [FromBody] NisPendingRequestCreateDto dto)
@@ -1275,13 +1421,16 @@ WHERE a.CmpId = @CmpId
         if (string.IsNullOrWhiteSpace(dto.Title))
             return BadRequest(new { message = "title is required" });
 
+        var sourceProblemId = dto.SourceProblemId?.Trim();
+        var fromHelpdesk = !string.IsNullOrWhiteSpace(sourceProblemId);
+
         var request = new NisPendingRequest
         {
             RequestId = Guid.NewGuid().ToString(),
             RequestedBy = dto.RequestedBy ?? string.Empty,
-            Title = dto.Title,
-            TicketType = dto.TicketType,
-            SupportMethod = dto.SupportMethod,
+            Title = dto.Title.Trim(),
+            TicketType = fromHelpdesk ? OnsiteTicketType : dto.TicketType,
+            SupportMethod = fromHelpdesk && string.IsNullOrWhiteSpace(dto.SupportMethod) ? "Onsite" : dto.SupportMethod,
             ProjectId = dto.ProjectId ?? string.Empty,
             Location = dto.Location,
             Detail = dto.Detail,
@@ -1292,10 +1441,140 @@ WHERE a.CmpId = @CmpId
             UpdatedDate = DateTime.Now,
         };
 
+        if (!fromHelpdesk)
+        {
+            _context.NisPendingRequests.Add(request);
+            await _context.SaveChangesAsync();
+            return Ok(MapPendingRequest(request));
+        }
+
+        // ── โหมด helpdesk: validate + สร้างตั๋ว Waiting Approval คู่กับคำขอ ──
+        if (string.IsNullOrWhiteSpace(dto.ProjectId))
+            return BadRequest(new { message = "projectId is required when sourceProblemId is set" });
+
+        var project = await _context.NisProjects
+            .AsNoTracking()
+            .FirstOrDefaultAsync(p => p.ProjectId == dto.ProjectId && p.CmpId == dto.CmpId);
+        if (project == null)
+            return NotFound(new { message = $"Project {dto.ProjectId} not found" });
+
+        var duplicate = await _context.NisPendingRequests
+            .AsNoTracking()
+            .Where(r => r.CmpId == dto.CmpId && r.SourceProblemId == sourceProblemId && r.Status == "Pending")
+            .Select(r => new { r.RequestId, r.CreatedTicketId })
+            .FirstOrDefaultAsync();
+        if (duplicate != null)
+            return Conflict(new
+            {
+                code = "REQUEST_ALREADY_PENDING",
+                message = $"เคส {sourceProblemId} มีคำขอเปิดเคส Onsite ที่รออนุมัติอยู่แล้ว",
+                requestId = duplicate.RequestId,
+                ticketId = duplicate.CreatedTicketId,
+            });
+
+        // โควตา Onsite Accident — business rule เดียวกับ AddTicket (ตั๋ว Waiting Approval นับเป็น used ทันที)
+        var existingCount = await _context.NisTickets
+            .CountAsync(t => t.ProjectId == project.ProjectId && t.Type == OnsiteTicketType);
+        var overQuota = false;
+        var quota = ComputeOnsiteQuota(
+            ParseJson<NisServiceConditionsDto?>(project.ServiceConditionsJson, null),
+            existingCount);
+        if (quota != null && quota.Remaining <= 0)
+        {
+            if (!dto.AllowOverQuota)
+                return Conflict(new
+                {
+                    code = "ONSITE_QUOTA_EXCEEDED",
+                    message = $"โควตา Onsite Accident ของโครงการหมดแล้ว (ใช้ไป {quota.Used}/{quota.Quota})",
+                    quota = quota.Quota,
+                    used = quota.Used,
+                });
+            overQuota = true;
+        }
+
+        var priority = string.IsNullOrWhiteSpace(dto.Priority) ? project.Priority : dto.Priority!.Trim();
+        var now = DateTime.Now;
+        var ticket = new NisTicket
+        {
+            TicketId = Guid.NewGuid().ToString(),
+            TicketCode = BuildTicketCode(OnsiteTicketType, project.ProjectNo, existingCount + 1),
+            ProjectId = project.ProjectId,
+            Title = request.Title,
+            Status = WaitingApprovalStatus,
+            Assignee = "-",
+            Due = request.Due,
+            Pct = 0,
+            Type = OnsiteTicketType,
+            Priority = priority,
+            TagsRaw = JoinTags(new List<string> { OnsiteTicketType, "Accident", "Helpdesk" }),
+            WorkDetail = string.IsNullOrWhiteSpace(dto.Detail) ? null : dto.Detail,
+            ChecklistJson = SerializeChecklist(dto.Checklist),
+            CmpId = dto.CmpId,
+            CreatedBy = request.RequestedBy,
+            CreatedDate = now,
+            UpdatedDate = now,
+            SourceProblemId = sourceProblemId,
+            OverQuota = overQuota,
+            CustomerLineUserId = TrimOrNull(dto.CustomerLineUserId, 100),
+            CustomerOaLineId = TrimOrNull(dto.CustomerOaLineId, 100),
+        };
+
+        var files = (dto.Attachments ?? new())
+            .Where(a => !string.IsNullOrWhiteSpace(a.FileName) && !string.IsNullOrWhiteSpace(a.FilePath))
+            .Select((a, i) => new NisTicketFile
+            {
+                FileId = Guid.NewGuid().ToString(),
+                TicketId = ticket.TicketId,
+                ProjectId = project.ProjectId,
+                FileName = a.FileName.Length > 300 ? a.FileName[..300] : a.FileName,
+                FilePath = a.FilePath.Length > 1000 ? a.FilePath[..1000] : a.FilePath,
+                Seq = i + 1,
+                FileSize = a.FileSize,
+                CmpId = dto.CmpId,
+                CreatedBy = request.RequestedBy,
+                CreatedDate = now,
+            })
+            .ToList();
+
+        request.SourceProblemId = sourceProblemId;
+        request.CustomerCode = TrimOrNull(dto.CustomerCode ?? project.CustomerCode, 50);
+        request.CustomerName = TrimOrNull(dto.CustomerName ?? project.Customer, 300);
+        request.CustomerLineUserId = ticket.CustomerLineUserId;
+        request.CustomerOaLineId = ticket.CustomerOaLineId;
+        request.AllowOverQuota = dto.AllowOverQuota;
+        request.Priority = priority;
+        request.Location = string.IsNullOrWhiteSpace(dto.Location) ? project.Location : dto.Location;
+        request.CreatedTicketId = ticket.TicketId;
+
+        _context.NisTickets.Add(ticket);
+        if (files.Count > 0) _context.NisTicketFiles.AddRange(files);
         _context.NisPendingRequests.Add(request);
         await _context.SaveChangesAsync();
 
-        return Ok(MapPendingRequest(request));
+        await NotifyPendingRequestCreatedAsync(request, ticket, project);
+
+        ticket.Files = files;
+        var result = MapPendingRequest(request);
+        result.CreatedTicketCode = ticket.TicketCode;
+        result.OverQuota = ticket.OverQuota;
+        result.Attachments = files.Select(MapTicketFile).ToList();
+        result.OnsiteQuota = quota == null
+            ? null
+            : ComputeOnsiteQuota(
+                ParseJson<NisServiceConditionsDto?>(project.ServiceConditionsJson, null),
+                existingCount + 1,
+                // รออนุมัติ = ตั๋ว Waiting Approval เดิมในโครงการ + ใบนี้
+                await _context.NisTickets.CountAsync(t =>
+                    t.ProjectId == project.ProjectId && t.Type == OnsiteTicketType && t.Status == WaitingApprovalStatus));
+        return Ok(result);
+    }
+
+    /// ตัดช่องว่าง + จำกัดความยาว · ว่าง = null
+    private static string? TrimOrNull(string? value, int max)
+    {
+        var v = value?.Trim();
+        if (string.IsNullOrEmpty(v)) return null;
+        return v.Length > max ? v[..max] : v;
     }
 
     // ── POST api/nis/pending-requests/{id}/approve ───────────────────────────
@@ -1318,6 +1597,48 @@ WHERE a.CmpId = @CmpId
             return BadRequest(new { message = $"Request already {request.Status}" });
 
         var cmpId = dto.CmpId ?? request.CmpId;
+
+        // ── คำขอจาก helpdesk ("เปิดเคส Onsite"): ตั๋ว 'Waiting Approval' ถูกสร้างไว้แล้วตอนขอ ──
+        // อนุมัติ = เปลี่ยนตั๋วเดิมเป็น Scheduled (มอบหมายแล้ว) / Open (ยังไม่มอบหมาย) ไม่สร้างใบใหม่
+        // (เลขตั๋ว/โควตา/ไฟล์แนบ/LINE ลูกค้า คงเดิม) — logic ด้านล่างสำหรับคำขอแบบเดิมไม่เปลี่ยน
+        if (!string.IsNullOrWhiteSpace(request.CreatedTicketId))
+        {
+            var preCreated = await _context.NisTickets
+                .FirstOrDefaultAsync(t => t.TicketId == request.CreatedTicketId);
+
+            if (preCreated != null && IsWaitingApproval(preCreated))
+            {
+                var assignedNow = !string.IsNullOrWhiteSpace(dto.Assignee) && dto.Assignee != "-";
+                var approvedAt = DateTime.Now;
+
+                preCreated.Status = assignedNow ? "Scheduled" : "Open";
+                preCreated.Assignee = assignedNow ? dto.Assignee : "-";
+                preCreated.AssignedBy = assignedNow ? dto.ApprovedBy : null;
+                preCreated.StartDate = ParseDate(dto.StartDate);
+                preCreated.EndDate = ParseDate(dto.EndDate);
+                preCreated.Due = preCreated.EndDate ?? preCreated.Due;
+                preCreated.Pct = NIS_PCT_NOT_ACCEPTED;
+                preCreated.UpdatedBy = dto.ApprovedBy ?? preCreated.UpdatedBy;
+                preCreated.UpdatedDate = approvedAt;
+                ApplyClosedDate(preCreated);
+
+                request.Status = "Approved";
+                request.ApprovedBy = dto.ApprovedBy;
+                request.NoOnsite = dto.NoOnsite;
+                request.SkipSignature = dto.SkipSignature;
+                if (!string.IsNullOrWhiteSpace(dto.Location)) request.Location = dto.Location;
+                if (!string.IsNullOrWhiteSpace(dto.SupportMethod)) request.SupportMethod = dto.SupportMethod;
+                request.UpdatedDate = approvedAt;
+
+                await _context.SaveChangesAsync();
+
+                // แจ้งช่างที่ได้รับมอบหมาย (push/socket 'assign' เหมือน AssignTicket) + แจ้งผู้ขอว่าอนุมัติแล้ว
+                if (assignedNow) await NotifyAssignedOnApproveAsync(preCreated);
+                await NotifyRequestDecisionAsync(request, preCreated, approved: true);
+
+                return Ok(MapTicket(preCreated));
+            }
+        }
 
         var project = await _context.NisProjects
             .AsNoTracking()
@@ -1416,13 +1737,211 @@ WHERE a.CmpId = @CmpId
 
         if (request == null)
             return NotFound(new { message = $"Pending request {id} not found" });
+        if (request.Status != "Pending")
+            return BadRequest(new { message = $"Request already {request.Status}" });
 
         request.Status = "Rejected";
         request.RejectedBy = dto?.RejectedBy;
+        request.RejectReason = TrimOrNull(dto?.Reason, 500);
         request.UpdatedDate = DateTime.Now;
 
+        // คำขอจาก helpdesk: ตั๋ว 'Waiting Approval' ที่สร้างไว้ตอนขอ → ลบทิ้งเพื่อคืนโควตา Onsite Accident
+        // (ยังไม่มีช่างทำงาน/รายงานใด ๆ ผูกกับตั๋ว) — แถวคำขอคงไว้เป็นประวัติพร้อมเหตุผล
+        NisTicket? removedTicket = null;
+        if (!string.IsNullOrWhiteSpace(request.CreatedTicketId))
+        {
+            removedTicket = await _context.NisTickets
+                .Include(t => t.Files)
+                .FirstOrDefaultAsync(t => t.TicketId == request.CreatedTicketId);
+            if (removedTicket != null && IsWaitingApproval(removedTicket))
+            {
+                _context.NisTicketFiles.RemoveRange(removedTicket.Files);
+                _context.NisTickets.Remove(removedTicket);
+            }
+            else
+            {
+                removedTicket = null;
+            }
+        }
+
         await _context.SaveChangesAsync();
-        return Ok(new { message = "Request rejected" });
+
+        if (!string.IsNullOrWhiteSpace(request.SourceProblemId))
+            await NotifyRequestDecisionAsync(request, removedTicket, approved: false);
+
+        return Ok(new { message = "Request rejected", ticketRemoved = removedTicket != null });
+    }
+
+    // ── แจ้งเตือนคำขอเปิดเคส Onsite (helpdesk) — best-effort ทั้งหมด ─────────────
+
+    /// <summary>
+    /// คำขอใหม่จาก helpdesk → แจ้ง SM ทุกคนของบริษัท 3 ช่องทาง (pattern เดียวกับ NotifyTicketAcceptedAsync):
+    /// Expo push (แอป) · socket.io nis:notify type "pending_request" (RN เปิดค้าง) · กระดิ่ง CRM (Service Board)
+    /// </summary>
+    private async Task NotifyPendingRequestCreatedAsync(NisPendingRequest request, NisTicket ticket, NisProject project)
+    {
+        try
+        {
+            var managers = await GetNisManagersAsync(request.CmpId);
+            if (managers.Count == 0) return;
+
+            var title = "📥 คำขอเปิดเคส Onsite รออนุมัติ";
+            var customer = string.IsNullOrWhiteSpace(request.CustomerName) ? project.Customer : request.CustomerName;
+            var body = $"{ticket.TicketCode} · {customer} · {request.Title}";
+            if (ticket.OverQuota) body += " (เกินโควตา)";
+
+            foreach (var m in managers.Where(m => !string.IsNullOrWhiteSpace(m.FullName)))
+            {
+                await _push.SendToStaffAsync(
+                    request.CmpId,
+                    m.FullName,
+                    eventKey: $"pending:{request.RequestId}:{m.FullName}",
+                    title: title,
+                    body: body,
+                    ticketId: ticket.TicketId,
+                    data: new Dictionary<string, string> { ["type"] = "pending_request", ["requestId"] = request.RequestId });
+            }
+
+            var managerUsernames = managers.Select(m => m.Username).Where(u => !string.IsNullOrWhiteSpace(u)).ToList();
+            if (managerUsernames.Count > 0)
+            {
+                await _nisRealtimeNotify.NotifyAsync(
+                    request.CmpId,
+                    users: managerUsernames,
+                    type: "pending_request",
+                    ticketId: ticket.TicketId,
+                    title: title,
+                    body: body);
+            }
+
+            var requesterUsername = await ResolveUsernameAsync(request.CmpId, request.RequestedBy);
+            foreach (var username in managerUsernames)
+            {
+                await _crmNotify.NotifyAsync(
+                    request.CmpId,
+                    toUsername: username,
+                    fromUsername: requesterUsername ?? request.RequestedBy,
+                    title: body,
+                    // แท็บอนุมัติของ Service Board — moduleFormName นี้ทำให้บอร์ด (use-nis-board-realtime) รีเฟรชทันที
+                    linkTo: "/productservice/service-board",
+                    moduleFormName: "nis/serviceboard",
+                    docNo: ticket.TicketCode ?? ticket.TicketId);
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "NIS pending request: แจ้งเตือน SM ไม่สำเร็จ (request {RequestId})", request.RequestId);
+        }
+    }
+
+    /// <summary>
+    /// ผล อนุมัติ/ปฏิเสธ คำขอจาก helpdesk → แจ้งผู้ขอ (staff helpdesk) ทางกระดิ่ง CRM + push/socket ถ้ามีแอป
+    /// </summary>
+    private async Task NotifyRequestDecisionAsync(NisPendingRequest request, NisTicket? ticket, bool approved)
+    {
+        try
+        {
+            if (string.IsNullOrWhiteSpace(request.RequestedBy)) return;
+
+            var account = await _context.Accounts
+                .Where(a => a.CmpId == request.CmpId && (a.Username == request.RequestedBy || a.FullName == request.RequestedBy))
+                .Select(a => new NisNotifyTarget(a.Username, a.FullName ?? string.Empty))
+                .FirstOrDefaultAsync();
+            var username = account?.Username ?? request.RequestedBy;
+
+            var code = ticket?.TicketCode ?? request.CreatedTicketId ?? string.Empty;
+            var title = approved ? "✅ อนุมัติคำขอเปิดเคส Onsite แล้ว" : "⛔ คำขอเปิดเคส Onsite ถูกปฏิเสธ";
+            var body = approved
+                ? $"{code} · {request.Title}" + (ticket != null && ticket.Assignee != "-" ? $" · มอบหมาย {ticket.Assignee}" : string.Empty)
+                : $"{code} · {request.Title}" + (string.IsNullOrWhiteSpace(request.RejectReason) ? string.Empty : $" · เหตุผล: {request.RejectReason}");
+            var actor = (approved ? request.ApprovedBy : request.RejectedBy) ?? string.Empty;
+            var type = approved ? "request_approved" : "request_rejected";
+
+            if (!string.IsNullOrWhiteSpace(account?.FullName))
+            {
+                await _push.SendToStaffAsync(
+                    request.CmpId,
+                    account.FullName,
+                    eventKey: $"{type}:{request.RequestId}",
+                    title: title,
+                    body: body,
+                    ticketId: approved ? ticket?.TicketId : null,
+                    data: new Dictionary<string, string> { ["type"] = type, ["requestId"] = request.RequestId });
+            }
+
+            await _nisRealtimeNotify.NotifyAsync(
+                request.CmpId,
+                users: [username],
+                type: type,
+                ticketId: approved ? ticket?.TicketId : null,
+                title: title,
+                body: body);
+
+            await _crmNotify.NotifyAsync(
+                request.CmpId,
+                toUsername: username,
+                fromUsername: actor,
+                title: $"{title} — {body}",
+                // อนุมัติ → หน้ารายละเอียดตั๋ว · ปฏิเสธ → Staff Portal (แท็บคำขอของฉัน)
+                linkTo: approved && ticket != null
+                    ? $"/productservice/service-protal/tickets/{ticket.TicketId}"
+                    : "/productservice/service-protal/staff-portal",
+                moduleFormName: "nis/staffportal",
+                docNo: code);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "NIS pending request: แจ้งผลให้ผู้ขอไม่สำเร็จ (request {RequestId})", request.RequestId);
+        }
+    }
+
+    /// <summary>
+    /// อนุมัติคำขอ helpdesk พร้อมมอบหมายช่าง → แจ้งช่างเหมือน PUT tickets/{id}/assign (Expo + socket 'assign')
+    /// </summary>
+    private async Task NotifyAssignedOnApproveAsync(NisTicket ticket)
+    {
+        try
+        {
+            if (ticket.Status != "Scheduled" || ticket.Assignee == "-") return;
+
+            await _push.SendToStaffAsync(
+                ticket.CmpId,
+                ticket.Assignee,
+                eventKey: $"assign:{ticket.TicketId}:{ticket.Assignee}:{DateTime.Today:yyyyMMdd}",
+                title: "🔔 งานใหม่รอตอบรับ",
+                body: $"{ticket.TicketCode} · {ticket.Title}",
+                ticketId: ticket.TicketId,
+                data: new Dictionary<string, string> { ["type"] = "assign" });
+
+            var assigneeUsername = await _context.Accounts
+                .Where(a => a.CmpId == ticket.CmpId && a.FullName == ticket.Assignee)
+                .Select(a => a.Username)
+                .FirstOrDefaultAsync();
+            if (!string.IsNullOrWhiteSpace(assigneeUsername))
+            {
+                await _nisRealtimeNotify.NotifyAsync(
+                    ticket.CmpId,
+                    users: [assigneeUsername],
+                    type: "assign",
+                    ticketId: ticket.TicketId,
+                    title: "🔔 งานใหม่รอตอบรับ",
+                    body: $"{ticket.TicketCode} · {ticket.Title}");
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "NIS pending request: แจ้งช่างหลังอนุมัติไม่สำเร็จ (ticket {TicketId})", ticket.TicketId);
+        }
+    }
+
+    /// Accounts.Username จากค่าที่อาจเป็น Username หรือ FullName (RequestedBy รับได้ทั้งสองแบบจาก CRM/RN)
+    private async Task<string?> ResolveUsernameAsync(string cmpId, string? usernameOrFullName)
+    {
+        if (string.IsNullOrWhiteSpace(usernameOrFullName)) return null;
+        return await _context.Accounts
+            .Where(a => a.CmpId == cmpId && (a.Username == usernameOrFullName || a.FullName == usernameOrFullName))
+            .Select(a => a.Username)
+            .FirstOrDefaultAsync();
     }
 
     // ── GET api/nis/customers ────────────────────────────────────────────────

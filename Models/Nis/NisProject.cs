@@ -259,7 +259,60 @@ public class NisTicket
     [MaxLength(200)]
     public string? CheckInBy { get; set; }
 
+    /// LINE userId ของลูกค้าที่แจ้งเคส (สำเนา STProblem.UserLineId ตอนเปิดเคส Onsite จาก helpdesk)
+    /// null = ตั๋วที่ไม่ได้มาจากเคส LINE · เก็บไว้ใช้ต่อ (เช่น ส่งผลปิดงานทาง LINE) ยังไม่ส่งอัตโนมัติ
+    [MaxLength(100)]
+    public string? CustomerLineUserId { get; set; }
+
+    /// LINE OA id ที่ลูกค้าคุยด้วย (สำเนา STProblem.OALineId)
+    [MaxLength(100)]
+    public string? CustomerOaLineId { get; set; }
+
     public virtual NisProject? Project { get; set; }
+
+    /// ไฟล์แนบระดับตั๋ว (ภาพ/เอกสารที่ staff แนบตอนขอเปิดเคส Onsite จาก helpdesk)
+    public virtual ICollection<NisTicketFile> Files { get; set; } = new List<NisTicketFile>();
+}
+
+// ── NisTicketFile ─────────────────────────────────────────────────────────────
+// ไฟล์แนบระดับตั๋ว — คนละชุดกับ NisProjectFile (เอกสารโครงการ)
+// ตัวไฟล์ upload ผ่าน /uploadallfile + /movefile ไป wwwroot/{cmpId}/nis/{projectNo}/tickets/
+// เก็บเฉพาะ metadata ที่นี่ (pattern เดียวกับ NisProjectFile)
+
+public class NisTicketFile
+{
+    [Key]
+    [MaxLength(50)]
+    public string FileId { get; set; } = Guid.NewGuid().ToString();
+
+    [MaxLength(50)]
+    public string TicketId { get; set; } = string.Empty;
+
+    /// โครงการของตั๋ว (denormalize ไว้ให้ query ต่อโครงการได้โดยไม่ join)
+    [MaxLength(50)]
+    public string ProjectId { get; set; } = string.Empty;
+
+    /// ชื่อไฟล์เดิมที่แสดงให้ผู้ใช้ เช่น "ภาพหน้างาน.jpg"
+    [MaxLength(300)]
+    public string FileName { get; set; } = string.Empty;
+
+    /// URL เต็มของไฟล์ เช่น "{serverUrl}/{cmpId}/nis/{projectNo}/tickets/{fileName}"
+    [MaxLength(1000)]
+    public string FilePath { get; set; } = string.Empty;
+
+    public int Seq { get; set; } = 1;
+
+    public long FileSize { get; set; } = 0;
+
+    [MaxLength(50)]
+    public string CmpId { get; set; } = string.Empty;
+
+    [MaxLength(100)]
+    public string CreatedBy { get; set; } = string.Empty;
+
+    public DateTime CreatedDate { get; set; } = DateTime.Now;
+
+    public virtual NisTicket? Ticket { get; set; }
 }
 
 // ── NisSalesOrder ─────────────────────────────────────────────────────────────
