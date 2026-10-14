@@ -432,6 +432,10 @@ public class NisPendingRequestResponseDto
 {
     public string Id { get; set; } = string.Empty;
     public string RequestedBy { get; set; } = string.Empty;
+    /// Accounts.FullName ของผู้ขอ (RequestedBy อาจเป็น Username/email) — null ถ้าหาไม่เจอ
+    public string? RequestedByName { get; set; }
+    /// Accounts.imgPath ของผู้ขอ (relative — client ต่อ /images/ เอง) — null ถ้าไม่มีรูป
+    public string? RequestedByImgPath { get; set; }
     public string Title { get; set; } = string.Empty;
     public string TicketType { get; set; } = string.Empty;
     public string Due { get; set; } = string.Empty;
@@ -511,6 +515,16 @@ public class NisApprovePendingDto
     public string? EndDate { get; set; }
     public string? CmpId { get; set; }
     public string? ApprovedBy { get; set; }
+
+    // ── SM แก้รายละเอียดคำขอได้ตอนอนุมัติ (optional — client เดิมไม่ส่ง = คงค่าเดิม) ──
+    /// หัวข้องาน (ว่าง = คงเดิม)
+    public string? Title { get; set; }
+    /// รายละเอียด (null = คงเดิม, "" = ล้าง)
+    public string? Detail { get; set; }
+    /// วันครบกำหนด yyyy-MM-dd (ว่าง = คงเดิม)
+    public string? Due { get; set; }
+    /// ไฟล์แนบที่ SM เพิ่มตอนอนุมัติ — ต่อท้ายไฟล์เดิมของตั๋ว (upload ไปแล้วที่ {cmpId}/nis/{projectNo}/tickets)
+    public List<NisAttachmentDto>? Attachments { get; set; }
 }
 
 public class NisRejectPendingDto
@@ -641,6 +655,10 @@ public class NisEquipmentChangeRequestDto
     public int? UPosition { get; set; }
     public string Note { get; set; } = string.Empty;
     public string RequestedBy { get; set; } = string.Empty;
+    /// Accounts.FullName ของผู้ขอ — null ถ้าหาไม่เจอ
+    public string? RequestedByName { get; set; }
+    /// Accounts.imgPath ของผู้ขอ (relative — client ต่อ /images/ เอง)
+    public string? RequestedByImgPath { get; set; }
     /// Pending | Approved | Rejected
     public string Status { get; set; } = "Pending";
     public string? ApprovedBy { get; set; }

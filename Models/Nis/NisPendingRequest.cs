@@ -98,6 +98,11 @@ public class NisPendingRequest
     [MaxLength(20)]
     public string? Priority { get; set; }
 
+    /// ไฟล์แนบที่ staff แนบตอนขอเปิดตั๋ว (คำขอแบบเดิมจาก Staff Portal ที่ยังไม่มีตั๋ว) —
+    /// JSON ของ List&lt;NisAttachmentDto&gt; (FileName/FilePath/Seq/FileSize) · ตัวไฟล์ upload ผ่าน /uploadallfile + /movefile แล้ว
+    /// SM อนุมัติ → คัดลอกเป็น NisTicketFile ของตั๋วที่สร้าง · คำขอจาก helpdesk ไม่ใช้ช่องนี้ (ไฟล์อยู่ที่ตั๋ว 'Waiting Approval' ตั้งแต่ขอ)
+    public string? AttachmentsJson { get; set; }
+
     public DateTime CreatedDate { get; set; } = DateTime.Now;
     public DateTime UpdatedDate { get; set; } = DateTime.Now;
 }

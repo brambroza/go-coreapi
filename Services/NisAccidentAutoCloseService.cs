@@ -6,9 +6,9 @@ using Microsoft.EntityFrameworkCore;
 namespace goalongapi.Services;
 
 /// <summary>
-/// NIS Onsite — auto-close ตั๋วของโปรเจคเคส Accident หลังหมดสัญญา
+/// NIS Onsite — auto-close ตั๋วของโปรเจคIncident case หลังหมดสัญญา
 ///
-/// เคส Accident (<c>NisServiceConditionsDto.OnsiteAccident</c> ที่ persist ไว้ใน
+/// Incident case (<c>NisServiceConditionsDto.OnsiteAccident</c> ที่ persist ไว้ใน
 /// <c>NisProject.ServiceConditionsJson</c>) คือโครงการที่ไม่สร้างตั๋ว onsite ล่วงหน้า
 /// (SM เปิดตั๋วเองเมื่อมีเหตุ; โครงการเก่าก่อนกติกานี้มีตั๋วที่สร้างครบโควตาไว้แต่ไม่กำหนดวัน)
 /// — เมื่อสัญญาโครงการหมดอายุ (วันนี้ > NisProject.EndDate)
@@ -19,7 +19,7 @@ namespace goalongapi.Services;
 /// contract end date เปลี่ยนวันละครั้งอย่างมากที่สุด): โปรเจคที่ OnsiteAccident = true และ
 /// EndDate ผ่านไปแล้ว → ตั๋วในโปรเจคนั้นที่ยังไม่ Closed ทั้งหมด ปิดตรง (Status = "Closed",
 /// Pct = 100) โดย "ไม่" ผ่านขั้นตอน "Waiting Close Approval" ตามปกติ — เป็นการ bypass approval
-/// ที่ตั้งใจ ตามที่ business owner ยืนยัน (เคส Accident ไม่มีช่างไปปิดงานจริงอีกแล้ว รออนุมัติไปก็ไม่มี
+/// ที่ตั้งใจ ตามที่ business owner ยืนยัน (Incident case ไม่มีช่างไปปิดงานจริงอีกแล้ว รออนุมัติไปก็ไม่มี
 /// ใครกดรับ) best-effort เหมือน NisOverduePushService — ล้มรอบไหน log แล้วรอรอบถัดไป
 /// </summary>
 public class NisAccidentAutoCloseService : BackgroundService
@@ -108,7 +108,7 @@ public class NisAccidentAutoCloseService : BackgroundService
         var projectIds = accidentProjects.Select(p => p.ProjectId).ToList();
 
         // "ยังไม่ปิด" = สถานะใดก็ได้ที่ไม่ใช่ Closed อยู่แล้ว (รวม "Waiting Close Approval" — ต้อง
-        // bypass ขั้นตอนนั้นตามที่ตั้งใจ ไม่ใช่รอ manager กดอนุมัติ เพราะเคส Accident ไม่มีช่างไปทำต่อ)
+        // bypass ขั้นตอนนั้นตามที่ตั้งใจ ไม่ใช่รอ manager กดอนุมัติ เพราะIncident case ไม่มีช่างไปทำต่อ)
         // ยกเว้น 'Waiting Approval' — คำขอเปิดเคสจาก helpdesk ที่ SM ยังไม่ตัดสิน ไม่ใช่งานค้าง ปล่อยให้ SM อนุมัติ/ปฏิเสธเอง
         var openTickets = await context.NisTickets
             .Where(t => projectIds.Contains(t.ProjectId) && t.Status != "Closed" && t.Status != "Waiting Approval")
@@ -117,7 +117,7 @@ public class NisAccidentAutoCloseService : BackgroundService
         if (openTickets.Count == 0) return;
 
         var now = BangkokNow();
-        var closeNote = $"[ปิดงานอัตโนมัติ] เคส Accident — โครงการหมดสัญญาแล้ว "
+        var closeNote = $"[ปิดงานอัตโนมัติ] Incident case — โครงการหมดสัญญาแล้ว "
             + $"ระบบปิดงานอัตโนมัติโดยไม่ผ่านขั้นตอนอนุมัติปกติ ({now:dd/MM/yyyy HH:mm})";
 
         foreach (var ticket in openTickets)

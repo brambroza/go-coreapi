@@ -804,6 +804,8 @@ namespace goalongapi.Data
                 entity.Property(e => e.CustomerOaLineId).HasMaxLength(100);
                 entity.Property(e => e.AllowOverQuota).HasDefaultValue(false);
                 entity.Property(e => e.Priority).HasMaxLength(20);
+                // ไฟล์แนบของคำขอ (JSON) — nvarchar(max) · migration 20261014_AddNisPendingRequestAttachments
+                entity.Property(e => e.AttachmentsJson).HasColumnType("nvarchar(max)");
                 entity.Property(e => e.Due).HasColumnType("datetime");
                 entity.Property(e => e.CreatedDate).HasColumnType("datetime");
                 entity.Property(e => e.UpdatedDate).HasColumnType("datetime");

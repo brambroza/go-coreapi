@@ -167,11 +167,11 @@ public class NisController : ControllerBase
         FileSize = f.FileSize,
     };
 
-    /// ประเภทตั๋วที่นับเข้าโควตา Onsite Accident — ตรงกับ NisTicketType ฝั่ง frontend
+    /// ประเภทตั๋วที่นับเข้าโควตา Onsite Incident case — ตรงกับ NisTicketType ฝั่ง frontend
     private const string OnsiteTicketType = "MA Onsite";
 
     /// สถานะตั๋วที่เปิดจากเคส helpdesk (ปุ่ม "เปิดเคส Onsite") และยังรอ SM อนุมัติ
-    /// ตั๋วสถานะนี้ตัดโควตา Onsite Accident แล้ว แต่ห้าม assign / เปลี่ยนสถานะ / accept / check-in
+    /// ตั๋วสถานะนี้ตัดโควตา Onsite Incident case แล้ว แต่ห้าม assign / เปลี่ยนสถานะ / accept / check-in
     /// จนกว่าจะอนุมัติผ่าน POST pending-requests/{id}/approve — ปฏิเสธ = ลบตั๋ว (คืนโควตา)
     private const string WaitingApprovalStatus = "Waiting Approval";
 
@@ -197,10 +197,10 @@ public class NisController : ControllerBase
     }
 
     /// <summary>
-    /// โควตา Onsite ของโครงการเคส Accident — นับทั้งสัญญาตามระยะโครงการ (ไม่รีเซ็ตรายปี)
+    /// โควตา Onsite ของโครงการIncident case — นับทั้งสัญญาตามระยะโครงการ (ไม่รีเซ็ตรายปี)
     /// quota = onsitePerYear × serviceYears (serviceYears อ่านไม่ออก = 1) · used = ตั๋ว MA Onsite ที่มีอยู่
     /// </summary>
-    /// <returns>null เมื่อไม่ใช่โครงการเคส Accident</returns>
+    /// <returns>null เมื่อไม่ใช่โครงการIncident case</returns>
     private static NisOnsiteQuotaDto? ComputeOnsiteQuota(
         NisServiceConditionsDto? cond,
         int onsiteTicketCount,
@@ -217,7 +217,7 @@ public class NisController : ControllerBase
         };
     }
 
-    /// โควตา Onsite Accident ของโครงการจากรายการตั๋วที่โหลดมาแล้ว (ใช้ร่วม MapProject / pending-requests)
+    /// โควตา Onsite Incident case ของโครงการจากรายการตั๋วที่โหลดมาแล้ว (ใช้ร่วม MapProject / pending-requests)
     private static NisOnsiteQuotaDto? ComputeOnsiteQuota(NisProject project, IEnumerable<NisTicket> tickets)
     {
         var onsite = tickets.Where(t => t.Type == OnsiteTicketType).ToList();
@@ -635,7 +635,7 @@ public class NisController : ControllerBase
             .CountAsync(t => t.ProjectId == id && t.Type == dto.Type);
         var runNo = existingCount + 1;
 
-        // โควตา Onsite Accident (business rule อยู่ที่นี่ — frontend แค่เตือน): หมดแล้วต้องยืนยัน AllowOverQuota
+        // โควตา Onsite Incident case (business rule อยู่ที่นี่ — frontend แค่เตือน): หมดแล้วต้องยืนยัน AllowOverQuota
         var overQuota = false;
         if (dto.Type == OnsiteTicketType)
         {
@@ -648,7 +648,7 @@ public class NisController : ControllerBase
                     return Conflict(new
                     {
                         code = "ONSITE_QUOTA_EXCEEDED",
-                        message = $"โควตา Onsite Accident ของโครงการหมดแล้ว (ใช้ไป {quota.Used}/{quota.Quota})",
+                        message = $"โควตา Onsite Incident case ของโครงการหมดแล้ว (ใช้ไป {quota.Used}/{quota.Quota})",
                         quota = quota.Quota,
                         used = quota.Used,
                     });
@@ -1313,7 +1313,27 @@ WHERE a.CmpId = @CmpId
         ApprovedBy = r.ApprovedBy,
         RejectedBy = r.RejectedBy,
         RejectReason = r.RejectReason,
+        // ไฟล์แนบของคำขอเอง (Staff Portal) — BuildPendingRequestDtosAsync จะทับด้วยไฟล์ของตั๋วเมื่อมี CreatedTicketId
+        Attachments = ParseJson<List<NisAttachmentDto>>(r.AttachmentsJson, new()),
     };
+
+    /// <summary>
+    /// ไฟล์แนบที่ส่งมากับคำขอ → JSON เก็บใน NisPendingRequest.AttachmentsJson (ตัด rows ที่ไม่มีชื่อ/path · Seq เรียงใหม่ 1..n)
+    /// </summary>
+    private static string? SerializeAttachments(IEnumerable<NisAttachmentDto>? items)
+    {
+        var list = (items ?? Array.Empty<NisAttachmentDto>())
+            .Where(a => !string.IsNullOrWhiteSpace(a.FileName) && !string.IsNullOrWhiteSpace(a.FilePath))
+            .Select((a, i) => new NisAttachmentDto
+            {
+                FileName = a.FileName.Length > 300 ? a.FileName[..300] : a.FileName,
+                FilePath = a.FilePath.Length > 1000 ? a.FilePath[..1000] : a.FilePath,
+                Seq = i + 1,
+                FileSize = a.FileSize,
+            })
+            .ToList();
+        return list.Count == 0 ? null : JsonSerializer.Serialize(list);
+    }
 
     /// <summary>
     /// map คำขอพร้อมข้อมูลตั๋วที่ผูก (TicketCode, ไฟล์แนบ, overQuota) และโควตาของโครงการ —
@@ -1348,9 +1368,20 @@ WHERE a.CmpId = @CmpId
                 .Where(p => projectIds.Contains(p.ProjectId))
                 .ToDictionaryAsync(p => p.ProjectId);
 
+        // ชื่อเต็มผู้ขอ — RequestedBy เก็บ Username (email) หรือ FullName แล้วแต่ client
+        var cmpIdForNames = requests.Select(r => r.CmpId).FirstOrDefault(id => !string.IsNullOrWhiteSpace(id));
+        var accountInfos = string.IsNullOrWhiteSpace(cmpIdForNames)
+            ? new Dictionary<string, AccountInfoLite>()
+            : await ResolveAccountInfosAsync(cmpIdForNames, requests.Select(r => r.RequestedBy));
+
         return requests.Select(r =>
         {
             var dto = MapPendingRequest(r);
+            if (!string.IsNullOrWhiteSpace(r.RequestedBy) && accountInfos.TryGetValue(r.RequestedBy.Trim(), out var requester))
+            {
+                dto.RequestedByName = requester.FullName;
+                dto.RequestedByImgPath = requester.ImgPath;
+            }
             if (!string.IsNullOrWhiteSpace(r.CreatedTicketId) && ticketsById.TryGetValue(r.CreatedTicketId, out var ticket))
             {
                 dto.CreatedTicketCode = ticket.TicketCode;
@@ -1443,6 +1474,8 @@ WHERE a.CmpId = @CmpId
 
         if (!fromHelpdesk)
         {
+            // ไฟล์แนบ/ภาพจาก Staff Portal — ยังไม่มีตั๋ว จึงเก็บเป็น JSON บนคำขอ แล้วคัดลอกเป็น NisTicketFile ตอน SM อนุมัติ
+            request.AttachmentsJson = SerializeAttachments(dto.Attachments);
             _context.NisPendingRequests.Add(request);
             await _context.SaveChangesAsync();
             return Ok(MapPendingRequest(request));
@@ -1472,7 +1505,7 @@ WHERE a.CmpId = @CmpId
                 ticketId = duplicate.CreatedTicketId,
             });
 
-        // โควตา Onsite Accident — business rule เดียวกับ AddTicket (ตั๋ว Waiting Approval นับเป็น used ทันที)
+        // โควตา Onsite Incident case — business rule เดียวกับ AddTicket (ตั๋ว Waiting Approval นับเป็น used ทันที)
         var existingCount = await _context.NisTickets
             .CountAsync(t => t.ProjectId == project.ProjectId && t.Type == OnsiteTicketType);
         var overQuota = false;
@@ -1485,7 +1518,7 @@ WHERE a.CmpId = @CmpId
                 return Conflict(new
                 {
                     code = "ONSITE_QUOTA_EXCEEDED",
-                    message = $"โควตา Onsite Accident ของโครงการหมดแล้ว (ใช้ไป {quota.Used}/{quota.Quota})",
+                    message = $"โควตา Onsite Incident case ของโครงการหมดแล้ว (ใช้ไป {quota.Used}/{quota.Quota})",
                     quota = quota.Quota,
                     used = quota.Used,
                 });
@@ -1506,7 +1539,7 @@ WHERE a.CmpId = @CmpId
             Pct = 0,
             Type = OnsiteTicketType,
             Priority = priority,
-            TagsRaw = JoinTags(new List<string> { OnsiteTicketType, "Accident", "Helpdesk" }),
+            TagsRaw = JoinTags(new List<string> { OnsiteTicketType, "Incident case", "Helpdesk" }),
             WorkDetail = string.IsNullOrWhiteSpace(dto.Detail) ? null : dto.Detail,
             ChecklistJson = SerializeChecklist(dto.Checklist),
             CmpId = dto.CmpId,
@@ -1598,12 +1631,19 @@ WHERE a.CmpId = @CmpId
 
         var cmpId = dto.CmpId ?? request.CmpId;
 
+        // ── SM แก้รายละเอียดคำขอตอนอนุมัติ (หัวข้อ/รายละเอียด/วันครบกำหนด) — ไม่ส่งมา = คงเดิม ──
+        if (!string.IsNullOrWhiteSpace(dto.Title)) request.Title = dto.Title.Trim();
+        if (dto.Detail != null) request.Detail = string.IsNullOrWhiteSpace(dto.Detail) ? null : dto.Detail.Trim();
+        var dueOverride = ParseDate(dto.Due);
+        if (dueOverride != null) request.Due = dueOverride;
+
         // ── คำขอจาก helpdesk ("เปิดเคส Onsite"): ตั๋ว 'Waiting Approval' ถูกสร้างไว้แล้วตอนขอ ──
         // อนุมัติ = เปลี่ยนตั๋วเดิมเป็น Scheduled (มอบหมายแล้ว) / Open (ยังไม่มอบหมาย) ไม่สร้างใบใหม่
         // (เลขตั๋ว/โควตา/ไฟล์แนบ/LINE ลูกค้า คงเดิม) — logic ด้านล่างสำหรับคำขอแบบเดิมไม่เปลี่ยน
         if (!string.IsNullOrWhiteSpace(request.CreatedTicketId))
         {
             var preCreated = await _context.NisTickets
+                .Include(t => t.Files)
                 .FirstOrDefaultAsync(t => t.TicketId == request.CreatedTicketId);
 
             if (preCreated != null && IsWaitingApproval(preCreated))
@@ -1611,12 +1651,16 @@ WHERE a.CmpId = @CmpId
                 var assignedNow = !string.IsNullOrWhiteSpace(dto.Assignee) && dto.Assignee != "-";
                 var approvedAt = DateTime.Now;
 
+                preCreated.Title = request.Title;
+                if (dto.Detail != null) preCreated.WorkDetail = request.Detail;
+                if (dueOverride != null) preCreated.Due = dueOverride;
                 preCreated.Status = assignedNow ? "Scheduled" : "Open";
                 preCreated.Assignee = assignedNow ? dto.Assignee : "-";
                 preCreated.AssignedBy = assignedNow ? dto.ApprovedBy : null;
                 preCreated.StartDate = ParseDate(dto.StartDate);
                 preCreated.EndDate = ParseDate(dto.EndDate);
                 preCreated.Due = preCreated.EndDate ?? preCreated.Due;
+                AppendApproveAttachments(preCreated, dto, approvedAt);
                 preCreated.Pct = NIS_PCT_NOT_ACCEPTED;
                 preCreated.UpdatedBy = dto.ApprovedBy ?? preCreated.UpdatedBy;
                 preCreated.UpdatedDate = approvedAt;
@@ -1672,11 +1716,30 @@ WHERE a.CmpId = @CmpId
             Due = request.Due,
             Pct = 0,
             Type = ticketType,
+            WorkDetail = request.Detail,
             CmpId = cmpId,
             CreatedBy = dto.ApprovedBy ?? string.Empty,
             CreatedDate = DateTime.Now,
             UpdatedDate = DateTime.Now,
         };
+        // ไฟล์ที่ staff แนบตอนขอ (AttachmentsJson) → NisTicketFile ของตั๋วใหม่ก่อน แล้วค่อยต่อท้ายไฟล์ที่ SM แนบเพิ่ม
+        ticket.Files = ParseJson<List<NisAttachmentDto>>(request.AttachmentsJson, new())
+            .Where(a => !string.IsNullOrWhiteSpace(a.FileName) && !string.IsNullOrWhiteSpace(a.FilePath))
+            .Select((a, i) => new NisTicketFile
+            {
+                FileId = Guid.NewGuid().ToString(),
+                TicketId = ticket.TicketId,
+                ProjectId = ticket.ProjectId,
+                FileName = a.FileName.Length > 300 ? a.FileName[..300] : a.FileName,
+                FilePath = a.FilePath.Length > 1000 ? a.FilePath[..1000] : a.FilePath,
+                Seq = i + 1,
+                FileSize = a.FileSize,
+                CmpId = cmpId,
+                CreatedBy = request.RequestedBy,
+                CreatedDate = ticket.CreatedDate,
+            })
+            .ToList();
+        AppendApproveAttachments(ticket, dto, ticket.CreatedDate);
 
         request.Status = "Approved";
         request.ApprovedBy = dto.ApprovedBy;
@@ -1687,6 +1750,35 @@ WHERE a.CmpId = @CmpId
         await _context.SaveChangesAsync();
 
         return Ok(MapTicket(ticket));
+    }
+
+    /// <summary>
+    /// ไฟล์แนบที่ SM เพิ่มตอนอนุมัติคำขอ — ต่อท้าย Seq จากไฟล์เดิมของตั๋ว (ticket.Files ต้อง Include มาก่อน
+    /// สำหรับตั๋วที่มีอยู่แล้ว; ตั๋วใหม่ยังไม่มีไฟล์) · เพิ่มเข้า context ให้ caller SaveChanges ทีเดียว
+    /// </summary>
+    private void AppendApproveAttachments(NisTicket ticket, NisApprovePendingDto dto, DateTime now)
+    {
+        var incoming = (dto.Attachments ?? new())
+            .Where(a => !string.IsNullOrWhiteSpace(a.FileName) && !string.IsNullOrWhiteSpace(a.FilePath))
+            .ToList();
+        if (incoming.Count == 0) return;
+
+        var nextSeq = (ticket.Files?.Count > 0 ? ticket.Files.Max(f => f.Seq) : 0) + 1;
+        var files = incoming.Select((a, i) => new NisTicketFile
+        {
+            FileId = Guid.NewGuid().ToString(),
+            TicketId = ticket.TicketId,
+            ProjectId = ticket.ProjectId,
+            FileName = a.FileName.Length > 300 ? a.FileName[..300] : a.FileName,
+            FilePath = a.FilePath.Length > 1000 ? a.FilePath[..1000] : a.FilePath,
+            Seq = nextSeq + i,
+            FileSize = a.FileSize,
+            CmpId = ticket.CmpId,
+            CreatedBy = dto.ApprovedBy ?? string.Empty,
+            CreatedDate = now,
+        }).ToList();
+
+        _context.NisTicketFiles.AddRange(files);
     }
 
     // ── General (catch-all) project ──────────────────────────────────────────
@@ -1745,7 +1837,7 @@ WHERE a.CmpId = @CmpId
         request.RejectReason = TrimOrNull(dto?.Reason, 500);
         request.UpdatedDate = DateTime.Now;
 
-        // คำขอจาก helpdesk: ตั๋ว 'Waiting Approval' ที่สร้างไว้ตอนขอ → ลบทิ้งเพื่อคืนโควตา Onsite Accident
+        // คำขอจาก helpdesk: ตั๋ว 'Waiting Approval' ที่สร้างไว้ตอนขอ → ลบทิ้งเพื่อคืนโควตา Onsite Incident case
         // (ยังไม่มีช่างทำงาน/รายงานใด ๆ ผูกกับตั๋ว) — แถวคำขอคงไว้เป็นประวัติพร้อมเหตุผล
         NisTicket? removedTicket = null;
         if (!string.IsNullOrWhiteSpace(request.CreatedTicketId))
@@ -1942,6 +2034,36 @@ WHERE a.CmpId = @CmpId
             .Where(a => a.CmpId == cmpId && (a.Username == usernameOrFullName || a.FullName == usernameOrFullName))
             .Select(a => a.Username)
             .FirstOrDefaultAsync();
+    }
+
+    /// ข้อมูลผู้ใช้ย่อสำหรับแสดงในรายการ (ชื่อเต็ม + รูป)
+    private sealed record AccountInfoLite(string FullName, string? ImgPath);
+
+    /// Map (Username หรือ FullName) → Accounts (FullName + imgPath) ทีเดียวหลายค่า — ใช้แสดงชื่อ/avatar ผู้ขอแทน email ใน CRM
+    private async Task<Dictionary<string, AccountInfoLite>> ResolveAccountInfosAsync(string cmpId, IEnumerable<string?> usernamesOrFullNames)
+    {
+        var keys = usernamesOrFullNames
+            .Where(v => !string.IsNullOrWhiteSpace(v))
+            .Select(v => v!.Trim())
+            .Distinct()
+            .ToList();
+        if (keys.Count == 0) return new Dictionary<string, AccountInfoLite>();
+
+        var accounts = await _context.Accounts
+            .AsNoTracking()
+            .Where(a => a.CmpId == cmpId && (keys.Contains(a.Username) || keys.Contains(a.FullName)))
+            .Select(a => new { a.Username, a.FullName, a.imgPath })
+            .ToListAsync();
+
+        var map = new Dictionary<string, AccountInfoLite>(StringComparer.OrdinalIgnoreCase);
+        foreach (var a in accounts)
+        {
+            if (string.IsNullOrWhiteSpace(a.FullName)) continue;
+            var info = new AccountInfoLite(a.FullName, string.IsNullOrWhiteSpace(a.imgPath) ? null : a.imgPath);
+            if (!string.IsNullOrWhiteSpace(a.Username)) map.TryAdd(a.Username, info);
+            map.TryAdd(a.FullName, info);
+        }
+        return map;
     }
 
     // ── GET api/nis/customers ────────────────────────────────────────────────
@@ -2735,10 +2857,21 @@ WHERE a.CmpId = @CmpId
                 .Select(t => new { t.TicketId, t.TicketCode })
                 .ToDictionaryAsync(t => t.TicketId, t => t.TicketCode);
 
-        return rows.Select(r => MapEquipmentChangeRequest(
-                r,
-                names.TryGetValue(r.CustomerCode, out var n) ? n : null,
-                r.TicketId != null && ticketCodes.TryGetValue(r.TicketId, out var tc) ? tc : null))
+        var accountInfos = await ResolveAccountInfosAsync(cmpId, rows.Select(r => r.RequestedBy));
+
+        return rows.Select(r =>
+            {
+                var dto = MapEquipmentChangeRequest(
+                    r,
+                    names.TryGetValue(r.CustomerCode, out var n) ? n : null,
+                    r.TicketId != null && ticketCodes.TryGetValue(r.TicketId, out var tc) ? tc : null);
+                if (!string.IsNullOrWhiteSpace(r.RequestedBy) && accountInfos.TryGetValue(r.RequestedBy.Trim(), out var requester))
+                {
+                    dto.RequestedByName = requester.FullName;
+                    dto.RequestedByImgPath = requester.ImgPath;
+                }
+                return dto;
+            })
             .ToList();
     }
 
