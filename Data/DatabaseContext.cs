@@ -724,6 +724,9 @@ namespace goalongapi.Data
                 entity.Property(e => e.CheckInTime).HasColumnType("datetime");
                 entity.Property(e => e.CheckInLocation).HasMaxLength(500);
                 entity.Property(e => e.CheckInBy).HasMaxLength(200);
+                entity.Property(e => e.CheckOutTime).HasColumnType("datetime");
+                entity.Property(e => e.CheckOutLocation).HasMaxLength(500);
+                entity.Property(e => e.CheckOutBy).HasMaxLength(200);
                 entity.Property(e => e.SourceProblemId).HasMaxLength(50);
                 entity.Property(e => e.OverQuota).HasDefaultValue(false);
                 entity.Property(e => e.CustomerLineUserId).HasMaxLength(100);

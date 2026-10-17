@@ -74,6 +74,12 @@ public class NisTicketResponseDto
     public double? CheckInLng { get; set; }
     public string? CheckInLocation { get; set; }
     public string? CheckInBy { get; set; }
+    /// วันเวลาที่ช่าง Check-out (yyyy-MM-dd HH:mm) — ค่าว่าง = ยังไม่เช็คเอาท์
+    public string CheckOutTime { get; set; } = string.Empty;
+    public double? CheckOutLat { get; set; }
+    public double? CheckOutLng { get; set; }
+    public string? CheckOutLocation { get; set; }
+    public string? CheckOutBy { get; set; }
     /// เลขเคส helpdesk (Problem.ProblemId) ที่เปิดตั๋วนี้ — ใช้กับตั๋ว MA Onsite ของโครงการ Accident
     public string? SourceProblemId { get; set; }
     /// ตั๋วนี้ถูกเปิดเกินโควตา Onsite Accident (ผู้ใช้ยืนยันเปิดต่อ)
@@ -162,6 +168,19 @@ public class NisTicketCheckInDto
     public double? Lat { get; set; }
     public double? Lng { get; set; }
     /// ชื่อสถานที่ที่ช่างยืนเช็คอิน (reverse geocode)
+    public string? Location { get; set; }
+}
+
+/// ช่าง Check-out จากหน้างาน (RN / CRM) — PUT tickets/{id}/checkout
+public class NisTicketCheckOutDto
+{
+    public string? CmpId { get; set; }
+    /// ผู้เช็คเอาท์ (username หรือ FullName ของช่าง)
+    public string? CheckOutBy { get; set; }
+    /// null = เช็คเอาท์โดยไม่มีพิกัด GPS
+    public double? Lat { get; set; }
+    public double? Lng { get; set; }
+    /// ชื่อสถานที่ที่ช่างยืนเช็คเอาท์ (reverse geocode)
     public string? Location { get; set; }
 }
 

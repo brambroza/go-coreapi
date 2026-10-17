@@ -42,6 +42,14 @@ public class NisOnsiteTicketResponseDto
     public string? CheckInLocation { get; set; }
     public string? CheckInBy { get; set; }
 
+    /// สถานะ Check-out ที่ server รู้ (NisTicket) — ค่าว่าง = ยังไม่เช็คเอาท์
+    /// CRM ใช้เติมขั้น Check-out เมื่อช่างเช็คเอาท์จากแอป RN (draft ของ user CRM ไม่มี)
+    public string? CheckOutTime { get; set; }
+    public double? CheckOutLat { get; set; }
+    public double? CheckOutLng { get; set; }
+    public string? CheckOutLocation { get; set; }
+    public string? CheckOutBy { get; set; }
+
     /// ทะเบียนอุปกรณ์ในตู้ Rack ของลูกค้า (flat) — เติมเฉพาะตั๋ว PM; client จัดกลุ่มตาม RackName เอง
     /// null = ไม่ใช่ PM หรือไม่มีทะเบียน
     public List<NisOnsiteEquipmentDto>? Equipment { get; set; }

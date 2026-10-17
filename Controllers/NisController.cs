@@ -151,6 +151,11 @@ public class NisController : ControllerBase
         CheckInLng = t.CheckInLng,
         CheckInLocation = t.CheckInLocation,
         CheckInBy = t.CheckInBy,
+        CheckOutTime = FormatDateTime(t.CheckOutTime),
+        CheckOutLat = t.CheckOutLat,
+        CheckOutLng = t.CheckOutLng,
+        CheckOutLocation = t.CheckOutLocation,
+        CheckOutBy = t.CheckOutBy,
         SourceProblemId = t.SourceProblemId,
         OverQuota = t.OverQuota,
         CustomerLineUserId = t.CustomerLineUserId,
@@ -239,7 +244,7 @@ public class NisController : ControllerBase
             ticket.ClosedDate = null;
     }
 
-    /// ล้างสถานะ Check-in — ตั๋วกลับไปยังไม่รับงาน (Open/Scheduled) = งานรอบใหม่ ช่างต้องเช็คอินใหม่
+    /// ล้างสถานะ Check-in/Check-out — ตั๋วกลับไปยังไม่รับงาน (Open/Scheduled) = งานรอบใหม่ ช่างต้องเช็คอินใหม่
     private static void ResetCheckInIfNotStarted(NisTicket ticket)
     {
         if (ticket.Status is not ("Open" or "Scheduled")) return;
@@ -248,6 +253,22 @@ public class NisController : ControllerBase
         ticket.CheckInLng = null;
         ticket.CheckInLocation = null;
         ticket.CheckInBy = null;
+        ticket.CheckOutTime = null;
+        ticket.CheckOutLat = null;
+        ticket.CheckOutLng = null;
+        ticket.CheckOutLocation = null;
+        ticket.CheckOutBy = null;
+    }
+
+    /// milestone ขั้นต่ำของ % จากสถานะหน้างานที่ server รู้จริง (คอลัมน์บน NisTicket)
+    /// เช็คเอาท์แล้ว → ไม่ต่ำกว่า 90 · เช็คอินแล้ว → ไม่ต่ำกว่า 25 · อื่น ๆ → 0
+    /// ใช้กัน snapshot/autosave จาก client อื่น (เช่น SM เปิดฟอร์มดูใน CRM ซึ่ง draft ของตัวเองไม่มี
+    /// checkOutTime) เขียนทับ % ที่ช่างทำไว้จริงให้ถอยหลัง — checklist ยังลดได้ตามปกติเหนือ floor นี้
+    private static int TicketPctFloor(NisTicket ticket)
+    {
+        if (ticket.CheckOutTime != null) return NIS_PCT_CHECKED_OUT;
+        if (ticket.CheckInTime != null) return NIS_PCT_CHECKED_IN;
+        return NIS_PCT_NOT_ACCEPTED;
     }
 
     /// normalize + serialize checklist ที่ client ส่งมา — ตัดข้อว่าง, การันตี Id · ว่าง = null (ตรงกับ UpdateTicketTask)
@@ -751,7 +772,8 @@ public class NisController : ControllerBase
             return Ok(new { message = "Ticket already closed — progress unchanged", pct = ticket.Pct });
 
         // 100 ออกได้เฉพาะ flow ปิดงานจริงเท่านั้น — จากแอปตัดที่ 90
-        ticket.Pct = Math.Clamp(dto.Pct, NIS_PCT_NOT_ACCEPTED, NIS_PCT_CHECKED_OUT);
+        // floor จากสถานะหน้างานบนตั๋ว (เช็คอิน 25 / เช็คเอาท์ 90) — autosave ค่าเก่าจากอีกเครื่องห้ามดึง % ถอย
+        ticket.Pct = Math.Max(Math.Clamp(dto.Pct, NIS_PCT_NOT_ACCEPTED, NIS_PCT_CHECKED_OUT), TicketPctFloor(ticket));
         ticket.UpdatedBy = dto.UpdatedBy ?? ticket.UpdatedBy;
         ticket.UpdatedDate = DateTime.Now;
 
@@ -829,6 +851,83 @@ public class NisController : ControllerBase
             checkInLat = ticket.CheckInLat,
             checkInLng = ticket.CheckInLng,
             checkInLocation = ticket.CheckInLocation,
+            pct = ticket.Pct,
+        });
+    }
+
+    // ── PUT api/nis/tickets/{id}/checkout ───────────────────────────────────
+
+    /// <summary>
+    /// ช่าง Check-out (RN หรือ CRM) — บันทึกเวลา/พิกัดลงตั๋ว คู่กับ CheckInTicket
+    /// เดิม check-out อยู่แค่ใน draft ของเครื่อง/ของ user → RN เช็คเอาท์ (Pct 90) แล้ว SM เปิดฟอร์มใน CRM
+    /// autosave snapshot ที่ไม่มี checkOutTime ทับ Pct กลับเป็น 25 — เก็บบนตั๋วให้ทุก client เห็นค่าเดียวกัน
+    ///
+    /// - {id} = TicketId หรือ TicketCode
+    /// - เวลาใช้เวลา server (เวลาไทย)
+    /// - idempotent: เช็คเอาท์แล้วไม่ทับเวลาเดิม (retry / กดซ้ำ / เครื่องที่สอง) แต่เติมพิกัดถ้ารอบแรกไม่มี
+    /// - ต้องรับงานก่อน (Open/Scheduled → 409) · ต้องเช็คอินก่อน (409) · ตั๋วที่พ้นมือช่างแล้วไม่แตะ
+    /// </summary>
+    [HttpPut("tickets/{id}/checkout")]
+    public async Task<IActionResult> CheckOutTicket(string id, [FromBody] NisTicketCheckOutDto? dto)
+    {
+        var ticket = await ResolveNisOnsiteTicketAsync(id);
+        if (ticket == null)
+            return NotFound(new { message = $"Ticket {id} not found" });
+
+        if (!string.IsNullOrWhiteSpace(dto?.CmpId) && !string.IsNullOrWhiteSpace(ticket.CmpId) && dto!.CmpId != ticket.CmpId)
+            return NotFound(new { message = $"Ticket {id} not found" });
+
+        if (IsWaitingApproval(ticket))
+            return WaitingApprovalConflict(ticket);
+
+        if (ticket.Status is "Open" or "Scheduled")
+            return Conflict(new { message = "Ticket must be accepted before check-out" });
+
+        if (ticket.Status is "Waiting Close Approval" or "Done" or "Closed")
+            return Ok(new { message = "Ticket already closed — check-out unchanged", checkOutTime = FormatDateTime(ticket.CheckOutTime) });
+
+        // business gate ตรวจซ้ำที่ backend: ต้องเช็คอินก่อนเสมอ (ทุกประเภทงาน รวม noOnsite)
+        if (ticket.CheckInTime == null)
+            return Conflict(new { message = "Ticket must be checked in before check-out" });
+
+        // พิกัดต้องอยู่ในช่วงจริง — นอกช่วง = ถือว่าไม่มีพิกัด (ไม่เก็บค่าขยะ)
+        double? lat = dto?.Lat is >= -90 and <= 90 ? dto.Lat : null;
+        double? lng = dto?.Lng is >= -180 and <= 180 ? dto.Lng : null;
+        if (lat == null || lng == null) { lat = null; lng = null; }
+
+        var location = dto?.Location?.Trim();
+        if (location?.Length > 500) location = location[..500];
+        var checkOutBy = dto?.CheckOutBy?.Trim();
+        if (checkOutBy?.Length > 200) checkOutBy = checkOutBy[..200];
+
+        if (ticket.CheckOutTime == null)
+        {
+            ticket.CheckOutTime = BangkokNow();
+            ticket.CheckOutLat = lat;
+            ticket.CheckOutLng = lng;
+            ticket.CheckOutLocation = string.IsNullOrEmpty(location) ? null : location;
+            ticket.CheckOutBy = string.IsNullOrEmpty(checkOutBy) ? null : checkOutBy;
+        }
+        else if (ticket.CheckOutLat == null && lat != null)
+        {
+            ticket.CheckOutLat = lat;
+            ticket.CheckOutLng = lng;
+            if (!string.IsNullOrEmpty(location)) ticket.CheckOutLocation = location;
+        }
+
+        // milestone "เช็คเอาท์แล้ว" — ไม่ลดค่าที่สูงกว่า (เพดาน 90 · 100 เฉพาะ flow ปิดงาน)
+        ticket.Pct = Math.Max(ticket.Pct, NIS_PCT_CHECKED_OUT);
+        ticket.UpdatedBy = string.IsNullOrEmpty(checkOutBy) ? ticket.UpdatedBy : checkOutBy;
+        ticket.UpdatedDate = DateTime.Now;
+
+        await _context.SaveChangesAsync();
+        return Ok(new
+        {
+            message = "Checked out",
+            checkOutTime = FormatDateTime(ticket.CheckOutTime),
+            checkOutLat = ticket.CheckOutLat,
+            checkOutLng = ticket.CheckOutLng,
+            checkOutLocation = ticket.CheckOutLocation,
             pct = ticket.Pct,
         });
     }
@@ -3805,6 +3904,11 @@ WHERE a.CmpId = @CmpId
                 CheckInLng = nisTicket.CheckInLng,
                 CheckInLocation = nisTicket.CheckInLocation,
                 CheckInBy = nisTicket.CheckInBy,
+                CheckOutTime = nisTicket.CheckOutTime.HasValue ? FormatDateTime(nisTicket.CheckOutTime) : null,
+                CheckOutLat = nisTicket.CheckOutLat,
+                CheckOutLng = nisTicket.CheckOutLng,
+                CheckOutLocation = nisTicket.CheckOutLocation,
+                CheckOutBy = nisTicket.CheckOutBy,
                 Equipment = equipment,
             });
         }
@@ -4633,7 +4737,9 @@ WHERE a.CmpId = @CmpId
         {
             // ยังไม่รับงาน (Open/Scheduled) → ฐาน 0 · รับแล้ว → ฐาน 10 (ตรง AcceptTicket / pctForStatus)
             var accepted = ticket.Status != "Open" && ticket.Status != "Scheduled";
-            ticket.Pct = ComputeOnsiteProgressPct(body, accepted);
+            // snapshot เป็นของ user ที่เปิดฟอร์ม (draft ต่อ user) — อาจไม่มี check-in/out ที่ช่างทำจากอีกเครื่อง
+            // จึงใช้คอลัมน์บนตั๋วเป็นแหล่งเสริม + floor กัน % ถอยหลัง (เคส SM เปิดดูใน CRM แล้ว 90 → 25)
+            ticket.Pct = Math.Max(ComputeOnsiteProgressPct(body, accepted, ticket), TicketPctFloor(ticket));
             ticket.UpdatedDate = DateTime.Now;
         }
 
@@ -4667,11 +4773,14 @@ WHERE a.CmpId = @CmpId
     /// ฐานเริ่มที่ 10 เฉพาะตั๋วที่ช่างรับงานแล้ว (accepted) — ตั๋ว Open/Scheduled ที่แค่ถูกเปิดดู
     /// แล้ว client ยิง draft เปล่ามา ต้องคง 0 (parity NIS-OnsiteService utils/progress.ts computeTicketPct)
     /// เพดาน 90 — 100 เฉพาะ flow ปิดงาน
-    private static int ComputeOnsiteProgressPct(JsonElement s, bool accepted)
+    /// ticket (optional) = ค่า check-in/out ที่ server รู้จริง — ใช้แทนเมื่อ snapshot ไม่มี
+    /// (draft เป็นของ user ที่เปิดฟอร์ม ไม่ใช่ของช่างที่เช็คอิน/เช็คเอาท์จากอีกเครื่อง)
+    private static int ComputeOnsiteProgressPct(JsonElement s, bool accepted, NisTicket? ticket = null)
     {
         var pct = accepted ? NIS_PCT_ACCEPTED : NIS_PCT_NOT_ACCEPTED;
 
-        if (!string.IsNullOrEmpty(ReadJsonString(s, "checkInTime")))
+        var checkedIn = !string.IsNullOrEmpty(ReadJsonString(s, "checkInTime")) || ticket?.CheckInTime != null;
+        if (checkedIn)
             pct = NIS_PCT_CHECKED_IN;
 
         if (s.TryGetProperty("checklist", out var checklist) && checklist.ValueKind == JsonValueKind.Array)
@@ -4695,7 +4804,8 @@ WHERE a.CmpId = @CmpId
             }
         }
 
-        if (!string.IsNullOrEmpty(ReadJsonString(s, "checkOutTime")))
+        var checkedOut = !string.IsNullOrEmpty(ReadJsonString(s, "checkOutTime")) || ticket?.CheckOutTime != null;
+        if (checkedOut)
             pct = Math.Max(pct, NIS_PCT_CHECKED_OUT);
 
         return Math.Min(pct, NIS_PCT_CHECKED_OUT);

@@ -259,6 +259,23 @@ public class NisTicket
     [MaxLength(200)]
     public string? CheckInBy { get; set; }
 
+    /// เวลาที่ช่าง Check-out ครั้งแรก (เวลาไทย ตามเวลา server) · null = ยังไม่เช็คเอาท์
+    /// เขียนผ่าน PUT tickets/{id}/checkout ทั้งจาก RN และ CRM — เป็น milestone 90% ที่ snapshot
+    /// ของ user อื่น (CRM autosave) ห้ามลดลง (เดิมอยู่แค่ใน draft → เปิดดูใน CRM แล้ว Pct ถอยเป็น 25)
+    public DateTime? CheckOutTime { get; set; }
+
+    /// พิกัด GPS ตอนเช็คเอาท์ · null = เช็คเอาท์โดยไม่มีพิกัด
+    public double? CheckOutLat { get; set; }
+    public double? CheckOutLng { get; set; }
+
+    /// ชื่อสถานที่ที่ช่างยืนเช็คเอาท์ (reverse geocode ฝั่ง client) · null = ไม่ทราบ
+    [MaxLength(500)]
+    public string? CheckOutLocation { get; set; }
+
+    /// ผู้เช็คเอาท์ (username/fullName ที่ client ส่งมา)
+    [MaxLength(200)]
+    public string? CheckOutBy { get; set; }
+
     /// LINE userId ของลูกค้าที่แจ้งเคส (สำเนา STProblem.UserLineId ตอนเปิดเคส Onsite จาก helpdesk)
     /// null = ตั๋วที่ไม่ได้มาจากเคส LINE · เก็บไว้ใช้ต่อ (เช่น ส่งผลปิดงานทาง LINE) ยังไม่ส่งอัตโนมัติ
     [MaxLength(100)]
