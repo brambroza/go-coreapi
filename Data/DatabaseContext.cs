@@ -940,6 +940,13 @@ namespace goalongapi.Data
                 entity.HasIndex(e => new { e.CmpId, e.CustomerCode });
             });
 
+            // ชื่อตารางเอกพจน์ตาม migration 20261002 — ไม่ map จะได้ชื่อตาม DbSet (…Requests) แล้ว 500 Invalid object name
+            modelBuilder.Entity<NisEquipmentChangeRequest>(entity =>
+            {
+                entity.ToTable("NisEquipmentChangeRequest", "dbo");
+                entity.HasKey(e => e.RequestId);
+            });
+
             modelBuilder.Entity<NisCustomerAssignEmp>(entity =>
             {
                 // Written to by the Customer tab caretakers matrix — disable the OUTPUT
