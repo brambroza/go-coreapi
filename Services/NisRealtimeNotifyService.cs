@@ -33,14 +33,18 @@ public class NisRealtimeNotifyService
 
     /// <param name="users">Usernames (login/email — Accounts.Username), ไม่ใช่ FullName. Socket room
     /// ฝั่ง go-chat-api (userRoom) key ด้วย JWT sub ซึ่งคือ Username.</param>
-    /// <param name="type">ต้องตรงกับ NOTIFY_TYPES ฝั่ง go-chat-api: "assign" | "reject_close" | "overdue"</param>
+    /// <param name="type">ต้องตรงกับ NOTIFY_TYPES ฝั่ง go-chat-api: "assign" | "reject_close" | "overdue" | "accept" | "ticket_update"</param>
+    /// <param name="action">(optional, ใช้กับ type "ticket_update") ชนิดการเปลี่ยน เช่น checkin / close_rejected — ส่งต่อใน nis:notify</param>
+    /// <param name="status">(optional, ใช้กับ type "ticket_update") NisTicket.Status หลังเปลี่ยน</param>
     public async Task NotifyAsync(
         string cmpId,
         IEnumerable<string> users,
         string type,
         string? ticketId = null,
         string? title = null,
-        string? body = null)
+        string? body = null,
+        string? action = null,
+        string? status = null)
     {
         try
         {
@@ -60,6 +64,8 @@ public class NisRealtimeNotifyService
                 ticketId,
                 title,
                 body,
+                action,
+                status,
             };
 
             var client = _httpFactory.CreateClient();

@@ -837,6 +837,8 @@ namespace goalongapi.Data
                 // Persisted Service Report PDF reference (blob stored on disk, not in-row).
                 entity.Property(e => e.ReportPdfPath).HasMaxLength(400);
                 entity.Property(e => e.ReportPdfSha256).HasMaxLength(64);
+                // อีเมลปิดงานที่รอส่งตอน SM อนุมัติ (CloseEmailJson = nvarchar(max)) + เหตุผลตีกลับ
+                entity.Property(e => e.RejectReason).HasMaxLength(500);
 
                 entity.HasIndex(e => e.NisTicketId);
                 entity.HasIndex(e => new { e.CmpId, e.SrNumber });

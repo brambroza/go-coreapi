@@ -75,6 +75,27 @@ public sealed class NisReportPdfStorage
         return new StoredPdf(relPath, content.Length, sha256);
     }
 
+    /// <summary>
+    /// อ่าน PDF ที่เก็บไว้ (RelativePath จาก SaveAsync) กลับมาเป็น byte[] — ใช้ตอน SM อนุมัติปิดงาน
+    /// แล้วต้องแนบ PDF ที่ช่างส่งมาตอน request-close ไปกับอีเมลลูกค้า
+    /// กัน path traversal: path ที่ resolve แล้วต้องอยู่ใต้ base dir เท่านั้น · ไม่พบ/ผิดรูป = null
+    /// </summary>
+    /// <param name="relativePath">NisOnsiteReport.ReportPdfPath</param>
+    /// <returns>เนื้อไฟล์ หรือ null เมื่อไม่พบ</returns>
+    public async Task<byte[]?> TryReadAsync(string? relativePath)
+    {
+        if (string.IsNullOrWhiteSpace(relativePath)) return null;
+
+        var baseFull = Path.GetFullPath(_baseDir);
+        var absPath = Path.GetFullPath(Path.Combine(baseFull, relativePath));
+        var basePrefix = baseFull.EndsWith(Path.DirectorySeparatorChar) ? baseFull : baseFull + Path.DirectorySeparatorChar;
+        if (!absPath.StartsWith(basePrefix, StringComparison.Ordinal)) return null;
+        if (!File.Exists(absPath)) return null;
+
+        var bytes = await File.ReadAllBytesAsync(absPath);
+        return bytes.Length == 0 ? null : bytes;
+    }
+
     private static string Segment(string? value)
         => string.IsNullOrWhiteSpace(value) ? "unknown" : Regex.Replace(value, "[^A-Za-z0-9_-]", "_");
 }

@@ -82,7 +82,17 @@ public class NisOnsiteReport
     [MaxLength(64)]
     public string? ReportPdfSha256 { get; set; }
 
-    /// submitted | pending_approval
+    /// ข้อมูลอีเมลปิดงานที่ช่างกรอกตอน request-close (JSON ของ NisOnsiteStoredCloseEmailDto) —
+    /// เก็บไว้ให้ตอน SM อนุมัติ (close-approve) ส่งอีเมลลูกค้าพร้อม PDF ได้ด้วย code path เดียวกับ onsite/submit
+    /// Migration: Database/Migrations/20261019_AddNisOnsiteReportCloseEmail.sql
+    public string? CloseEmailJson { get; set; }
+
+    /// เหตุผลที่ SM ตีกลับคำขอปิดงาน (close-reject) — แสดงให้ช่างเห็นตอนตั๋วกลับเป็น In Progress
+    [MaxLength(500)]
+    public string? RejectReason { get; set; }
+
+    /// reserved (จองเลข SR ก่อน render PDF) | pending_approval | rejected | submitted
+    /// รายการ Service Report แสดงเฉพาะ submitted — reserved/rejected/pending_approval ห้ามโผล่ในลิสต์
     [MaxLength(30)]
     public string Status { get; set; } = "submitted";
 

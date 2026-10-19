@@ -33,6 +33,7 @@ public class NisController : ControllerBase
     private readonly goalongapi.Services.NisRealtimeNotifyService _nisRealtimeNotify;
     private readonly goalongapi.Services.NisCrmNotifyService _crmNotify;
     private readonly NisReportPdfStorage _pdfStorage;
+    private readonly IWebHostEnvironment _webHostEnvironment;
     private readonly ILogger<NisController> _logger;
 
     /// Feature flag (NisOnsite:AttachReportPdf, default true) — lets ops disable PDF attachment
@@ -54,6 +55,7 @@ public class NisController : ControllerBase
         goalongapi.Services.NisCrmNotifyService crmNotify,
         NisReportPdfStorage pdfStorage,
         IConfiguration configuration,
+        IWebHostEnvironment webHostEnvironment,
         ILogger<NisController> logger)
     {
         _context = context;
@@ -65,6 +67,7 @@ public class NisController : ControllerBase
         _nisRealtimeNotify = nisRealtimeNotify;
         _crmNotify = crmNotify;
         _pdfStorage = pdfStorage;
+        _webHostEnvironment = webHostEnvironment;
         _logger = logger;
         _attachReportPdf = configuration.GetValue<bool?>("NisOnsite:AttachReportPdf") ?? true;
         _publicBaseUrl = configuration.GetValue<string?>("NisOnsite:PublicBaseUrl");
@@ -778,6 +781,7 @@ public class NisController : ControllerBase
         ticket.UpdatedDate = DateTime.Now;
 
         await _context.SaveChangesAsync();
+        await NotifyTicketChangedAsync(ticket, "pct", dto.UpdatedBy);
         return Ok(new { message = "Progress updated", pct = ticket.Pct });
     }
 
@@ -844,6 +848,7 @@ public class NisController : ControllerBase
         ticket.UpdatedDate = DateTime.Now;
 
         await _context.SaveChangesAsync();
+        await NotifyTicketChangedAsync(ticket, "checkin", checkInBy);
         return Ok(new
         {
             message = "Checked in",
@@ -921,6 +926,7 @@ public class NisController : ControllerBase
         ticket.UpdatedDate = DateTime.Now;
 
         await _context.SaveChangesAsync();
+        await NotifyTicketChangedAsync(ticket, "checkout", checkOutBy);
         return Ok(new
         {
             message = "Checked out",
@@ -930,6 +936,180 @@ public class NisController : ControllerBase
             checkOutLocation = ticket.CheckOutLocation,
             pct = ticket.Pct,
         });
+    }
+
+    // ── POST api/nis/tickets/{ticketId}/photos ──────────────────────────────
+
+    /// กลุ่มรูปที่อนุญาต (โฟลเดอร์ย่อยใต้ photos/) — ค่าอื่น = 400
+    private static readonly HashSet<string> TicketPhotoGroups = new(StringComparer.Ordinal)
+    {
+        "work", "rack", "damage", "other",
+    };
+
+    /// จำนวนไฟล์สูงสุดต่อ request
+    private const int TicketPhotoMaxFiles = 10;
+
+    /// ขนาดสูงสุดต่อไฟล์ (8 MB) — client ต้องย่อเหลือด้านยาว ≤ 1600px + JPEG ~0.8 ก่อนส่งอยู่แล้ว
+    private const long TicketPhotoMaxBytes = 8L * 1024 * 1024;
+
+    /// ตัด segment ของ path ให้เหลือเฉพาะอักขระปลอดภัย — กัน path traversal ("..", "/", "\")
+    private static string SafePathSegment(string? value) =>
+        string.IsNullOrWhiteSpace(value)
+            ? "unknown"
+            : System.Text.RegularExpressions.Regex.Replace(value.Trim(), "[^A-Za-z0-9_-]", "_");
+
+    /// ตรวจ magic bytes ของไฟล์ — คืน ".jpg" / ".png" หรือ null เมื่อไม่ใช่ JPEG/PNG จริง
+    private static string? DetectImageExtension(ReadOnlySpan<byte> head)
+    {
+        if (head.Length >= 3 && head[0] == 0xFF && head[1] == 0xD8 && head[2] == 0xFF) return ".jpg";
+        if (head.Length >= 8
+            && head[0] == 0x89 && head[1] == 0x50 && head[2] == 0x4E && head[3] == 0x47
+            && head[4] == 0x0D && head[5] == 0x0A && head[6] == 0x1A && head[7] == 0x0A) return ".png";
+        return null;
+    }
+
+    /// <summary>
+    /// อัปโหลดรูปหน้างานของตั๋ว (แทน base64 / file:// ใน payload onsite) — multipart/form-data
+    /// field "files" (1..10 ไฟล์, image/jpeg | image/png, ≤ 8 MB/ไฟล์ ตรวจ magic bytes ด้วย)
+    /// + field "group" = work | rack | damage | other (default work)
+    ///
+    /// - cmpId / projectNo มาจากตั๋วใน DB เท่านั้น (ไม่เชื่อ client) · ชื่อไฟล์ = guid ใหม่ (ไม่ใช้ชื่อเดิม)
+    /// - เก็บที่ wwwroot/{cmpId}/nis/{projectNo}/tickets/{ticketId}/photos/{group}/{guid}.jpg
+    ///   (โครงเดียวกับ NisTicketFile) · url = "{serverUrl}/{cmpId}/nis/..." แบบเดียวกับ NisTicketFile.FilePath
+    /// - static file ได้ CORS header จาก UseCors ที่อยู่ก่อน UseStaticFiles ใน Program.cs (CRM แปลง URL → dataURI ทำ PDF ได้)
+    /// - {ticketId} = TicketId หรือ TicketCode
+    /// </summary>
+    [HttpPost("tickets/{ticketId}/photos")]
+    [RequestSizeLimit(TicketPhotoMaxFiles * TicketPhotoMaxBytes + 1024 * 1024)]
+    [RequestFormLimits(MultipartBodyLengthLimit = TicketPhotoMaxFiles * TicketPhotoMaxBytes + 1024 * 1024)]
+    public async Task<ActionResult<NisTicketPhotoUploadResponseDto>> UploadTicketPhotos(
+        string ticketId,
+        [FromForm] List<IFormFile>? files,
+        [FromForm] string? group)
+    {
+        var ticket = await ResolveNisOnsiteTicketAsync(ticketId);
+        if (ticket == null)
+            return NotFound(new { message = $"Ticket {ticketId} not found" });
+
+        var photoGroup = string.IsNullOrWhiteSpace(group) ? "work" : group.Trim().ToLowerInvariant();
+        if (!TicketPhotoGroups.Contains(photoGroup))
+            return BadRequest(new { message = "group ต้องเป็น work | rack | damage | other" });
+
+        if (files == null || files.Count == 0)
+            return BadRequest(new { message = "กรุณาแนบรูปอย่างน้อย 1 ไฟล์ (field: files)" });
+        if (files.Count > TicketPhotoMaxFiles)
+            return BadRequest(new { message = $"อัปโหลดได้สูงสุด {TicketPhotoMaxFiles} ไฟล์ต่อครั้ง" });
+
+        // ตรวจทุกไฟล์ก่อนเขียนลง disk (ไม่เขียนครึ่ง ๆ กลาง ๆ เมื่อมีไฟล์เสีย)
+        var accepted = new List<(IFormFile File, string Ext)>();
+        foreach (var file in files)
+        {
+            var displayName = Path.GetFileName(file.FileName ?? string.Empty);
+            if (file.Length <= 0)
+                return BadRequest(new { message = $"ไฟล์ว่าง: {displayName}" });
+            if (file.Length > TicketPhotoMaxBytes)
+                return BadRequest(new { message = $"ไฟล์ใหญ่เกิน 8 MB: {displayName}" });
+
+            var contentType = (file.ContentType ?? string.Empty).Split(';')[0].Trim().ToLowerInvariant();
+            if (contentType != "image/jpeg" && contentType != "image/png")
+                return BadRequest(new { message = $"รองรับเฉพาะรูป JPEG / PNG: {displayName}" });
+
+            var head = new byte[8];
+            int read;
+            await using (var probe = file.OpenReadStream())
+                read = await probe.ReadAtLeastAsync(head, head.Length, throwOnEndOfStream: false);
+
+            var ext = DetectImageExtension(head.AsSpan(0, read));
+            if (ext == null)
+                return BadRequest(new { message = $"ไฟล์ไม่ใช่รูป JPEG / PNG จริง: {displayName}" });
+
+            accepted.Add((file, ext));
+        }
+
+        // projectNo จาก DB (convention เดียวกับ CRM: projectNo ?? projectId)
+        var project = await _context.NisProjects
+            .AsNoTracking()
+            .Where(p => p.ProjectId == ticket.ProjectId)
+            .Select(p => new { p.ProjectNo, p.ProjectId })
+            .FirstOrDefaultAsync();
+
+        var cmpSeg = SafePathSegment(ticket.CmpId);
+        var projectSeg = SafePathSegment(string.IsNullOrWhiteSpace(project?.ProjectNo) ? (project?.ProjectId ?? ticket.ProjectId) : project!.ProjectNo);
+        var ticketSeg = SafePathSegment(ticket.TicketId);
+        var relDir = $"{cmpSeg}/nis/{projectSeg}/tickets/{ticketSeg}/photos/{photoGroup}";
+
+        var webRoot = Path.GetFullPath(_webHostEnvironment.WebRootPath
+            ?? Path.Combine(_webHostEnvironment.ContentRootPath, "wwwroot"));
+        var absDir = Path.GetFullPath(Path.Combine(webRoot, relDir));
+        var rootPrefix = webRoot.EndsWith(Path.DirectorySeparatorChar) ? webRoot : webRoot + Path.DirectorySeparatorChar;
+        if (!absDir.StartsWith(rootPrefix, StringComparison.Ordinal))
+            return BadRequest(new { message = "invalid path" });
+
+        Directory.CreateDirectory(absDir);
+
+        var baseUrl = PublicBaseUrl();
+        var result = new NisTicketPhotoUploadResponseDto();
+        foreach (var (file, ext) in accepted)
+        {
+            var storedName = $"{Guid.NewGuid():N}{ext}";
+            var absPath = Path.Combine(absDir, storedName);
+            await using (var target = new FileStream(absPath, FileMode.CreateNew, FileAccess.Write))
+                await file.CopyToAsync(target);
+
+            result.Files.Add(new NisTicketPhotoUploadItemDto
+            {
+                Url = $"{baseUrl}/{relDir}/{storedName}",
+                FileName = TruncateLogValue(Path.GetFileName(file.FileName ?? string.Empty), 255),
+                Size = file.Length,
+            });
+        }
+
+        return Ok(result);
+    }
+
+    // ── รูปที่ยังไม่ได้อัปโหลด (local-only reference) ─────────────────────────
+
+    /// prefix ของ reference ที่อยู่แค่ในเครื่อง client — server เปิดไม่ได้ ห้ามบันทึกลง report
+    private static readonly string[] LocalPhotoPrefixes =
+    {
+        "file://", "content://", "ph://", "assets-library://", "blob:",
+    };
+
+    /// true เมื่อค่ารูปเป็น reference ในเครื่อง (file:// ฯลฯ) — ต้องอัปโหลดผ่าน POST tickets/{id}/photos ก่อน
+    private static bool IsLocalPhotoRef(string? value) =>
+        !string.IsNullOrWhiteSpace(value)
+        && LocalPhotoPrefixes.Any(p => value.TrimStart().StartsWith(p, StringComparison.OrdinalIgnoreCase));
+
+    /// รูปถือว่า "ไม่มี" เมื่อว่าง หรือเป็น reference ในเครื่องที่ server เปิดไม่ได้ (ใช้กับ gate PM)
+    private static bool IsMissingPhoto(string? value) =>
+        string.IsNullOrWhiteSpace(value) || IsLocalPhotoRef(value);
+
+    /// <summary>
+    /// หา field แรกใน payload ปิดงานที่ยังเป็นรูป local-only (file:// content:// ph:// assets-library:// blob:)
+    /// คืนชื่อ field (เช่น "photos[2]", "pmItems[0].beforePhoto") หรือ null เมื่อผ่าน
+    /// </summary>
+    private static string? FindLocalPhotoField(NisOnsiteReportBaseDto dto)
+    {
+        for (var i = 0; i < (dto.Photos?.Count ?? 0); i++)
+            if (IsLocalPhotoRef(dto.Photos![i])) return $"photos[{i}]";
+
+        if (IsLocalPhotoRef(dto.BeforePhoto)) return "beforePhoto";
+        if (IsLocalPhotoRef(dto.DuringPhoto)) return "duringPhoto";
+        if (IsLocalPhotoRef(dto.AfterPhoto)) return "afterPhoto";
+        if (IsLocalPhotoRef(dto.SignatureImg)) return "signatureImg";
+
+        for (var i = 0; i < (dto.PmItems?.Count ?? 0); i++)
+        {
+            var item = dto.PmItems![i];
+            if (IsLocalPhotoRef(item.BeforePhoto)) return $"pmItems[{i}].beforePhoto";
+            if (IsLocalPhotoRef(item.AfterPhoto)) return $"pmItems[{i}].afterPhoto";
+        }
+
+        var damagePhotos = dto.DamagedProduct?.Photos;
+        for (var i = 0; i < (damagePhotos?.Count ?? 0); i++)
+            if (IsLocalPhotoRef(damagePhotos![i])) return $"damagedProduct.photos[{i}]";
+
+        return null;
     }
 
     // ── PUT api/nis/tickets/{id}/accept ─────────────────────────────────────
@@ -968,7 +1148,11 @@ public class NisController : ControllerBase
         }
 
         if (!alreadyAccepted)
+        {
             await NotifyTicketAcceptedAsync(ticket, acceptedBy);
+            // contract "ticket changed" — CRM (SignalR) + RN (ticket_update) refetch ตั๋ว
+            await NotifyTicketChangedAsync(ticket, "accept", acceptedBy);
+        }
 
         return Ok(new { message = "Ticket accepted", status = ticket.Status });
     }
@@ -1120,6 +1304,99 @@ WHERE a.CmpId = @CmpId
         return result;
     }
 
+    // ── Realtime "ticket changed" (contract: scratchpad nis-onsite-contract.md §2) ──────────
+
+    /// ข้อความสั้นต่อ action สำหรับ body ของ nis:notify (RN แสดง/ใช้ refetch เท่านั้น)
+    private static string TicketChangedLabel(string action) => action switch
+    {
+        "accept" => "ช่างรับงานแล้ว",
+        "assign" => "มอบหมายงาน",
+        "checkin" => "Check-in แล้ว",
+        "checkout" => "Check-out แล้ว",
+        "pct" => "อัปเดตความคืบหน้า",
+        "progress" => "บันทึกฉบับร่างงาน",
+        "request_close" => "ขออนุมัติปิดงาน",
+        "closed" => "ปิดงานแล้ว",
+        "close_approved" => "อนุมัติปิดงานแล้ว",
+        "close_rejected" => "คำขอปิดงานถูกตีกลับ",
+        _ => action,
+    };
+
+    /// <summary>
+    /// แจ้งว่าตั๋วเปลี่ยน หลัง save สำเร็จ — ยิง 2 ช่องทาง best-effort (ห้าม throw ออกไป):
+    /// 1) SignalR NisTicketChanged{cmpId} → CRM ที่เปิดตั๋วอยู่ refetch
+    /// 2) socket.io /nis nis:notify type "ticket_update" (+action/status) → RN ของช่างผู้รับผิดชอบ
+    ///    + SM ทุกคนของบริษัท (SystemRole.StateManager เหมือน AcceptTicket) + ผู้ทำ action เอง
+    ///    (คนเดียวกันอาจเปิดทั้ง CRM และ iPad)
+    /// </summary>
+    /// <param name="ticket">ตั๋วหลัง save (Status = ค่าหลังเปลี่ยน)</param>
+    /// <param name="action">ค่าตาม contract §2.3 เช่น checkin / close_rejected</param>
+    /// <param name="actor">ผู้ทำ action — Username หรือ FullName (resolve เป็น Username ให้)</param>
+    /// <param name="body">ข้อความเพิ่มเติม (เช่น เหตุผลตีกลับ) — ว่าง = ใช้ label ตาม action</param>
+    /// <param name="extraAssignee">ช่างอีกคนที่ควรได้รับด้วย (เช่น ช่างคนเดิมตอนเปลี่ยนมือ) — FullName/Username</param>
+    private async Task NotifyTicketChangedAsync(
+        NisTicket ticket,
+        string action,
+        string? actor,
+        string? body = null,
+        string? extraAssignee = null)
+    {
+        try
+        {
+            var cmpId = ticket.CmpId ?? string.Empty;
+            if (string.IsNullOrWhiteSpace(cmpId)) return;
+
+            var actorUsername = await ResolveUsernameAsync(cmpId, actor);
+
+            // 1) CRM web — SignalR
+            await _crmNotify.BroadcastTicketChangedAsync(
+                cmpId,
+                ticket.TicketId,
+                action,
+                ticket.Status,
+                actorUsername ?? actor,
+                ticket.TicketCode);
+
+            // 2) RN — socket.io /nis (room key = Accounts.Username)
+            var names = new[] { ticket.Assignee, extraAssignee }
+                .Where(n => !string.IsNullOrWhiteSpace(n) && n != "-")
+                .Select(n => n!)
+                .Distinct()
+                .ToList();
+
+            var users = new List<string>();
+            if (names.Count > 0)
+            {
+                users.AddRange(await _context.Accounts
+                    .Where(a => a.CmpId == cmpId && (names.Contains(a.FullName!) || names.Contains(a.Username)))
+                    .Select(a => a.Username)
+                    .ToListAsync());
+            }
+            users.AddRange((await GetNisManagersAsync(cmpId)).Select(m => m.Username));
+            if (!string.IsNullOrWhiteSpace(actorUsername)) users.Add(actorUsername);
+
+            var recipients = users
+                .Where(u => !string.IsNullOrWhiteSpace(u))
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .ToList();
+            if (recipients.Count == 0) return;
+
+            await _nisRealtimeNotify.NotifyAsync(
+                cmpId,
+                users: recipients,
+                type: "ticket_update",
+                ticketId: ticket.TicketId,
+                title: $"{ticket.TicketCode ?? ticket.TicketId} · {ticket.Title}",
+                body: string.IsNullOrWhiteSpace(body) ? TicketChangedLabel(action) : body,
+                action: action,
+                status: ticket.Status);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "NIS ticket changed notify ไม่สำเร็จ (ticket {TicketId}, action {Action})", ticket.TicketId, action);
+        }
+    }
+
     // ── PUT api/nis/tickets/{id}/close-approve ───────────────────────────────
 
     /// <summary>Manager approves a "Waiting Close Approval" ticket → Closed. Matches frontend approveNisCloseTicket.</summary>
@@ -1137,10 +1414,12 @@ WHERE a.CmpId = @CmpId
         // (เลข SR ออกตอนอนุมัติ). เดิม endpoint นี้ตั้งแค่สถานะตั๋ว → report ไม่เคยได้เลข = หายตอน sync.
         // แก้: หา report ล่าสุดของตั๋วนี้ (รวม submitted เพื่อรองรับ retry แบบ idempotent)
         // แล้ว gen เลข SR ฝั่ง server + finalize เป็น submitted.
+        // + reserved: เลข SR ที่จองไว้ตอน reserve-sr (request-close ไม่ถึง server) — ใช้เลขเดิม ไม่ออกเลขใหม่
         var report = await _context.NisOnsiteReports
             .Where(r => r.NisTicketId == ticket.TicketId
-                && (r.Status == "pending_approval" || r.Status == "submitted"))
-            .OrderByDescending(r => r.CreatedDate)
+                && (r.Status == "pending_approval" || r.Status == "submitted" || r.Status == "reserved"))
+            .OrderByDescending(r => r.Status == "pending_approval")
+            .ThenByDescending(r => r.CreatedDate)
             .FirstOrDefaultAsync();
 
         // edge: ไม่พบ report รออนุมัติ (เช่น request-close ไม่เคยถึง server ตอน offline) →
@@ -1163,15 +1442,77 @@ WHERE a.CmpId = @CmpId
         // gen เลขเฉพาะเมื่อยังไม่มี (idempotent ต่อการกดอนุมัติซ้ำ — ไม่ consume เลขใหม่)
         if (string.IsNullOrWhiteSpace(report.SrNumber))
             report.SrNumber = await NextSrNumberAsync(cmpId);
+        // อนุมัติซ้ำ (retry) → ไม่ส่งอีเมลลูกค้าซ้ำ
+        var alreadySubmitted = report.Status == "submitted" && ticket.Status == "Closed";
         report.Status = "submitted";
 
         ticket.Status = "Closed";
         ticket.Pct = NIS_PCT_CLOSED;
         ApplyClosedDate(ticket);
         ticket.UpdatedDate = DateTime.Now;
+        if (!string.IsNullOrWhiteSpace(dto?.ApprovedBy)) ticket.UpdatedBy = dto!.ApprovedBy;
 
         await _context.SaveChangesAsync();
-        return Ok(new { message = "Ticket closed", srNumber = report.SrNumber });
+
+        // ส่งอีเมลลูกค้าพร้อม PDF ที่ช่างส่งมาตอน request-close — code path เดียวกับ onsite/submit
+        // best-effort: อีเมล/อ่าน PDF ล้มต้องไม่ทำให้การอนุมัติล้ม (ปิดตั๋วไปแล้วข้างบน)
+        var emailSent = false;
+        string? emailError = null;
+        var pdfAttached = false;
+        if (!alreadySubmitted)
+        {
+            try
+            {
+                var stored = ParseJson<NisOnsiteStoredCloseEmailDto?>(report.CloseEmailJson, null);
+                if (stored != null && !string.IsNullOrWhiteSpace(stored.RecipientEmail))
+                {
+                    var emailDto = new NisOnsiteSubmitDto
+                    {
+                        SrNumber = report.SrNumber ?? string.Empty,
+                        TicketId = ticket.TicketId,
+                        CheckInTime = report.CheckInTime,
+                        CheckOutTime = report.CheckOutTime,
+                        WorkDetail = report.WorkDetail,
+                        IssueDetail = report.IssueDetail,
+                        SignatureImg = report.SignatureImageBase64,
+                        SkipSignature = report.SkipSignature,
+                        CmpId = cmpId,
+                        User = report.Engineer,
+                        RecipientEmail = stored.RecipientEmail!,
+                        EmailSubject = stored.EmailSubject ?? string.Empty,
+                        EmailMessage = stored.EmailMessage ?? string.Empty,
+                        ContactName = stored.ContactName,
+                        SenderName = stored.SenderName,
+                        SenderPosition = stored.SenderPosition,
+                        SenderMobile = stored.SenderMobile,
+                        ReportPdfFileName = stored.ReportPdfFileName,
+                    };
+
+                    EmailAttachment? pdfAttachment = null;
+                    var pdfBytes = await _pdfStorage.TryReadAsync(report.ReportPdfPath);
+                    if (pdfBytes != null)
+                        pdfAttachment = new EmailAttachment(ReportPdfFileName(emailDto), pdfBytes, "application/pdf");
+
+                    (emailSent, emailError, pdfAttached) = await SendNisOnsiteCloseEmailAsync(ticket, cmpId, emailDto, pdfAttachment);
+                }
+            }
+            catch (Exception ex)
+            {
+                emailError = ex.Message;
+                _logger.LogWarning(ex, "NIS close-approve: ส่งอีเมลปิดงานไม่สำเร็จ (ticket {TicketId})", ticket.TicketId);
+            }
+        }
+
+        await NotifyTicketChangedAsync(ticket, "close_approved", dto?.ApprovedBy);
+
+        return Ok(new
+        {
+            message = "Ticket closed",
+            srNumber = report.SrNumber,
+            emailSent,
+            emailError,
+            pdfAttached,
+        });
     }
 
     // ── PUT api/nis/tickets/{id}/close-reject ────────────────────────────────
@@ -1187,6 +1528,18 @@ WHERE a.CmpId = @CmpId
         ticket.Status = "In Progress";
         ApplyClosedDate(ticket);
         ticket.UpdatedDate = DateTime.Now;
+        if (!string.IsNullOrWhiteSpace(dto?.RejectedBy)) ticket.UpdatedBy = dto!.RejectedBy;
+
+        // report ที่รออนุมัติ → rejected (คงเลข SR ไว้ให้ request-close รอบถัดไปใช้ต่อ · ไม่โผล่ในลิสต์ submitted)
+        var rejectReason = TrimOrNull(dto?.Reason, 500);
+        var pendingReports = await _context.NisOnsiteReports
+            .Where(r => r.NisTicketId == ticket.TicketId && r.Status == "pending_approval")
+            .ToListAsync();
+        foreach (var r in pendingReports)
+        {
+            r.Status = "rejected";
+            r.RejectReason = rejectReason;
+        }
 
         await _context.SaveChangesAsync();
 
@@ -1202,6 +1555,34 @@ WHERE a.CmpId = @CmpId
                   + (string.IsNullOrWhiteSpace(reason) ? "" : $" — เหตุผล: {reason}"),
             ticketId: ticket.TicketId,
             data: new Dictionary<string, string> { ["type"] = "reject-close" });
+
+        // socket.io /nis — reject_close (type เดิม) ไปหาช่างพร้อมเหตุผล ให้แอปที่เปิดค้างเด้งทันที
+        try
+        {
+            var assigneeUsername = await ResolveUsernameAsync(ticket.CmpId, ticket.Assignee);
+            if (!string.IsNullOrWhiteSpace(assigneeUsername))
+            {
+                await _nisRealtimeNotify.NotifyAsync(
+                    ticket.CmpId,
+                    users: [assigneeUsername],
+                    type: "reject_close",
+                    ticketId: ticket.TicketId,
+                    title: "↩️ งานถูกตีกลับ — ต้องแก้ไข",
+                    body: string.IsNullOrWhiteSpace(reason)
+                        ? $"{ticket.TicketCode} · {ticket.Title}"
+                        : $"{ticket.TicketCode} · {ticket.Title} — เหตุผล: {reason}");
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "NIS close-reject: socket notify ไม่สำเร็จ (ticket {TicketId})", ticket.TicketId);
+        }
+
+        await NotifyTicketChangedAsync(
+            ticket,
+            "close_rejected",
+            dto?.RejectedBy,
+            body: string.IsNullOrWhiteSpace(reason) ? null : $"คำขอปิดงานถูกตีกลับ — เหตุผล: {reason}");
 
         return Ok(new { message = "Close request rejected" });
     }
@@ -1338,6 +1719,9 @@ WHERE a.CmpId = @CmpId
                 _logger.LogWarning(ex, "NIS assign: Google Calendar sync failed for ticket {TicketId}", ticket.TicketId);
             }
         }
+
+        // contract "ticket changed" — รวมช่างคนเดิมด้วย (ถูกเปลี่ยนมือ/unassign ต้องเห็นว่าตั๋วหลุดจากมือ)
+        await NotifyTicketChangedAsync(ticket, "assign", dto.UpdatedBy, extraAssignee: previousAssignee);
 
         return Ok(new { message = "Assigned successfully" });
     }
@@ -3662,9 +4046,10 @@ WHERE a.CmpId = @CmpId
         {
             var rackName = string.IsNullOrWhiteSpace(rack.Name) ? (rack.RackKey ?? "ตู้ Rack") : rack.Name;
 
-            if (string.IsNullOrWhiteSpace(rack.BeforePhoto))
+            // รูป local-only (file:// ฯลฯ) = ยังไม่ได้อัปโหลด → นับเป็นขาดรูป
+            if (IsMissingPhoto(rack.BeforePhoto))
                 blockers.Add($"{rackName}: ยังขาดรูปก่อนทำ");
-            if (string.IsNullOrWhiteSpace(rack.AfterPhoto))
+            if (IsMissingPhoto(rack.AfterPhoto))
                 blockers.Add($"{rackName}: ยังขาดรูปหลังทำ");
 
             var unchecked_ = rack.Devices!.Count(d => d.Status != "normal" && d.Status != "abnormal");
@@ -3711,6 +4096,38 @@ WHERE a.CmpId = @CmpId
             Status = status,
             CreatedDate = DateTime.Now,
         };
+
+    /// PDF ที่แนบมากับ request-close ได้ไม่เกิน 7.5 MB หลัง decode (contract §4)
+    private const long RequestClosePdfMaxBytes = 7_864_320;
+
+    /// คัดลอกเนื้อหาใบรายงานจาก src (ที่ build จาก payload ใหม่) ลงแถวเดิม — คง ReportId / SrNumber / CreatedDate ของแถวเดิม
+    /// (แถวเดิมไม่มีเลข → ใช้เลขจาก payload) · ใช้ตอน request-close นำแถว reserved/rejected กลับมาใช้
+    private static void CopyOnsiteReportContent(NisOnsiteReport target, NisOnsiteReport src)
+    {
+        if (string.IsNullOrWhiteSpace(target.SrNumber)) target.SrNumber = src.SrNumber;
+        target.TicketCode = src.TicketCode;
+        target.CmpId = src.CmpId;
+        target.Engineer = src.Engineer;
+        target.CheckInTime = src.CheckInTime;
+        target.CheckOutTime = src.CheckOutTime;
+        target.CheckInLatitude = src.CheckInLatitude;
+        target.CheckInLongitude = src.CheckInLongitude;
+        target.CheckOutLatitude = src.CheckOutLatitude;
+        target.CheckOutLongitude = src.CheckOutLongitude;
+        target.WorkDetail = src.WorkDetail;
+        target.IssueDetail = src.IssueDetail;
+        target.ChecklistJson = src.ChecklistJson;
+        target.PmItemsJson = src.PmItemsJson;
+        target.DamagedProductJson = src.DamagedProductJson;
+        target.SupportCasesJson = src.SupportCasesJson;
+        target.PhotosJson = src.PhotosJson;
+        target.BeforePhoto = src.BeforePhoto;
+        target.DuringPhoto = src.DuringPhoto;
+        target.AfterPhoto = src.AfterPhoto;
+        target.SignatureImageBase64 = src.SignatureImageBase64;
+        target.SkipSignature = src.SkipSignature;
+        target.Status = src.Status;
+    }
 
     // ── GET api/nis/onsite/reports ───────────────────────────────────────────
     /// <summary>
@@ -3838,6 +4255,20 @@ WHERE a.CmpId = @CmpId
 
             var nisTicketType = MapNisOnsiteType(nisTicket.Type);
 
+            // เหตุผลที่ SM ตีกลับคำขอปิดงานล่าสุด — แสดงเมื่อตั๋วกลับมาทำต่อ (แถว report ล่าสุดยังเป็น rejected)
+            string? nisRejectionReason = null;
+            if (nisTicket.Status == "In Progress")
+            {
+                var lastReport = await _context.NisOnsiteReports
+                    .AsNoTracking()
+                    .Where(r => r.NisTicketId == nisTicket.TicketId
+                        && (r.Status == "reserved" || r.Status == "pending_approval" || r.Status == "rejected"))
+                    .OrderByDescending(r => r.CreatedDate)
+                    .Select(r => new { r.Status, r.RejectReason })
+                    .FirstOrDefaultAsync();
+                if (lastReport?.Status == "rejected") nisRejectionReason = lastReport.RejectReason;
+            }
+
             // ทะเบียนอุปกรณ์ในตู้ Rack — เฉพาะงาน PM: โปรเจคเลือก id ไว้ → เอาเฉพาะชุดนั้น
             // ไม่ได้เลือก → ทั้งหมดของลูกค้ารายนี้ (client จัดกลุ่มตาม RackName เอง)
             List<NisOnsiteEquipmentDto>? equipment = null;
@@ -3896,6 +4327,7 @@ WHERE a.CmpId = @CmpId
                 EngineerNick = project?.EngineerNickname ?? string.Empty,
                 EngineerPhone = project?.EngineerPhone,
                 Status = nisTicket.Status,
+                RejectionReason = nisRejectionReason,
                 SkipSignature = false,
                 RequireCloseApproval = false,
                 Accepted = true,
@@ -3991,6 +4423,56 @@ WHERE a.CmpId = @CmpId
         return $"{prefix}{(svcCount + nisCount + 1):D4}";
     }
 
+    // ── POST api/nis/onsite/{id}/reserve-sr ──────────────────────────────────
+
+    /// <summary>
+    /// จองเลข SR ตอนช่างกด "ขออนุมัติปิดงาน" — client ต้องได้เลขก่อน render PDF แล้วค่อย POST request-close
+    /// - มีแถว NisOnsiteReport ของตั๋วนี้ (reserved / pending_approval / rejected) ที่มีเลขแล้ว → คืนเลขเดิม (idempotent)
+    /// - ไม่มี → สร้างแถว Status = reserved พร้อมเลขใหม่ (NextSrNumberAsync) แล้ว save ทันที (กันเลขซ้ำรอบถัดไป)
+    /// - แถว reserved/rejected ไม่โผล่ในรายการ Service Report (กรองเฉพาะ submitted)
+    /// - {id} = TicketId หรือ TicketCode · cmpId มาจากตั๋วใน DB (body cmpId ไม่ตรง = 404)
+    /// </summary>
+    [HttpPost("onsite/{id}/reserve-sr")]
+    public async Task<IActionResult> ReserveOnsiteSrNumber(string id, [FromBody] NisOnsiteReserveSrDto? dto)
+    {
+        var ticket = await ResolveNisOnsiteTicketAsync(id);
+        if (ticket == null)
+            return NotFound(new { message = $"Ticket {id} not found" });
+
+        if (!string.IsNullOrWhiteSpace(dto?.CmpId) && !string.IsNullOrWhiteSpace(ticket.CmpId) && dto!.CmpId != ticket.CmpId)
+            return NotFound(new { message = $"Ticket {id} not found" });
+
+        if (ticket.Status is "Done" or "Closed")
+            return Conflict(new { message = "Ticket already closed" });
+
+        var existing = await _context.NisOnsiteReports
+            .Where(r => r.NisTicketId == ticket.TicketId
+                && (r.Status == "reserved" || r.Status == "pending_approval" || r.Status == "rejected")
+                && r.SrNumber != null && r.SrNumber != "")
+            .OrderByDescending(r => r.CreatedDate)
+            .FirstOrDefaultAsync();
+        if (existing != null)
+            return Ok(new { srNumber = existing.SrNumber });
+
+        var cmpId = string.IsNullOrWhiteSpace(ticket.CmpId) ? (dto?.CmpId ?? string.Empty) : ticket.CmpId;
+        var engineer = TrimOrNull(dto?.User, 200) ?? ticket.Assignee;
+        var report = new NisOnsiteReport
+        {
+            ReportId = Guid.NewGuid().ToString(),
+            NisTicketId = ticket.TicketId,
+            TicketCode = ticket.TicketCode,
+            CmpId = cmpId,
+            Engineer = engineer,
+            SrNumber = await NextSrNumberAsync(cmpId),
+            Status = "reserved",
+            CreatedDate = DateTime.Now,
+        };
+        _context.NisOnsiteReports.Add(report);
+        await _context.SaveChangesAsync();
+
+        return Ok(new { srNumber = report.SrNumber });
+    }
+
     // ── POST api/nis/onsite/submit ───────────────────────────────────────────
     // Persists the service report, closes the ticket + subtask, auto-creates a
     // replacement/sales ticket for a damaged product and a helpdesk case per support
@@ -4002,6 +4484,11 @@ WHERE a.CmpId = @CmpId
     {
         if (string.IsNullOrWhiteSpace(dto.TicketId))
             return BadRequest(new { message = "ticketId is required" });
+
+        // รูปที่ยังเป็น reference ในเครื่อง (file:// ฯลฯ) = ยังอัปโหลดไม่สำเร็จ → ห้ามบันทึก (server เปิดไม่ได้)
+        var localPhotoField = FindLocalPhotoField(dto);
+        if (localPhotoField != null)
+            return BadRequest(new { message = "รูปยังอัปโหลดไม่สำเร็จ", field = localPhotoField });
 
         // NIS-first: report filed against a NisTicket → persist to NisOnsiteReport
         // and close the NisTicket. Damaged-product / support-case downstream tickets
@@ -4045,35 +4532,12 @@ WHERE a.CmpId = @CmpId
 
             await _context.SaveChangesAsync();
 
-            // Attachment is gated by the feature flag so ops can fall back to HTML-only instantly.
-            var attachPdf = _attachReportPdf && pdfAttachment != null;
-            var nisEmailSent = false;
-            string? nisEmailError = null;
-            if (!string.IsNullOrWhiteSpace(dto.RecipientEmail))
-            {
-                try
-                {
-                    var customerName = await _context.NisProjects
-                        .AsNoTracking()
-                        .Where(p => p.ProjectId == nisTicket.ProjectId)
-                        .Select(p => p.Customer)
-                        .FirstOrDefaultAsync();
-                    var (subject, body) = await BuildOnsiteCloseEmailAsync(
-                        nisCmpId,
-                        nisTicket.TicketCode ?? nisTicket.TicketId,
-                        customerName ?? string.Empty,
-                        nisTicket.Title,
-                        nisTicket.Assignee,
-                        dto,
-                        nisTicket.Type);
-                    var attachments = attachPdf ? new List<EmailAttachment> { pdfAttachment! } : null;
-                    nisEmailSent = await SendOnsiteEmailAsync(nisCmpId, dto.RecipientEmail, subject, body, attachments);
-                }
-                catch (Exception ex)
-                {
-                    nisEmailError = ex.Message;
-                }
-            }
+            // contract "ticket changed" — ปิดงานตรง (ไม่ผ่านอนุมัติ)
+            await NotifyTicketChangedAsync(nisTicket, "closed", dto.User);
+
+            // อีเมลลูกค้า — helper เดียวกับ close-approve (feature flag _attachReportPdf อยู่ใน helper)
+            var (nisEmailSent, nisEmailError, attachPdf) =
+                await SendNisOnsiteCloseEmailAsync(nisTicket, nisCmpId, dto, pdfAttachment);
 
             return Ok(new
             {
@@ -4196,6 +4660,53 @@ WHERE a.CmpId = @CmpId
             emailSent,
             emailError,
         });
+    }
+
+    /// <summary>
+    /// ส่งอีเมลปิดงานของตั๋ว NIS ให้ลูกค้า — ใช้ร่วมกันระหว่าง POST onsite/submit (ปิดตรง) และ
+    /// PUT tickets/{id}/close-approve (ปิดหลัง SM อนุมัติ ด้วยข้อมูล/PDF ที่เก็บไว้ตอน request-close)
+    /// แนบ PDF ตาม feature flag NisOnsite:AttachReportPdf · ไม่มี RecipientEmail = ไม่ส่ง
+    /// ไม่ throw — error คืนเป็นข้อความให้ response แสดง (ปิดงานต้องสำเร็จเสมอแม้อีเมลล้ม)
+    /// </summary>
+    /// <param name="nisTicket">ตั๋วที่ปิด</param>
+    /// <param name="cmpId">รหัสบริษัท</param>
+    /// <param name="dto">payload ปิดงาน (ฟิลด์อีเมล + ข้อมูลใบรายงานที่ใช้ใน template)</param>
+    /// <param name="pdfAttachment">PDF ใบรายงาน (null = ไม่มี)</param>
+    /// <returns>(ส่งสำเร็จ, ข้อความ error, แนบ PDF หรือไม่)</returns>
+    private async Task<(bool Sent, string? Error, bool PdfAttached)> SendNisOnsiteCloseEmailAsync(
+        NisTicket nisTicket,
+        string cmpId,
+        NisOnsiteSubmitDto dto,
+        EmailAttachment? pdfAttachment)
+    {
+        // Attachment is gated by the feature flag so ops can fall back to HTML-only instantly.
+        var attachPdf = _attachReportPdf && pdfAttachment != null;
+        if (string.IsNullOrWhiteSpace(dto.RecipientEmail))
+            return (false, null, attachPdf);
+
+        try
+        {
+            var customerName = await _context.NisProjects
+                .AsNoTracking()
+                .Where(p => p.ProjectId == nisTicket.ProjectId)
+                .Select(p => p.Customer)
+                .FirstOrDefaultAsync();
+            var (subject, body) = await BuildOnsiteCloseEmailAsync(
+                cmpId,
+                nisTicket.TicketCode ?? nisTicket.TicketId,
+                customerName ?? string.Empty,
+                nisTicket.Title,
+                nisTicket.Assignee,
+                dto,
+                nisTicket.Type);
+            var attachments = attachPdf ? new List<EmailAttachment> { pdfAttachment! } : null;
+            var sent = await SendOnsiteEmailAsync(cmpId, dto.RecipientEmail, subject, body, attachments);
+            return (sent, null, attachPdf);
+        }
+        catch (Exception ex)
+        {
+            return (false, ex.Message, attachPdf);
+        }
     }
 
     /// <summary>
@@ -4582,6 +5093,11 @@ WHERE a.CmpId = @CmpId
     {
         // NIS-first: record the report and mark the NisTicket "Waiting Close Approval"
         // (reviewed via the existing NIS close-approval flow on the Service Board).
+        // รูปที่ยังเป็น reference ในเครื่อง (file:// ฯลฯ) = ยังอัปโหลดไม่สำเร็จ → ห้ามบันทึก
+        var localPhotoField = FindLocalPhotoField(dto);
+        if (localPhotoField != null)
+            return BadRequest(new { message = "รูปยังอัปโหลดไม่สำเร็จ", field = localPhotoField });
+
         var nisTicket = await ResolveNisOnsiteTicketAsync(id);
         if (nisTicket != null)
         {
@@ -4595,7 +5111,65 @@ WHERE a.CmpId = @CmpId
                     return BadRequest(new { message = "PM rack inspection incomplete", blockers = pmBlockers });
             }
 
-            _context.NisOnsiteReports.Add(BuildNisOnsiteReport(nisTicket, dto, nisCmpId, "pending_approval"));
+            // PDF ใบรายงาน (optional) — ตรวจก่อนแตะตั๋ว · จำกัด 7.5 MB หลัง decode (contract §4)
+            byte[]? pdfBytes = null;
+            if (!string.IsNullOrWhiteSpace(dto.ReportPdfBase64))
+            {
+                if (!_pdfStorage.TryDecode(dto.ReportPdfBase64, out var decoded, out var pdfError))
+                    return BadRequest(new { message = pdfError });
+                if (decoded.Length > RequestClosePdfMaxBytes)
+                    return BadRequest(new { message = "report PDF too large (max 7.5 MB)" });
+                pdfBytes = decoded;
+            }
+
+            // ใช้แถวที่จองเลขไว้ (reserve-sr) / แถวที่ถูกตีกลับ / แถวรออนุมัติเดิม (retry) — ไม่สร้างแถวใหม่ซ้อน
+            // คงเลข SR ของแถวนั้นไว้ (ละเว้นเลขอื่นที่ client ส่งมา)
+            var report = await _context.NisOnsiteReports
+                .Where(r => r.NisTicketId == nisTicket.TicketId
+                    && (r.Status == "reserved" || r.Status == "pending_approval" || r.Status == "rejected"))
+                .OrderByDescending(r => r.SrNumber != null && r.SrNumber != "")
+                .ThenByDescending(r => r.CreatedDate)
+                .FirstOrDefaultAsync();
+
+            var built = BuildNisOnsiteReport(nisTicket, dto, nisCmpId, "pending_approval");
+            if (report == null)
+            {
+                report = built;
+                _context.NisOnsiteReports.Add(report);
+            }
+            else
+            {
+                CopyOnsiteReportContent(report, built);
+            }
+
+            // อีเมลปิดงาน (ชื่อ field เดียวกับ onsite/submit) — ส่งจริงตอน close-approve
+            report.CloseEmailJson = SerializeJson(new NisOnsiteStoredCloseEmailDto
+            {
+                RecipientEmail = TrimOrNull(dto.RecipientEmail, 320),
+                EmailSubject = TrimOrNull(dto.EmailSubject, 500),
+                EmailMessage = TrimOrNull(dto.EmailMessage, 4000),
+                ContactName = TrimOrNull(dto.ContactName, 200),
+                SenderName = TrimOrNull(dto.SenderName, 200),
+                SenderPosition = TrimOrNull(dto.SenderPosition, 200),
+                SenderMobile = TrimOrNull(dto.SenderMobile, 50),
+                ReportPdfFileName = TrimOrNull(dto.ReportPdfFileName, 200),
+            });
+            report.RejectReason = null;
+
+            // PDF รอบใหม่แทนของเดิม · ไม่ส่งมา = ล้าง reference เก่า (เนื้อหาอาจเปลี่ยนหลังถูกตีกลับ)
+            if (pdfBytes != null)
+            {
+                var stored = await _pdfStorage.SaveAsync(nisCmpId, nisTicket.TicketId, report.SrNumber ?? string.Empty, pdfBytes);
+                report.ReportPdfPath = stored.RelativePath;
+                report.ReportPdfSize = stored.Size;
+                report.ReportPdfSha256 = stored.Sha256;
+            }
+            else
+            {
+                report.ReportPdfPath = null;
+                report.ReportPdfSize = null;
+                report.ReportPdfSha256 = null;
+            }
 
             nisTicket.Status = "Waiting Close Approval";
             // งานหน้างานจบแล้ว รอ SM อนุมัติ — ค้างที่ 90 จนกว่าจะปิดจริง (100)
@@ -4605,11 +5179,14 @@ WHERE a.CmpId = @CmpId
 
             await _context.SaveChangesAsync();
 
+            await NotifyTicketChangedAsync(nisTicket, "request_close", dto.User);
+
             return Ok(new
             {
                 message = "Close approval requested",
                 ticketId = nisTicket.TicketId,
-                srNumber = dto.SrNumber,
+                srNumber = report.SrNumber,
+                pdfStored = report.ReportPdfPath != null,
             });
         }
 
@@ -4672,22 +5249,58 @@ WHERE a.CmpId = @CmpId
     // {id} = ticketCode ("TK-BK-0014-10") — คีย์กลางที่ CRM/RN ตกลงใช้ร่วมกัน
     // Contract: go-crm-24v4/docs/nis-onsite-progress-api-contract.md
 
-    /// อ่าน snapshot (CmpId, TicketId, UserLogin) → 200 JSON เดิมที่เคย save · ไม่มี = 204
+    /// <summary>
+    /// อ่าน snapshot ล่าสุดของตั๋วนี้ "ข้ามทุก user" (draft ร่วมระหว่าง CRM ↔ RN — contract §3)
+    /// เรียงตาม UpdatedAt (server time) ล่าสุดก่อน · ไม่มี = 204
+    /// response = snapshot JSON เดิมที่ client save ไว้ + field เสริม updatedAt (ISO UTC) และ updatedBy (username เจ้าของแถว)
+    /// {id} = ticketCode (หรือ TicketId — resolve เป็นทั้งสองคีย์ให้ CRM/RN ที่ใช้คีย์ต่างกันเห็นแถวเดียวกัน)
+    /// user ไม่บังคับแล้ว (client เดิมยังส่งมาได้)
+    /// </summary>
     [HttpGet("onsite/{id}/progress")]
     public async Task<IActionResult> GetOnsiteProgress(
         string id,
         [FromQuery] string? cmpid,
         [FromQuery] string? user)
     {
-        if (string.IsNullOrWhiteSpace(cmpid) || string.IsNullOrWhiteSpace(user))
-            return BadRequest(new { message = "cmpid and user are required" });
+        if (string.IsNullOrWhiteSpace(cmpid))
+            return BadRequest(new { message = "cmpid is required" });
+
+        var keys = new List<string> { id };
+        var ticket = await _context.NisTickets
+            .AsNoTracking()
+            .Where(t => t.CmpId == cmpid && (t.TicketCode == id || t.TicketId == id))
+            .Select(t => new { t.TicketId, t.TicketCode })
+            .FirstOrDefaultAsync();
+        if (ticket != null)
+        {
+            keys.Add(ticket.TicketId);
+            if (!string.IsNullOrWhiteSpace(ticket.TicketCode)) keys.Add(ticket.TicketCode);
+        }
+        keys = keys.Distinct().ToList();
 
         var row = await _context.NisOnsiteProgresses
             .AsNoTracking()
-            .FirstOrDefaultAsync(p => p.CmpId == cmpid && p.TicketId == id && p.UserLogin == user);
+            .Where(p => p.CmpId == cmpid && keys.Contains(p.TicketId))
+            .OrderByDescending(p => p.UpdatedAt)
+            .ThenByDescending(p => p.SavedAt)
+            .FirstOrDefaultAsync();
 
         if (row == null || string.IsNullOrEmpty(row.SnapshotJson)) return NoContent();
-        // คืน raw JSON ตรงที่ client save ไว้ (ไม่ re-serialize — กัน field เพี้ยน/หาย)
+
+        // เติม updatedAt/updatedBy ที่ root (additive) — snapshot อ่านไม่ได้เป็น object → คืน raw เดิม
+        try
+        {
+            if (System.Text.Json.Nodes.JsonNode.Parse(row.SnapshotJson) is System.Text.Json.Nodes.JsonObject obj)
+            {
+                obj["updatedAt"] = DateTime.SpecifyKind(row.UpdatedAt, DateTimeKind.Utc).ToString("o", CultureInfo.InvariantCulture);
+                obj["updatedBy"] = row.UserLogin;
+                return Content(obj.ToJsonString(), "application/json");
+            }
+        }
+        catch (JsonException)
+        {
+            // snapshot เสีย → คืน raw ตามเดิม
+        }
         return Content(row.SnapshotJson, "application/json");
     }
 
@@ -4744,6 +5357,11 @@ WHERE a.CmpId = @CmpId
         }
 
         await _context.SaveChangesAsync();
+
+        // contract "ticket changed" — อีกเครื่อง (CRM ↔ RN) ดึง snapshot ล่าสุดไปใช้ (client กัน echo ทับตอนพิมพ์เอง)
+        if (ticket != null)
+            await NotifyTicketChangedAsync(ticket, "progress", user);
+
         return Ok(new { ok = true });
     }
 

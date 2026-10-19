@@ -199,8 +199,59 @@ public class NisOnsiteSubmitDto : NisOnsiteReportBaseDto
     public string? ReportPdfFileName { get; set; }
 }
 
+/// request-close — ฟิลด์อีเมล/PDF ใช้ชื่อเดียวกับ NisOnsiteSubmitDto (recipientEmail, emailSubject, emailMessage,
+/// contactName, senderName/Position/Mobile, reportPdfBase64, reportPdfFileName) แต่เป็น nullable ทั้งหมด
+/// (client เก่าที่ไม่ส่งยังใช้ได้) — เก็บลง report แล้วส่งอีเมลจริงตอน SM อนุมัติ (close-approve)
+/// SrNumber ที่ client ส่งมาจะถูกละเว้นถ้ามีแถว reserved จาก POST onsite/{id}/reserve-sr อยู่แล้ว
 public class NisOnsiteRequestCloseDto : NisOnsiteReportBaseDto
 {
+    public string? RecipientEmail { get; set; }
+    public string? EmailSubject { get; set; }
+    public string? EmailMessage { get; set; }
+    public string? ContactName { get; set; }
+    public string? SenderName { get; set; }
+    public string? SenderPosition { get; set; }
+    public string? SenderMobile { get; set; }
+
+    /// PDF ใบรายงาน (base64 ไม่มี data-URI prefix) ที่ render ด้วยเลข SR จาก reserve-sr — ≤ 7.5 MB หลัง decode
+    public string? ReportPdfBase64 { get; set; }
+    public string? ReportPdfFileName { get; set; }
+}
+
+/// ข้อมูลอีเมลปิดงานที่เก็บใน NisOnsiteReport.CloseEmailJson (ตอน request-close) เพื่อส่งตอน close-approve
+public class NisOnsiteStoredCloseEmailDto
+{
+    public string? RecipientEmail { get; set; }
+    public string? EmailSubject { get; set; }
+    public string? EmailMessage { get; set; }
+    public string? ContactName { get; set; }
+    public string? SenderName { get; set; }
+    public string? SenderPosition { get; set; }
+    public string? SenderMobile { get; set; }
+    public string? ReportPdfFileName { get; set; }
+}
+
+/// POST api/nis/onsite/{id}/reserve-sr — body { cmpId, user? }
+public class NisOnsiteReserveSrDto
+{
+    public string? CmpId { get; set; }
+    /// ผู้จอง (userlogin) — เก็บเป็น Engineer ของแถว reserved (ว่าง = ใช้ Assignee ของตั๋ว)
+    public string? User { get; set; }
+}
+
+/// ผลอัปโหลดรูป 1 ไฟล์ — POST api/nis/tickets/{ticketId}/photos
+public class NisTicketPhotoUploadItemDto
+{
+    /// URL เต็ม ("{serverUrl}/{cmpId}/nis/{projectNo}/tickets/{ticketId}/photos/{group}/{guid}.jpg")
+    public string Url { get; set; } = string.Empty;
+    /// ชื่อไฟล์เดิม (ใช้แสดงผลเท่านั้น — ชื่อไฟล์จริงบน server เป็น guid)
+    public string FileName { get; set; } = string.Empty;
+    public long Size { get; set; }
+}
+
+public class NisTicketPhotoUploadResponseDto
+{
+    public List<NisTicketPhotoUploadItemDto> Files { get; set; } = new();
 }
 
 // ── Service Report (list) — GET api/nis/onsite/reports · map ตรง RN ServiceReport ──

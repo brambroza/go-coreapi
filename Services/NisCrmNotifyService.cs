@@ -108,6 +108,49 @@ public class NisCrmNotifyService
         }
     }
 
+    /// <summary>
+    /// กระจาย event ว่าตั๋ว NIS เปลี่ยน (รับงาน/มอบหมาย/เช็คอิน/เช็คเอาท์/% /draft/ขอปิด/ปิด/อนุมัติ/ตีกลับ)
+    /// ให้หน้า CRM ที่เปิดตั๋วใบนั้นอยู่ refetch เงียบ ๆ — pattern เดียวกับ NisEquipmentChanged{cmpId}
+    /// event = NisTicketChanged{cmpId} · payload = { ticketId, ticketCode, action, status, by, at }
+    /// (ticketCode เป็น field เสริม — contract หลักคือ ticketId/action/status/by/at)
+    /// ส่งไม่สำเร็จ = log อย่างเดียว ห้ามพา request หลักล้ม
+    /// </summary>
+    /// <param name="cmpId">รหัสบริษัท</param>
+    /// <param name="ticketId">NisTicket.TicketId</param>
+    /// <param name="action">accept | assign | checkin | checkout | pct | progress | request_close | closed | close_approved | close_rejected</param>
+    /// <param name="status">NisTicket.Status หลังเปลี่ยน</param>
+    /// <param name="by">username ของผู้ทำ action (ว่างได้)</param>
+    /// <param name="ticketCode">NisTicket.TicketCode (optional)</param>
+    public async Task BroadcastTicketChangedAsync(
+        string cmpId,
+        string ticketId,
+        string action,
+        string? status,
+        string? by,
+        string? ticketCode = null)
+    {
+        try
+        {
+            if (string.IsNullOrWhiteSpace(cmpId) || string.IsNullOrWhiteSpace(ticketId)) return;
+
+            await _hub.Clients.All.SendAsync(
+                $"NisTicketChanged{cmpId}",
+                new
+                {
+                    ticketId,
+                    ticketCode = ticketCode ?? string.Empty,
+                    action,
+                    status = status ?? string.Empty,
+                    by = by ?? string.Empty,
+                    at = DateTime.UtcNow.ToString("o"),
+                });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "NIS ticket changed broadcast ส่งไม่สำเร็จ (cmp={Cmp}, ticket={Ticket}, action={Action})", cmpId, ticketId, action);
+        }
+    }
+
     /// อ่านรายการแจ้งเตือนของผู้ใช้เป็น JSON (รูปแบบเดียวกับ NotificationHub.SendNotifications)
     private static Task<string> GetNotificationsJsonAsync(string cmpId, string username)
     {
