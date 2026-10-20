@@ -7,6 +7,7 @@ using goalongapi.Dtos.Nis;
 using goalongapi.Models;
 using goalongapi.Models.Nis;
 using goalongapi.Helpers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -978,7 +979,10 @@ public class NisController : ControllerBase
     ///   (โครงเดียวกับ NisTicketFile) · url = "{serverUrl}/{cmpId}/nis/..." แบบเดียวกับ NisTicketFile.FilePath
     /// - static file ได้ CORS header จาก UseCors ที่อยู่ก่อน UseStaticFiles ใน Program.cs (CRM แปลง URL → dataURI ทำ PDF ได้)
     /// - {ticketId} = TicketId หรือ TicketCode
+    /// - [Authorize] เฉพาะ endpoint นี้ (ต่างจากส่วนอื่นของ controller) — เขียนไฟล์ลง disk จึงต้องมี JWT
+    ///   (RN photoSync + CRM uploadNisTicketPhotos ส่ง Bearer token อยู่แล้ว) · ไม่มี/หมดอายุ → 401
     /// </summary>
+    [Authorize]
     [HttpPost("tickets/{ticketId}/photos")]
     [RequestSizeLimit(TicketPhotoMaxFiles * TicketPhotoMaxBytes + 1024 * 1024)]
     [RequestFormLimits(MultipartBodyLengthLimit = TicketPhotoMaxFiles * TicketPhotoMaxBytes + 1024 * 1024)]
