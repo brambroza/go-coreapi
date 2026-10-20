@@ -293,4 +293,17 @@ public class NisServiceReportDto
     /// 'YYYY-MM-DD'
     public string Date { get; set; } = string.Empty;
     public string Status { get; set; } = "Closed";
+
+    /// NisOnsiteReport.ReportId — ใช้เปิดไฟล์ PDF ที่ส่งลูกค้าจริง (GET onsite/reports/{reportId}/pdf)
+    public string ReportId { get; set; } = string.Empty;
+
+    /// มีไฟล์ PDF ฉบับที่ส่งลูกค้าเก็บไว้หรือไม่ (false = ใบเก่า/client ไม่แนบ → client สร้างเอกสารจากข้อมูลแทน)
+    public bool HasPdf { get; set; }
+
+    /// เคส support ที่บันทึกตอนปิดงาน (SupportCasesJson)
+    public List<NisOnsiteSupportCaseDto> SupportCases { get; set; } = new();
+
+    /// ผู้รับมอบงาน ณ ตอนปิดงาน (CloseEmailJson.ContactName) — ไม่มี = ผู้ติดต่อของโครงการปัจจุบัน
+    public string? ContactName { get; set; }
+    public string? ContactPhone { get; set; }
 }

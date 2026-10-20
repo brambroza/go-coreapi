@@ -4206,6 +4206,11 @@ WHERE a.CmpId = @CmpId
                 catch { /* damagedProduct ผิดรูป → ปล่อยว่าง */ }
             }
 
+            var supportCases = ParseJson<List<NisOnsiteSupportCaseDto>?>(r.SupportCasesJson, null) ?? new();
+            // ผู้รับมอบงาน: ชื่อที่ช่างส่งตอนปิดงาน (freeze) ก่อน · ใบเก่าไม่มี → ผู้ติดต่อของโครงการ
+            var closeEmail = ParseJson<NisOnsiteStoredCloseEmailDto?>(r.CloseEmailJson, null);
+            var contactName = string.IsNullOrWhiteSpace(closeEmail?.ContactName) ? pj?.ContactName : closeEmail!.ContactName;
+
             var ticketType = tk?.Type ?? string.Empty;
             return new NisServiceReportDto
             {
@@ -4235,10 +4240,45 @@ WHERE a.CmpId = @CmpId
                 AfterPhoto = r.AfterPhoto,
                 Date = r.CreatedDate.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture),
                 Status = "Closed",
+                ReportId = r.ReportId,
+                HasPdf = !string.IsNullOrWhiteSpace(r.ReportPdfPath),
+                SupportCases = supportCases,
+                ContactName = contactName,
+                ContactPhone = pj?.ContactPhone,
             };
         }).ToList();
 
         return Ok(result);
+    }
+
+    /// <summary>
+    /// ไฟล์ PDF ใบรายงานฉบับที่ส่งลูกค้าจริงตอนปิดงาน (เก็บไว้ตอน onsite/submit หรือ request-close)
+    /// ใช้เปิดดูรายงานย้อนหลังให้ตรงกับที่ส่งทุกตัวอักษร · ไม่มีไฟล์ = 404 (client สร้างเอกสารจากข้อมูลแทน)
+    /// [Authorize] เหมือน tickets/{id}/photos — เอกสารมีลายเซ็น/ข้อมูลลูกค้า ห้ามเปิดแบบไม่มี JWT
+    /// </summary>
+    [Authorize]
+    [HttpGet("onsite/reports/{reportId}/pdf")]
+    public async Task<IActionResult> GetOnsiteReportPdf(string reportId, [FromQuery] string? cmpid)
+    {
+        if (string.IsNullOrWhiteSpace(cmpid))
+            return BadRequest(new { message = "cmpid is required" });
+        if (string.IsNullOrWhiteSpace(reportId) || reportId.Length > 50)
+            return BadRequest(new { message = "invalid reportId" });
+
+        var report = await _context.NisOnsiteReports.AsNoTracking()
+            .Where(r => r.ReportId == reportId && r.CmpId == cmpid && r.Status == "submitted")
+            .Select(r => new { r.ReportPdfPath, r.SrNumber, r.TicketCode })
+            .FirstOrDefaultAsync();
+        if (report == null)
+            return NotFound(new { message = "report not found" });
+
+        var bytes = await _pdfStorage.TryReadAsync(report.ReportPdfPath);
+        if (bytes == null)
+            return NotFound(new { message = "report pdf not stored" });
+
+        var name = string.IsNullOrWhiteSpace(report.SrNumber) ? report.TicketCode ?? reportId : report.SrNumber;
+        var fileName = System.Text.RegularExpressions.Regex.Replace($"Service-Report-{name}.pdf", "[^A-Za-z0-9._-]", "_");
+        return File(bytes, "application/pdf", fileName);
     }
 
     // ── GET api/nis/onsite/tickets/{id} ──────────────────────────────────────
@@ -4511,6 +4551,18 @@ WHERE a.CmpId = @CmpId
             }
 
             var report = BuildNisOnsiteReport(nisTicket, dto, nisCmpId, "submitted");
+            // เก็บข้อมูลอีเมลปิดงาน (ผู้รับมอบงาน ฯลฯ) แบบเดียวกับ request-close — ใบรายงานย้อนหลังแสดงชื่อตามที่ส่งจริง
+            report.CloseEmailJson = SerializeJson(new NisOnsiteStoredCloseEmailDto
+            {
+                RecipientEmail = TrimOrNull(dto.RecipientEmail, 320),
+                EmailSubject = TrimOrNull(dto.EmailSubject, 500),
+                EmailMessage = TrimOrNull(dto.EmailMessage, 4000),
+                ContactName = TrimOrNull(dto.ContactName, 200),
+                SenderName = TrimOrNull(dto.SenderName, 200),
+                SenderPosition = TrimOrNull(dto.SenderPosition, 200),
+                SenderMobile = TrimOrNull(dto.SenderMobile, 50),
+                ReportPdfFileName = TrimOrNull(dto.ReportPdfFileName, 200),
+            });
 
             // Optional client-generated Service Report PDF: validate → persist blob (for
             // resend/audit) → set the reference columns → prepare the email attachment. A
