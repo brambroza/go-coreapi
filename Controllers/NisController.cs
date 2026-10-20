@@ -418,25 +418,21 @@ public class NisController : ControllerBase
 
         var cmpId = dto.CmpId ?? string.Empty;
 
-        // Serializable transaction so the MAX(ProjectNo)+1 read below can't race with a
-        // concurrent CreateProject call for the same CmpId (avoids duplicate project numbers).
-        using var transaction = await _context.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable);
+        // Transaction keeps the customer QR-flag update and the project/ticket insert atomic.
+        using var transaction = await _context.Database.BeginTransactionAsync();
 
+        // เลขโครงการรันจาก SEQUENCE dbo.projectTaskNew (ไม่ใช่ MAX+1 อีกแล้ว) — ลบโครงการล่าสุดแล้วสร้างใหม่
+        // จะไม่ได้เลขเดิมซ้ำ · sequence ไม่รีเซ็ตรายปีและรวมทุก CmpId · ค่าที่ดึงแล้วไม่ถูก rollback (เลขข้ามได้)
         var bangkokNow = BangkokNow();
         var projectPrefix = $"NIS-{bangkokNow.ToString("yy", CultureInfo.InvariantCulture)}";
-        var existingProjectNos = await _context.NisProjects
-            .Where(p => p.CmpId == cmpId && p.ProjectNo != null && p.ProjectNo.StartsWith(projectPrefix))
-            .Select(p => p.ProjectNo)
-            .ToListAsync();
-        var lastProjectNo = existingProjectNos
-            .Select(no => no != null
-                && no.StartsWith(projectPrefix, StringComparison.OrdinalIgnoreCase)
-                && int.TryParse(no[projectPrefix.Length..], NumberStyles.None, CultureInfo.InvariantCulture, out var value)
-                    ? value
-                    : 0)
-            .DefaultIfEmpty(0)
-            .Max();
-        var nextProjectNo = $"{projectPrefix}{lastProjectNo + 1:D5}";
+        var projectSeq = await _context.Database
+            .SqlQueryRaw<long>("SELECT CAST(NEXT VALUE FOR dbo.projectTaskNew AS bigint) AS [Value]")
+            .SingleAsync();
+        var nextProjectNo = $"{projectPrefix}{projectSeq:D5}";
+
+        // กันกรณี sequence ตั้ง START WITH ต่ำกว่าเลขที่มีอยู่แล้ว → ไม่ปล่อยให้เลขโครงการ/ตั๋วชนของเดิม
+        if (await _context.NisProjects.AnyAsync(p => p.ProjectNo == nextProjectNo))
+            return Conflict(new { message = $"ProjectNo {nextProjectNo} already exists — check SEQUENCE dbo.projectTaskNew start value" });
 
         var entity = new NisProject
         {
@@ -4089,7 +4085,7 @@ WHERE a.CmpId = @CmpId
             IssueDetail = dto.IssueDetail,
             ChecklistJson = JsonSerializer.Serialize(dto.Checklist),
             PmItemsJson = JsonSerializer.Serialize(dto.PmItems),
-            DamagedProductJson = dto.DamagedProduct != null ? JsonSerializer.Serialize(dto.DamagedProduct) : null,
+            DamagedProductJson = SerializeNisDamagedProduct(dto),
             SupportCasesJson = JsonSerializer.Serialize(dto.SupportCases),
             PhotosJson = JsonSerializer.Serialize(dto.Photos),
             BeforePhoto = dto.BeforePhoto,
@@ -4100,6 +4096,17 @@ WHERE a.CmpId = @CmpId
             Status = status,
             CreatedDate = DateTime.Now,
         };
+
+    /// DamagedProductJson ของใบรายงาน NIS — ของเสียรายการแรก (shape เดิม) + ครบทุกรายการใน Reports
+    /// ไม่มีทั้งคู่ = null (เหมือนเดิม) · มีแต่รายการเต็ม → Checked=false (ไม่กระทบ logic ที่อ่าน Checked)
+    private static string? SerializeNisDamagedProduct(NisOnsiteReportBaseDto dto)
+    {
+        var reports = dto.DamageReports is { Count: > 0 } ? dto.DamageReports : null;
+        if (dto.DamagedProduct == null && reports == null) return null;
+        var damaged = dto.DamagedProduct ?? new NisOnsiteDamagedProductDto { Checked = false };
+        damaged.Reports = reports;
+        return JsonSerializer.Serialize(damaged);
+    }
 
     /// PDF ที่แนบมากับ request-close ได้ไม่เกิน 7.5 MB หลัง decode (contract §4)
     private const long RequestClosePdfMaxBytes = 7_864_320;
@@ -4206,6 +4213,12 @@ WHERE a.CmpId = @CmpId
                 catch { /* damagedProduct ผิดรูป → ปล่อยว่าง */ }
             }
 
+            // ของเสียครบทุกรายการซ้อนอยู่ใน DamagedProductJson.Reports — แยกออกเป็น field ของตัวเอง (ไม่ส่งซ้ำ)
+            var damageReports = damagedProduct?.Reports ?? new();
+            if (damagedProduct != null) damagedProduct.Reports = null;
+            // ใบที่มีแต่รายการเต็ม (Checked=false) ไม่ต้องส่ง damagedProduct เปล่า ๆ
+            if (damagedProduct is { Checked: false }) damagedProduct = null;
+
             var supportCases = ParseJson<List<NisOnsiteSupportCaseDto>?>(r.SupportCasesJson, null) ?? new();
             // ผู้รับมอบงาน: ชื่อที่ช่างส่งตอนปิดงาน (freeze) ก่อน · ใบเก่าไม่มี → ผู้ติดต่อของโครงการ
             var closeEmail = ParseJson<NisOnsiteStoredCloseEmailDto?>(r.CloseEmailJson, null);
@@ -4235,6 +4248,7 @@ WHERE a.CmpId = @CmpId
                 Photos = photos,
                 PmItems = pmItems,
                 DamagedProduct = damagedProduct,
+                DamageReports = damageReports,
                 BeforePhoto = r.BeforePhoto,
                 DuringPhoto = r.DuringPhoto,
                 AfterPhoto = r.AfterPhoto,

@@ -126,6 +126,10 @@ public class NisOnsiteDamagedProductDto
     public string Model { get; set; } = string.Empty;
     public string Sn { get; set; } = string.Empty;
     public List<string> Photos { get; set; } = new();
+
+    /// ของเสียครบทุกรายการ (อาการ/ความรุนแรง/รูป/เลขเคลม) แบบ opaque JSON ของ client —
+    /// เก็บซ้อนใน DamagedProductJson (ไม่ต้องเพิ่มคอลัมน์) เพื่อให้ใบรายงานย้อนหลังแสดงครบเหมือนตอนส่ง
+    public List<System.Text.Json.JsonElement>? Reports { get; set; }
 }
 
 public class NisOnsiteSupportCaseDto
@@ -161,6 +165,9 @@ public class NisOnsiteReportBaseDto
     public List<string> Photos { get; set; } = new();
     public List<NisOnsitePmItemDto> PmItems { get; set; } = new();
     public NisOnsiteDamagedProductDto? DamagedProduct { get; set; }
+    /// ของเสียครบทุกรายการ (shape DamageReport ของ RN / INisOnsiteDamageReport ของ CRM) — optional,
+    /// client เก่าไม่ส่ง · ถูกเก็บลง DamagedProductJson.Reports
+    public List<System.Text.Json.JsonElement>? DamageReports { get; set; }
     public List<NisOnsiteSupportCaseDto> SupportCases { get; set; } = new();
 
     // รูปเดี่ยวระดับ report (ก่อน/ระหว่าง/หลังงาน) — คนละความหมายกับ NisOnsitePmItemDto.BeforePhoto/
@@ -299,6 +306,9 @@ public class NisServiceReportDto
 
     /// มีไฟล์ PDF ฉบับที่ส่งลูกค้าเก็บไว้หรือไม่ (false = ใบเก่า/client ไม่แนบ → client สร้างเอกสารจากข้อมูลแทน)
     public bool HasPdf { get; set; }
+
+    /// ของเสียครบทุกรายการตามที่ส่งตอนปิดงาน (DamagedProductJson.Reports) — ใบเก่าว่าง
+    public List<System.Text.Json.JsonElement> DamageReports { get; set; } = new();
 
     /// เคส support ที่บันทึกตอนปิดงาน (SupportCasesJson)
     public List<NisOnsiteSupportCaseDto> SupportCases { get; set; } = new();
