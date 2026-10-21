@@ -23,7 +23,7 @@ namespace goalongapi.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/nis")]
-public class NisController : ControllerBase
+public partial class NisController : ControllerBase
 {
     private readonly DatabaseContext _context;
     private readonly EmailSettingRepository _emailRepo;
@@ -514,6 +514,23 @@ public class NisController : ControllerBase
         _context.NisProjects.Add(entity);
         await _context.SaveChangesAsync();
         await transaction.CommitAsync();
+
+        // งาน Implement: ดึงรายการสินค้าขายจาก SO มาเป็นรายการโครงการ (ช่างนำของออกจากคลัง 1 ตามนี้)
+        // best-effort — SO อ่านไม่ได้ / ตารางยังไม่มี ไม่ทำให้สร้างโครงการล้ม (กด sync ซ้ำได้ที่หน้าโครงการ)
+        if (string.Equals(entity.Type, "Implement", StringComparison.OrdinalIgnoreCase)
+            && !string.IsNullOrWhiteSpace(entity.SoRef))
+        {
+            try
+            {
+                await UpsertProjectItemsFromSoAsync(entity, dto.CreatedBy ?? string.Empty);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "NIS project items: ดึงรายการจาก SO ไม่สำเร็จ (project {ProjectId})", entity.ProjectId);
+                _context.ChangeTracker.Clear();
+            }
+        }
 
         return CreatedAtAction(nameof(GetProject), new { id = entity.ProjectId }, MapProject(entity));
     }
@@ -1321,6 +1338,8 @@ WHERE a.CmpId = @CmpId
         "close_rejected" => "คำขอปิดงานถูกตีกลับ",
         "equipment_change_approved" => "อนุมัติแก้ทะเบียนตู้ Rack แล้ว",
         "equipment_change_rejected" => "ไม่อนุมัติคำขอแก้ทะเบียนตู้ Rack",
+        "stock_transfer_done" => "SM โยกย้ายคลังให้แล้ว",
+        "stock_transfer_rejected" => "ไม่อนุมัติคำขอโยกย้ายคลัง",
         _ => action,
     };
 
@@ -3772,6 +3791,8 @@ WHERE a.CmpId = @CmpId
         // null-preserve: client เก่าที่ PUT โดยไม่มี field นี้ต้องไม่ลบค่าที่ tenant บันทึกไว้
         if (dto.ServiceConditionOptions != null)
             entity.ServiceConditionOptionsJson = SerializeJson(dto.ServiceConditionOptions);
+        if (dto.StockWarehouses != null)
+            entity.StockWarehousesJson = SerializeJson(dto.StockWarehouses);
         entity.SlaOptionsRaw = JoinTags(dto.SlaOptions);
         entity.WarningDaysService = dto.WarningDays.Service;
         entity.WarningDaysProduct = dto.WarningDays.Product;
@@ -3797,6 +3818,7 @@ WHERE a.CmpId = @CmpId
         EmailTemplates = ParseJson(e.EmailTemplatesJson, DefaultEmailTemplates()),
         EmailSignature = ParseJson(e.EmailSignatureJson, new NisEmailSignatureDto()),
         ServiceConditionOptions = ParseJson(e.ServiceConditionOptionsJson, DefaultServiceConditionOptions()),
+        StockWarehouses = ParseJson(e.StockWarehousesJson, new NisStockWarehousesDto()),
         SlaOptions = SplitTags(e.SlaOptionsRaw),
         WarningDays = new NisWarningDaysDto
         {
@@ -3884,6 +3906,7 @@ WHERE a.CmpId = @CmpId
         EmailTemplates = DefaultEmailTemplates(),
         EmailSignature = new NisEmailSignatureDto(),
         ServiceConditionOptions = DefaultServiceConditionOptions(),
+        StockWarehouses = new NisStockWarehousesDto(),
         SlaOptions = ["8x5xNBD", "8x5", "24x7x4", "24x7xNBD"],
         WarningDays = new NisWarningDaysDto { Service = 60, Product = 30 },
     };
@@ -4509,6 +4532,7 @@ WHERE a.CmpId = @CmpId
                 CheckOutLocation = nisTicket.CheckOutLocation,
                 CheckOutBy = nisTicket.CheckOutBy,
                 Equipment = equipment,
+                ProjectItems = await LoadOnsiteProjectItemsAsync(nisTicket.ProjectId, nisTicketType),
             });
         }
 

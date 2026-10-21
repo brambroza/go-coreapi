@@ -367,6 +367,18 @@ public class NisServiceCondDefaultsDto
     public bool OnsiteAccident { get; set; } = false;
 }
 
+/// คลัง WMS (mWareHouse.WareHouseId) ที่ใช้กับการเบิกของหน้างาน — JSON บน NisSystemConfig.StockWarehousesJson.
+/// default ตรงกับคลังจริงของ NIS: 1 = สินค้าสำหรับขาย, 2 = Spare ลูกค้า, 2600002 = ของใน Stock
+public class NisStockWarehousesDto
+{
+    /// คลัง 1 สินค้าสำหรับขาย — นำของออกได้เฉพาะตามรายการสินค้าของโครงการ Implement
+    public int SaleWhId { get; set; } = 1;
+    /// คลัง 2 Spare ลูกค้า — ช่างเบิกเองได้
+    public int SpareWhId { get; set; } = 2;
+    /// คลัง 3 ของใน Stock (อุปกรณ์ปฏิบัติงาน) — ช่างเบิกเองได้
+    public int StockWhId { get; set; } = 2600002;
+}
+
 /// ตัวเลือกเงื่อนไขงานของ wizard สร้างโครงการ — JSON บน NisSystemConfig.ServiceConditionOptionsJson
 public class NisServiceConditionOptionsDto
 {
@@ -403,6 +415,8 @@ public class NisSystemConfigResponseDto
     public NisEmailSignatureDto EmailSignature { get; set; } = new();
     /// ตัวเลือกเงื่อนไขงานของ wizard สร้างโครงการ — GET เติม default เสมอ
     public NisServiceConditionOptionsDto ServiceConditionOptions { get; set; } = new();
+    /// คลังที่ใช้กับการเบิกของหน้างาน — GET เติม default เสมอ
+    public NisStockWarehousesDto StockWarehouses { get; set; } = new();
 }
 
 public class NisSystemConfigSaveDto
@@ -424,6 +438,8 @@ public class NisSystemConfigSaveDto
     public NisEmailSignatureDto EmailSignature { get; set; } = new();
     /// nullable โดยตั้งใจ — client เก่าที่ PUT โดยไม่มี field นี้ต้องไม่ลบค่าที่บันทึกไว้ (null-preserve)
     public NisServiceConditionOptionsDto? ServiceConditionOptions { get; set; }
+    /// nullable โดยตั้งใจ (null-preserve) — client เก่าไม่ส่ง field นี้
+    public NisStockWarehousesDto? StockWarehouses { get; set; }
     public string CmpId { get; set; } = string.Empty;
     public string UpdatedBy { get; set; } = string.Empty;
 }
@@ -729,4 +745,107 @@ public class NisEquipmentChangeRequestRejectDto
     public string? CmpId { get; set; }
     public string RejectedBy { get; set; } = string.Empty;
     public string? RejectReason { get; set; }
+}
+
+// ── Stock transfer request DTOs (dbo.NisStockTransferRequest) ──────────────────
+// ช่างขอโยกย้ายคลังจากหน้าเบิกของ → SM โยกผ่าน WMS แล้วกด "โยกแล้ว" / "ปฏิเสธ"
+
+/// แถวคำขอโยกย้ายคลัง + รหัสตั๋ว/ลูกค้า (join ตอนอ่าน)
+public class NisStockTransferRequestDto
+{
+    public string RequestId { get; set; } = string.Empty;
+    public string CmpId { get; set; } = string.Empty;
+    public string? TicketId { get; set; }
+    public string? TicketCode { get; set; }
+    public string? CustomerName { get; set; }
+    public string ProdCode { get; set; } = string.Empty;
+    public string ProdName { get; set; } = string.Empty;
+    public string UnitCode { get; set; } = string.Empty;
+    public decimal Qty { get; set; }
+    /// mWareHouse.WareHouseId ปลายทาง
+    public int ToWhId { get; set; }
+    public string Note { get; set; } = string.Empty;
+    public string RequestedBy { get; set; } = string.Empty;
+    /// Accounts.FullName ของผู้ขอ — null ถ้าหาไม่เจอ
+    public string? RequestedByName { get; set; }
+    /// Pending | Done | Rejected
+    public string Status { get; set; } = "Pending";
+    public string? HandledBy { get; set; }
+    public string? TransferDocNo { get; set; }
+    public string? RejectReason { get; set; }
+    public DateTime CreatedDate { get; set; }
+    public DateTime UpdatedDate { get; set; }
+}
+
+/// Payload POST api/nis/stock-transfer-requests
+public class NisStockTransferRequestCreateDto
+{
+    public string? CmpId { get; set; }
+    public string? TicketId { get; set; }
+    public string ProdCode { get; set; } = string.Empty;
+    public string ProdName { get; set; } = string.Empty;
+    public string UnitCode { get; set; } = string.Empty;
+    public decimal Qty { get; set; }
+    public int ToWhId { get; set; }
+    public string Note { get; set; } = string.Empty;
+    public string RequestedBy { get; set; } = string.Empty;
+}
+
+/// Payload PUT api/nis/stock-transfer-requests/{id}/done
+public class NisStockTransferRequestDoneDto
+{
+    public string? CmpId { get; set; }
+    public string HandledBy { get; set; } = string.Empty;
+    /// เลขใบโอนย้ายคลังใน WMS — optional
+    public string? TransferDocNo { get; set; }
+}
+
+/// Payload PUT api/nis/stock-transfer-requests/{id}/reject
+public class NisStockTransferRequestRejectDto
+{
+    public string? CmpId { get; set; }
+    public string HandledBy { get; set; } = string.Empty;
+    public string? RejectReason { get; set; }
+}
+
+// ── Project item DTOs (dbo.NisProjectItem) ─────────────────────────────────────
+// รายการสินค้าขายของโครงการ (จาก SO) — งาน Implement นำของออกจากคลัง 1 ได้ไม่เกิน Qty
+
+/// รายการสินค้า 1 บรรทัด + คงเหลือที่นำออกได้
+public class NisProjectItemDto
+{
+    public string Id { get; set; } = string.Empty;
+    public string SoNo { get; set; } = string.Empty;
+    public string ProdCode { get; set; } = string.Empty;
+    public string ProdName { get; set; } = string.Empty;
+    public string UnitCode { get; set; } = string.Empty;
+    public decimal Qty { get; set; }
+    public decimal QtyIssued { get; set; }
+    /// Qty − QtyIssued (ไม่ต่ำกว่า 0)
+    public decimal QtyRemaining { get; set; }
+}
+
+/// ผล sync รายการจาก SO
+public class NisProjectItemSyncResultDto
+{
+    public List<NisProjectItemDto> Items { get; set; } = new();
+    /// เลข SO ใน SoRef ที่หารายการไม่เจอ (ยังไม่มี / ถูกลบ / ไม่มีสิทธิ์เห็น)
+    public List<string> MissingSoNos { get; set; } = new();
+}
+
+/// 1 บรรทัดที่นำออก (qty ติดลบ = คืนยอด เช่น สร้างใบเบิกไม่สำเร็จ)
+public class NisProjectItemIssueLineDto
+{
+    public string ItemId { get; set; } = string.Empty;
+    public decimal Qty { get; set; }
+    public string? IssueDocNo { get; set; }
+}
+
+/// Payload PUT api/nis/projects/{id}/items/issued
+public class NisProjectItemIssueDto
+{
+    public string? CmpId { get; set; }
+    public string? TicketId { get; set; }
+    public string UpdatedBy { get; set; } = string.Empty;
+    public List<NisProjectItemIssueLineDto> Lines { get; set; } = new();
 }

@@ -71,6 +71,8 @@ namespace goalongapi.Data
         public DbSet<NisCustomerLocation> NisCustomerLocations { get; set; }
         public DbSet<NisEquipment> NisEquipments { get; set; }
         public DbSet<NisEquipmentChangeRequest> NisEquipmentChangeRequests { get; set; }
+        public DbSet<NisStockTransferRequest> NisStockTransferRequests { get; set; }
+        public DbSet<NisProjectItem> NisProjectItems { get; set; }
         public DbSet<NisCustomerAssignEmp> NisCustomerAssignEmps { get; set; }
         public DbSet<NisContactRow> NisContacts { get; set; }
         public DbSet<NisPersonalTodo> NisPersonalTodos { get; set; }
@@ -947,6 +949,22 @@ namespace goalongapi.Data
             {
                 entity.ToTable("NisEquipmentChangeRequest", "dbo");
                 entity.HasKey(e => e.RequestId);
+            });
+
+            // ชื่อตารางเอกพจน์ตาม migration 20261022 (เหมือน NisEquipmentChangeRequest)
+            modelBuilder.Entity<NisStockTransferRequest>(entity =>
+            {
+                entity.ToTable("NisStockTransferRequest", "dbo");
+                entity.HasKey(e => e.RequestId);
+                entity.Property(e => e.Qty).HasPrecision(18, 4);
+            });
+
+            modelBuilder.Entity<NisProjectItem>(entity =>
+            {
+                entity.ToTable("NisProjectItem", "dbo");
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Qty).HasPrecision(18, 4);
+                entity.Property(e => e.QtyIssued).HasPrecision(18, 4);
             });
 
             modelBuilder.Entity<NisCustomerAssignEmp>(entity =>

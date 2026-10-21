@@ -53,6 +53,10 @@ public class NisOnsiteTicketResponseDto
     /// ทะเบียนอุปกรณ์ในตู้ Rack ของลูกค้า (flat) — เติมเฉพาะตั๋ว PM; client จัดกลุ่มตาม RackName เอง
     /// null = ไม่ใช่ PM หรือไม่มีทะเบียน
     public List<NisOnsiteEquipmentDto>? Equipment { get; set; }
+
+    /// รายการสินค้าขายของโครงการ (คลัง 1) ที่ช่าง "นำของออก" ได้ — เติมเฉพาะตั๋ว Install ของโครงการที่มีรายการ
+    /// null = ไม่ใช่ Install หรือโครงการไม่มีรายการ
+    public List<NisProjectItemDto>? ProjectItems { get; set; }
 }
 
 /// อุปกรณ์ 1 ชิ้นจากทะเบียน NisEquipment สำหรับหน้า onsite (= NisEquipmentDto + UPosition/RackLocation)

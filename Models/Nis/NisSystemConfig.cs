@@ -50,6 +50,9 @@ public class NisSystemConfig
     /// สำหรับ wizard สร้างโครงการ — null = ใช้ default จากโค้ด
     public string? ServiceConditionOptionsJson { get; set; }
 
+    /// JSON object ของคลังที่ใช้เบิกของหน้างาน {saleWhId, spareWhId, stockWhId} — null = ใช้ default จากโค้ด
+    public string? StockWarehousesJson { get; set; }
+
     /// Pipe-delimited SLA options, e.g. "8x5xNBD|8x5|24x7x4|24x7xNBD"
     [MaxLength(500)]
     public string SlaOptionsRaw { get; set; } = "8x5xNBD|8x5|24x7x4|24x7xNBD";
