@@ -4442,7 +4442,16 @@ WHERE a.CmpId = @CmpId
                     .AsNoTracking()
                     .Where(e => e.CmpId == equipCmpId && e.CustomerCode == project.CustomerCode);
                 if (selectedIds.Count > 0)
-                    equipQuery = equipQuery.Where(e => selectedIds.Contains(e.Id));
+                {
+                    // ตู้ที่โปรเจคเลือก → ทุกเครื่องในตู้นั้น (รวมเครื่องที่ SM อนุมัติเพิ่มทีหลัง) แสดงในตู้เดิม
+                    var selectedRacks = await _context.NisEquipments
+                        .AsNoTracking()
+                        .Where(e => e.CmpId == equipCmpId && e.CustomerCode == project.CustomerCode && selectedIds.Contains(e.Id))
+                        .Select(e => e.RackName)
+                        .Distinct()
+                        .ToListAsync();
+                    equipQuery = equipQuery.Where(e => selectedIds.Contains(e.Id) || selectedRacks.Contains(e.RackName));
+                }
 
                 var equipRows = await equipQuery.ToListAsync();
                 equipment = equipRows
