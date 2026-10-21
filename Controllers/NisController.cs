@@ -10,6 +10,7 @@ using goalongapi.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace goalongapi.Controllers;
 
@@ -425,9 +426,15 @@ public partial class NisController : ControllerBase
         // จะไม่ได้เลขเดิมซ้ำ · sequence ไม่รีเซ็ตรายปีและรวมทุก CmpId · ค่าที่ดึงแล้วไม่ถูก rollback (เลขข้ามได้)
         var bangkokNow = BangkokNow();
         var projectPrefix = $"NIS-{bangkokNow.ToString("yy", CultureInfo.InvariantCulture)}";
-        var projectSeq = await _context.Database
-            .SqlQueryRaw<long>("SELECT CAST(NEXT VALUE FOR dbo.projectTaskNew AS bigint) AS [Value]")
-            .SingleAsync();
+        // ยิง DbCommand ตรง — ห้ามใช้ SqlQueryRaw(...).SingleAsync() เพราะ EF จะครอบเป็น derived table
+        // และ SQL Server ไม่อนุญาต NEXT VALUE FOR ใน sub-query (error 11719) → 500 ทั้ง endpoint
+        long projectSeq;
+        await using (var seqCommand = _context.Database.GetDbConnection().CreateCommand())
+        {
+            seqCommand.Transaction = transaction.GetDbTransaction();
+            seqCommand.CommandText = "SELECT CAST(NEXT VALUE FOR dbo.projectTaskNew AS bigint)";
+            projectSeq = Convert.ToInt64(await seqCommand.ExecuteScalarAsync(), CultureInfo.InvariantCulture);
+        }
         var nextProjectNo = $"{projectPrefix}{projectSeq:D5}";
 
         // กันกรณี sequence ตั้ง START WITH ต่ำกว่าเลขที่มีอยู่แล้ว → ไม่ปล่อยให้เลขโครงการ/ตั๋วชนของเดิม
