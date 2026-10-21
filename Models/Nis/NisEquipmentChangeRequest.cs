@@ -50,6 +50,15 @@ public class NisEquipmentChangeRequest
 
     public int? UPosition { get; set; }
 
+    /// ตำแหน่งตู้ (ห้อง/ชั้น) = NisEquipment.RackLocation — ว่าง = ไม่แก้
+    [MaxLength(200)]
+    public string RackLocation { get; set; } = string.Empty;
+
+    /// หมายเหตุของอุปกรณ์ = NisEquipment.Note — null = คำขอรุ่นก่อน (ใช้ Note แทนตอน insert)
+    [MaxLength(1000)]
+    public string? EquipmentNote { get; set; }
+
+    /// เหตุผล/รายละเอียดถึงผู้อนุมัติ
     [MaxLength(1000)]
     public string Note { get; set; } = string.Empty;
 

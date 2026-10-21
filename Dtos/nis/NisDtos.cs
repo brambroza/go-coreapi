@@ -672,6 +672,11 @@ public class NisEquipmentChangeRequestDto
     public string Model { get; set; } = string.Empty;
     public string SerialNo { get; set; } = string.Empty;
     public int? UPosition { get; set; }
+    /// ตำแหน่งตู้ (ห้อง/ชั้น) — NisEquipment.RackLocation
+    public string RackLocation { get; set; } = string.Empty;
+    /// หมายเหตุของอุปกรณ์ — NisEquipment.Note
+    public string? EquipmentNote { get; set; }
+    /// เหตุผล/รายละเอียดถึงผู้อนุมัติ
     public string Note { get; set; } = string.Empty;
     public string RequestedBy { get; set; } = string.Empty;
     /// Accounts.FullName ของผู้ขอ — null ถ้าหาไม่เจอ
@@ -702,6 +707,11 @@ public class NisEquipmentChangeRequestCreateDto
     public string Model { get; set; } = string.Empty;
     public string SerialNo { get; set; } = string.Empty;
     public int? UPosition { get; set; }
+    /// ตำแหน่งตู้ (ห้อง/ชั้น) — NisEquipment.RackLocation
+    public string RackLocation { get; set; } = string.Empty;
+    /// หมายเหตุของอุปกรณ์ — NisEquipment.Note
+    public string? EquipmentNote { get; set; }
+    /// เหตุผล/รายละเอียดถึงผู้อนุมัติ
     public string Note { get; set; } = string.Empty;
     public string RequestedBy { get; set; } = string.Empty;
 }

@@ -1319,6 +1319,8 @@ WHERE a.CmpId = @CmpId
         "closed" => "ปิดงานแล้ว",
         "close_approved" => "อนุมัติปิดงานแล้ว",
         "close_rejected" => "คำขอปิดงานถูกตีกลับ",
+        "equipment_change_approved" => "อนุมัติแก้ทะเบียนตู้ Rack แล้ว",
+        "equipment_change_rejected" => "ไม่อนุมัติคำขอแก้ทะเบียนตู้ Rack",
         _ => action,
     };
 
@@ -3308,6 +3310,8 @@ WHERE a.CmpId = @CmpId
         Model = r.Model,
         SerialNo = r.SerialNo,
         UPosition = r.UPosition,
+        RackLocation = r.RackLocation,
+        EquipmentNote = r.EquipmentNote,
         Note = r.Note,
         RequestedBy = r.RequestedBy,
         Status = r.Status,
@@ -3439,6 +3443,9 @@ WHERE a.CmpId = @CmpId
             Model = (dto.Model ?? string.Empty).Trim(),
             SerialNo = (dto.SerialNo ?? string.Empty).Trim(),
             UPosition = dto.UPosition,
+            RackLocation = (dto.RackLocation ?? string.Empty).Trim(),
+            // client รุ่นก่อนไม่ส่งช่องนี้ → null ให้ approve ใช้ Note เป็นหมายเหตุอุปกรณ์เหมือนเดิม
+            EquipmentNote = dto.EquipmentNote?.Trim(),
             Note = (dto.Note ?? string.Empty).Trim(),
             RequestedBy = dto.RequestedBy.Trim(),
             Status = "Pending",
@@ -3489,6 +3496,14 @@ WHERE a.CmpId = @CmpId
                     .FirstOrDefaultAsync(e => e.Id == equipGuid && e.CmpId == cmpId && e.CustomerCode == row.CustomerCode);
             }
 
+            // RackLocation ซ้ำกันทุกแถวของตู้ (ตู้ = group by RackName) — คำขอระบุมา = แก้ทั้งตู้ให้ตรงกัน
+            var rackRows = await _context.NisEquipments
+                .Where(e => e.CmpId == cmpId && e.CustomerCode == row.CustomerCode && e.RackName == row.RackName)
+                .ToListAsync();
+            var rackLocation = !string.IsNullOrWhiteSpace(row.RackLocation)
+                ? row.RackLocation
+                : rackRows.Select(e => e.RackLocation).FirstOrDefault(l => !string.IsNullOrWhiteSpace(l)) ?? string.Empty;
+
             switch (row.Reason)
             {
                 case EQUIP_CR_REASON_MISSING:
@@ -3498,12 +3513,14 @@ WHERE a.CmpId = @CmpId
                         CmpId = cmpId,
                         CustomerCode = row.CustomerCode,
                         RackName = row.RackName,
+                        RackLocation = rackLocation,
                         DeviceName = row.DeviceName,
                         Brand = row.Brand,
                         Model = row.Model,
                         SerialNo = row.SerialNo,
                         UPosition = row.UPosition,
-                        Note = row.Note,
+                        // คำขอรุ่นก่อนไม่มี EquipmentNote — ตอนนั้น Note คือหมายเหตุอุปกรณ์
+                        Note = row.EquipmentNote ?? row.Note,
                         CreatedBy = approver,
                         CreatedDate = now,
                         UpdatedBy = approver,
@@ -3524,10 +3541,21 @@ WHERE a.CmpId = @CmpId
                         if (!string.IsNullOrWhiteSpace(row.Model)) target.Model = row.Model;
                         if (!string.IsNullOrWhiteSpace(row.SerialNo)) target.SerialNo = row.SerialNo;
                         if (row.UPosition.HasValue) target.UPosition = row.UPosition;
+                        if (!string.IsNullOrWhiteSpace(row.EquipmentNote)) target.Note = row.EquipmentNote;
                         target.UpdatedBy = approver;
                         target.UpdatedDate = now;
                     }
                     break;
+            }
+
+            if (!string.IsNullOrWhiteSpace(row.RackLocation) && row.Reason != EQUIP_CR_REASON_NOT_IN_RACK)
+            {
+                foreach (var e in rackRows.Where(e => e.RackLocation != row.RackLocation))
+                {
+                    e.RackLocation = row.RackLocation;
+                    e.UpdatedBy = approver;
+                    e.UpdatedDate = now;
+                }
             }
 
             row.Status = "Approved";
@@ -3549,9 +3577,42 @@ WHERE a.CmpId = @CmpId
 
         // approve มีผลกับ NisEquipment จริง (insert/update/delete) → แจ้งหน้าที่เปิดอยู่
         await _crmNotify.BroadcastEquipmentChangedAsync(cmpId, row.CustomerCode);
+        // ตั๋วที่ยื่นคำขอ → CRM (NisTicketChanged) + RN (nis:notify) refetch ทะเบียนแล้วแสดงผลทันที
+        await NotifyEquipmentChangeDecisionAsync(row, approved: true, approver);
 
         var mapped = await MapEquipmentChangeRequestsAsync(cmpId, new List<NisEquipmentChangeRequest> { row });
         return Ok(mapped[0]);
+    }
+
+    /// <summary>
+    /// แจ้งผลอนุมัติ/ไม่อนุมัติคำขอแก้ทะเบียนไปยังตั๋วที่ยื่น (best-effort ผ่าน NotifyTicketChangedAsync)
+    /// action = equipment_change_approved | equipment_change_rejected · body = ตู้ + อุปกรณ์ (+ เหตุผลที่ไม่อนุมัติ)
+    /// คำขอที่ไม่ผูกตั๋ว (TicketId ว่าง) = ไม่แจ้ง (หน้า master ได้ NisEquipmentChanged อยู่แล้ว)
+    /// </summary>
+    private async Task NotifyEquipmentChangeDecisionAsync(NisEquipmentChangeRequest row, bool approved, string? actor)
+    {
+        try
+        {
+            if (string.IsNullOrWhiteSpace(row.TicketId)) return;
+            var ticket = await _context.NisTickets
+                .AsNoTracking()
+                .FirstOrDefaultAsync(t => t.CmpId == row.CmpId && (t.TicketId == row.TicketId || t.TicketCode == row.TicketId));
+            if (ticket == null) return;
+
+            var what = $"ตู้ {row.RackName} · {row.DeviceName}";
+            var body = approved
+                ? $"อนุมัติแก้ทะเบียน {what} แล้ว"
+                : $"ไม่อนุมัติคำขอแก้ทะเบียน {what}{(string.IsNullOrWhiteSpace(row.RejectReason) ? "" : $" — {row.RejectReason}")}";
+            await NotifyTicketChangedAsync(
+                ticket,
+                approved ? "equipment_change_approved" : "equipment_change_rejected",
+                actor,
+                body);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "NIS equipment change decision notify ไม่สำเร็จ (request {RequestId})", row.RequestId);
+        }
     }
 
     /// <summary>Rejects a pending equipment change request — the equipment master is left untouched.</summary>
@@ -3578,6 +3639,8 @@ WHERE a.CmpId = @CmpId
         row.RejectReason = string.IsNullOrWhiteSpace(dto.RejectReason) ? null : dto.RejectReason.Trim();
         row.UpdatedDate = BangkokNow();
         await _context.SaveChangesAsync();
+
+        await NotifyEquipmentChangeDecisionAsync(row, approved: false, row.RejectedBy);
 
         var mapped = await MapEquipmentChangeRequestsAsync(cmpId, new List<NisEquipmentChangeRequest> { row });
         return Ok(mapped[0]);
