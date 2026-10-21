@@ -3507,9 +3507,10 @@ WHERE a.CmpId = @CmpId
             switch (row.Reason)
             {
                 case EQUIP_CR_REASON_MISSING:
+                    var newEquipmentId = Guid.NewGuid();
                     _context.NisEquipments.Add(new NisEquipment
                     {
-                        Id = Guid.NewGuid(),
+                        Id = newEquipmentId,
                         CmpId = cmpId,
                         CustomerCode = row.CustomerCode,
                         RackName = row.RackName,
@@ -3526,6 +3527,7 @@ WHERE a.CmpId = @CmpId
                         UpdatedBy = approver,
                         UpdatedDate = now,
                     });
+                    await AddEquipmentToSelectingProjectsAsync(row, newEquipmentId, rackRows.Select(e => e.Id).ToHashSet());
                     break;
 
                 case EQUIP_CR_REASON_NOT_IN_RACK:
@@ -3582,6 +3584,41 @@ WHERE a.CmpId = @CmpId
 
         var mapped = await MapEquipmentChangeRequestsAsync(cmpId, new List<NisEquipmentChangeRequest> { row });
         return Ok(mapped[0]);
+    }
+
+    /// <summary>
+    /// อุปกรณ์ที่อนุมัติเพิ่มเข้าทะเบียน → เพิ่ม id เข้า NisProject.EquipmentIdsJson ของโปรเจคที่เลือกอุปกรณ์ไว้
+    /// (GET onsite ticket คืนเฉพาะชุดที่โปรเจคเลือก — ไม่เพิ่ม = ตั๋วมองไม่เห็นเครื่องที่เพิ่งอนุมัติ)
+    /// เป้าหมาย: โปรเจคของตั๋วที่ยื่นคำขอ + โปรเจคลูกค้าเดียวกันที่เลือกอุปกรณ์ในตู้นี้ไว้อยู่แล้ว
+    /// โปรเจคที่ไม่ได้เลือก (EquipmentIdsJson ว่าง) เห็นทั้งหมดของลูกค้าอยู่แล้ว — ไม่แตะ
+    /// เรียกภายใน transaction ของ approve (SaveChanges ทีหลังพร้อมกัน)
+    /// </summary>
+    private async Task AddEquipmentToSelectingProjectsAsync(
+        NisEquipmentChangeRequest row, Guid newEquipmentId, HashSet<Guid> rackEquipmentIds)
+    {
+        string? requestProjectId = null;
+        if (!string.IsNullOrWhiteSpace(row.TicketId))
+        {
+            requestProjectId = await _context.NisTickets
+                .AsNoTracking()
+                .Where(t => t.CmpId == row.CmpId && (t.TicketId == row.TicketId || t.TicketCode == row.TicketId))
+                .Select(t => t.ProjectId)
+                .FirstOrDefaultAsync();
+        }
+
+        var projects = await _context.NisProjects
+            .Where(p => p.CmpId == row.CmpId && p.CustomerCode == row.CustomerCode && p.EquipmentIdsJson != null)
+            .ToListAsync();
+        var newId = newEquipmentId.ToString();
+        foreach (var project in projects)
+        {
+            var ids = ParseJson<List<string>?>(project.EquipmentIdsJson, null) ?? new();
+            if (ids.Count == 0 || ids.Contains(newId, StringComparer.OrdinalIgnoreCase)) continue;
+            var selectsThisRack = ids.Any(s => Guid.TryParse(s, out var g) && rackEquipmentIds.Contains(g));
+            if (project.ProjectId != requestProjectId && !selectsThisRack) continue;
+            ids.Add(newId);
+            project.EquipmentIdsJson = SerializeJson(ids);
+        }
     }
 
     /// <summary>
