@@ -1344,6 +1344,7 @@ WHERE a.CmpId = @CmpId
         "close_approved" => "อนุมัติปิดงานแล้ว",
         "close_rejected" => "คำขอปิดงานถูกตีกลับ",
         "equipment_change_approved" => "อนุมัติแก้ทะเบียนตู้ Rack แล้ว",
+        "task_updated" => "ผู้จัดการแก้ไขรายละเอียดงาน / checklist",
         "equipment_change_rejected" => "ไม่อนุมัติคำขอแก้ทะเบียนตู้ Rack",
         "stock_transfer_done" => "SM โยกย้ายคลังให้แล้ว",
         "stock_transfer_rejected" => "ไม่อนุมัติคำขอโยกย้ายคลัง",
@@ -1770,6 +1771,10 @@ WHERE a.CmpId = @CmpId
         if (ticket == null)
             return NotFound(new { message = $"Ticket {id} not found" });
 
+        // แก้ได้จนกว่าจะปิดงาน (รวมระหว่างช่างกำลังปฏิบัติงาน) — ปิดแล้วแก้ไม่ได้
+        if (ticket.Status is "Closed" or "Done")
+            return Conflict(new { message = "ตั๋วนี้ปิดงานแล้ว แก้รายละเอียดงาน/checklist ไม่ได้" });
+
         ticket.WorkDetail = string.IsNullOrWhiteSpace(dto.WorkDetail) ? null : dto.WorkDetail;
 
         // Normalize: ตัดข้อที่ text ว่าง, การันตี Id ทุกข้อ (กันข้อว่างค้างจากฟอร์ม)
@@ -1790,6 +1795,9 @@ WHERE a.CmpId = @CmpId
         ticket.UpdatedDate = DateTime.Now;
 
         await _context.SaveChangesAsync();
+
+        // หน้า on-site (CRM) / Execute (RN) ที่เปิดตั๋วนี้อยู่ → refetch แล้ว merge checklist + รายละเอียดงานทันที
+        await NotifyTicketChangedAsync(ticket, "task_updated", dto.UpdatedBy);
 
         return Ok(new { message = "Task updated", checklist = items, workDetail = ticket.WorkDetail });
     }
@@ -4568,6 +4576,8 @@ WHERE a.CmpId = @CmpId
                 CheckOutLocation = nisTicket.CheckOutLocation,
                 CheckOutBy = nisTicket.CheckOutBy,
                 Equipment = equipment,
+                TaskDetail = nisTicket.WorkDetail ?? string.Empty,
+                TaskChecklist = ParseChecklist(nisTicket.ChecklistJson),
                 ProjectItems = await LoadOnsiteProjectItemsAsync(nisTicket.ProjectId, nisTicketType),
             });
         }

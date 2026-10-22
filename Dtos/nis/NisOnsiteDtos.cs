@@ -54,6 +54,13 @@ public class NisOnsiteTicketResponseDto
     /// null = ไม่ใช่ PM หรือไม่มีทะเบียน
     public List<NisOnsiteEquipmentDto>? Equipment { get; set; }
 
+    /// รายละเอียดงานที่ SM เตรียมไว้ (NisTicket.WorkDetail) — SM แก้ได้จนกว่าจะปิดงาน · null = ไม่ใช่ตั๋ว NIS
+    public string? TaskDetail { get; set; }
+
+    /// checklist ชุดที่ SM เตรียมไว้ (NisTicket.ChecklistJson) — server เป็นเจ้าของ "ชุดรายการ"
+    /// client เป็นเจ้าของสถานะติ๊ก (merge ด้วย id) · null = ไม่ใช่ตั๋ว NIS
+    public List<NisChecklistItemDto>? TaskChecklist { get; set; }
+
     /// รายการสินค้าขายของโครงการ (คลัง 1) ที่ช่าง "นำของออก" ได้ — เติมเฉพาะตั๋ว Install ของโครงการที่มีรายการ
     /// null = ไม่ใช่ Install หรือโครงการไม่มีรายการ
     public List<NisProjectItemDto>? ProjectItems { get; set; }
