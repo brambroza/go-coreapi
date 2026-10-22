@@ -3083,7 +3083,12 @@ WHERE a.CmpId = @CmpId
         return Ok(items.Select(MapEquipment));
     }
 
-    /// <summary>Replaces the full equipment list for one customer. Matches frontend saveNisEquipment.</summary>
+    /// <summary>
+    /// Replaces the full equipment list for one customer. Matches frontend saveNisEquipment.
+    /// แถวที่ส่ง Id เดิมมา = แก้แถวนั้น (คง Id ไว้) · ไม่มี Id / Id ไม่รู้จัก = สร้างใหม่ · แถวเดิมที่ไม่ถูกส่งมา = ลบ
+    /// ต้องคง Id เพราะ NisProject.EquipmentIdsJson, NisEquipmentChangeRequest.EquipmentId และผลตรวจตู้ Rack
+    /// (pmItems[].devices[].equipmentId) อ้างอิง Id นี้ — สร้าง Id ใหม่ทุกครั้ง = ตั๋ว PM มองไม่เห็นทะเบียน
+    /// </summary>
     [HttpPost("equipment")]
     public async Task<ActionResult<IEnumerable<NisEquipmentDto>>> SaveNisEquipment([FromBody] NisEquipmentSaveDto dto)
     {
@@ -3102,13 +3107,32 @@ WHERE a.CmpId = @CmpId
             var old = await _context.NisEquipments
                 .Where(e => e.CmpId == cmpId && e.CustomerCode == dto.CustomerCode)
                 .ToListAsync();
-            _context.NisEquipments.RemoveRange(old);
+            var oldById = old.ToDictionary(e => e.Id);
+            var keptIds = new HashSet<Guid>();
 
             foreach (var item in dto.Items.Where(i =>
                          !string.IsNullOrWhiteSpace(i.RackName) ||
                          !string.IsNullOrWhiteSpace(i.DeviceName) ||
                          !string.IsNullOrWhiteSpace(i.SerialNo)))
             {
+                // Id ซ้ำในชุดเดียวกัน (เช่น copy แถว) — แถวแรกได้ Id เดิม แถวถัดไปสร้างใหม่
+                if (Guid.TryParse(item.Id, out var itemId)
+                    && oldById.TryGetValue(itemId, out var existing)
+                    && keptIds.Add(itemId))
+                {
+                    existing.RackName = item.RackName;
+                    existing.RackLocation = item.RackLocation ?? string.Empty;
+                    existing.UPosition = item.UPosition;
+                    existing.DeviceName = item.DeviceName;
+                    existing.SerialNo = item.SerialNo;
+                    existing.Model = item.Model;
+                    existing.Brand = item.Brand;
+                    existing.Note = item.Note;
+                    existing.UpdatedBy = user;
+                    existing.UpdatedDate = now;
+                    continue;
+                }
+
                 _context.NisEquipments.Add(new NisEquipment
                 {
                     Id = Guid.NewGuid(),
@@ -3128,6 +3152,8 @@ WHERE a.CmpId = @CmpId
                     UpdatedDate = now,
                 });
             }
+
+            _context.NisEquipments.RemoveRange(old.Where(e => !keptIds.Contains(e.Id)));
 
             await _context.SaveChangesAsync();
             await tx.CommitAsync();
@@ -4480,7 +4506,10 @@ WHERE a.CmpId = @CmpId
                         .Select(e => e.RackName)
                         .Distinct()
                         .ToListAsync();
-                    equipQuery = equipQuery.Where(e => selectedIds.Contains(e.Id) || selectedRacks.Contains(e.RackName));
+                    // id ที่เลือกไม่เหลือในทะเบียนเลย (master ถูกบันทึกแบบสร้าง Id ใหม่สมัยก่อน) → ใช้ทั้งหมดของลูกค้า
+                    // แทนการคืนว่าง (ตั๋ว PM จะไม่มีตู้ให้ตรวจ) — เลือกอุปกรณ์ในโปรเจคใหม่เพื่อกรองอีกครั้ง
+                    if (selectedRacks.Count > 0)
+                        equipQuery = equipQuery.Where(e => selectedIds.Contains(e.Id) || selectedRacks.Contains(e.RackName));
                 }
 
                 var equipRows = await equipQuery.ToListAsync();
