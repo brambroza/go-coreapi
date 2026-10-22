@@ -1799,6 +1799,42 @@ WHERE a.CmpId = @CmpId
         // หน้า on-site (CRM) / Execute (RN) ที่เปิดตั๋วนี้อยู่ → refetch แล้ว merge checklist + รายละเอียดงานทันที
         await NotifyTicketChangedAsync(ticket, "task_updated", dto.UpdatedBy);
 
+        // แจ้งเตือนช่างที่รับงาน (ตอนไม่ได้เปิดหน้างานอยู่) — Expo push (iPad) + กระดิ่ง CRM · best-effort
+        if (!string.IsNullOrWhiteSpace(ticket.Assignee) && ticket.Assignee != "-")
+        {
+            try
+            {
+                var title = "📝 ผู้จัดการแก้ไขรายละเอียดงาน";
+                var body = $"{ticket.TicketCode ?? ticket.TicketId} · {ticket.Title} — ตรวจ checklist ใหม่ก่อนทำงานต่อ";
+                // dedupe ระดับนาที — กดบันทึกซ้ำรัว ๆ แจ้งครั้งเดียว
+                await _push.SendToStaffAsync(
+                    ticket.CmpId,
+                    ticket.Assignee,
+                    eventKey: $"task-updated:{ticket.TicketId}:{DateTime.Now:yyyyMMddHHmm}",
+                    title: title,
+                    body: body,
+                    ticketId: ticket.TicketId,
+                    data: new Dictionary<string, string> { ["type"] = "task_updated" });
+
+                var assigneeUsername = await ResolveUsernameAsync(ticket.CmpId ?? string.Empty, ticket.Assignee);
+                if (!string.IsNullOrWhiteSpace(assigneeUsername))
+                {
+                    await _crmNotify.NotifyAsync(
+                        ticket.CmpId,
+                        toUsername: assigneeUsername,
+                        fromUsername: dto.UpdatedBy ?? string.Empty,
+                        title: $"{title}: {body}",
+                        linkTo: $"/productservice/service-protal/tickets/{ticket.TicketId}",
+                        moduleFormName: "nis/serviceboard",
+                        docNo: ticket.TicketCode ?? ticket.TicketId);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "NIS task updated notify ไม่สำเร็จ (ticket {TicketId})", ticket.TicketId);
+            }
+        }
+
         return Ok(new { message = "Task updated", checklist = items, workDetail = ticket.WorkDetail });
     }
 
