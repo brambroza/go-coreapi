@@ -141,9 +141,9 @@ namespace goalongapi.Models
         public string StateVendor { get; set; }
         public int? StateGenQRCode { get; set; }
         public List<Dictionary<string, object>> constactline { get; set; } = new();
-            
+
     }
-    
+
 
 
     public class Contact
@@ -211,4 +211,19 @@ namespace goalongapi.Models
         public int Priority { get; set; }
         public string UpdUser { get; set; }
     }
+
+    public class RdVatInfo
+    {
+        public string taxId { get; set; }
+        public string titleName { get; set; }
+        public string name { get; set; }
+        public string branchNumber { get; set; }
+        public string branchName { get; set; }
+        public string address { get; set; }
+        public string subDistrict { get; set; }
+        public string district { get; set; }
+        public string province { get; set; }
+        public string postCode { get; set; }
+    }
+
 }
