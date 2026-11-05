@@ -1,6 +1,7 @@
 using System.Text.Json;
 using goalongapi.Data;
 using goalongapi.Dtos.Nis;
+using goalongapi.Helpers;
 using Microsoft.EntityFrameworkCore;
 
 namespace goalongapi.Services;
@@ -136,6 +137,19 @@ public class NisAccidentAutoCloseService : BackgroundService
         }
 
         await context.SaveChangesAsync(ct);
+
+        // ตั๋วที่เปิดจากเคส helpdesk → ปิดเคสต้นทางด้วย (idempotent: เคสที่มี Action แล้วข้าม)
+        var closedCases = 0;
+        foreach (var ticket in openTickets.Where(t => !string.IsNullOrWhiteSpace(t.SourceProblemId)))
+        {
+            var actionId = await NisHelpdeskCaseCloser.CloseSourceProblemAsync(context, ticket, SystemActor, null, _logger, ct);
+            if (actionId != null) closedCases++;
+        }
+        if (closedCases > 0)
+        {
+            var realtime = scope.ServiceProvider.GetService<NisRealtimeNotifyService>();
+            if (realtime != null) await realtime.NotifyHelpdeskUpdatedAsync();
+        }
 
         _logger.LogInformation(
             "NIS accident auto-close: ปิดตั๋วอัตโนมัติ {TicketCount} ใบ จาก {ProjectCount} โปรเจค accident ที่หมดสัญญาแล้ว",

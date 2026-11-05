@@ -249,6 +249,16 @@ public partial class NisController : ControllerBase
             ticket.ClosedDate = null;
     }
 
+    /// <summary>
+    /// ตั๋วปิดแล้ว + เปิดมาจากเคส helpdesk (SourceProblemId) → สร้าง Action ปิดเคสต้นทาง แล้วให้หน้าแจ้งปัญหารีเฟรช
+    /// เรียกหลัง SaveChanges ทุกจุดที่ตั๋วกลายเป็น Closed/Done · best-effort ไม่ทำให้การปิดตั๋วล้ม
+    /// </summary>
+    private async Task CloseSourceHelpdeskCaseAsync(NisTicket ticket, string? actor, string? srNumber)
+    {
+        var actionId = await NisHelpdeskCaseCloser.CloseSourceProblemAsync(_context, ticket, actor, srNumber, _logger);
+        if (actionId != null) await _nisRealtimeNotify.NotifyHelpdeskUpdatedAsync();
+    }
+
     /// ล้างสถานะ Check-in/Check-out — ตั๋วกลับไปยังไม่รับงาน (Open/Scheduled) = งานรอบใหม่ ช่างต้องเช็คอินใหม่
     private static void ResetCheckInIfNotStarted(NisTicket ticket)
     {
@@ -769,6 +779,10 @@ public partial class NisController : ControllerBase
         ticket.UpdatedDate = DateTime.Now;
 
         await _context.SaveChangesAsync();
+
+        // ลากไป Closed/Done → ปิดเคส helpdesk ต้นทางด้วย (ไม่ใช่ตั๋วปิด/ไม่มีเคสต้นทาง = no-op)
+        await CloseSourceHelpdeskCaseAsync(ticket, dto.UpdatedBy, null);
+
         return Ok(new { message = "Status updated" });
     }
 
@@ -1482,6 +1496,9 @@ WHERE a.CmpId = @CmpId
         if (!string.IsNullOrWhiteSpace(dto?.ApprovedBy)) ticket.UpdatedBy = dto!.ApprovedBy;
 
         await _context.SaveChangesAsync();
+
+        // ตั๋วที่เปิดจากเคส helpdesk → ปิดเคสต้นทางด้วย (idempotent ต่อการกดอนุมัติซ้ำ)
+        await CloseSourceHelpdeskCaseAsync(ticket, dto?.ApprovedBy, report.SrNumber);
 
         // ส่งอีเมลลูกค้าพร้อม PDF ที่ช่างส่งมาตอน request-close — code path เดียวกับ onsite/submit
         // best-effort: อีเมล/อ่าน PDF ล้มต้องไม่ทำให้การอนุมัติล้ม (ปิดตั๋วไปแล้วข้างบน)
@@ -4819,6 +4836,9 @@ WHERE a.CmpId = @CmpId
 
             // contract "ticket changed" — ปิดงานตรง (ไม่ผ่านอนุมัติ)
             await NotifyTicketChangedAsync(nisTicket, "closed", dto.User);
+
+            // ตั๋วที่เปิดจากเคส helpdesk → ปิดเคสต้นทางด้วย
+            await CloseSourceHelpdeskCaseAsync(nisTicket, dto.User, dto.SrNumber);
 
             // อีเมลลูกค้า — helper เดียวกับ close-approve (feature flag _attachReportPdf อยู่ใน helper)
             var (nisEmailSent, nisEmailError, attachPdf) =

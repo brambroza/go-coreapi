@@ -92,4 +92,29 @@ public class NisRealtimeNotifyService
             _logger.LogWarning(ex, "NIS realtime notify ส่งไม่สำเร็จ (type={Type})", type);
         }
     }
+
+    /// <summary>
+    /// ให้หน้าแจ้งปัญหา (helpdesk) ของ CRM รีเฟรช — POST go-chat-api /api/service/setproblem ซึ่ง emit
+    /// socket.io "helpdesk:update" (endpoint เดียวกับที่ CRM ยิงหลังบันทึกเคส) · best-effort, ต้องตั้ง NisRealtime:ChatApiBaseUrl
+    /// </summary>
+    public async Task NotifyHelpdeskUpdatedAsync()
+    {
+        try
+        {
+            var baseUrl = _configuration["NisRealtime:ChatApiBaseUrl"];
+            if (string.IsNullOrWhiteSpace(baseUrl)) return;
+
+            var client = _httpFactory.CreateClient();
+            client.Timeout = TimeSpan.FromSeconds(5);
+            using var res = await client.PostAsync(
+                $"{baseUrl.TrimEnd('/')}/api/service/setproblem",
+                new StringContent("{}", Encoding.UTF8, "application/json"));
+            if (!res.IsSuccessStatusCode)
+                _logger.LogWarning("helpdesk update notify: go-chat-api ตอบ {Status}", (int)res.StatusCode);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "helpdesk update notify ส่งไม่สำเร็จ");
+        }
+    }
 }

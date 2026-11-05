@@ -417,21 +417,25 @@ namespace goalongapi.Controllers.Master
 
         [Route("rdvat/{taxno}")]
         [HttpGet]
-        public async Task<IActionResult> GetRdVatInfo(string taxno)
+        public async Task<IActionResult> GetRdVatInfo(string taxno, [FromQuery] int branch = 0)
         {
             if (string.IsNullOrEmpty(taxno) || !Regex.IsMatch(taxno, @"^\d{13}$"))
             {
                 return BadRequest(new { Message = "taxno must be 13 digits" });
             }
+            if (branch < 0 || branch > 99999)
+            {
+                return BadRequest(new { Message = "branch must be 0-99999" });
+            }
 
-            // taxno is digits only (validated above), safe to place in the XML body.
+            // taxno/branch are digits only (validated above), safe to place in the XML body.
             string soapBody =
                 "<?xml version=\"1.0\" encoding=\"utf-8\"?>"
                 + "<soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\"><soap:Body>"
                 + "<Service xmlns=\"https://rdws.rd.go.th/serviceRD3/vatserviceRD3\">"
                 + "<username>anonymous</username><password>anonymous</password>"
                 + "<TIN>" + taxno + "</TIN>"
-                + "<ProvinceCode>0</ProvinceCode><BranchNumber>0</BranchNumber><AmphurCode>0</AmphurCode>"
+                + "<ProvinceCode>0</ProvinceCode><BranchNumber>" + branch + "</BranchNumber><AmphurCode>0</AmphurCode>"
                 + "</Service></soap:Body></soap:Envelope>";
 
             XDocument doc;
@@ -510,6 +514,9 @@ namespace goalongapi.Controllers.Master
             return Ok(info);
         }
 
+        /// <summary>
+        /// Reads the first anyType value of an RD result field; "-" and blanks become "".
+        /// </summary>
         private static string ReadRdField(XElement result, string field)
         {
             string value = result.Element(RdVatNs + field)?.Elements().FirstOrDefault()?.Value?.Trim() ?? "";
